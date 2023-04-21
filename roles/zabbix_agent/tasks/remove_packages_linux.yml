@@ -1,0 +1,30 @@
+---
+- name: 'Remove packages : Service down'
+  become: true
+  ansible.builtin.systemd:
+    name: '{{ agent.service_name }}'
+    state: stopped
+  failed_when: false
+
+- name: 'Remove packages : Package absence'
+  become: true
+  ansible.builtin.package:
+    name: '{{ package_list + ["zabbix-release"] }}'
+    state: absent
+
+- name: "Remove packages : Systemd : Overrides cleared"
+  become: true
+  notify:
+    - 'Reload systemd daemon'
+    - 'Service restart'
+  ansible.builtin.file:
+    path: '{{ item_path }}'
+    state: absent
+  loop: '{{ clean_path_list }}'
+  loop_control:
+    loop_var: item_path
+  register: overrides
+  vars:
+    clean_path_list:
+      - '{{ agent_systemd_override_path }}'
+      # - '{{ agent_logrotate_path }}'

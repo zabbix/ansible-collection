@@ -1,0 +1,131 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+    # name: delegated
+platforms:
+  - name: podman_ubuntu18
+    image: docker.io/jrei/systemd-ubuntu:18.04
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11850:10050/tcp" 
+      - "11820:10020/tcp" 
+    # exposed_ports:
+    #   - "22018/tcp" 
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+  - name: podman_ubuntu20
+    image: docker.io/jrei/systemd-ubuntu:20.04
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "12050:10050/tcp" 
+      - "12020:10020/tcp" 
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+      - psk
+      - aarch
+  - name: podman_ubuntu22
+    image: docker.io/jrei/systemd-ubuntu:22.04
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "12250:10050/tcp" 
+      - "12220:10020/tcp" 
+    command: "/lib/systemd/systemd"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+      - cert
+      - aarch
+  - name: podman_rhel8
+    image: registry.access.redhat.com/ubi8/ubi-init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "18050:10050/tcp" 
+      - "18020:10020/tcp" 
+    command: "/usr/sbin/init"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+      - cert
+  - name: podman_rhel9
+    image: registry.access.redhat.com/ubi9/ubi-init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      #- "127.0.0.1:19050:10050/tcp" 
+      - "19050:10050/tcp" 
+      - "19020:10020/tcp" 
+    command: "/usr/sbin/init"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+      - psk
+      - agent2
+provisioner:
+  name: ansible
+  env:
+    # ANSIBLE_VERBOSITY: 3
+    ANSIBLE_ROLES_PATH: "../../roles"
+    #   env:
+    #     ANSIBLE_CONFIG: ../../ansible.cfg
+  inventory:
+    links:
+      group_vars: inventory/group_vars
+      host_vars: inventory/host_vars
+verifier:
+  name: ansible
+# lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml
+lint: ansible-lint -p roles
+    # lint: |
+    #   set -e
+    #   yamllint roles/zabbix_agent/tasks/main.yml
+    #   ansible-lint roles/zabbix_agent/tasks/main.yml

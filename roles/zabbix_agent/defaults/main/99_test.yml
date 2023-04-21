@@ -1,0 +1,4 @@
+---
+level: default
+test_name: default
+report_path: '/tmp/ansible_verify_zabbix_agent.report'

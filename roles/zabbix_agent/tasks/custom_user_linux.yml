@@ -1,0 +1,75 @@
+---
+# Custom user implies multiple changes and requires additional parameters to be set
+
+- name: 'Custom user : Service group presence'
+  # Create a group for custom user
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.group:
+    name: '{{ service_group }}'
+    gid: '{{ service_gid | default(omit) }}'
+    state: 'present'
+
+- name: 'Custom user : Service user presence'
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.user:
+    name: '{{ service_user }}'
+    group: '{{ service_group }}'
+    uid: '{{ service_uid | default(omit) }}'
+    system: true
+    shell: /usr/sbin/nologin
+    home: '{{ service_user_home }}'
+    create_home: true
+    state: 'present'
+
+- name: 'Custom user : Separate Log folder & permissions'
+  # Custom user requires custom folder ownership to manage logs(create/write/rotate)
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.file:
+    path: '{{ item.folder | dirname }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+    setype: '{{ item.setype }}'
+    recurse: true
+  loop: '{{ agent_file_loop | select }}'
+  vars:
+    agent_file_loop:
+      - {folder: '{{ param_logfile | default(None) }}', setype: '{{ folder_log_setype | default(None) }}'}
+      # - {folder: '{{ param_pidfile | default(None) }}', setype: '{{ folder_pid_setype | default(None) }}'}
+
+- name: 'Custom user : Systemd : Custom user override in service file'
+  # changing user requires to change permissions on pid file and folder.
+  #
+  # currently packages use not the best approach to manage pid location by setting all at: /usr/lib/tmpfiles.d/zabbix-agent.conf
+  # which creates folder on systemd start even with agentd service disabled. (subject to change in future)
+  #
+  # to avoid conflict with different zabbix components we are changing location only for current service at systemd level in unit zabbix_agent.service file.
+  # which is done using overrides at etc, instead of changes on tmpfs mount.
+  #
+  # same applies to log file and folder
+  become: true
+  notify:
+    - 'Reload systemd daemon'
+    - 'Service restart'
+  ansible.builtin.blockinfile:
+    path: '{{ agent_systemd_override_path }}'
+    marker: '###<!-- {mark} ansible managed block -->##'
+    block: |
+      [Service]
+      User={{ service_user }}
+      Group={{ service_group }}
+      RuntimeDirectory={{ agent.file_name }}
+      PIDFile={{ param_pidfile }}
+    state: present
+    create: true
+    mode: '{{ agent.conf_folder.permissions.mode }}'
+    owner: '{{ agent.conf_file.permissions.user }}'
+    group: '{{ agent.conf_file.permissions.group }}'
+
+- name: 'Customer user : Selinux policy'
+  ansible.builtin.debug:
+    msg: 'Place for custom SE Policy installation'
+  tags: [never, debug]

@@ -1,0 +1,127 @@
+---
+- name: Example1_agentd_activeonly
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
+      param_startagents: 0            # do not spawn passive check processes which listens for connections;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+
+- name: Example2_agentd_activeonly
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      agent_variant: 2
+      agent_version: 6.4
+      param_server: ::/0         # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      apply_firewalld_rule: false                          # "auto" is a default and recomended value
+      apply_iptables_rule: true                          # "auto" is a default value
+      firewall_allow_from: '192.168.64.0/24'  # limit listening on agent port only from defined source address
+
+- name: Example3_psk_autoreg
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      param_server: ::/0         # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      param_tlsconnect: psk
+      param_tlsaccept: [psk]
+      source_tlspskfile: TEST/autoregistration # "autoregistration" key will be placed to TEST folder;
+      param_tlspskidentity: 'PSK_ID_AUTOREGISTRATION' # length <= 128 char
+
+- name: Example4_cert
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      param_server: ::/0                                # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1                       # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'    # concatenate group list to the string;
+      param_tlsconnect: cert                                 # restrict active checks to certificate only;
+      param_tlsaccept: ["cert", "unencrypted"]               # allow encrypted and unencrypted passive checks;
+      source_tlscafile: files/certs/ca.crt                         # provide a path to CA certificate file on Ansible controller;
+      # source_tlscrlfile:                                   # certificate revocation list, can be omited;
+      source_tlscertfile: files/certs/{{ inventory_hostname }}.crt # Zabbix agent certificate path on controller;
+      source_tlskeyfile: files/certs/{{ inventory_hostname }}.key  # key file path on controller;
+      param_tlsservercertissuer: CN=root-ca                  # certificate issuer restriction (optional);
+      param_tlservercertsubject: CN=server                   # certificate subject restriction (optional);
+
+- name: Example5_agent2_MongoDB
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      agent_variant: 2
+      agent_version: 6.4
+      param_server: ::/0              # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      agent2_plugin_list: [ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart, mongodb]
+      param_plugins_mongodb_sessions:
+        - name: "sessionname"
+          uri: "someuri"
+          user: "someuser"
+          password: "somepassword"
+          tlsconnect: "required"
+          ## Source certificate files location on Ansible controller.
+          source_tlscafile: "files/certs/ca.crt"
+          source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
+          source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+
+- name: Example6_agentd_downgrade
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      agent_version: "6.0"
+      remove_previous_packages: true  # removes previously installed package of zabbix agent(according to current settings);
+      param_server: ::/0         # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+
+- name: Example7_custom_user
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      agent_version: "6.0"
+      remove_previous_packages: true  # removes previously installed package of zabbix agent(according to current settings);
+      param_server: ::/0         # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      service_user: dor               # if service_user is not "zabbix" multiple changes are applied
+      service_group: blue
+      service_uid: 1115
+      service_gid: 1115

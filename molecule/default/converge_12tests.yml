@@ -1,0 +1,283 @@
+---
+- name: Converge 1
+  hosts: all
+  vars:
+    remove_previous_packages: true
+    test_name: agentd
+    agent_variant: 1
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 2
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2
+    agent_variant: 2
+    param_listenport: 10020
+    param_userparameter: []
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 3
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agentd_psk
+    agent_variant: 1
+    param_tlsconnect: unencrypted
+    param_tlsaccept:
+      - psk
+    source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 4
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2_psk
+    agent_variant: 2
+    param_listenport: 10020
+    param_tlsconnect: unencrypted
+    param_tlsaccept:
+      - psk
+    param_userparameter: []
+    source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 5
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agentd_cert
+    agent_variant: 1
+    param_tlsconnect: cert
+    param_tlsaccept:
+      - cert
+    source_tlscafile: files/certs/ca.crt
+    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # param_tlsservercertissuer: CN=root-ca
+    # param_tlservercertsubject: CN=server
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 6
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2_cert
+    agent_variant: 2
+    param_listenport: 10020
+    param_tlsconnect: cert
+    param_tlsaccept:
+      - cert
+    source_tlscafile: files/certs/ca.crt
+    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # param_tlsservercertissuer: CN=root-ca
+    # param_tlservercertsubject: CN=server
+    param_userparameter: []
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 7
+  hosts: all
+  vars:
+    remove_previous_packages: true
+    test_name: agentd_custom
+    agent_variant: 1
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 8
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2_custom
+    agent_variant: 2
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    param_listenport: 10020
+    param_userparameter: []
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 9
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agentd_psk_custom
+    agent_variant: 1
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    param_tlsconnect: unencrypted
+    param_tlsaccept:
+      - psk
+    source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 10
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2_psk_custom
+    agent_variant: 2
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    param_listenport: 10020
+    param_tlsconnect: unencrypted
+    param_tlsaccept:
+      - psk
+    param_userparameter: []
+    source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 11
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agentd_cert_custom
+    agent_variant: 1
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    param_tlsconnect: cert
+    param_tlsaccept:
+      - cert
+    source_tlscafile: files/certs/ca.crt
+    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # param_tlsservercertissuer: CN=root-ca
+    # param_tlservercertsubject: CN=server
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]
+
+- name: Converge 12
+  hosts: all
+  gather_facts: false
+  vars:
+    # remove_previous_packages: true
+    test_name: agent2_cert_custom
+    agent_variant: 2
+    service_user: bobr
+    service_group: kobra
+    service_uid: 1115
+    service_gid: 1115
+    param_listenport: 10020
+    param_tlsconnect: cert
+    param_tlsaccept:
+      - cert
+    source_tlscafile: files/certs/ca.crt
+    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # param_tlsservercertissuer: CN=root-ca
+    # param_tlservercertsubject: CN=server
+    param_userparameter: []
+    report_path: '/tmp/playbook_verify_zabbix_agent.report'
+  tasks:
+    - name: Clear host errors
+      ansible.builtin.meta: clear_host_errors
+      tags: [host, verify, report, test, vars, pause]
+    - name: "Testing role zabbix_agent: {{ test_name }}"
+      ansible.builtin.include_role:
+        name: "zabbix_agent"
+      tags: [host, verify, report, test, vars, pause]

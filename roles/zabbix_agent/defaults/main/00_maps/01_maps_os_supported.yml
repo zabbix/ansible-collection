@@ -1,0 +1,20 @@
+---
+### Supported OS version map
+##
+## minor versions compared using regex: '.*' - any minor
+map_supported_os_version:
+  x86_64:
+    Linux:
+      RedHat:
+        '7': '.*'
+        '8': '.*'
+        '9': '.*'
+      Ubuntu:
+        '18': '04'
+        '20': '04'
+        '22': '04'
+  aarch64:
+    Linux:
+      Ubuntu:
+        '20': '04'
+        '22': '04'

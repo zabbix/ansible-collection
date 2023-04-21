@@ -1,0 +1,16 @@
+---
+- name: 'Reload systemd daemon'
+  # Gives OK even if changed...
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  # ansible.builtin.debug:
+  #   msg: Deprecate handlers
+
+- name: 'Service restart'
+  become: true
+  ansible.builtin.systemd:
+    name: '{{ agent.service_name }}'
+    state: restarted
+  # ansible.builtin.debug:
+  #   msg: Deprecate handlers

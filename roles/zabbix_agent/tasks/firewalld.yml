@@ -1,0 +1,64 @@
+---
+- name: 'Firewalld : Gather status'
+  when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+  register: firewalld_service
+
+- name: 'DEBUG : Print service facts'
+  when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
+  ansible.builtin.debug:
+    msg: >
+      ActiveState: {{ firewalld_service.status.ActiveState | default(False) }}
+      MainPID: {{ firewalld_service.status.MainPID | default(False) }}
+      UnitState: {{ firewalld_service.status.UnitFileState | default(False) }}'
+  tags: [never, debug]
+
+- name: 'DEBUG : Print rich rule'
+  when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
+  ansible.builtin.debug:
+    msg: '{{ "rule family=ipv" + ipv | string +
+                " source address=" + firewall_allow_from | string +
+                " port protocol=tcp port=" + param_listenport | string +
+                " accept"
+                if firewall_allow_from is defined
+                else omit }}'
+  tags: [never, debug]
+  vars:
+    ipv: '{{ 6 if firewall_allow_from | ansible.utils.ipv6 else 4 }}'
+
+- name: 'Firewalld : Apply rule'
+  become: true
+  when: >
+    apply_firewalld_rule is defined and apply_firewalld_rule in ["force"]
+    or apply_firewalld_rule is defined and apply_firewalld_rule in ["auto"]
+      and (
+                param_startagents is defined and param_startagents | string != "0"
+             or param_startagents is not defined
+          )
+      and (
+                (
+                firewalld_service.status.ActiveState is defined
+                and firewalld_service.status.ActiveState == "active"
+                )
+            or (
+                firewalld_service.status.UnitFileState is defined
+                and firewalld_service.status.UnitFileState == "enabled"
+                )
+          )
+  ansible.posix.firewalld:
+    port: '{{ param_listenport | string + "/tcp" if firewall_allow_from is not defined else omit }}'
+    rich_rule: '{{ "rule family=ipv" + ipv | string +
+                " source address=" + firewall_allow_from | string +
+                " port protocol=tcp port=" + param_listenport | string +
+                " accept"
+                if firewall_allow_from is defined
+                else omit }}'
+    zone: '{{ firewalld_zone | default(omit) }}'
+    permanent: true
+    immediate: '{{ true if firewalld_service.status.ActiveState == "active"
+                else false }}'
+    state: enabled
+  vars:
+    ipv: '{{ 6 if firewall_allow_from is defined and firewall_allow_from | ansible.utils.ipv6 else 4 }}'

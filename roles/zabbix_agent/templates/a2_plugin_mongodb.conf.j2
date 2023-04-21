@@ -1,0 +1,144 @@
+### Option:Plugins.MongoDB.System.Path
+#	Path to external plugin executable.
+#
+# Mandatory: yes
+# Default:
+# Plugins.MongoDB.System.Path=
+{% if param_plugins_mongodb_system_path  is defined and param_plugins_mongodb_system_path %}
+
+Plugins.MongoDB.System.Path={{ param_plugins_mongodb_system_path }}
+{% endif %}
+
+### Option: Plugins.MongoDB.Timeout
+#	Amount of time to wait for a server to respond when first connecting and on
+#   follow up operations in the session.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.MongoDB.Timeout=<Global timeout>
+{% if param_plugins_mongodb_timeout  is defined and param_plugins_mongodb_timeout %}
+
+Plugins.MongoDB.Timeout={{ param_plugins_mongodb_timeout }}
+{% endif %}
+
+### Option: Plugins.MongoDB.KeepAlive
+#	Time in seconds for waiting before unused connections will be closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.MongoDB.KeepAlive=300
+{% if param_plugins_mongodb_keepalive  is defined and param_plugins_mongodb_keepalive %}
+
+Plugins.MongoDB.KeepAlive={{ param_plugins_mongodb_keepalive }}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.Uri
+#	Uri to connect. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   The only supported schema is "tcp".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.MongoDB.Sessions.*.Uri=
+{% if param_plugins_mongodb_sessions is defined and param_plugins_mongodb_sessions is iterable and param_plugins_mongodb_sessions is not string and param_plugins_mongodb_sessions is not mapping %}
+
+{% for session in param_plugins_mongodb_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.MongoDB.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.User
+#	Username to send to protected MongoDB server. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.User=
+{% if param_plugins_mongodb_sessions is defined and param_plugins_mongodb_sessions is iterable and param_plugins_mongodb_sessions is not string and param_plugins_mongodb_sessions is not mapping %}
+
+{% for session in param_plugins_mongodb_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.MongoDB.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.Password
+#	Password to send to protected MongoDB server. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.Password=
+{% if param_plugins_mongodb_sessions is defined and param_plugins_mongodb_sessions is iterable and param_plugins_mongodb_sessions is not string and param_plugins_mongodb_sessions is not mapping %}
+
+{% for session in param_plugins_mongodb_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.MongoDB.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.TLSConnect
+#Encryption type for MongoDB connection. "*" should be replaced with a session name.
+#       tls connection required     - required
+#       verifies certificates       - verify_ca
+#       verify certificates and ip  - verify_full
+## Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.TLSConnect=
+{% if param_plugins_mongodb_sessions is defined and param_plugins_mongodb_sessions is iterable and param_plugins_mongodb_sessions is not string and param_plugins_mongodb_sessions is not mapping %}
+
+{% for session in param_plugins_mongodb_sessions %}
+{% if session["tlsconnect"] is defined and session["tlsconnect"] %}
+Plugins.MongoDB.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.TLSCAFile
+#   Full path-name of a file containing the top-level CA(s) certificates for MongoDB
+#   peer certificate verification.
+## Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.TLSCAFile=
+{% if plugins_mongodb_tls_file_list is defined and plugins_mongodb_tls_file_list is iterable and plugins_mongodb_tls_file_list is not string and plugins_mongodb_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mongodb_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MongoDB.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.TLSCertFile
+#   Full path-name of a file containing the MongoDB certificate or certificate chain.
+## Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.TLSCertFile=
+{% if plugins_mongodb_tls_file_list is defined and plugins_mongodb_tls_file_list is iterable and plugins_mongodb_tls_file_list is not string and plugins_mongodb_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mongodb_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.MongoDB.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MongoDB.Sessions.*.TLSKeyFile
+#   Full path-name of a file containing the MongoDB private key.
+## Mandatory: no
+# Default:
+# Plugins.MongoDB.Sessions.*.TLSKeyFile=
+{% if plugins_mongodb_tls_file_list is defined and plugins_mongodb_tls_file_list is iterable and plugins_mongodb_tls_file_list is not string and plugins_mongodb_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mongodb_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.MongoDB.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}

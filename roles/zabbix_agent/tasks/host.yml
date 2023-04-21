@@ -1,0 +1,3 @@
+- name: 'Host modules not usable yet'
+  ansible.builtin.fail:
+    msg: 'Development in progress'

@@ -1,0 +1,84 @@
+---
+- name: 'Variables : Agent2 : list of Mysql plugin certs'
+  when: >
+    param_plugins_mysql_sessions is defined
+    and param_plugins_mysql_sessions
+    and param_plugins_mysql_sessions | map( "extract", "tlsconnect") | list | length > 0
+  ansible.builtin.set_fact:
+    plugins_mysql_tls_file_list: '{{ (plugins_mysql_tls_file_list | default([]))
+      + [{"session_name": item.name,
+          "type": "ca",
+          "source": item.source_tlscafile,
+          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscafile | basename)}]
+      + [{"session_name": item.name,
+          "type": "cert",
+          "source": item.source_tlscertfile,
+          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscertfile | basename)}]
+      + [{"session_name": item.name,
+          "type": "key",
+          "source": item.source_tlskeyfile,
+          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlskeyfile | basename)}]
+      }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ param_plugins_mysql_sessions }}'
+  tags: [vars, verify]
+
+- name: 'Variables : Agent2 : list of PostgreSQL plugin certs'
+  when: >
+    param_plugins_postgresql_sessions is defined
+    and param_plugins_postgresql_sessions
+    and param_plugins_postgresql_sessions | map( "extract", "tlsconnect") | list | length > 0
+  ansible.builtin.set_fact:
+    plugins_postgresql_tls_file_list: '{{ (plugins_postgresql_tls_file_list | default([]))
+      + [{"session_name": item.name,
+          "type": "ca",
+          "source": item.source_tlscafile,
+          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscafile | basename)}]
+      + [{"session_name": item.name,
+          "type": "cert",
+          "source": item.source_tlscertfile,
+          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscertfile | basename)}]
+      + [{"session_name": item.name,
+          "type": "key",
+          "source": item.source_tlskeyfile,
+          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlskeyfile | basename)}]
+       }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ param_plugins_postgresql_sessions }}'
+  tags: [vars, verify]
+
+- name: 'Variables : Agent2 : list of MongoDB plugin certs'
+  when: >
+    param_plugins_mongodb_sessions is defined
+    and param_plugins_mongodb_sessions
+    and param_plugins_mongodb_sessions | map( "extract", "tlsconnect") | list | length > 0
+  ansible.builtin.set_fact:
+    plugins_mongodb_tls_file_list: '{{ (plugins_mongodb_tls_file_list | default([]))
+      + [{"session_name": item.name,
+          "type": "ca",
+          "source": item.source_tlscafile,
+          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscafile | basename)}]
+      + [{"session_name": item.name,
+          "type": "cert",
+          "source": item.source_tlscertfile,
+          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscertfile | basename)}]
+      + [{"session_name": item.name,
+          "type": "key",
+          "source": item.source_tlskeyfile,
+          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlskeyfile | basename)}]
+       }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ param_plugins_mongodb_sessions }}'
+  tags: [vars, verify]
+
+- name: 'Variables : Agent2 : Add loadable plugins to package list'
+  ansible.builtin.set_fact:
+    package_list: '{{ package_list + (loadable_plugin_list | select | list) }}'
+  vars:
+    loadable_plugin_list:
+      - '{{ "zabbix-agent2-plugin-mongodb" if "mongodb" in agent2_plugin_list else None }}'
+      - '{{ "zabbix-agent2-plugin-postgresql" if "postgresql" in agent2_plugin_list else None }}'
+  tags: [vars, verify]

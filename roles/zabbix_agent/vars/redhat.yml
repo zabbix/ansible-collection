@@ -1,0 +1,24 @@
+---
+zabbix_repo:
+# adding base distro through package.
+  name: 'zabbix' # for enable/disable repo during package installation
+  key:
+    '7': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
+    '8': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
+    '9': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-08EFA7DD'
+  uri: '{{ "https://repo.zabbix.com/zabbix/" + agent_major_version | string + "/rhel/"
+          + ansible_distribution_major_version | string + "/" + ansible_architecture + "/zabbix-release-latest.el"
+          + ansible_distribution_major_version | string + ".noarch.rpm" }}'
+  # uri: '{{ "https://repo.zabbix.com/zabbix/" + agent_major_version | string + "/rhel/"
+  #         + ansible_distribution_major_version + "/" + ansible_architecture + "/zabbix-release-"
+  #         + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string
+  #         + ".el" + ansible_distribution_major_version + ".noarch.rpm" }}'
+
+package_list:
+  - zabbix-sender
+  - zabbix-get
+  - 'zabbix-agent{{ "2" if agent_variant | string == "2" }}'
+  - zabbix-selinux-policy
+  # - zabbix-agent-6.0.10-release1.el9
+  # - zabbix-get-6.0.10-release1.el9
+  # - zabbix-sender-6.0.10-release1.el9

@@ -1,0 +1,142 @@
+### Option: Plugins.Mysql.CallTimeout
+#	The maximum time in seconds for waiting when a request has to be done.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.Mysql.CallTimeout=<Global timeout>
+{% if param_plugins_mysql_calltimeout  is defined and param_plugins_mysql_calltimeout %}
+
+Plugins.Mysql.CallTimeout={{ param_plugins_mysql_calltimeout }}
+{% endif %}
+
+### Option: Plugins.Mysql.Timeout
+#	The maximum time in seconds for waiting when a connection has to be established.
+#
+# Mandatory: no
+# Range: 1-30
+# Default: global timeout
+{% if param_plugins_mysql_timeout  is defined and param_plugins_mysql_timeout %}
+
+Plugins.Mysql.Timeout={{ param_plugins_mysql_timeout }}
+{% endif %}
+
+### Option: Plugins.Mysql.KeepAlive
+#	Time (in seconds) to wait before unused connections will be closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.Mysql.KeepAlive=300
+{% if param_plugins_mysql_keepalive  is defined and param_plugins_mysql_keepalive %}
+
+Plugins.Mysql.KeepAlive={{ param_plugins_mysql_keepalive }}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.Uri
+#	Connection string. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range: Must matches the URI format.
+# Default:
+# Plugins.Mysql.Sessions.*.Uri=
+{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+
+{% for session in param_plugins_mysql_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.Mysql.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.User
+#	Username to be used for MySQL authentication. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Mysql.Sessions.*.User=
+{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+
+{% for session in param_plugins_mysql_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.Mysql.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.Password
+#	Password to be used for MySQL authentication. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Mysql.Sessions.*.Password=
+{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+
+{% for session in param_plugins_mysql_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.Mysql.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.TLSConnect
+#	Encryption type for MySQL connection. "*" should be replaced with a session name.
+#		tls connection required     - required
+#		verifies certificates       - verify_ca
+#		verify certificates and ip  - verify_full
+#
+# Mandatory: no
+# Default:
+# Plugins.Mysql.Sessions.*.TLSConnect=
+{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+
+{% for session in param_plugins_mysql_sessions %}
+{% if session["tlsconnect"] is defined and session["tlsconnect"] %}
+Plugins.Mysql.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for mysql
+#	peer certificate verification.
+#
+# Mandatory: no
+# Default:
+# Plugins.Mysql.Sessions.*.TLSCAFile=
+{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mysql_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.TLSCertFile
+#	Full pathname of a file containing the mysql certificate or certificate chain.
+#
+# Mandatory: no
+# Default:
+# Plugins.Mysql.Sessions.*.TLSCertFile=
+{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mysql_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Mysql.Sessions.*.TLSKeyFile
+#	Full pathname of a file containing the mysql private key.
+#
+# Mandatory: no
+{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+
+{% for tls_file in plugins_mysql_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}

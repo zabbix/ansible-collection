@@ -1,0 +1,808 @@
+{{ ansible_managed | comment }}
+# This is a configuration file for Zabbix agent daemon (Unix)
+# To get more information about Zabbix, visit http://www.zabbix.com
+
+############ GENERAL PARAMETERS #################
+
+### Option: PidFile
+#	Name of PID file.
+#
+# Mandatory: no
+# Default:
+# PidFile=/tmp/zabbix_agentd.pid
+{% if param_pidfile is defined and param_pidfile %}
+
+PidFile={{ param_pidfile }}
+{% endif %}
+
+### Option: LogType
+#	Specifies where log messages are written to:
+#		system  - syslog
+#		file    - file specified with LogFile parameter
+#		console - standard output
+#
+# Mandatory: no
+# Default:
+# LogType=file
+{% if param_logtype is defined and param_logtype %}
+
+LogType={{ param_logtype }}
+{% endif %}
+
+### Option: LogFile
+#	Log file name for LogType 'file' parameter.
+#
+# Mandatory: yes, if LogType is set to file, otherwise no
+# Default:
+# LogFile=
+{% if param_logfile is defined and param_logfile %}
+
+LogFile={{ param_logfile }}
+{% endif %}
+
+### Option: LogFileSize
+#	Maximum size of log file in MB.
+#	0 - disable automatic log rotation.
+#
+# Mandatory: no
+# Range: 0-1024
+# Default:
+# LogFileSize=1
+{% if param_logfilesize is defined and param_logfilesize %}
+
+LogFileSize={{ param_logfilesize }}
+{% endif %}
+
+### Option: DebugLevel
+#	Specifies debug level:
+#	0 - basic information about starting and stopping of Zabbix processes
+#	1 - critical information
+#	2 - error information
+#	3 - warnings
+#	4 - for debugging (produces lots of information)
+#	5 - extended debugging (produces even more information)
+#
+# Mandatory: no
+# Range: 0-5
+# Default:
+# DebugLevel=3
+{% if param_debuglevel is defined and param_debuglevel %}
+
+DebugLevel={{ param_debuglevel }}
+{% endif %}
+
+### Option: SourceIP
+#	Source IP address for outgoing connections.
+#
+# Mandatory: no
+# Default:
+# SourceIP=
+{% if param_sourceip is defined and param_sourceip %}
+
+SourceIP={{ param_sourceip }}
+{% endif %}
+
+### Option: AllowKey
+#	Allow execution of item keys matching pattern.
+#	Multiple keys matching rules may be defined in combination with DenyKey.
+#	Key pattern is wildcard expression, which support "*" character to match any number of any characters in certain position. It might be used in both key name and key arguments.
+#	Parameters are processed one by one according their appearance order.
+#	If no AllowKey or DenyKey rules defined, all keys are allowed.
+#
+# Mandatory: no
+{% if param_allowkey is defined and param_allowkey is iterable and param_allowkey is not string and param_allowkey is not mapping %}
+
+{% for unit in param_allowkey %}
+AllowKey={{ unit }}
+{% endfor %}
+{% elif param_allowkey is defined and param_allowkey and param_allowkey is string %}
+
+AllowKey={{ param_allowkey }}
+{% endif %}
+
+### Option: DenyKey
+#	Deny execution of items keys matching pattern.
+#	Multiple keys matching rules may be defined in combination with AllowKey.
+#	Key pattern is wildcard expression, which support "*" character to match any number of any characters in certain position. It might be used in both key name and key arguments.
+#	Parameters are processed one by one according their appearance order.
+#	If no AllowKey or DenyKey rules defined, all keys are allowed.
+#       Unless another system.run[*] rule is specified DenyKey=system.run[*] is added by default.
+#
+# Mandatory: no
+# Default:
+# DenyKey=system.run[*]
+{% if param_denykey is defined and param_denykey is iterable and param_denykey is not string and param_denykey is not mapping %}
+
+{% for unit in param_denykey %}
+DenyKey={{ unit }}
+{% endfor %}
+{% elif param_denykey is defined and param_denykey and param_denykey is string %}
+
+DenyKey={{ param_denykey }}
+{% endif %}
+
+### Option: EnableRemoteCommands - Deprecated, use AllowKey=system.run[*] or DenyKey=system.run[*] instead
+#	Internal alias for AllowKey/DenyKey parameters depending on value:
+#	0 - DenyKey=system.run[*]
+#	1 - AllowKey=system.run[*]
+#
+# Mandatory: no
+{% if param_EnableRemoteCommands is defined and param_EnableRemoteCommands %}
+
+EnableRemoteCommands={{ param_EnableRemoteCommands }}
+{% endif %}
+
+### Option: LogRemoteCommands
+#	Enable logging of executed shell commands as warnings.
+#	0 - disabled
+#	1 - enabled
+#
+# Mandatory: no
+# Default:
+# LogRemoteCommands=0
+{% if param_logremotecommands is defined and param_logremotecommands %}
+
+LogRemoteCommands={{ param_logremotecommands }}
+{% endif %}
+
+##### Passive checks related
+
+### Option: Server
+#	List of comma delimited IP addresses, optionally in CIDR notation, or DNS names of Zabbix servers and Zabbix proxies.
+#	Incoming connections will be accepted only from the hosts listed here.
+#	If IPv6 support is enabled then '127.0.0.1', '::127.0.0.1', '::ffff:127.0.0.1' are treated equally
+#	and '::/0' will allow any IPv4 or IPv6 address.
+#	'0.0.0.0/0' can be used to allow any IPv4 address.
+#	Example: Server=127.0.0.1,192.168.1.0/24,::1,2001:db8::/32,zabbix.example.com
+#
+# Mandatory: yes, if StartAgents is not explicitly set to 0
+# Default:
+# Server=
+{% if param_server is defined and param_server is iterable and param_server is not string and param_server is not mapping %}
+
+Server={{ param_server | join(',') }}
+{% elif param_server is defined and param_server and param_server is string %}
+
+Server={{ param_server }}
+{% endif %}
+
+### Option: ListenPort
+#	Agent will listen on this port for connections from the server.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+# ListenPort=10050
+{% if param_listenport is defined and param_listenport %}
+
+ListenPort={{ param_listenport }}
+{% endif %}
+
+### Option: ListenIP
+#	List of comma delimited IP addresses that the agent should listen on.
+#	First IP address is sent to Zabbix server if connecting to it to retrieve list of active checks.
+#
+# Mandatory: no
+# Default:
+# ListenIP=0.0.0.0
+{% if param_ListenIP is defined and param_ListenIP is iterable and param_ListenIP is not string and param_ListenIP is not mapping %}
+
+ListenIP={{ param_ListenIP | join(',') }}
+{% elif param_ListenIP is defined and param_ListenIP and param_ListenIP is string %}
+
+ListenIP={{ param_ListenIP }}
+{% endif %}
+
+### Option: StartAgents
+#	Number of pre-forked instances of zabbix_agentd that process passive checks.
+#	If set to 0, disables passive checks and the agent will not listen on any TCP port.
+#
+# Mandatory: no
+# Range: 0-100
+# Default:
+# StartAgents=3
+{% if param_startagents is defined and param_startagents %}
+
+StartAgents={{ param_startagents }}
+{% endif %}
+
+##### Active checks related
+
+### Option: ServerActive
+#	Zabbix server/proxy address or cluster configuration to get active checks from.
+#	Server/proxy address is IP address or DNS name and optional port separated by colon.
+#	Cluster configuration is one or more server addresses separated by semicolon.
+#	Multiple Zabbix servers/clusters and Zabbix proxies can be specified, separated by comma.
+#	More than one Zabbix proxy should not be specified from each Zabbix server/cluster.
+#	If Zabbix proxy is specified then Zabbix server/cluster for that proxy should not be specified.
+#	Multiple comma-delimited addresses can be provided to use several independent Zabbix servers in parallel. Spaces are allowed.
+#	If port is not specified, default port is used.
+#	IPv6 addresses must be enclosed in square brackets if port for that host is specified.
+#	If port is not specified, square brackets for IPv6 addresses are optional.
+#	If this parameter is not specified, active checks are disabled.
+#	Example for Zabbix proxy:
+#		ServerActive=127.0.0.1:10051
+#	Example for multiple servers:
+#		ServerActive=127.0.0.1:20051,zabbix.domain,[::1]:30051,::1,[12fc::1]
+#	Example for high availability:
+#		ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051;zabbix.cluster.node3
+#	Example for high availability with two clusters and one server:
+#		ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051,zabbix.cluster2.node1;zabbix.cluster2.node2,zabbix.domain
+#
+# Mandatory: no
+# Default:
+# ServerActive=
+{% if param_serveractive is defined and param_serveractive is iterable and param_serveractive is not string and param_serveractive is not mapping %}
+
+ServerActive={{ param_serveractive | join(',') }}
+{% elif param_serveractive is defined and param_serveractive and param_serveractive is string %}
+
+ServerActive={{ param_serveractive }}
+{% endif %}
+
+### Option: Hostname
+#	List of comma delimited unique, case sensitive hostnames.
+#	Required for active checks and must match hostnames as configured on the server.
+#	Value is acquired from HostnameItem if undefined.
+#
+# Mandatory: no
+# Default:
+# Hostname=
+{% if param_hostname is defined and param_hostname %}
+
+Hostname={{ param_hostname }}
+{% endif %}
+
+### Option: HostnameItem
+#	Item used for generating Hostname if it is undefined. Ignored if Hostname is defined.
+#	Does not support UserParameters or aliases.
+#
+# Mandatory: no
+# Default:
+# HostnameItem=system.hostname
+{% if param_hostnameitem is defined and param_hostnameitem %}
+
+HostnameItem={{ param_hostnameitem }}
+{% endif %}
+
+### Option: HostMetadata
+#	Optional parameter that defines host metadata.
+#	Host metadata is used at host auto-registration process.
+#	An agent will issue an error and not start if the value is over limit of 255 characters.
+#	If not defined, value will be acquired from HostMetadataItem.
+#
+# Mandatory: no
+# Range: 0-255 characters
+# Default:
+# HostMetadata=
+{% if param_hostmetadata is defined and param_hostmetadata is iterable and param_hostmetadata is not string and param_hostmetadata is not mapping %}
+
+HostMetadata={{ param_hostmetadata | join(',') }}
+{% elif param_hostmetadata is defined and param_hostmetadata and param_hostmetadata is string %}
+
+HostMetadata={{ param_hostmetadata }}
+{% elif (param_hostmetadata is not defined or not param_hostmetadata) and group_names %}
+
+HostMetadata={{ group_names | join(';') }}
+{% endif %}
+
+### Option: HostMetadataItem
+#	Optional parameter that defines an item used for getting host metadata.
+#	Host metadata is used at host auto-registration process.
+#	During an auto-registration request an agent will log a warning message if
+#	the value returned by specified item is over limit of 255 characters.
+#	This option is only used when HostMetadata is not defined.
+#
+# Mandatory: no
+# Default:
+# HostMetadataItem=
+{% if param_hostmetadataitem is defined and param_hostmetadataitem %}
+
+HostMetadataItem={{ param_hostmetadataitem }}
+{% endif %}
+
+### Option: HostInterface
+#	Optional parameter that defines host interface.
+#	Host interface is used at host auto-registration process.
+#	An agent will issue an error and not start if the value is over limit of 255 characters.
+#	If not defined, value will be acquired from HostInterfaceItem.
+#
+# Mandatory: no
+# Range: 0-255 characters
+# Default:
+# HostInterface=
+{% if param_hostinterface is defined and param_hostinterface %}
+
+HostInterface={{ param_hostinterface }}
+{% endif %}
+
+### Option: HostInterfaceItem
+#	Optional parameter that defines an item used for getting host interface.
+#	Host interface is used at host auto-registration process.
+#	During an auto-registration request an agent will log a warning message if
+#	the value returned by specified item is over limit of 255 characters.
+#	This option is only used when HostInterface is not defined.
+#
+# Mandatory: no
+# Default:
+# HostInterfaceItem=
+{% if param_hostinterfaceitem is defined and param_hostinterfaceitem %}
+
+HostInterfaceItem={{ param_hostinterfaceitem }}
+{% endif %}
+
+### Option: RefreshActiveChecks
+#	How often list of active checks is refreshed, in seconds.
+#
+# Mandatory: no
+# Range: 60-3600
+# Default:
+# RefreshActiveChecks=120
+{% if param_refreshactivechecks is defined and param_refreshactivechecks %}
+
+RefreshActiveChecks={{ param_refreshactivechecks }}
+{% endif %}
+
+### Option: BufferSend
+#	Do not keep data longer than N seconds in buffer.
+#
+# Mandatory: no
+# Range: 1-3600
+# Default:
+# BufferSend=5
+{% if param_buffersend is defined and param_buffersend %}
+
+BufferSend={{ param_buffersend }}
+{% endif %}
+
+### Option: BufferSize
+#	Maximum number of values in a memory buffer. The agent will send
+#	all collected data to Zabbix Server or Proxy if the buffer is full.
+#
+# Mandatory: no
+# Range: 2-65535
+# Default:
+# BufferSize=100
+{% if param_buffersize is defined and param_buffersize %}
+
+BufferSize={{ param_buffersize }}
+{% endif %}
+
+### Option: MaxLinesPerSecond
+#	Maximum number of new lines the agent will send per second to Zabbix Server
+#	or Proxy processing 'log' and 'logrt' active checks.
+#	The provided value will be overridden by the parameter 'maxlines',
+#	provided in 'log' or 'logrt' item keys.
+#
+# Mandatory: no
+# Range: 1-1000
+# Default:
+# MaxLinesPerSecond=20
+{% if param_maxlinespersecond is defined and param_maxlinespersecond %}
+
+MaxLinesPerSecond={{ param_maxlinespersecond }}
+{% endif %}
+
+### Option: HeartbeatFrequency
+#	Frequency of heartbeat messages in seconds.
+#	Used for monitoring availability of active checks.
+#	0 - heartbeat messages disabled.
+#
+# Mandatory: no
+# Range: 0-3600
+# Default: 60
+# HeartbeatFrequency=
+{% if param_heartbeatfrequency is defined and param_heartbeatfrequency %}
+
+HeartbeatFrequency={{ param_heartbeatfrequency }}
+{% endif %}
+
+############ ADVANCED PARAMETERS #################
+
+### Option: Alias
+#	Sets an alias for an item key. It can be used to substitute long and complex item key with a smaller and simpler one.
+#	Multiple Alias parameters may be present. Multiple parameters with the same Alias key are not allowed.
+#	Different Alias keys may reference the same item key.
+#	For example, to retrieve the ID of user 'zabbix':
+#	Alias=zabbix.userid:vfs.file.regexp[/etc/passwd,^zabbix:.:([0-9]+),,,,\1]
+#	Now shorthand key zabbix.userid may be used to retrieve data.
+#	Aliases can be used in HostMetadataItem but not in HostnameItem parameters.
+#
+# Mandatory: no
+# Range:
+# Default:
+
+### Option: Timeout
+#	Spend no more than Timeout seconds on processing
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Timeout=3
+{% if param_timeout is defined and param_timeout %}
+
+Timeout={{ param_timeout }}
+{% endif %}
+
+### Option: AllowRoot
+#	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
+#	will try to switch to the user specified by the User configuration option instead.
+#	Has no effect if started under a regular user.
+#	0 - do not allow
+#	1 - allow
+#
+# Mandatory: no
+# Default:
+# AllowRoot=0
+{% if param_allowroot is defined and param_allowroot %}
+
+AllowRoot={{ param_allowroot }}
+{% endif %}
+
+### Option: User
+#	Drop privileges to a specific, existing user on the system.
+#	Only has effect if run as 'root' and AllowRoot is disabled.
+#
+# Mandatory: no
+# Default:
+# User=zabbix
+# NOTE: This option is overriden by settings in systemd service file!
+{% if param_user is defined and param_user %}
+
+User={{ param_user }}
+{% endif %}
+
+### Option: Include
+#	You may include individual files or all files in a directory in the configuration file.
+#	Installing Zabbix will create include directory in /usr/local/etc, unless modified during the compile time.
+#
+# Mandatory: no
+# Default:
+# Include=
+{% if param_include is defined and param_include is iterable and param_include is not string and param_include is not mapping %}
+
+{% for unit in param_include %}
+Include={{ unit }}
+{% endfor %}
+{% endif %}
+
+# Include=/usr/local/etc/zabbix_agentd.userparams.conf
+# Include=/usr/local/etc/zabbix_agentd.conf.d/
+# Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
+
+####### USER-DEFINED MONITORED PARAMETERS #######
+
+### Option: UnsafeUserParameters
+#	Allow all characters to be passed in arguments to user-defined parameters.
+#	The following characters are not allowed:
+#	\ ' " ` * ? [ ] { } ~ $ ! & ; ( ) < > | # @
+#	Additionally, newline characters are not allowed.
+#	0 - do not allow
+#	1 - allow
+#
+# Mandatory: no
+# Range: 0-1
+# Default:
+# UnsafeUserParameters=0
+{% if param_unsafeuserparameters is defined and param_unsafeuserparameters %}
+
+UnsafeUserParameters={{ param_unsafeuserparameters }}
+{% endif %}
+
+### Option: UserParameter
+#	User-defined parameter to monitor. There can be several user-defined parameters.
+#	Format: UserParameter=<key>,<shell command>
+#	See 'zabbix_agentd' directory for examples.
+#
+# Mandatory: no
+# Default:
+# UserParameter=
+
+### Option: UserParameterDir
+#	Directory to execute UserParameter commands from. Only one entry is allowed.
+#	When executing UserParameter commands the agent will change the working directory to the one
+#	specified in the UserParameterDir option.
+#	This way UserParameter commands can be specified using the relative ./ prefix.
+#
+# Mandatory: no
+# Default:
+# UserParameterDir=
+{% if param_userparameterdir is defined and param_userparameterdir %}
+
+UserParameterDir={{ param_userparameterdir }}
+{% endif %}
+
+####### LOADABLE MODULES #######
+
+### Option: LoadModulePath
+#	Full path to location of agent modules.
+#	Default depends on compilation options.
+#	To see the default path run command "zabbix_agentd --help".
+#
+# Mandatory: no
+# Default:
+# LoadModulePath=${libdir}/modules
+{% if param_loadmodulepath is defined and param_loadmodulepath %}
+
+LoadModulePath={{ param_loadmodulepath }}
+{% endif %}
+
+### Option: LoadModule
+#	Module to load at agent startup. Modules are used to extend functionality of the agent.
+#	Formats:
+#		LoadModule=<module.so>
+#		LoadModule=<path/module.so>
+#		LoadModule=</abs_path/module.so>
+#	Either the module must be located in directory specified by LoadModulePath or the path must precede the module name.
+#	If the preceding path is absolute (starts with '/') then LoadModulePath is ignored.
+#	It is allowed to include multiple LoadModule parameters.
+#
+# Mandatory: no
+# Default:
+# LoadModule=
+{% if param_loadmodule is defined and param_loadmodule is iterable and param_loadmodule is not string and param_loadmodule is not mapping %}
+
+{% for unit in param_loadmodule %}
+LoadModule={{ unit }}
+{% endfor %}
+{% elif param_loadmodule is defined and param_loadmodule and param_loadmodule is string %}
+
+LoadModule={{ param_loadmodule }}
+{% endif %}
+
+####### TLS-RELATED PARAMETERS #######
+
+### Option: TLSConnect
+#	How the agent should connect to server or proxy. Used for active checks.
+#	Only one value can be specified:
+#		unencrypted - connect without encryption
+#		psk         - connect using TLS and a pre-shared key
+#		cert        - connect using TLS and a certificate
+#
+# Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+# Default:
+# TLSConnect=unencrypted
+{% if param_tlsconnect is defined and param_tlsconnect %}
+
+TLSConnect={{ param_tlsconnect }}
+{% endif %}
+
+### Option: TLSAccept
+#	What incoming connections to accept.
+#	Multiple values can be specified, separated by comma:
+#		unencrypted - accept connections without encryption
+#		psk         - accept connections secured with TLS and a pre-shared key
+#		cert        - accept connections secured with TLS and a certificate
+#
+# Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+# Default:
+# TLSAccept=unencrypted
+{% if param_tlsaccept is defined and param_tlsaccept is iterable and param_tlsaccept is not string and param_tlsaccept is not mapping %}
+
+TLSAccept={{ param_tlsaccept | join(',') }}
+{% elif param_tlsaccept is defined and param_tlsaccept and param_tlsaccept is string %}
+
+TLSAccept={{ param_tlsaccept }}
+{% endif %}
+
+### Option: TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for
+#	peer certificate verification.
+#
+# Mandatory: no
+# Default:
+# TLSCAFile=
+{% if param_tlscafile is defined and param_tlscafile
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSCAFile={{ param_tlscafile }}
+{% endif %}
+
+### Option: TLSCRLFile
+#	Full pathname of a file containing revoked certificates.
+#
+# Mandatory: no
+# Default:
+# TLSCRLFile=
+{% if param_tlscrlfile is defined and param_tlscrlfile
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSCRLFile={{ param_tlscrlfile }}
+{% endif %}
+
+### Option: TLSServerCertIssuer
+#		Allowed server certificate issuer.
+#
+# Mandatory: no
+# Default:
+# TLSServerCertIssuer=
+{% if param_tlsservercertissuer is defined and param_tlsservercertissuer
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSServerCertIssuer={{ param_tlsservercertissuer }}
+{% endif %}
+
+### Option: TLSServerCertSubject
+#		Allowed server certificate subject.
+#
+# Mandatory: no
+# Default:
+# TLSServerCertSubject=
+{% if param_tlservercertsubject is defined and param_tlservercertsubject
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSServerCertSubject={{ param_tlservercertsubject }}
+{% endif %}
+
+### Option: TLSCertFile
+#	Full pathname of a file containing the agent certificate or certificate chain.
+#
+# Mandatory: no
+# Default:
+# TLSCertFile=
+{% if param_tlscertfile is defined and param_tlscertfile
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSCertFile={{ param_tlscertfile }}
+{% endif %}
+
+### Option: TLSKeyFile
+#	Full pathname of a file containing the agent private key.
+#
+# Mandatory: no
+# Default:
+# TLSKeyFile=
+{% if param_tlskeyfile is defined and param_tlskeyfile
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSKeyFile={{ param_tlskeyfile }}
+{% endif %}
+
+### Option: TLSPSKIdentity
+#	Unique, case sensitive string used to identify the pre-shared key.
+#
+# Mandatory: no
+# Default:
+# TLSPSKIdentity=
+{% if param_tlspskidentity is defined and param_tlspskidentity
+   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
+        or param_tlsconnect == "psk") %}
+
+TLSPSKIdentity={{ param_tlspskidentity }}
+{% endif %}
+
+### Option: TLSPSKFile
+#	Full pathname of a file containing the pre-shared key.
+#
+# Mandatory: no
+# Default:
+# TLSPSKFile=
+{% if param_tlspskfile is defined and param_tlspskfile
+   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
+        or param_tlsconnect == "psk") %}
+
+TLSPSKFile={{ param_tlspskfile }}
+{% endif %}
+
+####### For advanced users - TLS ciphersuite selection criteria #######
+
+### Option: TLSCipherCert13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for certificate-based encryption.
+#
+# Mandatory: no
+# Default:
+# TLSCipherCert13=
+{% if param_tlsciphercert13 is defined and param_tlsciphercert13
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSCipherCert13={{ param_tlsciphercert13 }}
+{% endif %}
+
+### Option: TLSCipherCert
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for certificate-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-RSA:+RSA:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL:+CTYPE-X.509
+#	Example for OpenSSL:
+#		EECDH+aRSA+AES128:RSA+aRSA+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherCert=
+{% if param_tlsciphercert is defined and param_tlsciphercert
+   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
+        or param_tlsconnect == "cert") %}
+
+TLSCipherCert={{ param_tlsciphercert }}
+{% endif %}
+
+### Option: TLSCipherPSK13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for PSK-based encryption.
+#	Example:
+#		TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+#
+# Mandatory: no
+# Default:
+# TLSCipherPSK13=
+{% if param_tlscipherpsk13 is defined and param_tlscipherpsk13
+   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
+        or param_tlsconnect == "psk") %}
+
+TLSCipherPSK13={{ param_tlscipherpsk13 }}
+{% endif %}
+
+### Option: TLSCipherPSK
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for PSK-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-PSK:+PSK:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL
+#	Example for OpenSSL:
+#		kECDHEPSK+AES128:kPSK+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherPSK=
+{% if param_tlscipherpsk is defined and param_tlscipherpsk
+   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
+        or param_tlsconnect == "psk") %}
+
+TLSCipherPSK={{ param_tlscipherpsk }}
+{% endif %}
+
+### Option: TLSCipherAll13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for certificate- and PSK-based encryption.
+#	Example:
+#		TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+#
+# Mandatory: no
+# Default:
+# TLSCipherAll13=
+{% if param_tlscipherall13 is defined and param_tlscipherall13
+   and (param_tlsaccept is defined and (param_tlsaccept in ["psk", "cert"] or "psk" in param_tlsaccept or "cert" in param_tlsaccept)
+        or param_tlsconnect in ["psk", "cert"]) %}
+
+TLSCipherAll13={{ param_tlscipherall13 }}
+{% endif %}
+
+### Option: TLSCipherAll
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for certificate- and PSK-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-RSA:+RSA:+ECDHE-PSK:+PSK:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL:+CTYPE-X.509
+#	Example for OpenSSL:
+#		EECDH+aRSA+AES128:RSA+aRSA+AES128:kECDHEPSK+AES128:kPSK+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherAll=
+{% if param_tlscipherall is defined and param_tlscipherall
+   and (param_tlsaccept is defined and (param_tlsaccept in ["psk", "cert"] or "psk" in param_tlsaccept or "cert" in param_tlsaccept)
+        or param_tlsconnect in ["psk", "cert"]) %}
+
+TLSCipherAll={{ param_tlscipherall }}
+{% endif %}
+
+####### For advanced users - TCP-related fine-tuning parameters #######
+
+## Option: ListenBacklog
+#       The maximum number of pending connections in the queue. This parameter is passed to
+#       listen() function as argument 'backlog' (see "man listen").
+#
+# Mandatory: no
+# Range: 0 - INT_MAX (depends on system, too large values may be silently truncated to implementation-specified maximum)
+# Default: SOMAXCONN (hard-coded constant, depends on system)
+# ListenBacklog=
+{% if param_listenbacklog is defined and param_listenbacklog %}
+
+ListenBacklog={{ param_listenbacklog }}
+{% endif %}

@@ -1,0 +1,7 @@
+---
+# Collections used in "zabbix_agent" role.
+collections:
+  - name: ansible.utils
+    version: '>=2.8.0'
+  - name: ansible.posix
+    version: '>=1.4.0'

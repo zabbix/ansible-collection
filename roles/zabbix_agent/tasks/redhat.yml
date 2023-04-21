@@ -1,0 +1,48 @@
+---
+- name: 'RHEL : GPG key presence'
+  become: true
+  ansible.builtin.rpm_key:
+    state: '{{ package_state }}'
+    key: '{{ zabbix_repo.key[ansible_distribution_major_version] }}'
+  vars:
+    repo_state: '{{ "absent" if package_state == "absent" else "present" }}'
+  environment:
+    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+
+- name: 'RHEL : Zabbix-release repository presence'
+  become: true
+  until: repository is not failed
+  retries: 3
+  delay: 3
+  ansible.builtin.yum:
+    name: '{{ zabbix_repo.uri }}'
+  when: package_state != "absent"
+  register: repository
+  environment:
+    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+
+- name: 'RHEL : yum clean all'
+  when: repository.changed
+  become: true
+  ansible.builtin.command: yum clean all
+  register: yum_clean_all
+  tags: [skip_ansible_lint]
+
+- name: 'RHEL : Zabbix packages presence'
+  become: true
+  notify: 'Service restart'
+  until: packages_presence is not failed
+  retries: 3
+  delay: 3
+  register: packages_presence
+  ansible.builtin.yum:
+    name: '{{ package_list }}'
+    state: '{{ package_state }}'
+    disablerepo: '*epel*' # disable epel repos | should contain epel word in repo name
+    enablerepo: '{{ zabbix_repo.name }}'
+    install_weak_deps: true
+  environment:
+    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
