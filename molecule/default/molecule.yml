@@ -16,10 +16,10 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      - "11850:10050/tcp" 
-      - "11820:10020/tcp" 
+      - "11850:10050/tcp"
+      - "11820:10020/tcp"
     # exposed_ports:
-    #   - "22018/tcp" 
+    #   - "22018/tcp"
     command: "/lib/systemd/systemd"
     pre_build_image: true
     groups:
@@ -37,8 +37,8 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      - "12050:10050/tcp" 
-      - "12020:10020/tcp" 
+      - "12050:10050/tcp"
+      - "12020:10020/tcp"
     command: "/lib/systemd/systemd"
     pre_build_image: true
     groups:
@@ -58,8 +58,8 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      - "12250:10050/tcp" 
-      - "12220:10020/tcp" 
+      - "12250:10050/tcp"
+      - "12220:10020/tcp"
     command: "/lib/systemd/systemd"
     pre_build_image: true
     groups:
@@ -79,8 +79,8 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      - "18050:10050/tcp" 
-      - "18020:10020/tcp" 
+      - "18050:10050/tcp"
+      - "18020:10020/tcp"
     command: "/usr/sbin/init"
     pre_build_image: true
     groups:
@@ -99,9 +99,9 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      #- "127.0.0.1:19050:10050/tcp" 
-      - "19050:10050/tcp" 
-      - "19020:10020/tcp" 
+      # - "127.0.0.1:19050:10050/tcp"
+      - "19050:10050/tcp"
+      - "19020:10020/tcp"
     command: "/usr/sbin/init"
     pre_build_image: true
     groups:
