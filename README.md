@@ -1,6 +1,6 @@
-# Ansible Collection - zabbix.zabbix
+# Zabbix Ansible Collection
 
-This Ansible Zabbix collection is meant to help with Zabbix monitoring infrastructure management automation.
+This collection is meant to help with Zabbix monitoring infrastructure management automation.
 Mainly targeted for scalable tasks, like Zabbix agent deploy and adding hosts to monitoring.
 
 
