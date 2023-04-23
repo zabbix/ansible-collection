@@ -1,3 +1,3 @@
 ---
 agent_major_version: '6.0'
-agent_variant: '1' # 1 - agentd, 2 - agent2
+agent_variant: '1'  # 1 - agentd, 2 - agent2

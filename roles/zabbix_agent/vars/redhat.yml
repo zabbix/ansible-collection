@@ -1,7 +1,7 @@
 ---
 zabbix_repo:
 # adding base distro through package.
-  name: 'zabbix' # for enable/disable repo during package installation
+  name: 'zabbix'  # for enable/disable repo during package installation
   key:
     '7': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
     '8': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'

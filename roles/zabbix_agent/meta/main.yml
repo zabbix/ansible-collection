@@ -35,9 +35,9 @@ galaxy_info:
         - "7"
     - name: Ubuntu
       versions:
-        - jammy # 22.04
-        - focal # 20.04
-        - bionic # 18.04
+        - jammy  # 22.04
+        - focal  # 20.04
+        - bionic  # 18.04
 
   galaxy_tags:
     - zabbix

@@ -40,7 +40,7 @@
   ansible.builtin.yum:
     name: '{{ package_list }}'
     state: '{{ package_state }}'
-    disablerepo: '*epel*' # disable epel repos | should contain epel word in repo name
+    disablerepo: '*epel*'  # disable epel repos | should contain epel word in repo name
     enablerepo: '{{ zabbix_repo.name }}'
     install_weak_deps: true
   environment:

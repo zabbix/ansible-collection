@@ -30,7 +30,7 @@
       -s {{ ansible_host }}
       -t 5
       {{ "-p " + param_listenport | string if param_listenport is defined }}
-      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert","psk"]}}
+      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert","psk"] }}
       {{ "--tls-ca-file " + param_tlscafile if param_tlscafile is defined and param_tlsaccept[0] == "cert" }}
       {{ "--tls-cert-file " + param_tlscertfile if param_tlscertfile is defined and param_tlsaccept[0] == "cert" }}
       {{ "--tls-key-file " + param_tlskeyfile if param_tlskeyfile is defined and param_tlsaccept[0] == "cert" }}
@@ -53,7 +53,7 @@
       {% elif param_listenport is defined and param_listenport %}
       -p {{ param_listenport }}
       {% endif %}
-      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert","psk"]}}
+      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert","psk"] }}
       {{ "--tls-ca-file " + source_tlscafile if source_tlscafile is defined and param_tlsaccept[0] == "cert" }}
       {{ "--tls-cert-file " + source_tlscertfile if source_tlscertfile is defined and param_tlsaccept[0] == "cert" }}
       {{ "--tls-key-file " + source_tlskeyfile if source_tlskeyfile is defined and param_tlsaccept[0] == "cert" }}

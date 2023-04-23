@@ -259,10 +259,10 @@
   loop: '{{ tls_file_list | select }}'
   vars:
     tls_file_list:
-      - { source: "{{ source_tlscafile }}", target: "{{ param_tlscafile }}" }
+      - {source: "{{ source_tlscafile }}", target: "{{ param_tlscafile }}"}
       - '{{ { "source": source_tlscrlfile, "target": param_tlscrlfile } if source_tlscrlfile is defined }}'
-      - { source: "{{ source_tlscertfile }}", target: "{{ param_tlscertfile }}" }
-      - { source: "{{ source_tlskeyfile }}", target: "{{ param_tlskeyfile }}" }
+      - {source: "{{ source_tlscertfile }}", target: "{{ param_tlscertfile }}"}
+      - {source: "{{ source_tlskeyfile }}", target: "{{ param_tlskeyfile }}"}
 
 - name: 'Placing PSK key file'
   when: package_state != 'absent' and (param_tlsconnect == "psk" or "psk" in param_tlsaccept )
@@ -328,7 +328,7 @@
 #     state: restarted
 
 - name: Flush handlers
-  ansible.builtin.meta: flush_handlers # trigger handler execution now (if notified)
+  ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified)
   ### !!!! consider removing handlers and use always reload/restart instead
 
 - name: 'Include verify steps'
