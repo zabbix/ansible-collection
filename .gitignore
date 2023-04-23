@@ -6,3 +6,5 @@
 .vscode
 # Ignore tests
 tests/output
+# Ignore builds
+zabbix-zabbix*.tar.gz
