@@ -1,0 +1,8 @@
+# Ignore vim files:
+*~
+*.swp
+*.swo
+# Ignore vscode/ium
+.vscode
+# Ignore tests
+tests/output

@@ -1,5 +1,0 @@
-Zabbix
-agentd
-firewalld
-Firewalld
-autoregistration
