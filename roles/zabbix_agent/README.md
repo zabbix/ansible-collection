@@ -74,7 +74,9 @@ Adds next task sequence:
 
 ### Firewall settings:
 
-Role allows adding simple firewall rules on target machine to accept passive checks. Advanced firewall configuration is out of the scope of Zabbix agent role.
+Role allows adding simple firewall rules on target machine to accept passive checks. Advanced firewall configuration is out of the scope of Zabbix agent role. 
+
+Firewalld is a recommended way of applying firewall rule as it works with iptables and nftables both. **Note** that `iptables` does not work in Ubuntu since 22.04. Firewalld should be installed on target machines. It is supported on RHEL and Debian based distributions.
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
@@ -86,7 +88,7 @@ Role allows adding simple firewall rules on target machine to accept passive che
 ### Local paths variables table:
 
 Variables prefixed with `source_`, should point to a file or folder located on Ansible controller. These files are about to be transferred to a target machines.
-
+   
 | Variable | Type | Default | Description |
 |--|--|--|--|
 | source_conf_dir | `string` || Path to configuration folder on Ansible controller, which needs to be transferred to target machine and included in Zabbix agent configuration. For example folder with `Userparameters`.
@@ -432,6 +434,20 @@ Example Playbooks
           service_group: blue 
           service_uid: 1115
           service_gid: 1115
+  ```
+
+- ### Playbook 8: Update Zabbix agentd to latest minor version
+  - Same metadata as described in first example
+  - When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
+  - Setting `package_state = latest` will install the latest minor version of the packages. 
+  ```yaml
+    - hosts: all
+      roles:
+        - role: zabbix.zabbix.zabbix_agent
+          param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
+          param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          package_state: latest
   ```
 
 License
