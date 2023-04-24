@@ -1,0 +1,37 @@
+---
+- name: Prepare earlier package
+  hosts: all
+  tasks:
+    - name: Install earier agent version
+      ansible.builtin.apt:
+        deb: '{{ package_address }}'
+        force: yes
+      vars:
+        package_address: 'http://repo.zabbix.com/zabbix/6.0/ubuntu-arm64/pool/main/z/zabbix/zabbix-agent_6.0.10-1%2Bubuntu22.04_arm64.deb'
+        # package_address: '{{ "http://repo.zabbix.com/zabbix/6.0/ubuntu"
+        #                   + "-arm64" if ansible_architecture == "aarch64"
+        #                   + "/pool/main/z/zabbix/zabbix-agent_6.0.10-1%2Bubuntu22.04_"
+        #                   + "arm" if ansible_architecture == "aarch64" else "amd"
+        #                   + ".deb" }}'
+
+- name: Present
+  hosts: all
+  roles:
+    - name: zabbix_agent
+      #######################################
+      remove_previous_packages: false
+      report_path: '/tmp/latest_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      package_state: present
+
+- name: Latest
+  hosts: all
+  roles:
+    - name: zabbix_agent
+      #######################################
+      remove_previous_packages: false
+      report_path: '/tmp/latest_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      package_state: latest

@@ -48,6 +48,7 @@ The default settings are aimed at ease of installation. You can override those t
 |--|--|--|--|
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
 | agent_major_version | `string` | 6.0 | The version of Zabbix agent. Defaults to the latest LTS.
+| package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest minor version if available. 
 | remove_previous_packages| `boolean` | `false` | Trigger removal of previous packages prior to installation of new. Mandatory to deploy earlier version then currently installed. 
 | http_proxy | `string` || Defines HTTP proxy address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
