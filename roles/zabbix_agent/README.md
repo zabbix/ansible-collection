@@ -15,7 +15,9 @@ Requirements
 ------------
 This role uses official Zabbix packages and repository for component installation. Target machines require direct or HTTP proxy internet access to Zabbix repository [**repo.zabbix.com**](https://repo.zabbix.com).
 
-Role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is recommended method as it can work with iptables and nftables both.
+Role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is recommended method as it can work with iptables and nftables both. Firewalld can be installed on RHEL and Debian based distributions.
+
+Multiple tasks require `superuser` privileges (sudo).
 
 Ansible core >= 2.12
 
