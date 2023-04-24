@@ -17,6 +17,7 @@
           map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version]
         )
       - agent_major_version | string in ['6.0', '6.4']
+      - package_state in ["present", "latest"]
 
 - name: 'Variables : Include system and disrtibution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
@@ -49,7 +50,12 @@
   tags: [vars, verify]
 
 - name: 'Variables: TLS Certificate parameters'
-  when: param_tlsconnect == "cert" or "cert" in param_tlsaccept
+  when: >-
+    (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
+    and
+    (source_tlscertfile is defined
+     and source_tlskeyfile is defined
+     and source_tlscafile is defined)
   ansible.builtin.include_vars: tls_cert_parameters.yml
   tags: [vars, verify]
 
@@ -113,7 +119,7 @@
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
 
-- name: 'Copy included configuration dir (to the 1st include path)'
+- name: 'Upload : Included configuration dir (to the 1st include path)'
   when: source_conf_dir is defined and source_conf_dir
   become: true
   notify: 'Service restart'
@@ -173,7 +179,7 @@
   # loop over a list of plugins not used in current setup
   loop: '{{ full_agent2_plugin_list | difference(agent2_plugin_list) }}'
 
-- name: 'Copy of "scripts" folder to user home'
+- name: 'Upload : "scripts" folder'
   when: source_scripts_dir is defined and source_scripts_dir
   become: true
   # ansible.posix.synchronize:
@@ -188,7 +194,7 @@
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
 
-- name: 'Copy of "modules" folder'
+- name: 'Upload : "modules" folder'
   when: source_modules_dir is defined and source_modules_dir and agent_variant | string != '2'
   become: true
   notify: 'Service restart'
@@ -236,14 +242,19 @@
   loop: '{{ maintenance_folders | select | list }}'
   vars:
     maintenance_folders:
-      - '{{ agent.file_name | upper + "/.CERT/" }}'
-      - '{{ agent.file_name | upper + "/.PSK/" }}'
+      - '{{ agent.file_name | upper + "/.CERT/" if source_tlscafile is defined }}'
+      - '{{ agent.file_name | upper + "/.PSK/" if "psk" in param_tlsaccept or param_tlsconnect == "psk" }}'
       - '{{ agent.file_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" }}'
       - '{{ agent.file_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" }}'
       - '{{ agent.file_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" }}'
 
-- name: 'TLS Certificates copy'
-  when: param_tlsconnect == "cert" or "cert" in param_tlsaccept
+- name: 'Upload : TLS Certificates'
+  when: >-
+    (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
+    and
+    (source_tlscertfile is defined
+     and source_tlskeyfile is defined
+     and source_tlscafile is defined)
   become: true
   notify: 'Service restart'
   ansible.builtin.copy:
@@ -276,7 +287,7 @@
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
 
-- name: 'Zabbix agent2 : Copy TLS certificates for plugins'
+- name: 'Upload : Zabbix agent2 : TLS certificates for plugins'
   when: agent_variant | string == '2'
   become: true
   notify: 'Service restart'

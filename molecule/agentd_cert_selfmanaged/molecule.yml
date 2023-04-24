@@ -119,8 +119,8 @@ provisioner:
   playbooks:
     create: ../default/create.yml
     prepare: ../default/prepare.yml
-    converge: ../default/converge.yml
-    verify: ../default/verify.yml
+    # converge: ../default/converge.yml
+    # verify: ../default/verify.yml
 verifier:
   name: ansible
 # lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml

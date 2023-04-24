@@ -1,0 +1,15 @@
+---
+### Verify playbook does not inherit role defaults and vars. To make it happen import the role tasks.
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Import defaults, vars and verification tasks from zabbix_agent role
+      ansible.builtin.include_role:
+        name: zabbix_agent
+        tasks_from: verify
+        # public: true
+      vars:
+        verification: false
+        source_tlscafile: "../default/files/certs/ca.crt"
+        source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+        source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"

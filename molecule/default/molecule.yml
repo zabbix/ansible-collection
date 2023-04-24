@@ -120,7 +120,7 @@ provisioner:
   inventory:
     links:
       group_vars: inventory/group_vars
-      host_vars: inventory/host_vars
+      host_vars: ../default/inventory/host_vars
 verifier:
   name: ansible
 # lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml

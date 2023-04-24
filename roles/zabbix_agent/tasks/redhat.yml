@@ -2,10 +2,10 @@
 - name: 'RHEL : GPG key presence'
   become: true
   ansible.builtin.rpm_key:
-    state: '{{ package_state }}'
+    state: '{{ key_state }}'
     key: '{{ zabbix_repo.key[ansible_distribution_major_version] }}'
   vars:
-    repo_state: '{{ "absent" if package_state == "absent" else "present" }}'
+    key_state: '{{ "absent" if package_state == "absent" else "present" }}'
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'

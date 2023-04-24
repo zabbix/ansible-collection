@@ -1,3 +1,6 @@
 ---
 ext_agent_port: 11850
 ext_agent_port2: 11820
+
+apply_firewalld_rule: false
+# apply_iptables_rule: true

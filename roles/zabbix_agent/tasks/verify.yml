@@ -13,7 +13,14 @@
   tags: [verify]
 
 - name: 'Import vars: TLS Certificate variables'
-  when: verification is defined and verification and (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
+  when: >-
+    verification is defined and verification
+    and
+    (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
+    and
+    (source_tlscertfile is defined
+     and source_tlskeyfile is defined
+     and source_tlscafile is defined)
   ansible.builtin.include_vars: tls_cert_parameters.yml
 
 - name: 'Import vars: Custom user overrrides'
