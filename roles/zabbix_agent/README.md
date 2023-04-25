@@ -43,6 +43,7 @@ Table of contents
     * [Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0](#playbook-6)
     * [Playbook 7: Zabbix agentd running under custom user](#playbook-7)
     * [Playbook 8: Update Zabbix agentd to the latest minor version](#playbook-8)
+  * [License](#license)
 
 <!--te-->
 
@@ -355,7 +356,7 @@ Example Playbooks
   **6.4 version of Zabbix agent2 for both passive and active checks + Iptables.**
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
   2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
-  3. Same metadata as described in first example.
+  3. Same metadata as described in [first example](#playbook-1).
   4. Disable application of firewall rule using firewalld daemon: `apply_firewalld_rule: false`
   5. Enable firewall rule application using iptables module. **Note** that modern Ubuntu distributions uses nftables, and iptables are DEPRECATED.
 
@@ -375,7 +376,7 @@ Example Playbooks
 
 - ### Playbook 3:
   **Zabbix agentd for both passive and active checks with PSK encryption for Autoregistration.**
-  1. Same metadata for autoregistration as described in first example.
+  1. Same metadata for autoregistration as described in [first example](#playbook-1).
   2. Set incoming and outgoing connection to be encrypted with `psk` 
     - `param_tlsconnect` is a single type setting, so it expects string input;
     - `param_tlsaccept` can simultaneously work wit all 3 types, so we are using list format here;
@@ -398,7 +399,7 @@ Example Playbooks
 - ### Playbook 4:
   **Zabbix agentd with certificate secured connections.**
   1. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
-  2. Same metadata as described in first example.
+  2. Same metadata as described in [first example](#playbook-1).
   3. When `cert` if specified in `param_tlsconnect` or `param_tlsaccept` source path to certificate files becomes mandatory. Check example configuration below. We are pointing to "certs/" folder which holds certificate files, named accordingly to host inventory name.
   ```yaml
     - hosts: all 
@@ -421,7 +422,7 @@ Example Playbooks
   **6.4 version of Zabbix agent2 for MongoDB monitoring.**
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
   2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
-  3. Same metadata as described in first example
+  3. Same metadata as described in [first example](#playbook-1)
   4. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   5. Since Zabbix 6.4 loadable plugins are not installed by `zabbix-agent2` package as dependency. We need to add it to `agent2_plugin_list`.
   6. We will configure a TLS connection session within MongoDB, using the same approach with source files. Role will transfer them to the target machine and configure automatically. Certificate files will be placed to Zabbix agent service user home folder.
@@ -451,7 +452,7 @@ Example Playbooks
   **Zabbix agentd downgrade from 6.4 to 6.0**
   1. You can specify Zabbix agent major version manually: `agent_major_version: "6.0"`
   2. Attempt to install earlier version will fail because newer is already installed. To overcome this, we need to remove previous package beforehand.
-  3. Same metadata as described in first example
+  3. Same metadata as described in [first example](#playbook-1)
   4. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   ```yaml
     - hosts: all
@@ -465,7 +466,7 @@ Example Playbooks
 
 - ### Playbook 7:
   **Zabbix agentd running under custom user**
-  1. Same metadata as described in first example
+  1. Same metadata as described in [first example](#playbook-1)
   2. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   3. Setting `service_user` will trigger custom user task list. It will create user, usergroup, homefolder, systemd overrides and a separate log folder.
   ```yaml
@@ -483,9 +484,9 @@ Example Playbooks
 
 - ### Playbook 8:
   **Update Zabbix agentd to latest minor version**
-  - Same metadata as described in first example
-  - When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
-  - Setting `package_state = latest` will install the latest minor version of the packages. 
+  1. Same metadata as described in [first example](#playbook-1)
+  2. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
+  3. Setting `package_state = latest` will install the latest minor version of the packages. 
   ```yaml
     - hosts: all
       roles:
