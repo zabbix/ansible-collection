@@ -38,11 +38,16 @@
   delay: 3
   register: packages_presence
   ansible.builtin.yum:
-    name: '{{ package_list }}'
+    name: '{{ install_package_list }}'
     state: '{{ package_state }}'
     disablerepo: '*epel*'  # disable epel repos | should contain epel word in repo name
     enablerepo: '{{ zabbix_repo.name }}'
     install_weak_deps: true
+  vars:
+    full_version: '{{ None if agent_minor_version is not defined
+      else agent_major_version | string + "." + agent_minor_version | string }}'
+    install_package_list: "{{ package_list if not full_version
+      else package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % full_version) | list }}"
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'

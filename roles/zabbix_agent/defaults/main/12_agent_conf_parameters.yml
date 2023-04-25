@@ -19,7 +19,7 @@ param_logtype: file
 # param_allowkey: system.run[*]
 # param_denykey: system.run[*]
 # param_logremotecommands: 0
-param_server: 127.0.0.1
+param_server: ::/0
 param_listenport: 10050
 # param_ListenIP: 0.0.0.0
 param_serveractive: 127.0.0.1

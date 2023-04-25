@@ -1,0 +1,3 @@
+---
+ansible_become_method: sudo
+# [ sudo | su | pbrun | pfexec | doas | dzdo | ksu | runas | machinectl ]

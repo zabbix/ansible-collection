@@ -5,6 +5,7 @@ You can use this Ansible role to deploy and configure Zabbix agents on the targe
 Currently, supported OS list of target machine:
 - Redhat 7, 8, 9
 - Ubuntu 18.04, 20.04, 22.04
+Supported distribution list to be extended.
 
 **Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
@@ -51,7 +52,7 @@ The default settings are aimed at ease of installation. You can override those t
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
 | agent_major_version | `string` | 6.0 | The version of Zabbix agent. Defaults to the latest LTS.
 | package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest minor version if available. 
-| remove_previous_packages| `boolean` | `false` | Trigger removal of previous packages prior to installation of new. Mandatory to deploy earlier version then currently installed. 
+| remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to installation of new. Mandatory to deploy earlier version then currently installed. 
 | http_proxy | `string` || Defines HTTP proxy address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | agent2_plugins_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4 allowed loadable plugin installation at you own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
@@ -316,7 +317,7 @@ Example Playbooks
 
 - ### Playbook 2: 6.4 version of Zabbix agent2 for both passive and active checks + Iptables.
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
-  2. You can specify Zabbix agent major version manually: `agent_version: "6.4"`
+  2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
   3. Same metadata as described in first example.
   4. Disable application of firewall rule using firewalld daemon: `apply_firewalld_rule: false`
   5. Enable firewall rule application using iptables module. **Note** that modern Ubuntu distributions uses nftables, and iptables are DEPRECATED.
@@ -326,7 +327,7 @@ Example Playbooks
       roles:
         - role: zabbix.zabbix.zabbix_agent
           agent_variant: 2
-          agent_version: 6.4
+          agent_major_version: 6.4
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -379,7 +380,7 @@ Example Playbooks
 
 - ### Playbook 5: 6.4 version of Zabbix agent2 for MongoDB monitoring.
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
-  2. You can specify Zabbix agent major version manually: `agent_version: "6.4"`
+  2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
   3. Same metadata as described in first example
   4. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   5. Since Zabbix 6.4 loadable plugins are not installed by `zabbix-agent2` package as dependency. We need to add it to `agent2_plugin_list`.
@@ -389,7 +390,7 @@ Example Playbooks
       roles:
         - role: zabbix.zabbix.zabbix_agent
           agent_variant: 2
-          agent_version: 6.4
+          agent_major_version: 6.4
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
@@ -407,7 +408,7 @@ Example Playbooks
   ```
 
 - ### Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0
-  1. You can specify Zabbix agent major version manually: `agent_version: "6.0"`
+  1. You can specify Zabbix agent major version manually: `agent_major_version: "6.0"`
   2. Attempt to install earlier version will fail because newer is already installed. To overcome this, we need to remove previous package beforehand.
   3. Same metadata as described in first example
   4. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
@@ -415,7 +416,7 @@ Example Playbooks
     - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
-          agent_version: "6.0"
+          agent_major_version: "6.0"
           remove_previous_packages: true  # removes previously installed package of zabbix agent(according to current settings);
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;

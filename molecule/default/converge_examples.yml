@@ -22,7 +22,7 @@
       test_name: '{{ ansible_play_name }}'
       #######################################
       agent_variant: 2
-      agent_version: 6.4
+      agent_major_version: 6.4
       param_server: ::/0         # address of Zabbix server to accept connections from;
       param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
       param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -78,7 +78,7 @@
       test_name: '{{ ansible_play_name }}'
       #######################################
       agent_variant: 2
-      agent_version: 6.4
+      agent_major_version: 6.4
       param_server: ::/0              # address of Zabbix server to accept connections from;
       param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
       param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -102,7 +102,7 @@
       report_path: '/tmp/examples_verify_zabbix_agent.report'
       test_name: '{{ ansible_play_name }}'
       #######################################
-      agent_version: "6.0"
+      agent_major_version: "6.0"
       remove_previous_packages: true  # removes previously installed package of zabbix agent(according to current settings);
       param_server: ::/0         # address of Zabbix server to accept connections from;
       param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
@@ -116,7 +116,7 @@
       report_path: '/tmp/examples_verify_zabbix_agent.report'
       test_name: '{{ ansible_play_name }}'
       #######################################
-      agent_version: "6.0"
+      agent_major_version: "6.0"
       remove_previous_packages: true  # removes previously installed package of zabbix agent(according to current settings);
       param_server: ::/0         # address of Zabbix server to accept connections from;
       param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
