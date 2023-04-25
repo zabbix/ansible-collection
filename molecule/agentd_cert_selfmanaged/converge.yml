@@ -24,7 +24,7 @@
       loop: '{{ tls_file_list | select }}'
       vars:
         tls_file_list:
-          - {source: "../default/files/certs/ca.crt", target: "{{ param_tlscafile}}"}
+          - {source: "../default/files/certs/ca.crt", target: "{{ param_tlscafile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.crt", target: "{{ param_tlscertfile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.key", target: "{{ param_tlskeyfile }}"}
     - name: "Testing role zabbix_agent: {{ test_name }}"
