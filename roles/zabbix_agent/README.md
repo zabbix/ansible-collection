@@ -11,6 +11,41 @@ Supported distribution list to be extended.
 
 Soon this role will be extended with additional functionality to add deployed target devices to Zabbix monitoring system. Check collection's page for release plan.
 
+Table of contents
+-----------------
+<!--ts-->
+  * [Recuirements](#requirements)
+  * [Role variables](#role-variables)
+    * [General settings](#general-settings)
+    * [User settings](#user-settings)
+    * [Firewall settings](#firewall-settings)
+    * [Local path settings](#local-paths-variables-table)
+    * [Common Zabbix agent configuration file parameters](#common-zabbix-agent-configuration-parameters)
+      * [Zabbix agent unique parameters](#zabbix-agentd-unique-parameters)
+      * [Zabbix agent2 unique parameters](#zabbix-agent2-unique-parameters)
+        * [Ceph plugin parameters](#zabbix-agent2-ceph-plugin-parameters)
+        * [Docker plugin parameters](#zabbix-agent2-docker-plugin-parameters)
+        * [Memcached plugin parameters](#zabbix-agent2-memcached-plugin-parameters)
+        * [Modbus plugin parameters](#zabbix-agent2-modbus-plugin-parameters)
+        * [MongoDB plugin parameters](#zabbix-agent2-mongodb-plugin-parameters)
+        * [MQTT plugin parameters](#zabbix-agent2-mqtt-plugin-parameters)
+        * [Oracle plugin parameters](#zabbix-agent2-oracle-plugin-parameters)
+        * [Postgresql plugin parameters](#zabbix-agent2-postgresql-plugin-parameters)
+        * [MySQL plugin parameters](#zabbix-agent2-mysql-plugin-parameters)
+        * [Redis plugin parameters](#zabbix-agent2-redis-plugin-parameters)
+        * [Smart plugin parameters](#zabbix-agent2-smart-plugin-parameters)
+  * [Example playbooks](#example-playbooks)
+    * [Playbook 1: Latest LTS Zabbix agentd deploy for active checks only](#playbook-1)
+    * [Playbook 2: 6.4 version of Zabbix agent2 for both passive and active checks + Iptables](#playbook-2)
+    * [Playbook 3: Zabbix agentd for both passive and active checks with PSK encryption for Autoregistration](#playbook-3)
+    * [Playbook 4: Zabbix agentd with certificate secured connections](#playbook-4)
+    * [Playbook 5: 6.4 version of Zabbix agent2 for MongoDB monitoring](#playbook-5)
+    * [Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0](#playbook-6)
+    * [Playbook 7: Zabbix agentd running under custom user](#playbook-7)
+    * [Playbook 8: Update Zabbix agentd to the latest minor version](#playbook-8)
+
+<!--te-->
+
 
 Requirements
 ------------
@@ -103,7 +138,7 @@ Variables prefixed with `source_`, should point to a file or folder located on A
 | source_tlscrlfile | `string` || Path to a file on the Ansible controller, containing revoked certificates. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlskeyfile | `string` || Path to a file containing the agent private key. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 
-### Zabbix agentd(& agent2) configuration file parameters table:
+### Common Zabbix agent configuration parameters:
 
 These parameters are common for both agent variants
 
@@ -299,7 +334,8 @@ For these settings to take effect plugin should be listed in `agent2_plugins_lis
 Example Playbooks
 -----------------
 
-- ### Playbook 1: Latest LTS Zabbix agentd deploy for active checks only.
+- ### Playbook 1:
+  **Latest LTS Zabbix agentd deploy for active checks only.**
   1. Here we will deploy Zabbix agentd (from defaults: `agent_variant = 1`).
   2. Major version defaults to current LTS version.
   3. Since we are removing passive checks with `param_startagents = 0`, firewalld rule application will be skipped.
@@ -315,7 +351,8 @@ Example Playbooks
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
   ```
 
-- ### Playbook 2: 6.4 version of Zabbix agent2 for both passive and active checks + Iptables.
+- ### Playbook 2:
+  **6.4 version of Zabbix agent2 for both passive and active checks + Iptables.**
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
   2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
   3. Same metadata as described in first example.
@@ -336,7 +373,8 @@ Example Playbooks
           firewall_allow_from: 127.0.0.1  # limit listening on agent port only from defined source address
   ```
 
-- ### Playbook 3: Zabbix agentd for both passive and active checks with PSK encryption for Autoregistration.
+- ### Playbook 3:
+  **Zabbix agentd for both passive and active checks with PSK encryption for Autoregistration.**
   1. Same metadata for autoregistration as described in first example.
   2. Set incoming and outgoing connection to be encrypted with `psk` 
     - `param_tlsconnect` is a single type setting, so it expects string input;
@@ -357,7 +395,8 @@ Example Playbooks
           param_tlspskidentity: 'PSK_ID_AUTOREGISTRATION' # length <= 128 char
   ```
 
-- ### Playbook 4: Zabbix agentd with certificate secured connections.
+- ### Playbook 4:
+  **Zabbix agentd with certificate secured connections.**
   1. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   2. Same metadata as described in first example.
   3. When `cert` if specified in `param_tlsconnect` or `param_tlsaccept` source path to certificate files becomes mandatory. Check example configuration below. We are pointing to "certs/" folder which holds certificate files, named accordingly to host inventory name.
@@ -378,7 +417,8 @@ Example Playbooks
           param_tlservercertsubject: CN=server                   # certificate subject restriction (optional);
   ```
 
-- ### Playbook 5: 6.4 version of Zabbix agent2 for MongoDB monitoring.
+- ### Playbook 5:
+  **6.4 version of Zabbix agent2 for MongoDB monitoring.**
   1. To deploy Zabbix agent2 define `agent_variant = 2`.
   2. You can specify Zabbix agent major version manually: `agent_major_version: "6.4"`
   3. Same metadata as described in first example
@@ -407,7 +447,8 @@ Example Playbooks
               source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
   ```
 
-- ### Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0
+- ### Playbook 6:
+  **Zabbix agentd downgrade from 6.4 to 6.0**
   1. You can specify Zabbix agent major version manually: `agent_major_version: "6.0"`
   2. Attempt to install earlier version will fail because newer is already installed. To overcome this, we need to remove previous package beforehand.
   3. Same metadata as described in first example
@@ -422,7 +463,8 @@ Example Playbooks
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
 
-- ### Playbook 7: Zabbix agentd running under custom user
+- ### Playbook 7:
+  **Zabbix agentd running under custom user**
   1. Same metadata as described in first example
   2. When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   3. Setting `service_user` will trigger custom user task list. It will create user, usergroup, homefolder, systemd overrides and a separate log folder.
@@ -439,7 +481,8 @@ Example Playbooks
           service_gid: 1115
   ```
 
-- ### Playbook 8: Update Zabbix agentd to latest minor version
+- ### Playbook 8:
+  **Update Zabbix agentd to latest minor version**
   - Same metadata as described in first example
   - When passive checks are enabled, role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on target machine or this step will be skipped. 
   - Setting `package_state = latest` will install the latest minor version of the packages. 

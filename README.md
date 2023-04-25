@@ -17,6 +17,14 @@ You can install this collection with the Ansible Galaxy CLI:
 
 For collection component dependencies and other details navigate to component documentation.
 
+<details>
+  <summary>Development version</summary>
+  Latest development version. Do not use it in production environment.
+
+    ansible-galaxy collection install git+https://github.com/zabbix/ansible-collection.git
+
+</details>
+
 
 ## Collection components
 
