@@ -271,7 +271,7 @@
   vars:
     tls_file_list:
       - {source: "{{ source_tlscafile }}", target: "{{ param_tlscafile }}"}
-      - '{{ { "source": source_tlscrlfile, "target": param_tlscrlfile } if source_tlscrlfile is defined }}'
+      - '{{ {"source": source_tlscrlfile, "target": param_tlscrlfile} if source_tlscrlfile is defined else None }}'
       - {source: "{{ source_tlscertfile }}", target: "{{ param_tlscertfile }}"}
       - {source: "{{ source_tlskeyfile }}", target: "{{ param_tlskeyfile }}"}
 

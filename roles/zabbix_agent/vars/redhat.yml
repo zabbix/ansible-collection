@@ -17,7 +17,7 @@ zabbix_repo:
 package_list:
   - zabbix-sender
   - zabbix-get
-  - 'zabbix-agent{{ "2" if agent_variant | string == "2" }}'
+  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'
   - zabbix-selinux-policy
   # - zabbix-agent-6.0.10-release1.el9
   # - zabbix-get-6.0.10-release1.el9
