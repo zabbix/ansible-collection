@@ -29,8 +29,7 @@ For collection component dependencies and other details, navigate to the compone
 ## Collection components
 
 Roles:
-  - [**zabbix_agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/zabbix_agent/README.md)
-- the role to deploy, configure and maintain Zabbix agent on a target device.
+  - [**zabbix_agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/zabbix_agent/README.md) - the role to deploy, configure and maintain Zabbix agent on a target device.
 
 ## Under development
 
