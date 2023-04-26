@@ -157,7 +157,7 @@ These parameters are common for both agent variants
 
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
-| param_alias | `list` || [**Alias**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#alias) |	Set an alias for the item key.
+| param_alias | `list` || [**Alias**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#alias) |	Set an alias for the item key. Location of aliases on target machine: `/etc/zabbix/zabbix_agent[d|2].d/aliases.conf`
 | param_allowkey | `list` || [**AllowKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowkey) | Allow execution of the item keys that match the pattern.
 | param_buffersend | `int` || [**BufferSend**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersend) |	Do not keep data in the buffer longer than N seconds.
 | param_buffersize | `int` || [**BufferSize**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersize) |	Maximum number of values in the memory buffer.
@@ -189,7 +189,7 @@ These parameters are common for both agent variants
 | param_tlsservercertissuer | `string` || [**TLSServerCertIssuer**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertissuer) | Allowed server (proxy) certificate issuer.
 | param_tlsservercertsubject | `string` || [**TLSServerCertSubject**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertsubject) | Allowed server (proxy) certificate subject.
 | param_unsafeuserparameters | `int` || [**UnsafeUserParameters**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#unsafeuserparameters) | Allow all characters to be passed in arguments to user-defined parameters.
-| param_userparameter | `list` || [**UserParameter**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameter) | User-defined parameter to monitor.
+| param_userparameter | `list` || [**UserParameter**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameter) | User-defined parameter to monitor. Location of userparameters on target machine: `/etc/zabbix/zabbix_agent[d|2].d/userparameters.conf`
 | param_userparameterdir | `string` || [**UserParameterDir**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameterdir) | Default search path for UserParameter commands.
 
 ### Zabbix **agentd** unique parameters:

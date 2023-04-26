@@ -1,0 +1,25 @@
+---
+- name: Side effect
+  hosts: all
+  tasks:
+    - name: Import defaults and vars from zabbix_agent role
+      ansible.builtin.include_role:
+        name: zabbix_agent
+        tasks_from: init
+        public: true
+      vars:
+        verification: true
+    - name: 'Variables : Include system and disrtibution specific'
+      ansible.builtin.include_vars: '{{ var_item }}.yml'
+      loop: '{{ var_list | select }}'
+      loop_control:
+        loop_var: var_item
+      vars:
+        var_list:
+          # - '{{ ansible_system | lower }}'
+          - '../../roles/zabbix_agent/vars/{{ ansible_distribution | lower }}'
+    - name: Include OS packager(yum/apt) specific tasks
+      ansible.builtin.include_tasks: '../../roles/zabbix_agent/tasks/{{ ansible_distribution | lower }}.yml'
+      vars:
+        agent_minor_version: false
+        package_state: latest

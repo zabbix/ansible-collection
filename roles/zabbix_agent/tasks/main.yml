@@ -346,7 +346,7 @@
   notify:
     - Reload systemd daemon
     - Service restart
-  tags: [restart]
+  tags: [never, restart]
 
 # - name: Forcing handler execution 
 #   # when: 

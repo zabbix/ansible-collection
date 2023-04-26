@@ -121,6 +121,45 @@ provisioner:
     prepare: ../default/prepare.yml
     converge: ../default/converge.yml
     verify: ../default/verify.yml
+scenario:
+  create_sequence:
+    - dependency
+    - create
+    - prepare
+  check_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - create
+    - prepare
+    - side_effect
+    - converge
+    # - check
+    - verify
+    - destroy
+  converge_sequence:
+    - dependency
+    - create
+    - prepare
+    - side_effect
+    - converge
+  destroy_sequence:
+    - dependency
+    - cleanup
+    - destroy
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - side_effect
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - destroy
 verifier:
   name: ansible
 # lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml
