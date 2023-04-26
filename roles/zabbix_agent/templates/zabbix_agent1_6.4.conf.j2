@@ -127,9 +127,9 @@ DenyKey={{ param_denykey }}
 #	1 - AllowKey=system.run[*]
 #
 # Mandatory: no
-{% if param_EnableRemoteCommands is defined and param_EnableRemoteCommands | type_debug in ["int", "string"] %}
+{% if param_enableremotecommands is defined and param_enableremotecommands | type_debug in ["int", "string"] %}
 
-EnableRemoteCommands={{ param_EnableRemoteCommands }}
+EnableRemoteCommands={{ param_enableremotecommands }}
 {% endif %}
 
 ### Option: LogRemoteCommands
