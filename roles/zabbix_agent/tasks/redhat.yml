@@ -44,7 +44,7 @@
     enablerepo: '{{ zabbix_repo.name }}'
     install_weak_deps: true
   vars:
-    full_version: '{{ None if agent_minor_version is not defined
+    full_version: '{{ None if (agent_minor_version is not defined or agent_minor_version not in ["string", "int"])
       else agent_major_version | string + "." + agent_minor_version | string }}'
     install_package_list: "{{ package_list if not full_version
       else package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % full_version) | list }}"

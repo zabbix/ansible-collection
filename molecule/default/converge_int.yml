@@ -4,6 +4,7 @@
   roles:
     - role: zabbix_agent
       #######################################
+      restart: true
       # remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
       test_name: '{{ ansible_play_name }}'

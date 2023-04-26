@@ -338,8 +338,31 @@
 #     name: '{{ agent.service_name }}'
 #     state: restarted
 
+- name: Forcing handler execution 
+  when: restart or "restart" in ansible_run_tags 
+  ansible.builtin.debug:
+    msg: Forced 
+  changed_when: true
+  notify:
+    - Reload systemd daemon
+    - Service restart
+  tags: [restart]
+
+# - name: Forcing handler execution 
+#   # when: 
+#   # ansible.builtin.debug:
+#   #   msg: Forced 
+#   ansible.builtin.meta: noop
+#   notify: 
+#       - Reload systemd daemon
+#       - Service restart
+#   changed_when: true
+#   tags: [restart]
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified or --force-handlers)
+  notify: '{{ handler_list | select | list }}'
+  tags: [restart]
 
 - name: 'Include verify steps'
   ansible.builtin.include_tasks: 'verify.yml'
