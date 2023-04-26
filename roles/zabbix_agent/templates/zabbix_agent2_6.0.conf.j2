@@ -48,7 +48,7 @@ LogFile={{ param_logfile }}
 # Range: 0-1024
 # Default:
 # LogFileSize=1
-{% if param_logfilesize is defined and param_logfilesize %}
+{% if param_logfilesize is defined and param_logfilesize | type_debug in ["int", "string"] %}
 
 LogFileSize={{ param_logfilesize }}
 {% endif %}
@@ -66,7 +66,7 @@ LogFileSize={{ param_logfilesize }}
 # Range: 0-5
 # Default:
 # DebugLevel=3
-{% if param_debuglevel is defined and param_debuglevel %}
+{% if param_debuglevel is defined and param_debuglevel | type_debug in ["int", "string"] %}
 
 DebugLevel={{ param_debuglevel }}
 {% endif %}
@@ -110,7 +110,7 @@ Server={{ param_server }}
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
-{% if param_listenport is defined and param_listenport %}
+{% if param_listenport is defined and param_listenport | type_debug in ["int", "string"] %}
 
 ListenPort={{ param_listenport }}
 {% endif %}
@@ -137,7 +137,7 @@ ListenIP={{ param_ListenIP }}
 # Range: 1024-32767
 # Default:
 # StatusPort=
-{% if param_statusport is defined and param_statusport %}
+{% if param_statusport is defined and param_statusport | type_debug in ["int", "string"] %}
 
 StatusPort={{ param_statusport }}
 {% endif %}
@@ -247,7 +247,7 @@ HostMetadataItem={{ param_hostmetadataitem }}
 # Range: 0-255 characters
 # Default:
 # HostInterface=
-{% if param_hostinterface is defined and param_hostinterface %}
+{% if param_hostinterface is defined and param_hostinterface | type_debug in ["int", "string"] %}
 
 HostInterface={{ param_hostinterface }}
 {% endif %}
@@ -274,7 +274,7 @@ HostInterfaceItem={{ param_hostinterfaceitem }}
 # Range: 60-3600
 # Default:
 # RefreshActiveChecks=120
-{% if param_refreshactivechecks is defined and param_refreshactivechecks %}
+{% if param_refreshactivechecks is defined and param_refreshactivechecks | type_debug in ["int", "string"] %}
 
 RefreshActiveChecks={{ param_refreshactivechecks }}
 {% endif %}
@@ -286,7 +286,7 @@ RefreshActiveChecks={{ param_refreshactivechecks }}
 # Range: 1-3600
 # Default:
 # BufferSend=5
-{% if param_buffersend is defined and param_buffersend %}
+{% if param_buffersend is defined and param_buffersend | type_debug in ["int", "string"] %}
 
 BufferSend={{ param_buffersend }}
 {% endif %}
@@ -300,7 +300,7 @@ BufferSend={{ param_buffersend }}
 # Range: 2-65535
 # Default:
 # BufferSize=100
-{% if param_buffersize is defined and param_buffersize %}
+{% if param_buffersize is defined and param_buffersize | type_debug in ["int", "string"] %}
 
 BufferSize={{ param_buffersize }}
 {% endif %}
@@ -312,7 +312,7 @@ BufferSize={{ param_buffersize }}
 # Range: 0-1
 # Default:
 # EnablePersistentBuffer=0
-{% if param_enablepersistentbuffer is defined and param_enablepersistentbuffer %}
+{% if param_enablepersistentbuffer is defined and param_enablepersistentbuffer | type_debug in ["int", "string"] %}
 
 EnablePersistentBuffer={{ param_enablepersistentbuffer }}
 {% endif %}
@@ -326,7 +326,7 @@ EnablePersistentBuffer={{ param_enablepersistentbuffer }}
 # Range: 1m-365d
 # Default:
 # PersistentBufferPeriod=1h
-{% if param_persistentbufferperiod is defined and param_persistentbufferperiod %}
+{% if param_persistentbufferperiod is defined and param_persistentbufferperiod | type_debug in ["int", "string"] %}
 
 PersistentBufferPeriod={{ param_persistentbufferperiod }}
 {% endif %}
@@ -365,7 +365,7 @@ PersistentBufferFile={{ param_persistentbufferfile }}
 # Range: 1-30
 # Default:
 # Timeout=3
-{% if param_timeout is defined and param_timeout %}
+{% if param_timeout is defined and param_timeout | type_debug in ["int", "string"] %}
 
 Timeout={{ param_timeout }}
 {% endif %}
@@ -398,7 +398,7 @@ Include={{ param_include }}
 # Range: 1-30
 # Default: <Global timeout>
 # PluginTimeout=
-{% if param_plugintimeout is defined and param_plugintimeout %}
+{% if param_plugintimeout is defined and param_plugintimeout | type_debug in ["int", "string"] %}
 
 PluginTimeout={{ param_plugintimeout }}
 {% endif %}
@@ -428,7 +428,7 @@ PluginSocket={{ param_pluginsocket }}
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
-{% if param_unsafeuserparameters is defined and param_unsafeuserparameters %}
+{% if param_unsafeuserparameters is defined and param_unsafeuserparameters | type_debug in ["int", "string"] %}
 
 UnsafeUserParameters={{ param_unsafeuserparameters }}
 {% endif %}
@@ -628,7 +628,7 @@ TLSPSKFile={{ param_tlspskfile }}
 # Range: 1-1000
 # Default:
 # Plugins.Log.MaxLinesPerSecond=20
-{% if param_maxlinespersecond is defined and param_maxlinespersecond %}
+{% if param_maxlinespersecond is defined and param_maxlinespersecond | type_debug in ["int", "string"] %}
 
 Plugins.Log.MaxLinesPerSecond={{ param_maxlinespersecond }}
 {% endif %}
@@ -680,7 +680,7 @@ DenyKey={{ param_denykey }}
 # Mandatory: no
 # Default:
 # Plugins.SystemRun.LogRemoteCommands=0
-{% if param_logremotecommands is defined and param_logremotecommands %}
+{% if param_logremotecommands is defined and param_logremotecommands | type_debug in ["int", "string"] %}
 
 Plugins.SystemRun.LogRemoteCommands={{ param_logremotecommands }}
 {% endif %}
@@ -693,7 +693,7 @@ Plugins.SystemRun.LogRemoteCommands={{ param_logremotecommands }}
 # Range: 0-1
 # Default:
 # ForceActiveChecksOnStart=0
-{% if param_forceactivechecksonstart is defined and param_forceactivechecksonstart %}
+{% if param_forceactivechecksonstart is defined and param_forceactivechecksonstart | type_debug in ["int", "string"] %}
 
 ForceActiveChecksOnStart={{ param_forceactivechecksonstart }}
 {% endif %}

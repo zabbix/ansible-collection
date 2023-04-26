@@ -48,7 +48,7 @@ LogFile={{ param_logfile }}
 # Range: 0-1024
 # Default:
 # LogFileSize=1
-{% if param_logfilesize is defined and param_logfilesize %}
+{% if param_logfilesize is defined and param_logfilesize | type_debug in ["int", "string"] %}
 
 LogFileSize={{ param_logfilesize }}
 {% endif %}
@@ -66,7 +66,7 @@ LogFileSize={{ param_logfilesize }}
 # Range: 0-5
 # Default:
 # DebugLevel=3
-{% if param_debuglevel is defined and param_debuglevel %}
+{% if param_debuglevel is defined and param_debuglevel | type_debug in ["int", "string"] %}
 
 DebugLevel={{ param_debuglevel }}
 {% endif %}
@@ -127,7 +127,7 @@ DenyKey={{ param_denykey }}
 #	1 - AllowKey=system.run[*]
 #
 # Mandatory: no
-{% if param_EnableRemoteCommands is defined and param_EnableRemoteCommands %}
+{% if param_EnableRemoteCommands is defined and param_EnableRemoteCommands | type_debug in ["int", "string"] %}
 
 EnableRemoteCommands={{ param_EnableRemoteCommands }}
 {% endif %}
@@ -140,7 +140,7 @@ EnableRemoteCommands={{ param_EnableRemoteCommands }}
 # Mandatory: no
 # Default:
 # LogRemoteCommands=0
-{% if param_logremotecommands is defined and param_logremotecommands %}
+{% if param_logremotecommands is defined and param_logremotecommands | type_debug in ["int", "string"] %}
 
 LogRemoteCommands={{ param_logremotecommands }}
 {% endif %}
@@ -173,7 +173,7 @@ Server={{ param_server }}
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
-{% if param_listenport is defined and param_listenport %}
+{% if param_listenport is defined and param_listenport | type_debug in ["int", "string"] %}
 
 ListenPort={{ param_listenport }}
 {% endif %}
@@ -201,7 +201,7 @@ ListenIP={{ param_ListenIP }}
 # Range: 0-100
 # Default:
 # StartAgents=3
-{% if param_startagents is defined and param_startagents %}
+{% if param_startagents is defined and param_startagents | type_debug in ["int", "string"] %}
 
 StartAgents={{ param_startagents }}
 {% endif %}
@@ -311,7 +311,7 @@ HostMetadataItem={{ param_hostmetadataitem }}
 # Range: 0-255 characters
 # Default:
 # HostInterface=
-{% if param_hostinterface is defined and param_hostinterface %}
+{% if param_hostinterface is defined and param_hostinterface | type_debug in ["int", "string"] %}
 
 HostInterface={{ param_hostinterface }}
 {% endif %}
@@ -338,7 +338,7 @@ HostInterfaceItem={{ param_hostinterfaceitem }}
 # Range: 60-3600
 # Default:
 # RefreshActiveChecks=120
-{% if param_refreshactivechecks is defined and param_refreshactivechecks %}
+{% if param_refreshactivechecks is defined and param_refreshactivechecks | type_debug in ["int", "string"] %}
 
 RefreshActiveChecks={{ param_refreshactivechecks }}
 {% endif %}
@@ -350,7 +350,7 @@ RefreshActiveChecks={{ param_refreshactivechecks }}
 # Range: 1-3600
 # Default:
 # BufferSend=5
-{% if param_buffersend is defined and param_buffersend %}
+{% if param_buffersend is defined and param_buffersend | type_debug in ["int", "string"] %}
 
 BufferSend={{ param_buffersend }}
 {% endif %}
@@ -363,7 +363,7 @@ BufferSend={{ param_buffersend }}
 # Range: 2-65535
 # Default:
 # BufferSize=100
-{% if param_buffersize is defined and param_buffersize %}
+{% if param_buffersize is defined and param_buffersize | type_debug in ["int", "string"] %}
 
 BufferSize={{ param_buffersize }}
 {% endif %}
@@ -378,7 +378,7 @@ BufferSize={{ param_buffersize }}
 # Range: 1-1000
 # Default:
 # MaxLinesPerSecond=20
-{% if param_maxlinespersecond is defined and param_maxlinespersecond %}
+{% if param_maxlinespersecond is defined and param_maxlinespersecond | type_debug in ["int", "string"] %}
 
 MaxLinesPerSecond={{ param_maxlinespersecond }}
 {% endif %}
@@ -405,7 +405,7 @@ MaxLinesPerSecond={{ param_maxlinespersecond }}
 # Range: 1-30
 # Default:
 # Timeout=3
-{% if param_timeout is defined and param_timeout %}
+{% if param_timeout is defined and param_timeout | type_debug in ["int", "string"] %}
 
 Timeout={{ param_timeout }}
 {% endif %}
@@ -420,7 +420,7 @@ Timeout={{ param_timeout }}
 # Mandatory: no
 # Default:
 # AllowRoot=0
-{% if param_allowroot is defined and param_allowroot %}
+{% if param_allowroot is defined and param_allowroot | type_debug in ["int", "string"] %}
 
 AllowRoot={{ param_allowroot }}
 {% endif %}
@@ -469,7 +469,7 @@ Include={{ unit }}
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
-{% if param_unsafeuserparameters is defined and param_unsafeuserparameters %}
+{% if param_unsafeuserparameters is defined and param_unsafeuserparameters | type_debug in ["int", "string"] %}
 
 UnsafeUserParameters={{ param_unsafeuserparameters }}
 {% endif %}
@@ -787,7 +787,7 @@ TLSCipherAll={{ param_tlscipherall }}
 # Range: 0 - INT_MAX (depends on system, too large values may be silently truncated to implementation-specified maximum)
 # Default: SOMAXCONN (hard-coded constant, depends on system)
 # ListenBacklog=
-{% if param_listenbacklog is defined and param_listenbacklog %}
+{% if param_listenbacklog is defined and param_listenbacklog | type_debug in ["int", "string"] %}
 
 ListenBacklog={{ param_listenbacklog }}
 {% endif %}

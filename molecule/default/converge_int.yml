@@ -1,0 +1,14 @@
+---
+- name: Example1_agentd_activeonly
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
+      param_startagents: 0            # do not spawn passive check processes which listens for connections;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+
