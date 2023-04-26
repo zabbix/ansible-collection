@@ -185,12 +185,12 @@ ListenPort={{ param_listenport }}
 # Mandatory: no
 # Default:
 # ListenIP=0.0.0.0
-{% if param_ListenIP is defined and param_ListenIP is iterable and param_ListenIP is not string and param_ListenIP is not mapping %}
+{% if param_listenip is defined and param_listenip is iterable and param_listenip is not string and param_listenip is not mapping %}
 
-ListenIP={{ param_ListenIP | join(',') }}
-{% elif param_ListenIP is defined and param_ListenIP and param_ListenIP is string %}
+ListenIP={{ param_listenip | join(',') }}
+{% elif param_listenip is defined and param_listenip and param_listenip is string %}
 
-ListenIP={{ param_ListenIP }}
+ListenIP={{ param_listenip }}
 {% endif %}
 
 ### Option: StartAgents
