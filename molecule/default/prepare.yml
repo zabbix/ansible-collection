@@ -26,12 +26,12 @@
         state: present
       when: ansible_distribution == 'Ubuntu'
 
-    - name: 'Prepare containers : rsync, vim'
+    - name: 'Prepare containers : {{ list_of_additional_soft }}'
       ansible.builtin.package:
-        name:
-          - rsync
-          - vim
+        name: '{{ list_of_additional_soft }}'
         state: present
+      vars:
+        list_of_additional_soft: [vim]
 
     - name: 'Prepare containers : firewalld'
       ansible.builtin.package:

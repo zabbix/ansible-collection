@@ -339,8 +339,7 @@
 #     state: restarted
 
 - name: Flush handlers
-  ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified)
-  ### !!!! consider removing handlers and use always reload/restart instead
+  ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified or --force-handlers)
 
 - name: 'Include verify steps'
   ansible.builtin.include_tasks: 'verify.yml'
