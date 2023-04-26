@@ -14,4 +14,4 @@ zabbix_repo:
 package_list:
   - zabbix-sender
   - zabbix-get
-  - 'zabbix-agent{{ "2" if agent_variant | string == "2" }}'
+  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'

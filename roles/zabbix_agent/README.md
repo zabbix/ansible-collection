@@ -5,6 +5,7 @@ You can use this Ansible role to deploy and configure Zabbix agents on the targe
 Currently, supported OS list of target machine:
 - Redhat 7, 8, 9
 - Ubuntu 18.04, 20.04, 22.04
+
 Supported distribution list to be extended.
 
 **Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
