@@ -68,12 +68,23 @@ You can install required collections easily:
 ansible-galaxy collection install ansible.utils ansible.posix
 ```
 
-Note that role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter. Which depends on python library [**netaddr**](https://pypi.org/project/netaddr). Control node requires it, and You can install this python library as follows:
+Note that role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter. Which depends on python library [**netaddr**](https://pypi.org/project/netaddr). 
+
+Zabbix agent role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heavily and requires version >= 2.10.1
+
+Control node requires those, and You can install required python libraries as follows:
 
 ```bash
-pip install netaddr
+python3 -m pip install netaddr>=0.8.0 Jinja2>=2.10.1
 ```
 
+Or using requirements.txt file in the role folder:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Check [**python documentation**](https://docs.python.org/3/installing/index.html) for more details on python modules installation. 
 
 Role Variables
 --------------
