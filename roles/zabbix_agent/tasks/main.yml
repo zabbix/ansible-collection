@@ -242,11 +242,11 @@
   loop: '{{ maintenance_folders | select | list }}'
   vars:
     maintenance_folders:
-      - '{{ agent.file_name | upper + "/.CERT/" if source_tlscafile is defined }}'
-      - '{{ agent.file_name | upper + "/.PSK/" if "psk" in param_tlsaccept or param_tlsconnect == "psk" }}'
-      - '{{ agent.file_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" }}'
-      - '{{ agent.file_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" }}'
-      - '{{ agent.file_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" }}'
+      - '{{ agent.file_name | upper + "/.CERT/" if source_tlscafile is defined else None }}'
+      - '{{ agent.file_name | upper + "/.PSK/" if "psk" in param_tlsaccept or param_tlsconnect == "psk" else None }}'
+      - '{{ agent.file_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
+      - '{{ agent.file_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
+      - '{{ agent.file_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
 
 - name: 'Upload : TLS Certificates'
   when: >-
