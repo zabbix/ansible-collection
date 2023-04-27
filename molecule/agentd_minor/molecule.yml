@@ -143,6 +143,7 @@ scenario:
     - prepare
     - side_effect
     - converge
+    - verify
   destroy_sequence:
     - dependency
     - cleanup

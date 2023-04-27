@@ -4,7 +4,7 @@ test_name: agent2_minor
 ### variant of agent to deploy: 1 - agentd, 2 - agent2
 agent_variant: 2
 agent_major_version: 6.0
-agent_minor_version: 14
+agent_minor_version: 12
 # agent_major_version: '6.4'
 
 ### remove previous versions of packages and release packages
