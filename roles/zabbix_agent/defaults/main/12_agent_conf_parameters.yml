@@ -82,3 +82,5 @@ param_includeplugins: '{{ map_param_includeplugins[ansible_system] }}'
 param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
 ## agent2 Plugins.PostgreSQL:
 param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+param_plugins_log_maxlinespersecond: '{{ param_maxlinespersecond }}'
+param_plugins_systemrun_logremotecommands: '{{ param_logremotecommands }}'
