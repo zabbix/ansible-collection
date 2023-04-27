@@ -89,7 +89,7 @@
     source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
     source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
     # param_tlsservercertissuer: CN=root-ca
-    # param_tlservercertsubject: CN=server
+    # param_tlsservercertsubject: CN=server
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -115,7 +115,7 @@
     source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
     source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
     # param_tlsservercertissuer: CN=root-ca
-    # param_tlservercertsubject: CN=server
+    # param_tlsservercertsubject: CN=server
     param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
@@ -240,7 +240,7 @@
     source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
     source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
     # param_tlsservercertissuer: CN=root-ca
-    # param_tlservercertsubject: CN=server
+    # param_tlsservercertsubject: CN=server
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -270,7 +270,7 @@
     source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
     source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
     # param_tlsservercertissuer: CN=root-ca
-    # param_tlservercertsubject: CN=server
+    # param_tlsservercertsubject: CN=server
     param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:

@@ -48,7 +48,7 @@ param_tlsaccept:
 # param_tlscafile:
 # param_tlscrlfile:
 # param_tlsservercertissuer:
-# param_tlservercertsubject:
+# param_tlsservercertsubject:
 # param_tlscertfile:
 # param_tlskeyfile:
 param_tlspskidentity: 'PSK_ID_{{ inventory_hostname }}'  # length <= 128 char

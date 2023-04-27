@@ -427,7 +427,7 @@ Example Playbooks
           source_tlscertfile: certs/{{ inventory_hostname }}.crt # Zabbix agent certificate path on the controller;
           source_tlskeyfile: certs/{{ inventory_hostname }}.key  # key file path on the controller;
           param_tlsservercertissuer: CN=root-ca                  # certificate issuer restriction (optional);
-          param_tlservercertsubject: CN=server                   # certificate subject restriction (optional);
+          param_tlsservercertsubject: CN=server                   # certificate subject restriction (optional);
   ```
 
 - ### Playbook 5:

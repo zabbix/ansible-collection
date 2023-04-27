@@ -133,7 +133,7 @@ param_tlsaccept: # List. TLS Setting: Accept connection from agent. Encryption m
 # source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
 
 # param_tlsservercertissuer: CN=root-ca
-# param_tlservercertsubject: CN=server
+# param_tlsservercertsubject: CN=server
 
 # param_tlscafile: # generated automatically
 # param_tlscrlfile: # generated automatically

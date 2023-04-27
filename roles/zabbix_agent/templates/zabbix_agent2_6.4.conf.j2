@@ -562,11 +562,11 @@ TLSServerCertIssuer={{ param_tlsservercertissuer }}
 # Mandatory: no
 # Default:
 # TLSServerCertSubject=
-{% if param_tlservercertsubject is defined and param_tlservercertsubject
+{% if param_tlsservercertsubject is defined and param_tlsservercertsubject
    and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
         or param_tlsconnect == "cert") %}
 
-TLSServerCertSubject={{ param_tlservercertsubject }}
+TLSServerCertSubject={{ param_tlsservercertsubject }}
 {% endif %}
 
 ### Option: TLSCertFile

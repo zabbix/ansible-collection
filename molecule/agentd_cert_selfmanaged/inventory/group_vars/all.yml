@@ -134,7 +134,7 @@ param_tlsaccept: # List. TLS Setting: Accept connection from agent. Encryption m
 # source_tlskeyfile: ../default/files/certs/{{ inventory_hostname }}.key
 
 # param_tlsservercertissuer: CN=root-ca
-# param_tlservercertsubject: CN=server
+# param_tlsservercertsubject: CN=server
 
 param_tlscafile: /tmp/ca.crt
 param_tlscertfile: '/tmp/{{ inventory_hostname }}.crt'
