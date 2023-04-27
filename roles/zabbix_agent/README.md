@@ -15,7 +15,7 @@ Soon this role will be extended with additional functionality to add deployed ta
 Table of contents
 -----------------
 <!--ts-->
-  * [Recuirements](#requirements)
+  * [Requirements](#requirements)
   * [Role variables](#role-variables)
     * [General settings](#general-settings)
     * [User settings](#user-settings)
@@ -31,14 +31,15 @@ Table of contents
         * [MongoDB plugin parameters](#zabbix-agent2-mongodb-plugin-parameters)
         * [MQTT plugin parameters](#zabbix-agent2-mqtt-plugin-parameters)
         * [Oracle plugin parameters](#zabbix-agent2-oracle-plugin-parameters)
-        * [Postgresql plugin parameters](#zabbix-agent2-postgresql-plugin-parameters)
+        * [PostgreSQL plugin parameters](#zabbix-agent2-postgresql-plugin-parameters)
         * [MySQL plugin parameters](#zabbix-agent2-mysql-plugin-parameters)
         * [Redis plugin parameters](#zabbix-agent2-redis-plugin-parameters)
         * [Smart plugin parameters](#zabbix-agent2-smart-plugin-parameters)
+  * [Hints](#hints)
   * [Example playbooks](#example-playbooks)
     * [Playbook 1: Latest LTS Zabbix agentd deploy for active checks only](#playbook-1)
     * [Playbook 2: 6.4 version of Zabbix agent2 for both passive and active checks + Iptables](#playbook-2)
-    * [Playbook 3: Zabbix agentd for both passive and active checks with PSK encryption for Autoregistration](#playbook-3)
+    * [Playbook 3: Zabbix agentd for both passive and active checks with PSK encryption for autoregistration](#playbook-3)
     * [Playbook 4: Zabbix agentd with certificate secured connections](#playbook-4)
     * [Playbook 5: 6.4 version of Zabbix agent2 for MongoDB monitoring](#playbook-5)
     * [Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0](#playbook-6)
@@ -344,6 +345,18 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 |--|--|--|--|
 | param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
 | param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+
+Hints
+-----
+
+- Wrong variable definition level can be punishing for starters. Begin with [**variable precedence learning**](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable). 
+  We recommend [**organizing host and group variables**](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html#organizing-host-and-group-variables) on inventory level. It is handy for big environments and will fit most use cases.
+- Zabbix agent role uses **handlers** to reload systemd daemon and restart `zabbix-agent[2]` service.
+  To trigger **handler** execution each time (not only after changes made) pass `restart` tag:
+
+      ansible-playbook -i inventory play.yml -t restart
+
+
 
 Example Playbooks
 -----------------
