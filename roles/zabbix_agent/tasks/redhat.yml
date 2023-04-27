@@ -30,33 +30,6 @@
   register: yum_clean_all
   tags: [skip_ansible_lint]
 
-- name: debug
-  ansible.builtin.debug:
-    msg: "agent_major_version: {{ agent_major_version }}"
-
-- name: debug
-  ansible.builtin.debug:
-    msg: >-
-        'agent_minor_version: {{ agent_minor_version }} {{ agent_minor_version | type_debug }}
-         agent2_plugin_version: {{ agent2_plugin_version }} Type: {{ agent2_plugin_version | type_debug }} Length: {{ agent2_plugin_version | length }}
-         defined: {{agent2_plugin_version is defined }} is: {{ agent2_plugin_version | bool }}'
-
-- name: debug
-  ansible.builtin.debug:
-    msg: "full: {{ agent_full_version }} component: {{ component_package_list }} install: {{ install_package_list }}"
-  vars:
-    ### if "agent_minor_version" is defined calculate "full_version".
-    agent_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
-      else agent_major_version | string + "." + agent_minor_version | string }}'
-    ### change minor version of zabbix components (excluding agent2 plugins). Use single quotes for regex expression!!!
-    component_package_list: "{{ package_list if not agent_full_version
-      else package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent|selinux-policy))$', '\\1-%s' % agent_full_version) | list }}"
-    ### change version of agent2 plugins. Use single quotes for regex expression!!!
-    install_package_list: "{{
-      component_package_list if (agent2_plugin_version is not defined
-                                 or not agent2_plugin_version or agent_variant | string != '2')
-      else component_package_list | map('regex_replace', '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent2_plugin_version) | list }}"
-
 - name: 'RHEL : Zabbix packages presence'
   become: true
   notify: 'Service restart'

@@ -338,22 +338,22 @@
 #     name: '{{ agent.service_name }}'
 #     state: restarted
 
-- name: Forcing handler execution 
-  when: restart or "restart" in ansible_run_tags 
+- name: Forcing handler execution
+  when: restart or "restart" in ansible_run_tags
   ansible.builtin.debug:
-    msg: Forced 
+    msg: Forced
   changed_when: true
   notify:
     - Reload systemd daemon
     - Service restart
   tags: [never, restart]
 
-# - name: Forcing handler execution 
-#   # when: 
+# - name: Forcing handler execution
+#   # when:
 #   # ansible.builtin.debug:
-#   #   msg: Forced 
+#   #   msg: Forced
 #   ansible.builtin.meta: noop
-#   notify: 
+#   notify:
 #       - Reload systemd daemon
 #       - Service restart
 #   changed_when: true
