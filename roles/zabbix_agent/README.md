@@ -98,7 +98,8 @@ The default settings are aimed at the ease of installation. You can override tho
 | Variable | Type | Default | Description |
 |--|--|--|--|
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
-| agent_major_version | `string` | 6.0 | The version of Zabbix agent. Defaults to the latest LTS.
+| agent_major_version | `string` | 6.0 | The major version of Zabbix agent. Defaults to the latest LTS.
+| agent_minor_version | `string` || Zabbix agent minor version customization is available **only for RedHat based OS**.
 | package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest minor version if available. 
 | remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
 | http_proxy | `string` || Defines HTTP proxy address for the packager.
