@@ -101,7 +101,7 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
 | agent_major_version | `string` | 6.0 | The major version of Zabbix agent. Defaults to the latest LTS.
 | agent_minor_version | `string` || Zabbix agent minor version customization is available **only for RedHat based OS**.
-| package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest minor version if available. 
+| package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in installed **zabbix-release** repository. 
 | remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
 | http_proxy | `string` || Defines HTTP proxy address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
@@ -147,7 +147,7 @@ Variables prefixed with `source_` should point to a file or folder located on An
 | source_conf_dir | `string` || Path to the configuration folder on Ansible controller that needs to be transferred to the target machine and included in Zabbix agent configuration. For example, a folder with `Userparameters`.
 | source_scripts_dir | `string` || Path to the scripts folder on Ansible controller. Will be copied under the `service_user` home folder. Scripts can be utilized by `UserParameters`.
 | source_modules_dir | `string` || Path to Zabbix agentd modules folder on Ansible controller. Will be copied to default location for default user. For custom user modules, will be placed under the `service_user` home folder.
-| source_tlspskfile | `string` | `.PSK/{{ inventory_hostname }}` | Path to the PSK key location on Ansible controller. The role will look for the files having the same names as `inventory_hostname` (hostname from inventory) and generate new if not found. This key will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
+| source_tlspskfile | `string` | `.PSK/{{ inventory_hostname }}.psk` | Path to the PSK key location on Ansible controller. The role will look for the files having the same names as `inventory_hostname` (hostname from inventory) and generate new if not found. This key will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlscafile | `string` || Path to the file on Ansible controller containing the top-level CA(s) certificates for peer certificate verification. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlscertfile | `string` || Path to the file on Ansible controller containing the agent certificate or certificate chain. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlscrlfile | `string` || Path to the file on Ansible controller containing revoked certificates. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
@@ -272,6 +272,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 ### Zabbix **agent2 MongoDB plugin** parameters:
 
 For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
 | Variable | Type | Default | Parameter | Description |
@@ -299,11 +300,12 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 | param_plugins_oracle_connecttimeout | `int` | [**Plugins.Oracle.ConnectTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
 | param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", servicename: "", user: "", password: "" }`
+| param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
 
 ### Zabbix **agent2 Postgresql plugin** parameters:
 
 For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
 | Variable | Type | Default | Parameter | Description |
@@ -318,6 +320,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 ### Zabbix **agent2 MySQL plugin** parameters:
 
 For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
 | Variable | Type | Parameter | Description |
@@ -418,7 +421,7 @@ Example Playbooks
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
           param_tlsconnect: psk
           param_tlsaccept: [psk]
-          source_tlspskfile: TEST/autoregistration # "autoregistration" key will be placed to TEST folder;
+          source_tlspskfile: TEST/autoregistration.psk # "autoregistration" key will be placed to TEST folder;
           param_tlspskidentity: 'PSK_ID_AUTOREGISTRATION' # length <= 128 char
   ```
 
