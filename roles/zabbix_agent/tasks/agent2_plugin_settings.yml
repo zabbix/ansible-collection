@@ -3,7 +3,7 @@
   when: >
     param_plugins_mysql_sessions is defined
     and param_plugins_mysql_sessions
-    and param_plugins_mysql_sessions | map( "extract", "tlsconnect") | list | length > 0
+    and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
     plugins_mysql_tls_file_list: '{{ (plugins_mysql_tls_file_list | default([]))
       + [{"session_name": item.name,
@@ -28,7 +28,7 @@
   when: >
     param_plugins_postgresql_sessions is defined
     and param_plugins_postgresql_sessions
-    and param_plugins_postgresql_sessions | map( "extract", "tlsconnect") | list | length > 0
+    and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
     plugins_postgresql_tls_file_list: '{{ (plugins_postgresql_tls_file_list | default([]))
       + [{"session_name": item.name,
@@ -53,7 +53,7 @@
   when: >
     param_plugins_mongodb_sessions is defined
     and param_plugins_mongodb_sessions
-    and param_plugins_mongodb_sessions | map( "extract", "tlsconnect") | list | length > 0
+    and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
     plugins_mongodb_tls_file_list: '{{ (plugins_mongodb_tls_file_list | default([]))
       + [{"session_name": item.name,
