@@ -47,7 +47,7 @@
 - name: Present
   hosts: all
   roles:
-    - name: zabbix_agent
+    - role: zabbix_agent
       #######################################
       remove_previous_packages: false
       report_path: '/tmp/latest_verify_zabbix_agent.report'
@@ -58,7 +58,7 @@
 - name: Latest
   hosts: all
   roles:
-    - name: zabbix_agent
+    - role: zabbix_agent
       #######################################
       remove_previous_packages: false
       report_path: '/tmp/latest_verify_zabbix_agent.report'

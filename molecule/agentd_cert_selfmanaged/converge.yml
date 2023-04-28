@@ -1,16 +1,8 @@
 ---
-- name: Converge
+- name: Upload certificates
   hosts: all
-  vars:
   tasks:
-    # - name: 'Create home folder'
-    #   become: true
-    #   ansible.builtin.file:
-    #     path: '/var/lib/zabbix/'
-    #     state: directory
-    #     mode: 'u=rwx,g=,o='
-    #     owner: 'zabbix'
-    #     group: 'zabbix'
+
     - name: Upload certs
       become: true
       ansible.builtin.copy:
@@ -27,6 +19,7 @@
           - {source: "../default/files/certs/ca.crt", target: "{{ param_tlscafile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.crt", target: "{{ param_tlscertfile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.key", target: "{{ param_tlskeyfile }}"}
+
     - name: "Testing role zabbix_agent: {{ test_name }}"
       ansible.builtin.include_role:
         name: "zabbix_agent"

@@ -143,6 +143,19 @@ scenario:
     - side_effect
     - converge
     - verify
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - side_effect
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - destroy
 verifier:
   name: ansible
 # lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml
