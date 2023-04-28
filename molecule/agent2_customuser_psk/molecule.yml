@@ -107,6 +107,9 @@ platforms:
       - agent2
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      vault_password_file: ${HOME}/.ansible/.vault
   env:
     # ANSIBLE_VERBOSITY: 3
     ANSIBLE_ROLES_PATH: "../../roles"

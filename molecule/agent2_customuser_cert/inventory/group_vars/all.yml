@@ -1,7 +1,7 @@
 ---
 level: group_all
 test_name: agent2_customuser_cert
-# source_tlspskfile: '../default/files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
+# source_tlspskfile: '../default/files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}.psk'
 ### variant of agent to deploy: 1 - agentd, 2 - agent2
 agent_variant: 2
 # agent_major_version: '6.4'
