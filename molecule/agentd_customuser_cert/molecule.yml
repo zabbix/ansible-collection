@@ -132,6 +132,7 @@ scenario:
     - create
     - prepare
     - side_effect
+    - side_effect ../default/certsgen.yml
     - converge
     - verify
     - destroy

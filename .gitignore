@@ -8,3 +8,8 @@
 tests/output
 # Ignore builds
 zabbix-zabbix*.tar.gz
+# Ignore molecule encryption test files
+*.key
+*.crt
+*.csr
+*.psk

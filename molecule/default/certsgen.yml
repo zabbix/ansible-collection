@@ -1,0 +1,12 @@
+---
+- name: Certgen
+  hosts: all
+  tasks:
+    - name: Generate certificates for testing
+      ansible.builtin.command:
+        argv:
+          ../default/files/certsgen.sh
+          {{ ansible_play_hosts_all | join(' ') }}
+        args:
+          creates: ../default/files/certs
+          chdir: ../default/files/

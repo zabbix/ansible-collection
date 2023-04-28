@@ -68,6 +68,10 @@ issues: https://github.com/zabbix/ansible-collection/issues
 # and '.git' are always filtered. Mutually exclusive with 'manifest'
 build_ignore:
   - temp
+  - '*.key'
+  - '*.crt'
+  - '*.csr'
+  - '*.psk'
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a
 # list of MANIFEST.in style
