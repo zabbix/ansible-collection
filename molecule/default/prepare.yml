@@ -10,21 +10,27 @@
     #         state: present
     #       when: ansible_distribution == 'RedHat'
 
-    - name: 'Prepare containers : epel for {{ ansible_distribution + ": " + ansible_distribution_major_version }}'
+    - name: Debug
+      ansible.builtin.debug:
+        msg: 'Distr: {{ ansible_distribution }} / Family: {{ ansible_os_family }}'
+
+    - name: 'Prepare containers : epel repo'
       # for package priority tests
       ansible.builtin.yum:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
         disable_gpg_check: true
-      when: ansible_distribution == 'RedHat'
+      ignore_errors: true
+      when: ansible_os_family == 'RedHat' and ansible_distribution_major_version | int > 7
 
-    - name: 'Prepare containers : ca-certificates for {{ ansible_distribution + ": " + ansible_distribution_major_version }}'
+    - name: 'Prepare containers : ca-certificates'
       # ubuntu containers lack root CA
       ansible.builtin.package:
         name:
           - ca-certificates
         state: present
-      when: ansible_distribution == 'Ubuntu'
+      # when: ansible_distribution == 'Ubuntu'
+      when: ansible_os_family == 'Debian'
 
     - name: 'Prepare containers : {{ list_of_additional_soft }}'
       ansible.builtin.package:
@@ -38,7 +44,7 @@
         name:
           - firewalld
         state: present
-      when: ansible_distribution == 'Ubuntu'
+      when: ansible_distribution in ['Ubuntu', 'AlmaLinux', 'CentOS', 'Rocky']
 
     - name: 'Prepare containers : firewalld enable'
       ansible.builtin.systemd:

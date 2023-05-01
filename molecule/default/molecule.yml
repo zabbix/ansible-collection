@@ -7,6 +7,7 @@ driver:
 platforms:
   - name: podman_ubuntu18
     image: docker.io/jrei/systemd-ubuntu:18.04
+    pre_build_image: true
     tmpfs:
       - /run
       - /tmp
@@ -21,13 +22,14 @@ platforms:
     # exposed_ports:
     #   - "22018/tcp"
     command: "/lib/systemd/systemd"
-    pre_build_image: true
     groups:
       - molecule
       - podman
       - linux
+      - ubuntu
   - name: podman_ubuntu20
     image: docker.io/jrei/systemd-ubuntu:20.04
+    pre_build_image: true
     tmpfs:
       - /run
       - /tmp
@@ -40,15 +42,15 @@ platforms:
       - "12050:10050/tcp"
       - "12020:10020/tcp"
     command: "/lib/systemd/systemd"
-    pre_build_image: true
     groups:
       - molecule
       - podman
       - linux
-      - psk
       - aarch
+      - ubuntu
   - name: podman_ubuntu22
     image: docker.io/jrei/systemd-ubuntu:22.04
+    pre_build_image: true
     tmpfs:
       - /run
       - /tmp
@@ -61,15 +63,16 @@ platforms:
       - "12250:10050/tcp"
       - "12220:10020/tcp"
     command: "/lib/systemd/systemd"
-    pre_build_image: true
     groups:
       - molecule
       - podman
       - linux
-      - cert
       - aarch
+      - ubuntu
+
   - name: podman_rhel8
     image: registry.access.redhat.com/ubi8/ubi-init
+    pre_build_image: true
     tmpfs:
       - /run
       - /tmp
@@ -82,14 +85,14 @@ platforms:
       - "18050:10050/tcp"
       - "18020:10020/tcp"
     command: "/usr/sbin/init"
-    pre_build_image: true
     groups:
       - molecule
       - podman
       - linux
-      - cert
+      - rhel
   - name: podman_rhel9
     image: registry.access.redhat.com/ubi9/ubi-init
+    pre_build_image: true
     tmpfs:
       - /run
       - /tmp
@@ -103,18 +106,238 @@ platforms:
       - "19050:10050/tcp"
       - "19020:10020/tcp"
     command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - rhel
+
+  - name: podman_cs8
+    dockerfile: files/Dockerfile_rhel.j2
+    image: quay.io/centos/centos:stream8
+    pre_build_image: false
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "18350:10050/tcp"
+      - "18320:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - centos
+  - name: podman_cs9
+    dockerfile: files/Dockerfile_rhel.j2
+    image: quay.io/centos/centos:stream9
+    pre_build_image: false
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "19350:10050/tcp"
+      - "19320:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - centos
+
+  - name: podman_ora8
+    dockerfile: files/Dockerfile_rhel.j2
+    image: docker.io/library/oraclelinux:8
+    pre_build_image: false
+    tmpfs:
+      - /run
+      - /tmp
+    # volumes:
+    #   # - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    #   - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      # - ALL
+      - AUDIT_CONTROL
+      - AUDIT_WRITE
+      - AUDIT_READ
+      - SYS_ADMIN
+    published_ports:
+      - "18450:10050/tcp"
+      - "18420:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - oracle
+  - name: podman_ora9
+    dockerfile: files/Dockerfile_rhel.j2
+    image: docker.io/library/oraclelinux:9
+    pre_build_image: false
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "19450:10050/tcp"
+      - "19420:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - oracle
+
+  - name: podman_alma8
+    image: ghcr.io/hifis-net/almalinux-systemd:8
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "18150:10050/tcp"
+      - "18120:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - alma
+  - name: podman_alma9
+    image: ghcr.io/hifis-net/almalinux-systemd:9
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "19150:10050/tcp"
+      - "19120:10020/tcp"
+    command: "/usr/sbin/init"
     pre_build_image: true
     groups:
       - molecule
       - podman
       - linux
-      - psk
-      - agent2
+      - alma
+
+  - name: podman_rocky8
+    image: docker.io/geerlingguy/docker-rockylinux8-ansible:latest
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    # volumes:
+    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    #   - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "18250:10050/tcp"
+      - "18220:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - rocky
+  - name: podman_rocky9
+    image: docker.io/geerlingguy/docker-rockylinux9-ansible:latest
+    tmpfs:
+      - /run
+      - /tmp
+    # volumes:
+    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    #   - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "19250:10050/tcp"
+      - "19220:10020/tcp"
+    command: "/usr/sbin/init"
+    pre_build_image: true
+    groups:
+      - molecule
+      - podman
+      - linux
+      - rocky
+
+  - name: podman_debian10
+    image: ghcr.io/hifis-net/debian-systemd:10
+    pre_build_image: true
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11050:10050/tcp"
+      - "11020:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - debian
+  # - name: podman_debian11
+  #   image: ghcr.io/hifis-net/debian-systemd:11
+  #   pre_build_image: true
+  #   tmpfs:
+  #     - /run
+  #     - /tmp
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   capabilities:
+  #     - SYS_ADMIN
+  #   published_ports:
+  #     - "11150:10050/tcp"
+  #     - "11120:10020/tcp"
+  #   command: "/lib/systemd/systemd"
+  #   groups:
+  #     - molecule
+  #     - podman
+  #     - linux
+  #     - debian
+
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      vault_password_file: ${HOME}/.ansible/.vault
+  # config_options:
+  #   defaults:
+  #     vault_password_file: ${HOME}/.ansible/.vault
   env:
     # ANSIBLE_VERBOSITY: 3
     ANSIBLE_ROLES_PATH: "../../roles"
@@ -136,12 +359,22 @@ scenario:
     - verify
     - destroy
   converge_sequence:
+    - side_effect
+    - converge
+    - verify
+  test_sequence:
     - dependency
+    - cleanup
+    - destroy
+    - syntax
     - create
     - prepare
     - side_effect
     - converge
+    - idempotence
     - verify
+    - cleanup
+    - destroy
 verifier:
   name: ansible
 # lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml

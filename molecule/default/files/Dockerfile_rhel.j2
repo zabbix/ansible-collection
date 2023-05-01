@@ -1,0 +1,13 @@
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+RUN rm -f /lib/systemd/system/multi-user.target.wants/*;\
+    rm -f /etc/systemd/system/*.wants/*;
+
+RUN yum makecache \
+    && yum --assumeyes install systemd-udev && yum clean all
+
+CMD ["/usr/sbin/init"]

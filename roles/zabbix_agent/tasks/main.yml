@@ -18,8 +18,9 @@
         )
       - agent_major_version | string in ['6.0', '6.4']
       - package_state in ["present", "latest"]
+  tags: [assert]
 
-- name: 'Variables : Include system and disrtibution specific'
+- name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
   loop: '{{ var_list | select }}'
   loop_control:
@@ -27,7 +28,11 @@
   vars:
     var_list:
       # - '{{ ansible_system | lower }}'
-      - '{{ ansible_distribution | lower }}'
+      # - '{{ ansible_distribution | lower }}'
+      # - '{{ ansible_os_family | lower }}'
+      - '{{ "ubuntu" if ansible_distribution == "Ubuntu" else None }}'
+      - '{{ "debian" if ansible_distribution == "Debian" else None }}'
+      - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'
   tags: [vars, verify]
 
 - name: 'Variables : Custom user : Overrides'
@@ -79,7 +84,7 @@
   ansible.builtin.include_tasks: 'remove_packages_{{ ansible_system | lower }}.yml'
 
 - name: Include OS packager(yum/apt) specific tasks
-  ansible.builtin.include_tasks: '{{ ansible_distribution | lower }}.yml'
+  ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'
 
 # remove custom user overrides if left from previous deployment
 - name: Include custom user cleaning tasks

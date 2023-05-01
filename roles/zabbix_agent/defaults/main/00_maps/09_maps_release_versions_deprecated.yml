@@ -7,9 +7,11 @@ release_version:
     x86_64:
       ubuntu: '4'
       redhat: '4'
+      debian: '4'
   '6.4':
     aarch64:
       ubuntu: '1'
     x86_64:
       ubuntu: '1'
       redhat: '1'
+      debian: '1'

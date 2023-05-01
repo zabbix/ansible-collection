@@ -1,5 +1,5 @@
 ---
-- name: 'RHEL : GPG key presence'
+- name: 'RPM : GPG key presence'
   become: true
   ansible.builtin.rpm_key:
     state: '{{ key_state }}'
@@ -10,7 +10,7 @@
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
 
-- name: 'RHEL : Zabbix-release repository presence'
+- name: 'RPM : Zabbix-release repository presence'
   become: true
   until: repository is not failed
   retries: 3
@@ -23,14 +23,14 @@
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
 
-- name: 'RHEL : yum clean all'
+- name: 'RPM : yum clean all'
   when: repository.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
   tags: [skip_ansible_lint]
 
-- name: 'RHEL : Zabbix packages presence'
+- name: 'RPM : Zabbix packages presence'
   become: true
   notify: 'Service restart'
   until: packages_presence is not failed

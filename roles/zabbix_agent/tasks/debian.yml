@@ -12,7 +12,7 @@
     msg: '{{ zabbix_repo.uri }}'
   tags: [never, debug]
 
-- name: 'Ubuntu: Zabbix-release repository presence'
+- name: 'DEB : Zabbix-release repository presence'
   become: true
   until: repository_presence is not failed
   retries: 3
@@ -26,7 +26,7 @@
     http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
 
-- name: 'Ubuntu: Zabbix packages presence'
+- name: 'DEB : Zabbix packages presence'
   become: true
   notify: 'Service restart'
   until: packages_presence is not failed

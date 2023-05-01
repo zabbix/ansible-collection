@@ -63,7 +63,7 @@ platforms:
       - molecule
       - podman
       - linux
-      - cert
+      
       - aarch
   - name: podman_rhel8
     image: registry.access.redhat.com/ubi8/ubi-init
@@ -83,7 +83,7 @@ platforms:
       - molecule
       - podman
       - linux
-      - cert
+      
   - name: podman_rhel9
     image: registry.access.redhat.com/ubi9/ubi-init
     tmpfs:
@@ -107,9 +107,9 @@ platforms:
       - agent2
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      vault_password_file: ${HOME}/.ansible/.vault
+  # config_options:
+  #   defaults:
+  #     vault_password_file: ${HOME}/.ansible/.vault
   env:
     # ANSIBLE_VERBOSITY: 3
     ANSIBLE_ROLES_PATH: "../../roles"
