@@ -45,6 +45,7 @@ Table of contents
     * [Playbook 6: Zabbix agentd downgrade from 6.4 to 6.0](#playbook-6)
     * [Playbook 7: Zabbix agentd running under custom user](#playbook-7)
     * [Playbook 8: Update Zabbix agentd to the latest minor version](#playbook-8)
+    * [Playbook 9: Deploy Zabbix agentd without direct internet access, by using HTTP proxy](#playbook-9)
   * [License](#license)
 
 <!--te-->
@@ -52,7 +53,7 @@ Table of contents
 
 Requirements
 ------------
-This role uses official Zabbix packages and repository for component installation. Target machines require direct or HTTP proxy internet access to Zabbix repository [**repo.zabbix.com**](https://repo.zabbix.com).
+This role uses official Zabbix packages and repository for component installation. Target machines require direct or [**HTTP proxy**](#playbook-9) internet access to Zabbix repository [**repo.zabbix.com**](https://repo.zabbix.com).
 
 The role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is a recommended method as it can work with iptables and nftables both. Firewalld can be installed on RHEL and Debian based distributions.
 
@@ -103,7 +104,7 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_minor_version | `string` || Zabbix agent minor version customization is available **only for RedHat based OS**.
 | package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in installed **zabbix-release** repository. 
 | remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
-| http_proxy | `string` || Defines HTTP proxy address for the packager.
+| http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | agent2_plugins_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 
@@ -524,6 +525,21 @@ Example Playbooks
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
           package_state: latest           # use latest available minor version
+  ```
+
+- ### Playbook 9:
+  **Deploy Zabbix agent without direct internet access from target machine. Using HTTP proxy.**
+  1. Same metadata as described in the [first example](#playbook-1).
+  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
+  3. Supply HTTP proxy address to the `http_proxy` variable.
+  ```yaml
+    - hosts: all
+      roles:
+        - role: zabbix.zabbix.zabbix_agent
+          param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
+          param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          http_proxy: http://host.containers.internal:8123  # HTTP proxy address. 
   ```
 
 License
