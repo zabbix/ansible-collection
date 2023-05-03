@@ -1,3 +1,10 @@
+- name: Example5_agent2_MongoDB_certsgen
+  hosts: all
+  tasks:
+    - name: Generate certificates for testing
+      ansible.builtin.script: ../default/files/certsgen.sh {{ ansible_play_hosts_all | join(' ') }}
+      delegate_to: localhost
+
 - name: Example5_agent2_MongoDB
   hosts: all
   roles:
@@ -29,15 +36,15 @@
           password: "somepassword"
           tlsconnect: "required"
           ## Source certificate files location on Ansible controller.
-          source_tlscafile: "files/certs/ca.crt"
-          source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
-          source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+          source_tlscafile: "certs/ca.crt"
+          source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+          source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
         - name: "s3"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
           ## Source certificate files location on Ansible controller.
-          source_tlscafile: "files/certs/ca.crt"
-          source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
-          source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+          source_tlscafile: "certs/ca.crt"
+          source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+          source_tlskeyfile: "certs/{{ inventory_hostname }}.key"

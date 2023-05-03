@@ -9,8 +9,20 @@
 
 - name: 'Service restart'
   become: true
+  register: service_restarted
   ansible.builtin.systemd:
     name: '{{ agent.service_name }}'
     state: restarted
   # ansible.builtin.debug:
   #   msg: Deprecate handlers
+
+- name: 'Reload user parameters'
+  become: true
+  register: reload_user_parameters
+  # Reload user parameters without restarting agent
+  ansible.builtin.command: >-
+      /usr/sbin/{{ agent.file_name }}
+      -R userparameter_reload
+  changed_when: false
+  failed_when: false
+  when: service_restarted is not defined

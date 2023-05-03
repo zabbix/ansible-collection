@@ -1,0 +1,16 @@
+- name: Reload
+  hosts: all
+  roles:
+    - role: zabbix_agent
+      #######################################
+      # remove_previous_packages: true
+      report_path: '/tmp/examples_verify_zabbix_agent.report'
+      test_name: '{{ ansible_play_name }}'
+      #######################################
+      agent_major_version: 6.4
+      param_server: ::/0              # address of Zabbix server to accept connections from;
+      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      param_userparameter:
+        - testreload, pwd
+        - testreload2, pwd
