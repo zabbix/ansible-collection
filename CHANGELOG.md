@@ -1,3 +1,10 @@
+# v1.0.4
+
+## Feature
+
+-  Zabbix agent role extended distribution support for:
+    - CentOS Stream 8,9
+
 # v1.0.3
 
 ## Feature

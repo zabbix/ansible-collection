@@ -18,6 +18,9 @@ map_supported_os_version:
       Rocky:
         '8': '.*'
         '9': '.*'
+      CentOS:
+        '8': '.*'
+        '9': '.*'
       Ubuntu:
         '18': '04'
         '20': '04'

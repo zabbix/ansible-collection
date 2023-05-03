@@ -7,6 +7,7 @@ Currently, the following OS of target machines are supported:
 - Oracle Linux 8, 9
 - Alma Linux 8, 9
 - Rocky Linux 8, 9
+- CentOS Stream 8, 9
 - Ubuntu 18.04, 20.04, 22.04
 
 Supported distribution list to be extended.
