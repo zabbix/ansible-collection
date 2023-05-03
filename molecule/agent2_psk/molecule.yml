@@ -170,7 +170,7 @@ platforms:
       - rhel
 
   - name: podman_cs8
-    dockerfile: files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile_rhel.j2
     image: quay.io/centos/centos:stream8
     pre_build_image: false
     tmpfs:
@@ -193,7 +193,7 @@ platforms:
       - linux
       - centos
   - name: podman_cs9
-    dockerfile: files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile_rhel.j2
     image: quay.io/centos/centos:stream9
     pre_build_image: false
     tmpfs:
@@ -217,7 +217,7 @@ platforms:
       - centos
 
   - name: podman_ora8
-    dockerfile: files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile_rhel.j2
     image: docker.io/library/oraclelinux:8
     pre_build_image: false
     tmpfs:
@@ -244,7 +244,7 @@ platforms:
       - linux
       - oracle
   - name: podman_ora9
-    dockerfile: files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile_rhel.j2
     image: docker.io/library/oraclelinux:9
     pre_build_image: false
     tmpfs:
