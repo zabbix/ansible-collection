@@ -8,7 +8,7 @@ namespace: zabbix
 name: zabbix
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.0.2
+version: 1.0.3
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -68,9 +68,15 @@ issues: https://github.com/zabbix/ansible-collection/issues
 # and '.git' are always filtered. Mutually exclusive with 'manifest'
 build_ignore:
   - temp
+  - '.github'
+  - '.vscode'
+  - '*~'
+  - '*.swp'
+  - '*.swo'
   - '*.key'
   - '*.crt'
   - '*.csr'
+  - '*.srl'
   - '*.psk'
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a

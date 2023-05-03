@@ -12,4 +12,5 @@ zabbix-zabbix*.tar.gz
 *.key
 *.crt
 *.csr
+*.srl
 *.psk

@@ -9,6 +9,15 @@ map_supported_os_version:
         '7': '.*'
         '8': '.*'
         '9': '.*'
+      OracleLinux:
+        '8': '.*'
+        '9': '.*'
+      AlmaLinux:
+        '8': '.*'
+        '9': '.*'
+      Rocky:
+        '8': '.*'
+        '9': '.*'
       Ubuntu:
         '18': '04'
         '20': '04'
