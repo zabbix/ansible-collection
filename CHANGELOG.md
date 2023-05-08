@@ -1,3 +1,9 @@
+# v1.0.5
+
+## Feature
+
+-  Added userparameter reload to Zabbix agent role. It will trigger if `param_userparamater` was changed and no agent restart detected.
+
 # v1.0.4
 
 ## Feature
