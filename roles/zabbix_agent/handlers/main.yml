@@ -24,5 +24,7 @@
       /usr/sbin/{{ agent.file_name }}
       -R userparameter_reload
   changed_when: false
-  failed_when: false
+  failed_when: >-
+    (reload_user_parameters.stdout + reload_user_parameters.stderr)
+    | regex_search("reloaded|success") is none
   when: service_restarted is not defined
