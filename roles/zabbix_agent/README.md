@@ -359,9 +359,9 @@ Hints & Tags
 - Wrong variable definition level can be punishing for starters. Begin with [**variable precedence learning**](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable). 
   We recommend [**organizing host and group variables**](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html#organizing-host-and-group-variables) on inventory level. It is handy for big environments and will fit most use cases.
 - Zabbix agent role uses **handlers** to reload systemd daemon and restart `zabbix-agent[2]` service.
-  To trigger **handler** execution each time (not only after changes made) pass `restart` tag:
+  To trigger **handler** execution each time (not only after changes made) compliment your run with `restart` tag. Add it after `all` tag or other tasks (not marked with `restart` tag will be skipped).
 
-      ansible-playbook -i inventory play.yml -t restart
+      ansible-playbook -i inventory play.yml -t all,restart
 
 - To stop and remove `zabbix-agent[2]` service, use `remove` tag. This will clear custom overrides if present and uninstall packages, according to variables defined.
 
