@@ -338,7 +338,6 @@
     enabled: true
 
 - name: Forcing handler execution
-  when: restart or "restart" in ansible_run_tags
   ansible.builtin.debug:
     msg: Forced
   changed_when: true

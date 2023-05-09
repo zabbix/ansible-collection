@@ -39,7 +39,7 @@ Table of contents
         * [MySQL plugin parameters](#zabbix-agent2-mysql-plugin-parameters)
         * [Redis plugin parameters](#zabbix-agent2-redis-plugin-parameters)
         * [Smart plugin parameters](#zabbix-agent2-smart-plugin-parameters)
-  * [Hints](#hints)
+  * [Hints & Tags](#hints--tags)
   * [Example playbooks](#example-playbooks)
     * [Playbook 1: Latest LTS Zabbix agentd deploy for active checks only](#playbook-1)
     * [Playbook 2: 6.4 version of Zabbix agent2 for both passive and active checks + Iptables](#playbook-2)
@@ -195,7 +195,7 @@ These parameters are common for both agent variants
 | param_tlsservercertissuer | `string` || [**TLSServerCertIssuer**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertissuer) | Allowed server (proxy) certificate issuer.
 | param_tlsservercertsubject | `string` || [**TLSServerCertSubject**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertsubject) | Allowed server (proxy) certificate subject.
 | param_unsafeuserparameters | `int` || [**UnsafeUserParameters**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#unsafeuserparameters) | Allow all characters to be passed in arguments to user-defined parameters.
-| param_userparameter | `list` || [**UserParameter**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameter) | User-defined parameter to monitor. Location of userparameters on target machine: `/etc/zabbix/zabbix_agent[d|2].d/userparameters.conf`
+| param_userparameter | `list` || [**UserParameter**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameter) | User-defined parameter to monitor. Listed userparameters will be placed to the target machine folder: `/etc/zabbix/zabbix_agent[d|2].d/userparameters.conf`. If changed, this parameter triggers userparameter reload(agent runtime command).
 | param_userparameterdir | `string` || [**UserParameterDir**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#userparameterdir) | Default search path for UserParameter commands.
 
 ### Zabbix **agentd** unique parameters:
@@ -353,7 +353,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
 | param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 
-Hints
+Hints & Tags
 -----
 
 - Wrong variable definition level can be punishing for starters. Begin with [**variable precedence learning**](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable). 
@@ -363,7 +363,11 @@ Hints
 
       ansible-playbook -i inventory play.yml -t restart
 
+- To stop and remove `zabbix-agent[2]` service, use `remove` tag. This will clear custom overrides if present and uninstall packages, according to variables defined.
 
+      ansible-playbook -i inventory play.yml -t remove
+
+- If `param_userparam` is modified and registered as the only change during role run, it will trigger Zabbix agent[2] runtime command to reload user parameters without agent restart.
 
 Example Playbooks
 -----------------

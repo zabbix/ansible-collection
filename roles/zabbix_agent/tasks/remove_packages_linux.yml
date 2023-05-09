@@ -14,11 +14,9 @@
     state: absent
   tags: [remove]
 
-- name: "Remove packages : Systemd : Overrides cleared"
+# consider purging for apt
+- name: 'Remove packages : Systemd Overrides and Logrotate cleared'
   become: true
-  notify:
-    - 'Reload systemd daemon'
-    - 'Service restart'
   ansible.builtin.file:
     path: '{{ item_path }}'
     state: absent
@@ -29,5 +27,5 @@
   vars:
     clean_path_list:
       - '{{ agent_systemd_override_path }}'
-      # - '{{ agent_logrotate_path }}'
+      - '{{ agent_logrotate_path }}'
   tags: [remove]
