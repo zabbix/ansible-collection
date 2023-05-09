@@ -81,4 +81,4 @@
     loadable_plugin_list:
       - '{{ "zabbix-agent2-plugin-mongodb" if "mongodb" in agent2_plugin_list else None }}'
       - '{{ "zabbix-agent2-plugin-postgresql" if "postgresql" in agent2_plugin_list else None }}'
-  tags: [vars, verify]
+  tags: [vars, verify, remove]

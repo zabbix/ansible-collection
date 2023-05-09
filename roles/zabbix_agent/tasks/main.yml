@@ -33,7 +33,7 @@
       - '{{ "ubuntu" if ansible_distribution == "Ubuntu" else None }}'
       - '{{ "debian" if ansible_distribution == "Debian" else None }}'
       - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'
-  tags: [vars, verify]
+  tags: [vars, verify, remove]
 
 - name: 'Variables : Custom user : Overrides'
   when: >
@@ -43,7 +43,7 @@
     and service_group != "zabbix"
   # variable change required for custome user
   ansible.builtin.include_vars: custom_user_overrides.yml
-  tags: [vars, verify]
+  tags: [vars, verify, remove]
 
 - name: 'Variables: Get/Generate PSK keys'
   when: param_tlsconnect == "psk" or "psk" in param_tlsaccept
@@ -67,7 +67,7 @@
 - name: 'Variables: Agent2 plugin settings'
   when: agent_variant | string == '2'
   ansible.builtin.include_tasks: agent2_plugin_settings.yml
-  tags: [vars, verify]
+  tags: [vars, verify, remove]
 
 - name: 'DEBUG : Package info'
   ansible.builtin.debug:
@@ -80,8 +80,11 @@
   tags: [never, debug]
 
 - name: Include package clearing tasks
-  when: remove_previous_packages is defined and remove_previous_packages
+  when: >-
+    remove_previous_packages is defined and remove_previous_packages
+    or "remove" in ansible_run_tags
   ansible.builtin.include_tasks: 'remove_packages_{{ ansible_system | lower }}.yml'
+  tags: [remove]
 
 - name: Include OS packager(yum/apt) specific tasks
   ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'

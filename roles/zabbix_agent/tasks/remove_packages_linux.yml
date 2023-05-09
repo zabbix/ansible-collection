@@ -5,12 +5,14 @@
     name: '{{ agent.service_name }}'
     state: stopped
   failed_when: false
+  tags: [remove]
 
 - name: 'Remove packages : Package absence'
   become: true
   ansible.builtin.package:
     name: '{{ package_list + ["zabbix-release"] }}'
     state: absent
+  tags: [remove]
 
 - name: "Remove packages : Systemd : Overrides cleared"
   become: true
@@ -28,3 +30,4 @@
     clean_path_list:
       - '{{ agent_systemd_override_path }}'
       # - '{{ agent_logrotate_path }}'
+  tags: [remove]
