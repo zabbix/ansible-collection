@@ -143,6 +143,7 @@
     group: '{{ agent.conf_file.permissions.group }}'
     # recursive: true
     # delete: true
+  tags: [userparam]
 
 - name: 'Zabbix agent configuration "Include folders" maintenance'
   # create path & apply permissions
@@ -203,6 +204,7 @@
     # recursive: true
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
+  tags: [userparam]
 
 - name: 'Upload : "modules" folder'
   when: source_modules_dir is defined and source_modules_dir and agent_variant | string != '2'
@@ -220,11 +222,10 @@
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
 
-# Add params and aliases to first include folder
-- name: 'Fill configuration with custom UserParameters and Aliases'
+# Add userparams to first include folder
+- name: 'Fill configuration with custom UserParameters'
   become: true
   notify:
-    # - 'Service restart'
     - 'Reload user parameters'
   ansible.builtin.template:
     backup: false
@@ -237,6 +238,23 @@
   vars:
     template_list:
       - userparameters.conf
+  tags: [userparam]
+
+# Add aliases to first include folder
+- name: 'Fill configuration with custom Aliases'
+  become: true
+  notify:
+    - 'Service restart'
+  ansible.builtin.template:
+    backup: false
+    src: 'zabbix_agent.{{ item }}.j2'
+    dest: '{{ param_include[0] | dirname }}/{{ item }}'
+    mode: '{{ agent.conf_file.permissions.mode }}'
+    owner: '{{ agent.conf_file.permissions.user }}'
+    group: '{{ agent.conf_file.permissions.group }}'
+  loop: '{{ template_list | select }}'
+  vars:
+    template_list:
       - aliases.conf
 
 # Creates TLS folder path and applies permissions
@@ -337,7 +355,7 @@
     name: '{{ agent.service_name }}'
     enabled: true
 
-- name: Forcing handler execution
+- name: Forcing service restart
   ansible.builtin.debug:
     msg: Forced
   changed_when: true

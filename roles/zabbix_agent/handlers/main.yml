@@ -11,6 +11,8 @@
 - name: 'Service restart'
   when: >-
     "remove" not in ansible_run_tags
+    and
+    "userparam" not in ansible_run_tags
   become: true
   register: service_restarted
   ansible.builtin.systemd:
@@ -33,3 +35,4 @@
   failed_when: >-
     (reload_user_parameters.stdout + reload_user_parameters.stderr)
     | regex_search("reloaded|success") is none
+  tags: [userparam]

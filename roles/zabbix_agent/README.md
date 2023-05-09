@@ -369,6 +369,15 @@ Hints & Tags
 
 - If `param_userparam` is modified and registered as the only change during role run, it will trigger Zabbix agent[2] runtime command to reload user parameters without agent restart.
 
+- To run only tasks, that modifies user parameters, pass `userparam` tag. Task sequence will be limited to:
+  - Copy include folder.
+  - Copy script folder.
+  - Adding a list of userparameters from `param_userparameter` variable to configuration file.
+  - Runtime command to reload userparameters.
+
+        ansible-playbook -i inventory play.yml -t userparam
+      
+
 Example Playbooks
 -----------------
 
