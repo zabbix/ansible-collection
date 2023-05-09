@@ -110,7 +110,7 @@ The default settings are aimed at the ease of installation. You can override tho
 | remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
 | http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
-| agent2_plugins_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
+| <a name="agent2_plugin_list"></a>agent2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 
 ### User settings:
 
@@ -233,11 +233,10 @@ These parameters are common for both agent variants
 | param_plugintimeout | `int` || [**PluginTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2#plugintimeout) | Timeout for connections with loadable plugins, in seconds.
 | param_refreshactivechecks | `int` || [**RefreshActiveChecks**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2#refreshactivechecks) | How often the list of active checks is refreshed.
 | param_statusport | `int` || [**StatusPort**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2#statusport) | If set, the agent will listen on this port for HTTP status requests (`http://localhost:<port>/status`).
-| param_includeplugins | `list` | ["/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf"] | [**Include**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2#include) | If set, the agent will listen on this port for HTTP status requests (`http://localhost:<port>/status`).
-
+| param_includeplugins | `list` | ["/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf"] | [**Include**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2#include) | Path to plugin configuration files. You may include individual files or all files in a directory in the configuration file.
 ### Zabbix **agent2 Ceph plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -248,7 +247,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Docker plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -257,7 +256,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Memcached plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -267,7 +266,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Modbus plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -276,7 +275,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 MongoDB plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
@@ -289,7 +288,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 
 ### Zabbix **agent2 MQTT plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -297,7 +296,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Oracle plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -309,7 +308,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Postgresql plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
@@ -324,7 +323,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 
 ### Zabbix **agent2 MySQL plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
@@ -337,7 +336,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 
 ### Zabbix **agent2 Redis plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
@@ -347,7 +346,7 @@ For these settings to take effect, the plugin should be listed in `agent2_plugin
 
 ### Zabbix **agent2 Smart plugin** parameters:
 
-For these settings to take effect, the plugin should be listed in `agent2_plugins_list`.
+For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
