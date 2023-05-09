@@ -3,9 +3,14 @@
 ## Feature
 
 - Added userparameter reload to Zabbix agent role. It will trigger if `param_userparamater` was changed and no agent restart detected.
+- Added logrotate customization and extended new defaults with maxsize option.
 - Added `remove` tag to uninstall agent packages.
   ```bash
   ansible-playbook -i inventory play.yml -t remove
+  ```
+- Added `userparam` tag to manage user parameters only.
+  ```bash
+  ansible-playbook -i inventory play.yml -t userparam
   ```
 
 # v1.0.4

@@ -1,3 +1,0 @@
----
-### Choose to execute Zabbix agent restart and unit reload handlers always
-restart: false

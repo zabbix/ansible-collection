@@ -1,9 +1,5 @@
 {{ param_logfile }} {
-    weekly
-    rotate 12
-    compress
-    delaycompress
-    missingok
-    notifempty
-    create 0640 {{ service_user }} {{ service_group }}
+{% for unit in logrotate_options %}
+    {{ unit }}
+{% endfor %}
 }

@@ -20,6 +20,17 @@ agent_systemd_override_path: '{{ map_agent_systemd_override_path[agent_variant |
 ### Location of logrotate settings.
 agent_logrotate_path: '{{ map_agent_logrotate_path[agent_variant | string] }}'
 
+### Option list for log rotation, using logrotate
+logrotate_options:
+  - weekly
+  - maxsize 5M 
+  - rotate 12
+  - compress
+  - delaycompress
+  - missingok
+  - notifempty
+  - create 0640 {{ service_user }} {{ service_group }}
+
 ### Default plugin list for Zabbix agent2
 agent2_plugin_list: '{{ map_agent2_plugin_list[agent_major_version | string] }}'
 
