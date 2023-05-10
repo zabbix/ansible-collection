@@ -39,14 +39,12 @@ Roles:
 ## Related content
 
 [Event-Driven Ansible integration](https://www.zabbix.com/integrations/ansible#event_driven_ansible) is based on webhook usage:
-  - Zabbix media type is pushing events to EDA.
-  - EDA webhook receives incoming events and passes to processing via rulebook.
+  - Zabbix media type pushes events to EDA;
+  - EDA webhook receives incoming events and passes those to processing via rulebook.
 
-EDA helps with automation of issue remediation and debugging tasks. Basically EDA receives events sent from Zabbix and triggers different playbook execution, according to conditions set.
-EDA integration is included in Zabbix out of the box and available starting with Zabbix 6.0 version.
-Refer to [EDA media type documentation](https://www.zabbix.com/integrations/ansible#event_driven_ansible) for more details on setup.
+EDA helps with automation of issue remediation and debugging tasks. Basically, EDA receives events sent from Zabbix and triggers different playbook execution, according to the conditions set. 
+EDA integration is included in Zabbix out of the box and is available starting with Zabbix 6.0 version. Refer to [EDA media type documentation](https://www.zabbix.com/integrations/ansible#event_driven_ansible) for more details on setup.
 
-  
 ## License
 
 Ansible Zabbix collection is released under the GNU General Public License (GPL) version 2. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.
