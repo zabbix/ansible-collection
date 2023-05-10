@@ -1,4 +1,4 @@
-- name: agent2_plugins_session_tlsfile_test
+- name: Agent2_plugins_session_tlsfile_test
   hosts: all
   tasks:
     - name: Generate certificates for testing
@@ -105,5 +105,3 @@
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"
-
-

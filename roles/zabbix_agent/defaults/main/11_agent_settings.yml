@@ -23,7 +23,7 @@ agent_logrotate_path: '{{ map_agent_logrotate_path[agent_variant | string] }}'
 ### Option list for log rotation, using logrotate
 logrotate_options:
   - weekly
-  - maxsize 5M 
+  - maxsize 5M
   - rotate 12
   - compress
   - delaycompress
