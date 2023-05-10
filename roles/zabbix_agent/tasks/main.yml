@@ -318,7 +318,9 @@
     group: '{{ service_group }}'
 
 - name: 'Upload : Zabbix agent2 : TLS certificates for plugins'
-  when: agent_variant | string == '2'
+  when: >-
+    agent_variant | string == '2'
+    and plugin_tls_file.source is defined and plugin_tls_file.source
   become: true
   notify: 'Service restart'
   ansible.builtin.copy:
@@ -331,7 +333,7 @@
     # recursive: true
   loop_control:
     loop_var: plugin_tls_file
-    label: '{{ plugin_tls_file.source, plugin_tls_file.target }}'
+    label: '{{ plugin_tls_file.source | default(None), plugin_tls_file.target }}'
   loop: '{{ plugins_mysql_tls_file_list | default([])
           + plugins_postgresql_tls_file_list | default([])
           + plugins_mongodb_tls_file_list | default([])

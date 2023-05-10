@@ -8,16 +8,16 @@
     plugins_mysql_tls_file_list: '{{ (plugins_mysql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
-          "source": item.source_tlscafile,
-          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscafile | basename)}]
+          "source": item.source_tlscafile | default(omit),
+          "target": item.tlscafile if item.source_tlscafile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
-          "source": item.source_tlscertfile,
-          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscertfile | basename)}]
+          "source": item.source_tlscertfile | default(omit),
+          "target": item.tlscertfile if item.source_tlscertfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
-          "source": item.source_tlskeyfile,
-          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlskeyfile | basename)}]
+          "source": item.source_tlskeyfile | default(omit),
+          "target": item.tlskeyfile if item.source_tlskeyfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MYSQL/" + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -33,20 +33,33 @@
     plugins_postgresql_tls_file_list: '{{ (plugins_postgresql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
-          "source": item.source_tlscafile,
-          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscafile | basename)}]
+          "source": item.source_tlscafile | default(omit),
+          "target": item.tlscafile if item.source_tlscafile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
-          "source": item.source_tlscertfile,
-          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscertfile | basename)}]
+          "source": item.source_tlscertfile | default(omit),
+          "target": item.tlscertfile if item.source_tlscertfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
-          "source": item.source_tlskeyfile,
-          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlskeyfile | basename)}]
+          "source": item.source_tlskeyfile | default(omit),
+          "target": item.tlskeyfile if item.source_tlskeyfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
   loop: '{{ param_plugins_postgresql_sessions }}'
+  tags: [vars, verify]
+
+- name: 'DEBUG : Agent2 : list of MongoDB plugin certs'
+  when: >
+    param_plugins_mongodb_sessions is defined
+    and param_plugins_mongodb_sessions
+    and item.tlsconnect is defined and item.tlsconnect
+    and item.name == "s3"
+  ansible.builtin.debug:
+    msg: '{{ item.name, item["tlscafile"], item.tlscertfile, item.tlskeyfile }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ param_plugins_mongodb_sessions }}'
   tags: [vars, verify]
 
 - name: 'Variables : Agent2 : list of MongoDB plugin certs'
@@ -58,16 +71,16 @@
     plugins_mongodb_tls_file_list: '{{ (plugins_mongodb_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
-          "source": item.source_tlscafile,
-          "target": item.tlscafile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscafile | basename)}]
+          "source": item.source_tlscafile | default(omit),
+          "target": item.tlscafile if item.source_tlscafile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
-          "source": item.source_tlscertfile,
-          "target": item.tlscertfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscertfile | basename)}]
+          "source": item.source_tlscertfile | default(omit),
+          "target": item.tlscertfile if item.source_tlscertfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
-          "source": item.source_tlskeyfile,
-          "target": item.tlskeyfile | default(service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlskeyfile | basename)}]
+          "source": item.source_tlskeyfile | default(omit),
+          "target": item.tlskeyfile if item.source_tlskeyfile is not defined else service_user_home + "/" + agent.file_name | upper + "/.CERT/MONGODB/" + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
