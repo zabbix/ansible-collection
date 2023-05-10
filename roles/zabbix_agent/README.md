@@ -24,6 +24,7 @@ Table of contents
     * [General settings](#general-settings)
     * [User settings](#user-settings)
     * [Firewall settings](#firewall-settings)
+    * [Logrotate configuration for Zabbix agent](#logrotate-configuration-for-zabbix-agent)
     * [Local path settings](#local-paths-variables-table)
     * [Common Zabbix agent configuration file parameters](#common-zabbix-agent-configuration-parameters)
       * [Zabbix agent unique parameters](#zabbix-agentd-unique-parameters)
@@ -142,6 +143,21 @@ Firewalld is a recommended way of applying firewall rule as it works with iptabl
 | apply_iptables_rule | `boolean` | `false` | Defines application of iptables rule. Possible options: [true, false]. 
 | firewalld_zone | `string` | default | Firewalld zone for rule application.
 | firewall_allow_from | `string` || Limits source address of passive check using firewall rule. For firewalld, this setting will change the rule from simple to rich rule.
+
+### **Logrotate** configuration for Zabbix agent
+
+You can modify rotation options of Zabbix agent[2] log file. It requires default option overriding in `logrotate_options` variable.
+This is a `list` type variable, and it defaults to the list of following options:
+  - weekly
+  - maxsize 5M 
+  - rotate 12
+  - compress
+  - delaycompress
+  - missingok
+  - notifempty
+  - create 0640 {{ service_user }} {{ service_group }}
+
+**Note** that most distributions executes logrotate jobs on a daily basis by default. If You wish to change rotation calendar, modify according cronjob or systemd timer. Or add separate cronjob/timer to process only Zabbix agent[2] log.
 
 ### Local paths variables table:
 
