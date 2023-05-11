@@ -1,5 +1,5 @@
 ---
-- name: 'Variables : Agent2 : list of Mysql plugin certs'
+- name: 'Variables : Agent2 : generate list of Mysql plugin cert sources'
   when: >
     param_plugins_mysql_sessions is defined
     and param_plugins_mysql_sessions
@@ -27,7 +27,7 @@
   loop: '{{ param_plugins_mysql_sessions }}'
   tags: [vars, verify]
 
-- name: 'Variables : Agent2 : list of PostgreSQL plugin certs'
+- name: 'Variables : Agent2 : generate list of PostgreSQL plugin cert sources'
   when: >
     param_plugins_postgresql_sessions is defined
     and param_plugins_postgresql_sessions
@@ -55,7 +55,7 @@
   loop: '{{ param_plugins_postgresql_sessions }}'
   tags: [vars, verify]
 
-- name: 'Variables : Agent2 : list of MongoDB plugin certs'
+- name: 'Variables : Agent2 : generate list of MongoDB plugin certs'
   when: >
     param_plugins_mongodb_sessions is defined
     and param_plugins_mongodb_sessions
