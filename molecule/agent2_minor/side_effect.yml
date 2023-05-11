@@ -10,16 +10,17 @@
       vars:
         verification: true
     - name: 'Variables : Include system and disrtibution specific'
-      ansible.builtin.include_vars: '{{ var_item }}.yml'
+      ansible.builtin.include_vars: '../../roles/zabbix_agent/vars/{{ var_item }}.yml'
       loop: '{{ var_list | select }}'
       loop_control:
         loop_var: var_item
       vars:
         var_list:
-          # - '{{ ansible_system | lower }}'
-          - '../../roles/zabbix_agent/vars/{{ ansible_distribution | lower }}'
+          - '{{ "ubuntu" if ansible_distribution == "Ubuntu" else None }}'
+          - '{{ "debian" if ansible_distribution == "Debian" else None }}'
+          - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'
     - name: Include OS packager(yum/apt) specific tasks
-      ansible.builtin.include_tasks: '../../roles/zabbix_agent/tasks/{{ ansible_distribution | lower }}.yml'
+      ansible.builtin.include_tasks: '../../roles/zabbix_agent/tasks/{{ ansible_os_family | lower }}.yml'
       vars:
         agent_minor_version: false
         package_state: latest
