@@ -207,6 +207,10 @@ These parameters are common for both agent variants
 | param_timeout | `int` || [**Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#timeout) | Spend no more than Timeout seconds on processing.
 | param_tlsaccept | `list` | ["unencrypted"] | [**TLSAccept**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsaccept) | Incoming connections to be accepted.
 | param_tlsconnect | `string` | unencrypted | [**TLSConnect**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsconnect) | How the agent should connect to Zabbix server or proxy.
+| param_tlscafile | `string` || [**TLSCAFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscafile) | Path to the top-level CA(s) certificates for peer certificate verification. Use only in case, when [`source_tlscafile`](#local-paths-variables-table) is not defined! 
+| param_tlscertfile | `string` || [**TLSCertFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscertfile) | Path to the agent certificate or certificate chain. Use only in case, when [`source_tlscertfile`](#local-paths-variables-table) is not defined! 
+| param_tlscrlfile | `string` || [**TLSCRLFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscrlfile) | Path to revoked certificates. Use only in case, when [`source_tlscrlfile`](#local-paths-variables-table) is not defined! 
+| param_tlskeyfile | `string` || [**TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlskeyfile) | Path to the agent private key. Use only in case, when [`source_tlskeyfile`](#local-paths-variables-table) is not defined! 
 | param_tlspskidentity | `string` | `PSK_ID_{{ inventory_hostname }}` | [**TLSPSKIdentity**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlspskidentity) | Pre-shared key identity string used for encrypted communications with Zabbix server.
 | param_tlsservercertissuer | `string` || [**TLSServerCertIssuer**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertissuer) | Allowed server (proxy) certificate issuer.
 | param_tlsservercertsubject | `string` || [**TLSServerCertSubject**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertsubject) | Allowed server (proxy) certificate subject.
@@ -295,6 +299,12 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
+You can manage session certificate files outside this role also. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", uri: "", user: "", password: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
 | param_plugins_mongodb_keepalive | `int` || [**Plugins.MongoDB.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
@@ -328,6 +338,12 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
 
+You can manage session certificate files outside this role also. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self managed certificate files:
+`{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
 | param_plugins_postgresql_calltimeout | `int` || [**Plugins.Postgresql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a request to be done. 
@@ -342,6 +358,12 @@ Parameter prefixes `source_` should point to the certificate files located on An
 For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined - all 3 certificate files becomes mandatory!
 Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
+
+You can manage session certificate files outside this role also. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", uri: "", user: "", password: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
