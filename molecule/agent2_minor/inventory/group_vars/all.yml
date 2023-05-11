@@ -203,20 +203,20 @@ param_plugins_mongodb_sessions:
     uri: "someuri"
     user: "someuser"
     password: "somepassword"
-    tlsconnect: "required"
-    ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
-    source_tlscafile: "../default/files/certs/ca.crt"
-    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    # source_tlscafile: "../default/files/certs/ca.crt"
+    # source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
   - name: "sessionname2"
     uri: "someuri"
     user: "someuser"
     password: "somepassword"
-    tlsconnect: "required"
-    ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
-    source_tlscafile: "../default/files/certs/ca.crt"
-    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    # source_tlscafile: "../default/files/certs/ca.crt"
+    # source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
 ## agent2 Plugins.MQTT:
 param_plugins_mqtt_timeout: 3
 ## agent2 Plugins.Oracle:
@@ -238,11 +238,11 @@ param_plugins_postgresql_sessions:
     user: "someuser"
     password: "somepassword"
     database: "somedatabase"
-    tlsconnect: "required"
-    ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
-    source_tlscafile: "../default/files/certs/ca.crt"
-    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
+    # source_tlscafile: "../default/files/certs/ca.crt"
+    # source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
 ## agent2 Plugins.Mysql:
 param_plugins_mysql_calltimeout: 3
 param_plugins_mysql_timeout: 3
@@ -252,11 +252,11 @@ param_plugins_mysql_sessions:
     uri: "someuri"
     user: "someuser"
     password: "somepassword"
-    tlsconnect: "required"
-    ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
-    source_tlscafile: "../default/files/certs/ca.crt"
-    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
+    # source_tlscafile: "../default/files/certs/ca.crt"
+    # source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
 ## agent2 Plugins.Redis:
 param_plugins_redis_timeout: 3
 param_plugins_redis_keepalive: 300
