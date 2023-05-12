@@ -14,6 +14,7 @@
   ```bash
   ansible-playbook -i inventory play.yml -t userparam
   ```
+- Added self-managed repo mirror support
 
 # v1.0.4
 
