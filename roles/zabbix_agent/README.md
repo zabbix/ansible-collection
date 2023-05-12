@@ -60,6 +60,8 @@ Requirements
 ------------
 This role uses official Zabbix packages and repository for component installation. Target machines require direct or [**HTTP proxy**](#playbook-9) internet access to Zabbix repository [**repo.zabbix.com**](https://repo.zabbix.com).
 
+For self-hosted repository mirrors override URL for [`repository_mirror`](#general-settings) variable.
+
 The role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is a recommended method as it can work with iptables and nftables both. Firewalld can be installed on RHEL and Debian based distributions.
 
 Multiple tasks require `superuser` privileges (sudo).
@@ -109,9 +111,10 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_minor_version | `string` || Zabbix agent minor version customization is available **only for RedHat based OS**.
 | package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in installed **zabbix-release** repository. 
 | remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
+| agent2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 | http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
-| <a name="agent2_plugin_list"></a>agent2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
+| repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
 
 ### User settings:
 

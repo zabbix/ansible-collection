@@ -1,13 +1,13 @@
 ---
 zabbix_repo:
   name: 'zabbix-release'
-  uri: '{{ "https://repo.zabbix.com/zabbix/" + agent_major_version | string + "/"
+  uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
           + ansible_distribution | lower
           + ("-arm64" if ansible_architecture == "aarch64" else "")
           + "/pool/main/z/zabbix-release/zabbix-release_"
           + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string
           + "%2B" + ansible_distribution | lower + ansible_distribution_version + "_all.deb" }}'
-  # uri: '{{ "https://repo.zabbix.com/zabbix/" + agent_major_version | string + "/"
+  # uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
   #         + ("ubuntu-arm64" if ansible_architecture == "aarch64" else "ubuntu")
   #         + "/pool/main/z/zabbix-release/zabbix-release_"
   #         + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string

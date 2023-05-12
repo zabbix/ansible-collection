@@ -1,0 +1,3 @@
+---
+### Override repositrory URL for self hosted mirrors.
+repository_mirror: "https://repo.zabbix.com/"
