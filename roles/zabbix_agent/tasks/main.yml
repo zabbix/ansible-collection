@@ -350,6 +350,10 @@
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
 
+- name: 'Include : Selinux tasks'
+  ansible.builtin.include_tasks: 'selinux.yml'
+  tags: [selinux]
+
 - name: 'Systemctl : Service enabled'
   become: true
   when: package_state != 'absent'
@@ -366,6 +370,14 @@
     - Service restart
   tags: [never, restart]
 
+- name: Forcing userparameter reload
+  ansible.builtin.debug:
+    msg: Forced
+  changed_when: true
+  notify:
+    - 'Reload user parameters'
+  tags: [never, userparam]
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified)
   tags: [restart]
@@ -378,10 +390,10 @@
 #     name: '{{ agent.service_name }}'
 #     state: started
 
-- name: 'Include verify steps'
+- name: 'Include : verify steps'
   ansible.builtin.include_tasks: 'verify.yml'
   tags: [never, verify]
 
-- name: Include host tasks
+- name: 'Include : host tasks'
   ansible.builtin.include_tasks: 'host.yml'
   tags: [never, host]
