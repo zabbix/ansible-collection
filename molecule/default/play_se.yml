@@ -1,13 +1,15 @@
 - name: SE test
   hosts: all
   roles:
-    - role: Zabbix_agent
+    - role: zabbix_agent
       # remove_previous_packages: true
       package_state: latest
-      agent_variant: 2
-      param_listenport: 10020
+      agent_variant: 1
+      param_listenport: 10050
       agent_major_version: 6.0
-      source_scripts_dir: scripts
-      param_userparameter:
-        - traces, /var/lib/zabbix/ZABBIX_AGENT2/scripts/traces.sh
-        - suls, sudo ls /root
+      # source_scripts_dir: scripts
+      # param_userparameter:
+      #   - traces, /var/lib/zabbix/ZABBIX_AGENT2/scripts/traces.sh
+      #   - suls, sudo ls /root
+      apply_selinux: true
+      seboolean_zabbix_run_sude: true

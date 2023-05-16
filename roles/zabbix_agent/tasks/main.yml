@@ -351,6 +351,11 @@
     group: '{{ agent.conf_file.permissions.group }}'
 
 - name: 'Include : Selinux tasks'
+  when: >-
+    ("selinux" in ansible_run_tags or apply_selinux)
+    and ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+    and (ansible_selinux.mode is defined and ansible_selinux.mode == "enforcing"
+        or ansible_selinux.config_mode is defined and ansible_selinux.config_mode == "enforcing")
   ansible.builtin.include_tasks: 'selinux.yml'
   tags: [selinux]
 
