@@ -1,3 +1,3 @@
 exclude_paths:
   - molecule/default/inventory/tasty.inv.yml
-
+  - .github
