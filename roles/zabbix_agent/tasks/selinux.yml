@@ -1,8 +1,8 @@
 ---
 - name: 'Semanage: Add port to "zabbix_agent_port_t" type'
-  become: true
   when: >-
     param_listenport is defined and param_listenport | int != 10050
+  become: true
   ansible.builtin.command: >-
     semanage port -a -t zabbix_agent_port_t -p tcp {{ param_listenport }}
   register: semanage_result
@@ -15,11 +15,39 @@
     | regex_search("already defined") is none
   tags: [selinux]
 
+- name: 'SELinux module block'
+  when: apply_semodule is defined and apply_semodule
+  become: true
+  notify: 'Service restart'
+  vars:
+    semodule: 'zabbix_agent_extend'
+  tags: [selinux]
+  block:
+    # - name: 'SELinux module : Get status'
+    #   ansible.builtin.command: 'semodule -lfull | grep zabbix_agent_extend'
+    #   register: semodule_status
+    # - name: 'Debug'
+    #   ansible.builtin.debug:
+    #     var: semodule_status
+    - name: 'SELinux module : Upload'
+      ansible.builtin.template:
+        src: '{{ semodule }}.cil.j2'
+        dest: '{{ semodules_path }}/{{ semodule }}.cil'
+        mode: '{{ agent.conf_file.permissions.mode }}'
+        owner: '{{ agent.conf_file.permissions.user }}'
+        group: '{{ agent.conf_file.permissions.group }}'
+    - name: 'SELinux module : Install/Rewrite'
+      ansible.builtin.command: 'semodule -i {{ semodule }}.cil'
+      ### if policy changes it needs rewriting... no idempotency for now
+      changed_when: true
+      args:
+        chdir: '{{ semodules_path }}'
+
 - name: 'Seboolean: zabbix_run_sudo'
+  when:
+    - seboolean_zabbix_run_sudo
   ansible.posix.seboolean:
     name: zabbix_run_sudo
     persistent: true
     state: true
-  when:
-    - seboolean_zabbix_run_sudo
   tags: [selinux]

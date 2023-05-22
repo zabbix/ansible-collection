@@ -1,0 +1,2 @@
+### add Zabbix agent2 to "zabbix_agent_t" domain type
+/usr/sbin/zabbix_agent2 -- gen_context(system_u:object_r:zabbix_agent_exec_t,s0)
