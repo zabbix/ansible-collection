@@ -1,3 +1,13 @@
+# v1.0.6
+
+## Feature
+
+- Zabbix agent role: added SELinux policy extension for Zabbix agent2
+
+## Bug
+
+- Zabbix agent role: fixed default home folder path for RedHat like distributions
+
 # v1.0.5
 
 ## Feature

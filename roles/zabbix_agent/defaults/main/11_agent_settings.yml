@@ -3,7 +3,7 @@
 
 ### User and Group to run Zabbix agent under.
 service_user: '{{ map_service_user[ansible_system] }}'
-service_user_home: '{{ map_service_user_home[ansible_system] }}'
+service_user_home: '{{ map_service_user_home[ansible_os_family] }}'
 custom_service_user_home: '{{ map_default_home_folder[ansible_system] }}'
 service_group: '{{ map_service_group[ansible_system] }}'
 

@@ -36,7 +36,8 @@ map_agent2_plugin_list:
 map_service_user:
   Linux: zabbix
 map_service_user_home:
-  Linux: /var/lib/zabbix/
+  Debian: /var/lib/zabbix/
+  RedHat: /usr/lib/zabbix/
 map_default_home_folder:
   Linux: /home/
 map_service_group:
