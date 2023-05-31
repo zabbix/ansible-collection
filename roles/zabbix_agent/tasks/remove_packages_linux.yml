@@ -44,7 +44,7 @@
         state: absent
     - name: 'SELinux module : Module removed'
       ansible.builtin.command: 'semodule -vr {{ semodule }}'
-      changed_when: semodule_remove_result.stdout | regex_search("removing", ignorecase=True) is not none 
+      changed_when: semodule_remove_result.stdout | regex_search("removing", ignorecase=True) is not none
       failed_when: >-
         semodule_remove_result.rc | int == 1 and
         (semodule_remove_result.stdout + semodule_remove_result.stderr)
@@ -55,5 +55,5 @@
     - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
       become: true
       ansible.builtin.command: >-
-        semanage port -t zabbix_agent_port_t -D 
+        semanage port -t zabbix_agent_port_t -D
       changed_when: true

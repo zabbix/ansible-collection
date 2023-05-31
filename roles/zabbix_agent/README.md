@@ -26,6 +26,7 @@ Table of contents
     * [Firewall settings](#firewall-settings)
     * [Logrotate configuration for Zabbix agent](#logrotate-configuration-for-zabbix-agent)
     * [Local path settings](#local-paths-variables-table)
+    * [SELinux settings](#selinux-settings)
     * [Common Zabbix agent configuration file parameters](#common-zabbix-agent-configuration-parameters)
       * [Zabbix agent unique parameters](#zabbix-agentd-unique-parameters)
       * [Zabbix agent2 unique parameters](#zabbix-agent2-unique-parameters)
