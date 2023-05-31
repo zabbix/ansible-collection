@@ -95,6 +95,9 @@ python3 -m pip install -r requirements.txt
 
 Check [**python documentation**](https://docs.python.org/3/installing/index.html) for more details on python modules installation. 
 
+Selinux tasks depends on `policycoreutils` package. Which will be installed as dependency with `zabbix-selinux-policy` package.
+
+
 Role Variables
 --------------
 
@@ -179,12 +182,13 @@ Variables prefixed with `source_` should point to a file or folder located on An
 
 ### SELinux settings:
 
-Selinux tasks will be processed, only when SELinux status on the target machine is `enabled`.
+Selinux tasks will be processed, only when SELinux status on the target machine is `enabled`
+Selinux tasks depends on `policycoreutils` package. Which will be installed as dependency with `zabbix-selinux-policy` package.
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
 | apply_seport | `boolean` | `true` | Adds custom agent port defined in `param_listenport` to SELinux Port Type `zabbix_agent_port_t`. Enabled by default and triggers when `param_listenport` is not equal to 10050.
-| apply_semodule | `boolean` | `false` | Adds SELinux policy extension to make a transition of Zabbix agent2 to SE domain `zabbix_agent_t`. Additionally, it allows socket usage for the same domain.
+| apply_semodule | `boolean` | `false` | Adds SELinux policy extension to make a transition of Zabbix agent2 to SE domain `zabbix_agent_t`. Additionally, it allows socket usage for the same domain. As well as enables read permission on rpm database for `system.sw.packages.get` key.
 | seboolean_zabbix_run_sudo | `string` || Enables/Disables default SELinux boolean `zabbix_run_sudo`. For task processing, expects string values "on" or "off". Undefined by default, to skip task processing. Use with caution as it holds allow rules for a set of domains.
 
 Why `audit2allow` tool is not included in the role:

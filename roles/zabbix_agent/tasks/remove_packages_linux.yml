@@ -29,3 +29,31 @@
       - '{{ agent_systemd_override_path }}'
       - '{{ agent_logrotate_path }}'
   tags: [remove]
+
+- name: 'SELinux module block'
+  when: >-
+    ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  become: true
+  vars:
+    semodule: 'zabbix_agent_extend'
+  tags: [remove]
+  block:
+    - name: 'SELinux module : CIL removed'
+      ansible.builtin.file:
+        path: '{{ semodules_path }}/{{ semodule }}.cil'
+        state: absent
+    - name: 'SELinux module : Module removed'
+      ansible.builtin.command: 'semodule -vr {{ semodule }}'
+      changed_when: semodule_remove_result.stdout | regex_search("removing", ignorecase=True) is not none 
+      failed_when: >-
+        semodule_remove_result.rc | int == 1 and
+        (semodule_remove_result.stdout + semodule_remove_result.stderr)
+        | regex_search("No such file or directory", ignorecase=True) is none
+      args:
+        chdir: '{{ semodules_path }}'
+      register: semodule_remove_result
+    - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
+      become: true
+      ansible.builtin.command: >-
+        semanage port -t zabbix_agent_port_t -D 
+      changed_when: true

@@ -1,5 +1,5 @@
 ---
-- name: 'Semanage: Add port to "zabbix_agent_port_t" type'
+- name: 'SELinux: Add port to "zabbix_agent_port_t" type'
   when: >-
     apply_seport is defined and apply_seport
     and
