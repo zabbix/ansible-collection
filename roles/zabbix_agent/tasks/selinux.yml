@@ -1,6 +1,8 @@
 ---
 - name: 'Semanage: Add port to "zabbix_agent_port_t" type'
   when: >-
+    apply_seport is defined and apply_seport
+    and
     param_listenport is defined and param_listenport | int != 10050
   become: true
   ansible.builtin.command: >-
@@ -37,17 +39,34 @@
         owner: '{{ agent.conf_file.permissions.user }}'
         group: '{{ agent.conf_file.permissions.group }}'
     - name: 'SELinux module : Install/Rewrite'
-      ansible.builtin.command: 'semodule -i {{ semodule }}.cil'
-      ### if policy changes it needs rewriting... no idempotency for now
+      ansible.builtin.command: 'semodule -vi {{ semodule }}.cil'
+      ### if policy changes it needs rewriting... no idempotency for now. anyway its impossible with single command output.
       changed_when: true
       args:
         chdir: '{{ semodules_path }}'
+      register: semodule_result
+    - name: 'SELinux module : Enable module'
+      when: (semodule_result.stdout + semodule_result.stderr) | regex_search("disabled", igonrecase=True) is not none
+      ansible.builtin.command: 'semodule -e {{ semodule }}'
+      changed_when: true
+    - name: 'SELinux module: Restore file context'
+      when: >-
+        agent_variant | string == "2"
+      ansible.builtin.command: restorecon -v /usr/sbin/zabbix_agent2
+      register: restorecon_result
+      changed_when: (restorecon_result.stderr + restorecon_result.stdout) | regex_search("relabeled", ignorecase=True) is not none
 
+### modify seboolean if set, skip if not set.
 - name: 'Seboolean: zabbix_run_sudo'
   when:
-    - seboolean_zabbix_run_sudo
+    - seboolean_zabbix_run_sudo is defined and seboolean_zabbix_run_sudo in ["on", "off"]
+  become: true
   ansible.posix.seboolean:
     name: zabbix_run_sudo
+    ignore_selinux_state: false
     persistent: true
-    state: true
+    state: '{{ zabbix_run_sudo_state }}'
+  vars:
+    state_table: { "on": true, "off": false }
+    zabbix_run_sudo_state: '{{ state_table[seboolean_zabbix_run_sudo] }}'
   tags: [selinux]

@@ -350,12 +350,9 @@
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
 
+### including SE tasks when ansible_facts testifies that SELinux is enabled
 - name: 'Include : Selinux tasks'
-  when: >-
-    ("selinux" in ansible_run_tags or apply_selinux)
-    and ansible_selinux.status is defined and ansible_selinux.status == "enabled"
-    and (ansible_selinux.mode is defined and ansible_selinux.mode == "enforcing"
-        or ansible_selinux.config_mode is defined and ansible_selinux.config_mode == "enforcing")
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
   ansible.builtin.include_tasks: 'selinux.yml'
   tags: [selinux]
 

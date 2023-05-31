@@ -11,6 +11,6 @@
       # param_userparameter:
       #   - traces, /var/lib/zabbix/ZABBIX_AGENT2/scripts/traces.sh
       #   - suls, sudo ls /root
-      apply_selinux: true
+      apply_seport: true
       apply_semodule: true
-      # seboolean_zabbix_run_sude: true
+      seboolean_zabbix_run_sudo: "on"

@@ -177,6 +177,24 @@ Variables prefixed with `source_` should point to a file or folder located on An
 | source_tlscrlfile | `string` || Path to the file on Ansible controller containing revoked certificates. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlskeyfile | `string` || Path to the file containing the agent private key. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 
+### SELinux settings:
+
+Selinux tasks will be processed, only when SELinux status on the target machine is `enabled`.
+
+| Variable | Type | Default | Description |
+|--|--|--|--|
+| apply_seport | `boolean` | `true` | Adds custom agent port defined in `param_listenport` to SELinux Port Type `zabbix_agent_port_t`. Enabled by default and triggers when `param_listenport` is not equal to 10050.
+| apply_semodule | `boolean` | `false` | Adds SELinux policy extension to make a transition of Zabbix agent2 to SE domain `zabbix_agent_t`. Additionally, it allows socket usage for the same domain.
+| seboolean_zabbix_run_sudo | `string` || Enables/Disables default SELinux boolean `zabbix_run_sudo`. For task processing, expects string values "on" or "off". Undefined by default, to skip task processing. Use with caution as it holds allow rules for a set of domains.
+
+Why `audit2allow` tool is not included in the role:
+  - not secure (it just allows everything that was denied);
+  - requires several days of auditlog to collect all needed denials.
+Use it only as a policy creation consultant.
+
+Default SE boolean `zabbix_run_sudo` does not fit all possible privileged usage and should be avoided in most cases.
+Create custom policies for environments with specific security requirements.
+
 ### Common Zabbix agent configuration parameters:
 
 These parameters are common for both agent variants
