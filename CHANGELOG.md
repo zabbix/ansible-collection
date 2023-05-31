@@ -2,6 +2,7 @@
 
 ## Feature
 
+- Zabbix agent role: added Debian support
 - Zabbix agent role: added SELinux policy extension for Zabbix agent2
 
 ## Bug

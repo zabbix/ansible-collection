@@ -30,8 +30,7 @@
       # - '{{ ansible_system | lower }}'
       # - '{{ ansible_distribution | lower }}'
       # - '{{ ansible_os_family | lower }}'
-      - '{{ "ubuntu" if ansible_distribution == "Ubuntu" else None }}'
-      - '{{ "debian" if ansible_distribution == "Debian" else None }}'
+      - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
       - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'
   tags: [vars, verify, remove]
 

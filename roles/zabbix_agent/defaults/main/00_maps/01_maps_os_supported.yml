@@ -25,6 +25,10 @@ map_supported_os_version:
         '18': '04'
         '20': '04'
         '22': '04'
+      Debian:
+        '9': '.*'
+        '10': '.*'
+        '11': '.*'
   aarch64:
     Linux:
       Ubuntu:
