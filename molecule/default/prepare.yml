@@ -12,7 +12,8 @@
 
     - name: Debug
       ansible.builtin.debug:
-        msg: 'Distr: {{ ansible_distribution }} / Family: {{ ansible_os_family }}'
+        msg: 'Distr: {{ ansible_distribution }} {{ ansible_distribution_major_version }}
+              / Family: {{ ansible_os_family }}'
 
     - name: 'Prepare containers : epel repo'
       # for package priority tests
