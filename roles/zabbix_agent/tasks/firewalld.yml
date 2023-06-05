@@ -16,7 +16,9 @@
   tags: [never, debug]
 
 - name: 'DEBUG : Print rich rule'
-  when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
+  when: >-
+    apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
+    and firewall_allow_from is defined
   ansible.builtin.debug:
     msg: '{{ "rule family=ipv" + zabbix_agent_ip_version | string +
                 " source address=" + firewall_allow_from | string +

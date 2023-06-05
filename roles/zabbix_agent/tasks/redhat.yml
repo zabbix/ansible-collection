@@ -3,12 +3,17 @@
   become: true
   ansible.builtin.rpm_key:
     state: '{{ zabbix_agent_key_state }}'
-    key: '{{ zabbix_repo.key[ansible_distribution_major_version] }}'
+    key: '{{ zabbix_repo.key }}'
   vars:
     zabbix_agent_key_state: '{{ "absent" if package_state == "absent" else "present" }}'
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+
+- name: DEBUG
+  ansible.builtin.debug:
+    var: zabbix_repo.uri
+  tags: [never, debug]
 
 - name: 'YUM : Zabbix-release repository presence'
   become: true

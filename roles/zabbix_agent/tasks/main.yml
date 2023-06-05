@@ -8,6 +8,7 @@
       become_method: {{ ansible_become_method }}
       agent_logrotate_path: {{ agent_logrotate_path }}
       param_include: {{ param_include }}
+      map_os_version: {{ map_os_version }}
   tags: [never, debug]
 
 - name: Supported OS and agent version control
@@ -30,9 +31,9 @@
       # - '{{ ansible_system | lower }}'
       # - '{{ ansible_distribution | lower }}'
       # - '{{ ansible_os_family | lower }}'
-      - '{{ "amazon" if ansible_distribution == "Amazon" else None }}'
+      # - '{{ "amazon" if ansible_distribution == "Amazon" else None }}'
       - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
-      - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'
+      - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux", "Amazon"] else None }}'
   tags: [vars, verify, remove]
 
 - name: 'Variables : Custom user : Overrides'

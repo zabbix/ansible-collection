@@ -1,0 +1,10 @@
+---
+map_os_version:
+  Amazon:
+    '2': '7'
+    '2023': '9'
+
+map_gpg_key:
+  '7': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
+  '8': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
+  '9': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-08EFA7DD'
