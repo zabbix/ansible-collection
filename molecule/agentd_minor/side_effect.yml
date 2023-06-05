@@ -8,14 +8,14 @@
         tasks_from: init
         public: true
       vars:
-        verification: true
+        zabbix_agent_verification: true
     - name: 'Variables : Include system and disrtibution specific'
       ansible.builtin.include_vars: '{{ var_item }}.yml'
-      loop: '{{ var_list | select }}'
+      loop: '{{ zabbix_agent_var_list | select }}'
       loop_control:
         loop_var: var_item
       vars:
-        var_list:
+        zabbix_agent_var_list:
           # - '{{ ansible_system | lower }}'
           - '../../roles/zabbix_agent/vars/{{ ansible_distribution | lower }}'
     - name: Include OS packager(yum/apt) specific tasks

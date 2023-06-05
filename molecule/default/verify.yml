@@ -10,4 +10,4 @@
         tasks_from: verify
         # public: true
       vars:
-        verification: true
+        zabbix_agent_verification: true

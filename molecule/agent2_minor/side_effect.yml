@@ -8,14 +8,14 @@
         tasks_from: init
         public: true
       vars:
-        verification: true
+        zabbix_agent_verification: true
     - name: 'Variables : Include system and disrtibution specific'
       ansible.builtin.include_vars: '../../roles/zabbix_agent/vars/{{ var_item }}.yml'
-      loop: '{{ var_list | select }}'
+      loop: '{{ zabbix_agent_var_list | select }}'
       loop_control:
         loop_var: var_item
       vars:
-        var_list:
+        zabbix_agent_var_list:
           - '{{ "ubuntu" if ansible_distribution == "Ubuntu" else None }}'
           - '{{ "debian" if ansible_distribution == "Debian" else None }}'
           - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux"] else None }}'

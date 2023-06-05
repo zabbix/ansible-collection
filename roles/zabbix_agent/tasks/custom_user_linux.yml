@@ -34,9 +34,9 @@
     group: '{{ service_group }}'
     setype: '{{ item.setype }}'
     recurse: true
-  loop: '{{ agent_file_loop | select }}'
+  loop: '{{ zabbix_agent_file_loop | select }}'
   vars:
-    agent_file_loop:
+    zabbix_agent_file_loop:
       - {folder: '{{ param_logfile | default(None) }}', setype: '{{ folder_log_setype | default(None) }}'}
       # - {folder: '{{ param_pidfile | default(None) }}', setype: '{{ folder_pid_setype | default(None) }}'}
 

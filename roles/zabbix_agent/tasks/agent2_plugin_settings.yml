@@ -5,7 +5,7 @@
     and param_plugins_mysql_sessions
     and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
-    plugins_mysql_tls_file_list: '{{ (plugins_mysql_tls_file_list | default([]))
+    zabbix_agent_plugins_mysql_tls_file_list: '{{ (zabbix_agent_plugins_mysql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
@@ -33,7 +33,7 @@
     and param_plugins_postgresql_sessions
     and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
-    plugins_postgresql_tls_file_list: '{{ (plugins_postgresql_tls_file_list | default([]))
+    zabbix_agent_plugins_postgresql_tls_file_list: '{{ (zabbix_agent_plugins_postgresql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
@@ -61,7 +61,7 @@
     and param_plugins_mongodb_sessions
     and item.tlsconnect is defined and item.tlsconnect
   ansible.builtin.set_fact:
-    plugins_mongodb_tls_file_list: '{{ (plugins_mongodb_tls_file_list | default([]))
+    zabbix_agent_plugins_mongodb_tls_file_list: '{{ (zabbix_agent_plugins_mongodb_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
@@ -85,9 +85,9 @@
 
 - name: 'Variables : Agent2 : Add loadable plugins to package list'
   ansible.builtin.set_fact:
-    package_list: '{{ package_list + (loadable_plugin_list | select | list) }}'
+    zabbix_agent_package_list: '{{ zabbix_agent_package_list + (zabbix_agent_loadable_plugin_list | select | list) }}'
   vars:
-    loadable_plugin_list:
+    zabbix_agent_loadable_plugin_list:
       - '{{ "zabbix-agent2-plugin-mongodb" if "mongodb" in agent2_plugin_list else None }}'
       - '{{ "zabbix-agent2-plugin-postgresql" if "postgresql" in agent2_plugin_list else None }}'
   tags: [vars, verify, remove]

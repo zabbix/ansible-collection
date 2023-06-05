@@ -2,29 +2,29 @@
 - name: 'YUM : GPG key presence'
   become: true
   ansible.builtin.rpm_key:
-    state: '{{ key_state }}'
+    state: '{{ zabbix_agent_key_state }}'
     key: '{{ zabbix_repo.key[ansible_distribution_major_version] }}'
   vars:
-    key_state: '{{ "absent" if package_state == "absent" else "present" }}'
+    zabbix_agent_key_state: '{{ "absent" if package_state == "absent" else "present" }}'
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
 
 - name: 'YUM : Zabbix-release repository presence'
   become: true
-  until: repository is not failed
+  until: zabbix_agent_repository is not failed
   retries: 3
   delay: 3
   ansible.builtin.yum:
     name: '{{ zabbix_repo.uri }}'
   when: package_state != "absent"
-  register: repository
+  register: zabbix_agent_repository
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
 
 - name: 'YUM : yum clean all'
-  when: repository.changed
+  when: zabbix_agent_repository.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
@@ -33,28 +33,29 @@
 - name: 'YUM : Zabbix packages presence'
   become: true
   notify: 'Service restart'
-  until: packages_presence is not failed
+  until: zabbix_agent_packages_presence is not failed
   retries: 3
   delay: 3
-  register: packages_presence
+  register: zabbix_agent_packages_presence
   ansible.builtin.yum:
-    name: '{{ install_package_list }}'
+    name: '{{ zabbix_agent_install_package_list }}'
     state: '{{ package_state }}'
     disablerepo: '*epel*'  # disable epel repos | should contain epel word in repo name
     enablerepo: '{{ zabbix_repo.name }}'
     install_weak_deps: true
   vars:
-    ### if "agent_minor_version" is defined calculate "full_version".
-    full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
+    ### if "agent_minor_version" is defined calculate "zabbix_agent_full_version".
+    zabbix_agent_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
       else agent_major_version | string + "." + agent_minor_version | string }}'
     ### change minor version of zabbix components (excluding agent2 plugins). Use single quotes for regex expression!!!
-    component_package_list: "{{ package_list if not full_version
-      else package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % full_version) | list }}"
+    zabbix_agent_component_package_list: "{{ zabbix_agent_package_list if not zabbix_agent_full_version
+      else zabbix_agent_package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % zabbix_agent_full_version) | list }}"
     ### change version of agent2 plugins. Use single quotes for regex expression!!!
-    install_package_list: "{{
-      component_package_list if (agent2_plugin_version is not defined
+    zabbix_agent_install_package_list: "{{
+      zabbix_agent_component_package_list if (agent2_plugin_version is not defined
                                  or not agent2_plugin_version or agent_variant | string != '2')
-      else component_package_list | map('regex_replace', '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent2_plugin_version) | list }}"
+      else zabbix_agent_component_package_list | map('regex_replace',
+                  '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent2_plugin_version) | list }}"
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'

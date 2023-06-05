@@ -149,9 +149,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconn
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSCAFile=
-{% if plugins_postgresql_tls_file_list is defined and plugins_postgresql_tls_file_list is iterable and plugins_postgresql_tls_file_list is not string and plugins_postgresql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_postgresql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "ca" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
 {% endif %}
@@ -164,9 +164,9 @@ Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSCertFile=
-{% if plugins_postgresql_tls_file_list is defined and plugins_postgresql_tls_file_list is iterable and plugins_postgresql_tls_file_list is not string and plugins_postgresql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_postgresql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "cert" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
 {% endif %}
@@ -179,9 +179,9 @@ Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_fi
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSKeyFile=
-{% if plugins_postgresql_tls_file_list is defined and plugins_postgresql_tls_file_list is iterable and plugins_postgresql_tls_file_list is not string and plugins_postgresql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_postgresql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "key" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}

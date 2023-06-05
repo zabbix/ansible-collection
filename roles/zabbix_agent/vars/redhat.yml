@@ -14,7 +14,7 @@ zabbix_repo:
   #         + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string
   #         + ".el" + ansible_distribution_major_version + ".noarch.rpm" }}'
 
-package_list:
+zabbix_agent_package_list:
   - zabbix-sender
   - zabbix-get
   - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'

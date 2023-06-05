@@ -22,11 +22,11 @@
 
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
-  loop: '{{ var_list | select }}'
+  loop: '{{ zabbix_agent_var_list | select }}'
   loop_control:
     loop_var: var_item
   vars:
-    var_list:
+    zabbix_agent_var_list:
       # - '{{ ansible_system | lower }}'
       # - '{{ ansible_distribution | lower }}'
       # - '{{ ansible_os_family | lower }}'
@@ -50,7 +50,7 @@
   ansible.builtin.set_fact:
     # value of hexadecimal within range 32 to 128 chars | choosing 128
     # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
-    psk_value: '{{ lookup("password",
+    zabbix_agent_psk_value: '{{ lookup("password",
                   source_tlspskfile + " chars=hexdigits length=128") | lower }}'
   tags: [vars, verify]
 
@@ -71,7 +71,7 @@
 
 - name: 'DEBUG : Package info'
   ansible.builtin.debug:
-    msg: 'list: {{ package_list }}'
+    msg: 'list: {{ zabbix_agent_package_list }}'
   tags: [never, debug]
 
 - name: 'DEBUG : Zabbix agent variant'
@@ -106,11 +106,11 @@
 
 - name: Firewall task list include
   ansible.builtin.include_tasks: '{{ firewall_task_item }}.yml'
-  loop: '{{ task_list | select }}'
+  loop: '{{ zabbix_agent_task_list | select }}'
   loop_control:
     loop_var: firewall_task_item
   vars:
-    task_list:
+    zabbix_agent_task_list:
       - '{{ "firewalld" if (apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]) else None }}'
       - '{{ "iptables" if (apply_iptables_rule is defined and apply_iptables_rule) else None }}'
 
@@ -234,9 +234,9 @@
     mode: '{{ agent.conf_file.permissions.mode }}'
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
-  loop: '{{ template_list | select }}'
+  loop: '{{ zabbix_agent_template_list | select }}'
   vars:
-    template_list:
+    zabbix_agent_template_list:
       - userparameters.conf
   tags: [userparam]
 
@@ -252,9 +252,9 @@
     mode: '{{ agent.conf_file.permissions.mode }}'
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
-  loop: '{{ template_list | select }}'
+  loop: '{{ zabbix_agent_template_list | select }}'
   vars:
-    template_list:
+    zabbix_agent_template_list:
       - aliases.conf
 
 # Creates TLS folder path and applies permissions
@@ -269,9 +269,9 @@
     group: '{{ service_group }}'
   loop_control:
     loop_var: folder_item
-  loop: '{{ maintenance_folders | select | list }}'
+  loop: '{{ zabbix_agent_maintenance_folders | select | list }}'
   vars:
-    maintenance_folders:
+    zabbix_agent_maintenance_folders:
       - '{{ agent.file_name | upper + "/.CERT/" if source_tlscafile is defined else None }}'
       - '{{ agent.file_name | upper + "/.PSK/" if "psk" in param_tlsaccept or param_tlsconnect == "psk" else None }}'
       - '{{ agent.file_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
@@ -297,9 +297,9 @@
     # recursive: true
   loop_control:
     loop_var: tls_file
-  loop: '{{ tls_file_list | select }}'
+  loop: '{{ zabbix_agent_tls_file_list | select }}'
   vars:
-    tls_file_list:
+    zabbix_agent_tls_file_list:
       - {source: "{{ source_tlscafile }}", target: "{{ param_tlscafile }}"}
       - '{{ {"source": source_tlscrlfile, "target": param_tlscrlfile} if source_tlscrlfile is defined else None }}'
       - {source: "{{ source_tlscertfile }}", target: "{{ param_tlscertfile }}"}
@@ -334,9 +334,9 @@
   loop_control:
     loop_var: plugin_tls_file
     label: '{{ plugin_tls_file.source | default(None), plugin_tls_file.target }}'
-  loop: '{{ plugins_mysql_tls_file_list | default([])
-          + plugins_postgresql_tls_file_list | default([])
-          + plugins_mongodb_tls_file_list | default([])
+  loop: '{{ zabbix_agent_plugins_mysql_tls_file_list | default([])
+          + zabbix_agent_plugins_postgresql_tls_file_list | default([])
+          + zabbix_agent_plugins_mongodb_tls_file_list | default([])
           }}'
 
 - name: 'Logrotate file maintenance'

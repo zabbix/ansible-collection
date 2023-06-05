@@ -104,9 +104,9 @@ Plugins.Mysql.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"]
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.TLSCAFile=
-{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_mysql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "ca" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
 {% endif %}
@@ -119,9 +119,9 @@ Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["tar
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.TLSCertFile=
-{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_mysql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "cert" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
 {% endif %}
@@ -132,9 +132,9 @@ Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["t
 #	Full pathname of a file containing the mysql private key.
 #
 # Mandatory: no
-{% if plugins_mysql_tls_file_list is defined and plugins_mysql_tls_file_list is iterable and plugins_mysql_tls_file_list is not string and plugins_mysql_tls_file_list is not mapping %}
+{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in plugins_mysql_tls_file_list %}
+{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "key" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}

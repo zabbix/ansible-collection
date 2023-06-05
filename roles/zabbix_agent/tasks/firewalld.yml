@@ -4,21 +4,21 @@
   become: true
   ansible.builtin.systemd:
     name: firewalld
-  register: firewalld_service
+  register: zabbix_agent_firewalld_service
 
 - name: 'DEBUG : Print service facts'
   when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
   ansible.builtin.debug:
     msg: >
-      ActiveState: {{ firewalld_service.status.ActiveState | default(False) }}
-      MainPID: {{ firewalld_service.status.MainPID | default(False) }}
-      UnitState: {{ firewalld_service.status.UnitFileState | default(False) }}'
+      ActiveState: {{ zabbix_agent_firewalld_service.status.ActiveState | default(False) }}
+      MainPID: {{ zabbix_agent_firewalld_service.status.MainPID | default(False) }}
+      UnitState: {{ zabbix_agent_firewalld_service.status.UnitFileState | default(False) }}'
   tags: [never, debug]
 
 - name: 'DEBUG : Print rich rule'
   when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
   ansible.builtin.debug:
-    msg: '{{ "rule family=ipv" + ipv | string +
+    msg: '{{ "rule family=ipv" + zabbix_agent_ip_version | string +
                 " source address=" + firewall_allow_from | string +
                 " port protocol=tcp port=" + param_listenport | string +
                 " accept"
@@ -26,7 +26,7 @@
                 else omit }}'
   tags: [never, debug]
   vars:
-    ipv: '{{ 6 if firewall_allow_from | ansible.utils.ipv6 else 4 }}'
+    zabbix_agent_ip_version: '{{ 6 if firewall_allow_from | ansible.utils.ipv6 else 4 }}'
 
 - name: 'Firewalld : Apply rule'
   become: true
@@ -39,17 +39,17 @@
           )
       and (
                 (
-                firewalld_service.status.ActiveState is defined
-                and firewalld_service.status.ActiveState == "active"
+                zabbix_agent_firewalld_service.status.ActiveState is defined
+                and zabbix_agent_firewalld_service.status.ActiveState == "active"
                 )
             or (
-                firewalld_service.status.UnitFileState is defined
-                and firewalld_service.status.UnitFileState == "enabled"
+                zabbix_agent_firewalld_service.status.UnitFileState is defined
+                and zabbix_agent_firewalld_service.status.UnitFileState == "enabled"
                 )
           )
   ansible.posix.firewalld:
     port: '{{ param_listenport | string + "/tcp" if firewall_allow_from is not defined else omit }}'
-    rich_rule: '{{ "rule family=ipv" + ipv | string +
+    rich_rule: '{{ "rule family=ipv" + zabbix_agent_ip_version | string +
                 " source address=" + firewall_allow_from | string +
                 " port protocol=tcp port=" + param_listenport | string +
                 " accept"
@@ -57,8 +57,8 @@
                 else omit }}'
     zone: '{{ firewalld_zone | default(omit) }}'
     permanent: true
-    immediate: '{{ true if firewalld_service.status.ActiveState == "active"
+    immediate: '{{ true if zabbix_agent_firewalld_service.status.ActiveState == "active"
                 else false }}'
     state: enabled
   vars:
-    ipv: '{{ 6 if firewall_allow_from is defined and firewall_allow_from | ansible.utils.ipv6 else 4 }}'
+    zabbix_agent_ip_version: '{{ 6 if firewall_allow_from is defined and firewall_allow_from | ansible.utils.ipv6 else 4 }}'

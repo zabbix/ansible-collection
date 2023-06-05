@@ -9,12 +9,12 @@
   become: true
   ansible.builtin.systemd:
     name: '{{ agent.service_name }}'
-  register: get_agent_service
+  register: zabbix_agent_service_status
   tags: [verify]
 
 - name: 'Import vars: TLS Certificate variables'
   when: >-
-    verification is defined and verification
+    zabbix_agent_verification is defined and zabbix_agent_verification
     and
     (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
     and
@@ -24,12 +24,12 @@
   ansible.builtin.include_vars: tls_cert_parameters.yml
 
 - name: 'Import vars: Custom user overrrides'
-  when: verification is defined and verification and service_user != "zabbix"
+  when: zabbix_agent_verification is defined and zabbix_agent_verification and service_user != "zabbix"
   ansible.builtin.include_vars: custom_user_overrides.yml
 
 - name: 'Verify : Zabbix_get : Local : Agent variant'
   become: true
-  register: get_agent_variant
+  register: zabbix_agent_get_variant
   # first tlsaccept value taken for connection settings
   ansible.builtin.command: >-
       /usr/bin/zabbix_get
@@ -49,7 +49,7 @@
 
 - name: 'Verify : Zabbix_get : Controller : Agent version'
   delegate_to: localhost
-  register: controller_get_agent_version
+  register: zabbix_agent_controller_get_agent_version
   # first tlsaccept value taken for connection settings
   ansible.builtin.command: >-
       zabbix_get -k agent.version
@@ -68,18 +68,18 @@
       {{ "--tls-psk-file " + source_tlspskfile if param_tlsaccept[0] == "psk" else "" }}
   changed_when: false
   ignore_errors: true
-  vars:
-    molecule_path: '{{ "files/" if driver is defined and driver in ["podman", "docker"] else "" }}'
+  # vars:
+  #   zabbix_agent_molecule_path: '{{ "files/" if driver is defined and driver in ["podman", "docker"] else "" }}'
   tags: [verify]
 
 - name: Zabbix agent variant, major version and status checks
   ansible.builtin.assert:
     that:
-      - controller_get_agent_version.stdout | regex_search("\d+\.\d+") is version(agent_major_version | string, "=", strict=false)
-      - get_agent_variant.stdout | string == agent_variant | string
-      - get_agent_service.status.ActiveState | lower in ["running", "active"]
-      - get_agent_service.status.MainPID | int >= 0
-      - get_agent_service.status.UnitFileState | lower == "enabled"
+      - zabbix_agent_controller_get_agent_version.stdout | regex_search("\d+\.\d+") is version(agent_major_version | string, "=", strict=false)
+      - zabbix_agent_get_variant.stdout | string == agent_variant | string
+      - zabbix_agent_service_status.status.ActiveState | lower in ["running", "active"]
+      - zabbix_agent_service_status.status.MainPID | int >= 0
+      - zabbix_agent_service_status.status.UnitFileState | lower == "enabled"
   tags: [never, assert]
 
 - name: 'Report : {{ report_path }}'
@@ -92,18 +92,18 @@
       {{ ansible_date_time.date }}T{{ ansible_date_time.time }}
       {{ test_name | default("-", true) }}:
       {{ ansible_hostname }}
-      ({{ get_agent_variant.stdout | default("-", true) }}:{{ controller_get_agent_version.stdout | default("-", true) }})
-      [{{ get_agent_service.status.ActiveState | default("-", true) }}:{{ get_agent_service.status.UnitFileState | default("-", true) }}]
-      {{ "LocalGetErr: " + get_agent_variant.stderr if get_agent_variant is failed }}
-      {{ "RemoteGetErr: " + controller_get_agent_version.stderr if controller_get_agent_version is failed }}
+      ({{ zabbix_agent_get_variant.stdout | default("-", true) }}:{{ zabbix_agent_controller_get_agent_version.stdout | default("-", true) }})
+      [{{ zabbix_agent_service_status.status.ActiveState | default("-", true) }}:{{ zabbix_agent_service_status.status.UnitFileState | default("-", true) }}]
+      {{ "LocalGetErr: " + zabbix_agent_get_variant.stderr if zabbix_agent_get_variant is failed }}
+      {{ "RemoteGetErr: " + zabbix_agent_controller_get_agent_version.stderr if zabbix_agent_controller_get_agent_version is failed }}
     insertafter: EOF
     mode: "0644"
   tags: [verify]
 
 - name: 'Verify : Pause to get some input...'
   when: >-
-    get_agent_variant is failed
-    or controller_get_agent_version is failed
+    zabbix_agent_get_variant is failed
+    or zabbix_agent_controller_get_agent_version is failed
   ansible.builtin.pause:
     prompt: "Waiting for input"
     echo: false

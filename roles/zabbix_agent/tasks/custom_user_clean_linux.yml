@@ -8,11 +8,11 @@
   ansible.builtin.file:
     path: '{{ item_path }}'
     state: absent
-  loop: '{{ clean_path_list }}'
+  loop: '{{ zabbix_agent_clean_path_list }}'
   loop_control:
     loop_var: item_path
-  # register: overrides
+  # register: zabbix_agent_overrides
   vars:
-    clean_path_list:
+    zabbix_agent_clean_path_list:
       - '{{ agent_systemd_override_path }}'
       # - '{{ agent_logrotate_path[agent_variant | string] }}'

@@ -20,7 +20,7 @@ zabbix_repo:
   # https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4+debian10_all.deb
   # https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
 
-package_list:
+zabbix_agent_package_list:
   - zabbix-sender
   - zabbix-get
   - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'
