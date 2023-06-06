@@ -1,8 +1,5 @@
 ---
 - name: Converge
   hosts: all
-  tasks:
-    - name: "Testing role zabbix_agent: {{ test_name }}"
-      ansible.builtin.include_role:
-        name: "zabbix_agent"
-      tags: [host, verify, report, test, vars, pause]
+  roles:
+    - role: zabbix_agent
