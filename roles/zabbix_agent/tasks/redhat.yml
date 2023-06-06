@@ -28,6 +28,31 @@
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
 
+### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
+- name: 'YUM : Set Zabbix repo priority'
+  when: repository_priority and repository_priority is number
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/yum.repos.d/zabbix.repo
+    insertafter: '^\[zabbix\]'
+    regexp: '^priority='
+    line: 'priority={{ repository_priority | string }}'
+
+- name: 'YUM : Plugin "priorities" presence'
+  when: >-
+    repository_priority and repository_priority is number
+    and map_os_transition[ansible_distribution] is defined
+    and map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+    and map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
+  become: true
+  until: zabbix_agent_yum_plugin_presence is not failed
+  retries: 3
+  delay: 3
+  register: zabbix_agent_yum_plugin_presence
+  ansible.builtin.yum:
+    name: 'yum-plugin-priorities'
+    state: '{{ package_state }}'
+
 - name: 'YUM : yum clean all'
   when: zabbix_agent_repository.changed
   become: true
@@ -45,9 +70,10 @@
   ansible.builtin.yum:
     name: '{{ zabbix_agent_install_package_list }}'
     state: '{{ package_state }}'
-    disablerepo: '*epel*'  # disable epel repos | should contain epel word in repo name
+    disablerepo: '{{ repository_disable }}'  # disable epel repos | should contain epel word in repo name
     enablerepo: '{{ zabbix_repo.name }}'
     install_weak_deps: true
+    # enable_plugin: priorities ### cant find the plugin by its name... seems bugged
   vars:
     ### if "agent_minor_version" is defined calculate "zabbix_agent_full_version".
     zabbix_agent_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)

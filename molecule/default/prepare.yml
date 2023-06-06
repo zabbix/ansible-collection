@@ -38,7 +38,9 @@
         name: '{{ list_of_additional_soft }}'
         state: present
       vars:
-        list_of_additional_soft: [vim]
+        list_of_additional_soft:
+          - util-linux
+          # - vim
 
     - name: 'Prepare containers : firewalld'
       ansible.builtin.package:

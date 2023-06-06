@@ -8,17 +8,23 @@
       become_method: {{ ansible_become_method }}
       agent_logrotate_path: {{ agent_logrotate_path }}
       param_include: {{ param_include }}
-      map_os_version: {{ map_os_version }}
+      map_os_transition: {{ map_os_transition }}
   tags: [never, debug]
 
 - name: Supported OS and agent version control
   ansible.builtin.assert:
     that:
-      - ansible_distribution_version is regex(
-          map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version]
-        )
+      - zabbix_agent_supported_os is true
       - agent_major_version | string in ['6.0', '6.4']
       - package_state in ["present", "latest"]
+    quiet: true
+  vars:
+    zabbix_agent_supported_os: '{{
+        map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution] is defined
+        and map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version] is defined
+        and ansible_distribution_version
+          is regex(map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version])
+      }}'
   tags: [assert]
 
 - name: 'Variables : Include system and distribution specific'
@@ -33,7 +39,7 @@
       # - '{{ ansible_os_family | lower }}'
       # - '{{ "amazon" if ansible_distribution == "Amazon" else None }}'
       - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
-      - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux", "Amazon"] else None }}'
+      - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux", "Amazon", "Fedora"] else None }}'
   tags: [vars, verify, remove]
 
 - name: 'Variables : Custom user : Overrides'
@@ -114,6 +120,7 @@
     zabbix_agent_task_list:
       - '{{ "firewalld" if (apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]) else None }}'
       - '{{ "iptables" if (apply_iptables_rule is defined and apply_iptables_rule) else None }}'
+  tags: [firewall]
 
 # changing only main conf file. Free to use customization in includes(unless no includes specified or include path changed)
 - name: Configuration file maintenance

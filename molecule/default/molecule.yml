@@ -414,3 +414,50 @@ platforms:
       - podman
       - linux
       - amazon
+
+  - name: podman_fedora33
+    dockerfile: ../default/files/Dockerfile_rhel.j2
+    image: docker.io/library/fedora:33
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "13350:10050/tcp"
+      - "13320:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - fedora
+    # extra_opts:
+    #   - --log-level warn
+  - name: podman_fedora37
+    dockerfile: ../default/files/Dockerfile_rhel.j2
+    image: docker.io/library/fedora:37
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "13750:10050/tcp"
+      - "13720:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - fedora
+    # extra_opts:
+    #   - --log-level warn
