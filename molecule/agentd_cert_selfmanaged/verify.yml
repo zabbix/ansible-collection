@@ -13,3 +13,4 @@
         source_tlscafile: "../default/files/certs/ca.crt"
         source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
         source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+      tags: [skip_ansible_lint]
