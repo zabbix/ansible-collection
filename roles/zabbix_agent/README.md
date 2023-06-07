@@ -71,14 +71,14 @@ Ansible core >= 2.12
 
 Zabbix agent role requires additional tools from two Ansible certified collections:
 - ansible.posix >= 2.8
-- ansible.utils >= 1.4 
+- ansible.utils >= 1.4
 
 You can install required collections easily:
 ```bash
 ansible-galaxy collection install ansible.utils ansible.posix
 ```
 
-Note that role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter, which depends on python library [**netaddr**](https://pypi.org/project/netaddr). 
+Note that role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter, which depends on python library [**netaddr**](https://pypi.org/project/netaddr).
 
 Zabbix agent role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heavily and requires version >= 2.10.1
 
@@ -94,7 +94,7 @@ Or using `requirements.txt` file in the role folder:
 python3 -m pip install -r requirements.txt
 ```
 
-Check [**python documentation**](https://docs.python.org/3/installing/index.html) for more details on python modules installation. 
+Check [**python documentation**](https://docs.python.org/3/installing/index.html) for more details on python modules installation.
 
 Selinux tasks depends on `policycoreutils` package. Which will be installed as dependency with `zabbix-selinux-policy` package.
 
@@ -104,7 +104,7 @@ Role Variables
 
 You can modify variables listed in this section. Variables are not validated by the role itself. You should experiment with variable definition on a test instance before going for a full-scale deployment.
 
-The default settings are aimed at the ease of installation. You can override those to improve security. 
+The default settings are aimed at the ease of installation. You can override those to improve security.
 
 ### General settings:
 
@@ -113,12 +113,14 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
 | agent_major_version | `string` | 6.0 | The major version of Zabbix agent. Defaults to the latest LTS.
 | agent_minor_version | `string` || Zabbix agent minor version customization is available **only for RedHat based OS**.
-| package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in installed **zabbix-release** repository. 
-| remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed. 
+| package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in installed **zabbix-release** repository.
+| remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of new ones. Mandatory to deploy earlier version than the one currently installed.
 | agent2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent2 plugins to configure and deploy(if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 | http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
+| repository_priority | `int` || **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers cases with interfering packages from central distribution repositories.
+| repository_disable | `string` | "\*epel\*" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
 
 ### User settings:
 
@@ -147,7 +149,7 @@ Firewalld is a recommended way of applying firewall rule as it works with iptabl
 | Variable | Type | Default | Description |
 |--|--|--|--|
 | apply_firewalld_rule | `string` | auto | Defines application of firewalld rule. Possible options: ["auto", "force"]. Undefined or any other string will skip the rule application.
-| apply_iptables_rule | `boolean` | `false` | Defines application of iptables rule. Possible options: [true, false]. 
+| apply_iptables_rule | `boolean` | `false` | Defines application of iptables rule. Possible options: [true, false].
 | firewalld_zone | `string` | default | Firewalld zone for rule application.
 | firewall_allow_from | `string` || Limits source address of passive check using firewall rule. For firewalld, this setting will change the rule from simple to rich rule.
 
@@ -156,7 +158,7 @@ Firewalld is a recommended way of applying firewall rule as it works with iptabl
 You can modify rotation options of Zabbix agent[2] log file. It requires default option overriding in `logrotate_options` variable.
 This is a `list` type variable, and it defaults to the list of following options:
   - weekly
-  - maxsize 5M 
+  - maxsize 5M
   - rotate 12
   - compress
   - delaycompress
@@ -233,10 +235,10 @@ These parameters are common for both agent variants
 | param_timeout | `int` || [**Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#timeout) | Spend no more than Timeout seconds on processing.
 | param_tlsaccept | `list` | ["unencrypted"] | [**TLSAccept**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsaccept) | Incoming connections to be accepted.
 | param_tlsconnect | `string` | unencrypted | [**TLSConnect**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsconnect) | How the agent should connect to Zabbix server or proxy.
-| param_tlscafile | `string` || [**TLSCAFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscafile) | Path to the top-level CA(s) certificates for peer certificate verification. Use only in case, when [`source_tlscafile`](#local-paths-variables-table) is not defined! 
-| param_tlscertfile | `string` || [**TLSCertFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscertfile) | Path to the agent certificate or certificate chain. Use only in case, when [`source_tlscertfile`](#local-paths-variables-table) is not defined! 
-| param_tlscrlfile | `string` || [**TLSCRLFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscrlfile) | Path to revoked certificates. Use only in case, when [`source_tlscrlfile`](#local-paths-variables-table) is not defined! 
-| param_tlskeyfile | `string` || [**TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlskeyfile) | Path to the agent private key. Use only in case, when [`source_tlskeyfile`](#local-paths-variables-table) is not defined! 
+| param_tlscafile | `string` || [**TLSCAFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscafile) | Path to the top-level CA(s) certificates for peer certificate verification. Use only in case, when [`source_tlscafile`](#local-paths-variables-table) is not defined!
+| param_tlscertfile | `string` || [**TLSCertFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscertfile) | Path to the agent certificate or certificate chain. Use only in case, when [`source_tlscertfile`](#local-paths-variables-table) is not defined!
+| param_tlscrlfile | `string` || [**TLSCRLFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscrlfile) | Path to revoked certificates. Use only in case, when [`source_tlscrlfile`](#local-paths-variables-table) is not defined!
+| param_tlskeyfile | `string` || [**TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlskeyfile) | Path to the agent private key. Use only in case, when [`source_tlskeyfile`](#local-paths-variables-table) is not defined!
 | param_tlspskidentity | `string` | `PSK_ID_{{ inventory_hostname }}` | [**TLSPSKIdentity**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlspskidentity) | Pre-shared key identity string used for encrypted communications with Zabbix server.
 | param_tlsservercertissuer | `string` || [**TLSServerCertIssuer**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertissuer) | Allowed server (proxy) certificate issuer.
 | param_tlsservercertsubject | `string` || [**TLSServerCertSubject**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertsubject) | Allowed server (proxy) certificate subject.
@@ -287,7 +289,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
 | param_plugins_ceph_insecureskipverify | `string` | [**Plugins.Ceph.InsecureSkipVerify**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Determines whether the http client should verify the server's certificate chain and host name. If true, TLS accepts any certificate presented by the server and any host name in that certificate. In this mode, TLS is susceptible to man-in-the-middle attacks (should be used only for testing).
-| param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed. 
+| param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
 
@@ -352,7 +354,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_oracle_calltimeout | `int` | [**Plugins.Oracle.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a request to be done. 
+| param_plugins_oracle_calltimeout | `int` | [**Plugins.Oracle.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a request to be done.
 | param_plugins_oracle_connecttimeout | `int` | [**Plugins.Oracle.ConnectTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
 | param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
@@ -372,9 +374,9 @@ Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
-| param_plugins_postgresql_calltimeout | `int` || [**Plugins.Postgresql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a request to be done. 
+| param_plugins_postgresql_calltimeout | `int` || [**Plugins.Postgresql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
 | param_plugins_postgresql_customqueriespath | `string` || [**Plugins.Postgresql.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/postgresql/sql
-| param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) |  Time of waiting (in seconds) for unused connections to be closed. 
+| param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) |  Time of waiting (in seconds) for unused connections to be closed.
 | param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | param_plugins_postgresql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql | [**Plugins.Postgresql.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Path to the external plugin executable. Supported since Zabbix 6.0.6
 | param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
@@ -393,8 +395,8 @@ Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done. 
-| param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) |  Time of waiting (in seconds) before unused connections are closed. 
+| param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
+| param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) |  Time of waiting (in seconds) before unused connections are closed.
 | param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
@@ -420,7 +422,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 Hints & Tags
 -----
 
-- Wrong variable definition level can be punishing for starters. Begin with [**variable precedence learning**](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable). 
+- Wrong variable definition level can be punishing for starters. Begin with [**variable precedence learning**](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable).
   We recommend [**organizing host and group variables**](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html#organizing-host-and-group-variables) on inventory level. It is handy for big environments and will fit most use cases.
 - Zabbix agent role uses **handlers** to reload systemd daemon and restart `zabbix-agent[2]` service.
   To trigger **handler** execution each time (not only after changes made) compliment your run with `restart` tag. Add it after `all` tag or other tasks (not marked with `restart` tag will be skipped).
@@ -440,7 +442,7 @@ Hints & Tags
   - Runtime command to reload userparameters.
 
         ansible-playbook -i inventory play.yml -t userparam
-      
+
 
 Example Playbooks
 -----------------
@@ -454,7 +456,7 @@ Example Playbooks
   5. We can prepare metadata for active agent autoregistration by using Ansible special variables and filters.
   In this example we will use groups from the inventory to form the metadata. Special variable `group_names` contains the list of groups assigned to the host. Let's concatenate this list to the string separated by commas. It will look as follows: "DB,Linux,MySQL,etc"
   ```yaml
-    - hosts: all 
+    - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
@@ -471,7 +473,7 @@ Example Playbooks
   5. Enable firewall rule application using iptables module. **Note** that modern Ubuntu distributions use nftables, and iptables are DEPRECATED.
 
   ```yaml
-    - hosts: all 
+    - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
           agent_variant: 2
@@ -487,19 +489,19 @@ Example Playbooks
 - ### Playbook 3:
   **Zabbix agentd for both passive and active checks with PSK encryption for autoregistration.**
   1. Same metadata for autoregistration as described in the [first example](#playbook-1).
-  2. Set incoming and outgoing connection to be encrypted with `psk` 
+  2. Set incoming and outgoing connection to be encrypted with `psk`
     - `param_tlsconnect` is a single-type setting, so string input is expected;
     - `param_tlsaccept` can simultaneously work with all 3 types, so we are using list format here;
-    - `source_tlspskfile` can use relative or absolute path to an existent key or a place where it should be generated. Because of autoregistration, single PSK key should be used and identity for all agents should be registered. After the key is generated, add it to Zabbix using GUI (Administration > General > Autoregistration); 
+    - `source_tlspskfile` can use relative or absolute path to an existent key or a place where it should be generated. Because of autoregistration, single PSK key should be used and identity for all agents should be registered. After the key is generated, add it to Zabbix using GUI (Administration > General > Autoregistration);
     - `param_tlspskidentity` is used for passing the identity name to be placed in Zabbix agent configuration file. The same should be placed in Zabbix autoregistration options (Administration > General > Autoregistration).
 
   ```yaml
-    - hosts: all 
+    - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           param_tlsconnect: psk
           param_tlsaccept: [psk]
           source_tlspskfile: TEST/autoregistration.psk # "autoregistration" key will be placed to TEST folder;
@@ -508,11 +510,11 @@ Example Playbooks
 
 - ### Playbook 4:
   **Zabbix agentd with certificate-secured connections.**
-  1. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
+  1. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
   2. Same metadata as described in the [first example](#playbook-1).
   3. When `cert` if specified in `param_tlsconnect` or `param_tlsaccept` source, the path to certificate files becomes mandatory. Check the configuration example below. We are pointing to "certs/" folder which holds the certificate files named according to the host inventory name.
   ```yaml
-    - hosts: all 
+    - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
           param_server: 127.0.0.1                                # address of Zabbix server to accept connections from;
@@ -544,9 +546,9 @@ Example Playbooks
           agent_major_version: 6.4
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           agent2_plugin_list: [ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart, mongodb]
-          param_plugins_mongodb_sessions: 
+          param_plugins_mongodb_sessions:
             - name: "sessionname"
               uri: "someuri"
               user: "someuser"
@@ -563,7 +565,7 @@ Example Playbooks
   1. You can specify Zabbix agent major version manually: `agent_major_version: "6.0"`.
   2. The attempt to install earlier version will fail because the newer one is already installed. To overcome this, previous packages should be removed first.
   3. Same metadata as described in the [first example](#playbook-1).
-  4. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
+  4. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
   ```yaml
     - hosts: all
       roles:
@@ -572,12 +574,12 @@ Example Playbooks
           remove_previous_packages: true  # removes previously installed package of Zabbix agent (according to current settings);
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
 
 - ### Playbook 7:
   **Zabbix agentd running under custom user**
   1. Same metadata as described in the [first example](#playbook-1).
-  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
+  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
   3. Setting `service_user` will trigger custom user task list. It will create user, user group, home folder, systemd overrides and a separate log folder.
   ```yaml
     - hosts: all
@@ -585,9 +587,9 @@ Example Playbooks
         - role: zabbix.zabbix.zabbix_agent
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           service_user: dor               # if service_user is not "zabbix", multiple changes are applied
-          service_group: blue 
+          service_group: blue
           service_uid: 1115
           service_gid: 1115
   ```
@@ -595,22 +597,22 @@ Example Playbooks
 - ### Playbook 8:
   **Update Zabbix agentd to latest minor version**
   1. Same metadata as described in the [first example](#playbook-1).
-  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
-  3. Setting `package_state = latest` will install the latest minor version of the packages. 
+  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
+  3. Setting `package_state = latest` will install the latest minor version of the packages.
   ```yaml
     - hosts: all
       roles:
         - role: zabbix.zabbix.zabbix_agent
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           package_state: latest           # use latest available minor version
   ```
 
 - ### Playbook 9:
   **Deploy Zabbix agent without direct internet access from target machine. Using HTTP proxy.**
   1. Same metadata as described in the [first example](#playbook-1).
-  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped. 
+  2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
   3. Supply HTTP proxy address to the `http_proxy` variable.
   ```yaml
     - hosts: all
@@ -618,8 +620,8 @@ Example Playbooks
         - role: zabbix.zabbix.zabbix_agent
           param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
-          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string; 
-          http_proxy: http://host.containers.internal:8123  # HTTP proxy address. 
+          param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+          http_proxy: http://host.containers.internal:8123  # HTTP proxy address.
   ```
 
 License

@@ -2,6 +2,7 @@
 
 ## Feature
 
+- Zabbix agent role: extended package deployment options with variables: repository_priority, repository_disable. RedHat family only
 - Zabbix agent role: added Debian support
 - Zabbix agent role: added SELinux policy extension for Zabbix agent2
 
@@ -39,7 +40,7 @@
 ## Feature
 
 - Zabbix agent role extended distribution support for:
-    - Alma Linux 8,9 
+    - Alma Linux 8,9
     - Rocky Linux 8,9
     - Oracle Linux 8,9
 
