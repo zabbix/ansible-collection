@@ -65,9 +65,9 @@ platforms:
   - name: podman_ubuntu18
     image: docker.io/jrei/systemd-ubuntu:18.04
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -87,9 +87,9 @@ platforms:
   - name: podman_ubuntu20
     image: docker.io/jrei/systemd-ubuntu:20.04
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -108,9 +108,9 @@ platforms:
   - name: podman_ubuntu22
     image: docker.io/jrei/systemd-ubuntu:22.04
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -130,9 +130,9 @@ platforms:
   - name: podman_rhel8
     image: registry.access.redhat.com/ubi8/ubi-init
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -150,9 +150,9 @@ platforms:
   - name: podman_rhel9
     image: registry.access.redhat.com/ubi9/ubi-init
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -196,9 +196,9 @@ platforms:
     dockerfile: ../default/files/Dockerfile_rhel.j2
     image: quay.io/centos/centos:stream9
     pre_build_image: false
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -220,9 +220,9 @@ platforms:
     dockerfile: ../default/files/Dockerfile_rhel.j2
     image: docker.io/library/oraclelinux:8
     pre_build_image: false
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     # volumes:
     #   # - /sys/fs/cgroup:/sys/fs/cgroup:ro
     #   - /etc/localtime:/etc/localtime:ro
@@ -247,9 +247,9 @@ platforms:
     dockerfile: ../default/files/Dockerfile_rhel.j2
     image: docker.io/library/oraclelinux:9
     pre_build_image: false
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -270,9 +270,9 @@ platforms:
   - name: podman_alma8
     image: ghcr.io/hifis-net/almalinux-systemd:8
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -289,9 +289,9 @@ platforms:
       - alma
   - name: podman_alma9
     image: ghcr.io/hifis-net/almalinux-systemd:9
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -311,9 +311,9 @@ platforms:
   - name: podman_rocky8
     image: docker.io/geerlingguy/docker-rockylinux8-ansible:latest
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     # volumes:
     #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
     #   - /etc/localtime:/etc/localtime:ro
@@ -330,9 +330,9 @@ platforms:
       - rocky
   - name: podman_rocky9
     image: docker.io/geerlingguy/docker-rockylinux9-ansible:latest
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     # volumes:
     #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
     #   - /etc/localtime:/etc/localtime:ro
@@ -352,9 +352,9 @@ platforms:
   - name: podman_debian10
     image: ghcr.io/hifis-net/debian-systemd:10
     pre_build_image: true
-    tmpfs:
-      - /run
-      - /tmp
+    # tmpfs:
+    #   - /run
+    #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
@@ -369,23 +369,92 @@ platforms:
       - podman
       - linux
       - debian
-  # - name: podman_debian11
-  #   image: ghcr.io/hifis-net/debian-systemd:11
-  #   pre_build_image: true
-  #   tmpfs:
-  #     - /run
-  #     - /tmp
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  #     - /etc/localtime:/etc/localtime:ro
-  #   capabilities:
-  #     - SYS_ADMIN
-  #   published_ports:
-  #     - "11150:10050/tcp"
-  #     - "11120:10020/tcp"
-  #   command: "/lib/systemd/systemd"
-  #   groups:
-  #     - molecule
-  #     - podman
-  #     - linux
-  #     - debian
+  - name: podman_debian11
+    image: ghcr.io/hifis-net/debian-systemd:11
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11150:10050/tcp"
+      - "11120:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - debian
+
+  - name: podman_amazon2023
+    dockerfile: ../default/files/Dockerfile_rhel.j2
+    image: public.ecr.aws/amazonlinux/amazonlinux:2023
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "10350:10050/tcp"
+      - "10320:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - amazon
+
+  - name: podman_fedora33
+    dockerfile: ../default/files/Dockerfile_rhel.j2
+    image: docker.io/library/fedora:33
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "13350:10050/tcp"
+      - "13320:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - fedora
+    # extra_opts:
+    #   - --log-level warn
+  - name: podman_fedora37
+    dockerfile: ../default/files/Dockerfile_rhel.j2
+    image: docker.io/library/fedora:37
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "13750:10050/tcp"
+      - "13720:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - fedora
+    # extra_opts:
+    #   - --log-level warn
