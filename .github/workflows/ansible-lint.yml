@@ -11,7 +11,7 @@ jobs:
       - name: Ansible Lint
         ### You may pin to the exact commit or the version.
         ### uses: ansible/ansible-lint-action@912d1bf4240f503c2b7e50a6cacadd7df5c3dd82
-        uses: ansible/ansible-lint-action@v6.15.0
+        uses: ansible/ansible-lint-action@v6.16.0
         ### Specific path to lint instead of the default `.`. Multiple arguments are not supported and you will need to alter linter configuration to accommodate other use cases.
         # with:
         #   path: # optional, default is --show-relpat
