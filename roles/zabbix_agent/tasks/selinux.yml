@@ -67,6 +67,6 @@
     persistent: true
     state: '{{ zabbix_agent_zabbix_run_sudo_state }}'
   vars:
-    zabbix_agent_sebool_state_table: { "on": true, "off": false }
+    zabbix_agent_sebool_state_table: {"on": true, "off": false}
     zabbix_agent_zabbix_run_sudo_state: '{{ zabbix_agent_sebool_state_table[seboolean_zabbix_run_sudo] }}'
   tags: [selinux]
