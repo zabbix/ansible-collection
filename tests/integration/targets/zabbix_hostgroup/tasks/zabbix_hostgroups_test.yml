@@ -1,0 +1,206 @@
+---
+- name: Block to test creating hostgroups
+  block:
+    - name: Test - Creating new Zabbix hostgroup
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_create
+
+    - name: Assert that hostgroup was created
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_create is changed
+
+    - name: Test - Creating Zabbix hostgroup again
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_create_again
+
+    - name: Assert that hostgroup already created
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_create_again is not changed
+
+    - name: Test - Creating two hostgroups, one of which already exists
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups:
+          - zab_integration_test_group
+          - zab_integration_2_test_group
+      register: zabbix_hostgroup_create_second_hostgroup
+
+    - name: Assert that only the second hostgroup was created
+      ansible.builtin.assert:
+        that:
+          - zabbix_hostgroup_create_second_hostgroup is changed
+          - "'Successfully created hostgroup(s): zab_integration_2_test_group' == zabbix_hostgroup_create_second_hostgroup.result"
+
+    - name: Test - Assigning a new hostgroup to a host
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: zabbix_test_host
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_assign
+
+    - name: Assert that hostgroup was assigned
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_assign is changed
+
+- name: Block to test deleting hostgroups
+  block:
+    - name: Test - Deleting an assigned hostgroup
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_delete_assign
+      ignore_errors: true
+
+    - name: Assert that hostgroup was not deleted
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_assign is failed
+
+    - name: Test - Deleting a test host
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: zabbix_test_host
+
+    - name: Test - Deleting an assigned hostgroup wo hosts
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_delete_assign_wo_hosts
+
+    - name: Assert that hostgroup was delete
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_assign_wo_hosts is changed
+
+    - name: Test - Deleting an already deleted hostgroup
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - zab_integration_test_group
+      register: zabbix_hostgroup_delete_again
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_again is not changed
+
+    - name: Test - Deleting hostgroups, one of which has already been deleted
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - zab_integration_test_group
+          - zab_integration_2_test_group
+      register: zabbix_hostgroup_delete_one_of_exists
+
+    - name: Assert that the only one hostgroup was delete
+      ansible.builtin.assert:
+        that:
+          - zabbix_hostgroup_delete_one_of_exists is changed
+          - "'Successfully deleted hostgroup(s): zab_integration_2_test_group' == zabbix_hostgroup_delete_one_of_exists.result"
+
+    - name: Test - Deleting non existing hostgroup
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - zab_integration_test_non_exist_group
+      register: zabbix_hostgroup_delete_non_exists_hostgroup
+
+    - name: Assert that the nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_non_exists_hostgroup is not changed
+
+- name: Block to test operations with empty list of hostgroups
+  block:
+    - name: Test - Creating Zabbix hostgroup with empty list
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups: []
+      register: zabbix_hostgroup_create_empty_list
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_create_empty_list is not changed
+
+    - name: Test - Creating Zabbix hostgroup with empty list 2
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups: ""
+      register: zabbix_hostgroup_create_empty_list_2
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_create_empty_list_2 is not changed
+
+    - name: Test - Creating Zabbix hostgroup with empty list 3
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups:
+          - ""
+      register: zabbix_hostgroup_create_empty_list_3
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_create_empty_list_3 is not changed
+
+    - name: Test - Deleting Zabbix hostgroup with empty list
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups: []
+      register: zabbix_hostgroup_delete_empty_list
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_empty_list is not changed
+
+    - name: Test - Deleting Zabbix hostgroup with empty list 2
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups: ""
+      register: zabbix_hostgroup_delete_empty_list_2
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_empty_list_2 is not changed
+
+    - name: Test - Deleting Zabbix hostgroup with empty list 3
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - ""
+      register: zabbix_hostgroup_delete_empty_list_3
+
+    - name: Assert that nothing to do
+      ansible.builtin.assert:
+        that: zabbix_hostgroup_delete_empty_list_3 is not changed
+
+- name: Block to check requirement parameters
+  block:
+    - name: Test - Verifying that hostgroups are required for creating
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+      register: zabbix_hostgroup_are_required
+      ignore_errors: true
+
+    - name: Assert that hostgroup are required
+      ansible.builtin.assert:
+        that:
+          - zabbix_hostgroup_are_required is failed
+          - "'missing required arguments: hostgroups' in zabbix_hostgroup_are_required.msg"
+
+    - name: Test - Verifying that hostgroups are required for deleting
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+      register: zabbix_hostgroup_are_required
+      ignore_errors: true
+
+    - name: Assert that hostgroup are required
+      ansible.builtin.assert:
+        that:
+          - zabbix_hostgroup_are_required is failed
+          - "'missing required arguments: hostgroups' in zabbix_hostgroup_are_required.msg"

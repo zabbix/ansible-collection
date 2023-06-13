@@ -1,0 +1,70 @@
+---
+- name: Check hostgroups parameter
+  block:
+    - name: Test - Addind hostgroups
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+          - Discovered hosts
+      register: zabbix_host_adding_hostgroups
+
+    - name: Assert that hostgroups was added
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_adding_hostgroups is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_adding_hostgroups.result"
+
+    - name: Test - Deleting one of hostgroup
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+      register: zabbix_host_deleting_hostgroups
+
+    - name: Assert that hostgroups was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_deleting_hostgroups is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_deleting_hostgroups.result"
+
+    # Check idempotence and current hostgroups
+    - name: Test - Deleting one of hostgroup again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+      register: zabbix_host_deleting_hostgroups_again
+
+    - name: Assert that hostgroups was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_deleting_hostgroups_again is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_deleting_hostgroups_again.result"
+
+    # Check empty hostgroup
+    - name: Test - Deleting all hostgroup on host
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups: []
+      register: zabbix_host_deleting_all_hostgroups
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_deleting_all_hostgroups is not changed
+          - "'Can not remove all hostgroups from a host' == zabbix_host_deleting_all_hostgroups.msg"
+
+    # Check non exist hostgroup
+    - name: Test - Updating to non exist hostgroup
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Missing zabbix hostgroup
+      register: zabbix_host_updating_non_exist_hostgroup
+      ignore_errors: true
+
+    - name: Assert that hostgroup was not found
+      ansible.builtin.assert:
+        that: zabbix_host_updating_non_exist_hostgroup is failed

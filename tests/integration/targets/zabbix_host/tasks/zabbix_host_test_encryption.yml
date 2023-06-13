@@ -1,0 +1,372 @@
+---
+- name: Check basic tls_accept encryption parameters
+  block:
+    # Check tls_accept and str parameters
+    - name: Test - Creating encryption from str of parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_accept: cert
+      register: zabbix_host_encryption_tls_accept_str_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_accept_str_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_accept_str_check.result"
+
+    # Check tls_accept and list parameters
+    - name: Test - Creating encryption from list of parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_accept:
+          - unencrypted
+          - cert
+      register: zabbix_host_encryption_tls_accept_list_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_accept_list_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_accept_list_check.result"
+
+    # Check tls_accept and empty list parameters
+    - name: Test - Creating encryption from empty list of parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_accept: []
+      register: zabbix_host_encryption_tls_accept_empty_list_check
+
+    - name: Assert that encryption was updated to 'unencrypted'
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_accept_empty_list_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_accept_empty_list_check.result"
+
+    - name: Test - Check current setting. Must be 'unencrypted'
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_accept: unencrypted
+      register: zabbix_host_encryption_tls_accept_empty_list_check
+
+    - name: Assert that encryption was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_accept_empty_list_check is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_encryption_tls_accept_empty_list_check.result"
+
+    # Check tls_accept and incorrect value
+    - name: Test - Creating encryption with incorrect parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_accept:
+          - sha256
+      register: zabbix_host_encryption_tls_accept_incorrect_value
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_encryption_tls_accept_incorrect_value is failed
+
+- name: Check basic tls_connect encryption parameters
+  block:
+    # Check tls_connect and str parameters
+    - name: Test - Creating encryption from str of parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: cert
+      register: zabbix_host_encryption_tls_connect_str_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_connect_str_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_connect_str_check.result"
+
+    # Check tls_connect and list parameters
+    - name: Test - Creating encryption from list of parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect:
+          - unencrypted
+          - cert
+      register: zabbix_host_encryption_tls_connect_list_check
+      ignore_errors: true
+
+    - name: Assert that encryption was not updated
+      ansible.builtin.assert:
+        that: zabbix_host_encryption_tls_connect_list_check is failed
+
+    # Check tls_connect and empty str parameters
+    - name: Test - Creating encryption from empty list of parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: ''
+      register: zabbix_host_encryption_tls_connect_empty_check
+
+    - name: Assert that encryption was updated to 'unencrypted'
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_connect_empty_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_connect_empty_check.result"
+
+    - name: Test - Check current setting. Must be 'unencrypted'
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: unencrypted
+      register: zabbix_host_encryption_tls_connect_empty_check
+
+    - name: Assert that encryption was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_connect_empty_check is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_encryption_tls_connect_empty_check.result"
+
+    # Check tls_accept and incorrect value
+    - name: Test - Creating encryption with incorrect parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: sha256
+      register: zabbix_host_encryption_tls_connect_incorrect_value
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_encryption_tls_connect_incorrect_value is failed
+
+- name: Check certificate parameters
+  block:
+    # Check for both: tls_connect and tls_connect without additional parameters
+    - name: Test - Creating encryption with certificate
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: cert
+        tls_accept: cert
+      register: zabbix_host_encryption_certificate_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_certificate_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_certificate_check.result"
+
+    # Check tls_issuer and tls_subject parameters
+    - name: Test - Creating tls_issuer and tls_subject parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_issuer: my_tls_issuer
+        tls_subject: my_tls_subject
+      register: zabbix_host_encryption_tls_issuer_and_tls_subject_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_issuer_and_tls_subject_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_issuer_and_tls_subject_check.result"
+
+    - name: Test - Creating tls_issuer and tls_subject parameters again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_issuer: my_tls_issuer
+        tls_subject: my_tls_subject
+      register: zabbix_host_encryption_tls_issuer_and_tls_subject_check_again
+
+    - name: Assert that encryption was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_issuer_and_tls_subject_check_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_encryption_tls_issuer_and_tls_subject_check_again.result"
+
+    # Check empty tls_issuer and tls_subject parameters
+    - name: Test - Creating empty tls_issuer and tls_subject parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_issuer: ''
+        tls_subject: ''
+      register: zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check.result"
+
+    - name: Test - Creating empty tls_issuer and tls_subject parameters again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_issuer: ''
+        tls_subject: ''
+      register: zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check_again
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_encryption_tls_issuer_and_tls_subject_empty_check_again.result"
+
+- name: 'Variables: Generate PSK keys'
+  ansible.builtin.set_fact:
+    zabbix_psk_value: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=64") | lower }}'
+
+- name: Check psk parameters
+  block:
+    # Check psk encryption without tls_psk and tls_psk_identity
+    - name: Test - Creating encryption with psk without tls_psk and tls_psk_identity
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_accept: psk
+      register: zabbix_host_encryption_psk_check_wo_params
+      ignore_errors: true
+
+    - name: Assert that taks was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_wo_params is failed
+          - "'Missing tls psk params' in zabbix_host_encryption_psk_check_wo_params.msg"
+
+    - name: Test - Creating encryption with psk with tls_psk
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_accept: psk
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_host_encryption_psk_check_w_tls_psk
+      ignore_errors: true
+
+    - name: Assert that taks was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_w_tls_psk is failed
+          - "'parameters are required together' in zabbix_host_encryption_psk_check_w_tls_psk.msg"
+
+    - name: Test - Creating encryption with psk with tls_psk_identity
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_accept: psk
+        tls_psk_identity: my_tls_psk_identity
+      register: zabbix_host_encryption_psk_check_w_tls_psk_identity
+      ignore_errors: true
+
+    - name: Assert that taks was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_w_tls_psk_identity is failed
+          - "'parameters are required together' in zabbix_host_encryption_psk_check_w_tls_psk_identity.msg"
+
+    - name: Test - Creating encryption with psk with tls_psk and tls_psk_identity
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_accept: psk
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity.result"
+
+    # check idempotency violation
+    # We specify the same parameters as in the previous task.
+    # The parameters will be updated again, since Zabbix GUI does not have access
+    # to the psk keys and we cannot compare the current key with the given one.
+    # Each task with psk keys will updated.
+    - name: Test - Set tls_psk and tls_psk_identity
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_host_encryption_tls_psk_and_tls_psk_identity
+
+    - name: Assert that encryption was updated again
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_tls_psk_and_tls_psk_identity is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_psk_and_tls_psk_identity.result"
+
+    # Сheck that we can work with psk encryption without the obligatory specification
+    # of psk keys, if the host already has psk encryption and, accordingly, there is a psk key.
+    - name: Test - Creating encryption with psk without tls_psk and tls_psk_identity
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: cert
+        tls_accept: psk
+      register: zabbix_host_encryption_psk_check_wo_params
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_wo_params is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_wo_params.result"
+
+    - name: Test - Change tls_connect and tls_accept parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_accept: cert
+      register: zabbix_host_encryption_psk_check_wo_params
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_check_wo_params is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_wo_params.result"
+
+    # Clean psk encryption
+    - name: Test - Clean psk encryption
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: cert
+        tls_accept: unencrypted
+      register: zabbix_host_encryption_clean_psk
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_clean_psk is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_clean_psk.result"
+
+    # Try to add psk without keys
+    - name: Test - Add psk without keys
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+      register: zabbix_host_encryption_psk_wo_keys
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_wo_keys is failed
+          - "'Missing tls psk params' in zabbix_host_encryption_psk_wo_keys.msg"
+
+    - name: Test - Add psk with keys
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tls_connect: psk
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_host_encryption_psk_w_keys
+
+    - name: Assert that encryption was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_encryption_psk_w_keys is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_w_keys.result"
+
+# Clean encryption
+- name: Test - Clean encryption
+  zabbix.zabbix.zabbix_host:
+    host: zabbix_test_host
+    tls_connect: ''
+    tls_accept: []
+  register: zabbix_host_encryption_clean
+
+- name: Assert that encryption was updated
+  ansible.builtin.assert:
+    that:
+      - zabbix_host_encryption_clean is changed
+      - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_clean.result"

@@ -1,0 +1,118 @@
+---
+- name: Check basic tags parameters
+  block:
+    # Check tags with value and without value
+    - name: Test - Creating tags
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags:
+          - tag: with_value
+            value: value
+          - tag: without_value
+      register: zabbix_host_tags_w_and_wo_value
+
+    - name: Assert that tags was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_tags_w_and_wo_value is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_tags_w_and_wo_value.result"
+
+    - name: Test - Check idempotency
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags:
+          - tag: with_value
+            value: value
+          - tag: without_value
+            value: ''
+      register: zabbix_host_tags_w_and_wo_value_again
+
+    - name: Assert that tags was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_tags_w_and_wo_value_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_tags_w_and_wo_value_again.result"
+
+    # Check tags with same name
+    - name: Test - Creating tags with same name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags:
+          - tag: tag_name
+            value: value
+          - tag: tag_name
+      register: zabbix_host_tags_w_same_name
+
+    - name: Assert that tags was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_tags_w_same_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_tags_w_same_name.result"
+
+    - name: Test - Check idempotency
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags:
+          - tag: tag_name
+            value: ''
+          - tag: tag_name
+            value: value
+      register: zabbix_host_tags_w_same_name_again
+
+    - name: Assert that tags was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_tags_w_same_name_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_tags_w_same_name_again.result"
+
+- name: Check invalid tags parameters
+  block:
+    # Check tags without tag names
+    - name: Test - Creating tags without tag names
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags:
+          - value: value
+      register: zabbix_host_tags_wo_name
+      ignore_errors: true
+
+    - name: Assert that task was falied
+      ansible.builtin.assert:
+        that: zabbix_host_tags_wo_name is failed
+
+    # Check tags with invalid type
+    - name: Test - Creating tags with invalid type
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        tags: tag_name
+      register: zabbix_host_tags_w_invalid_type
+      ignore_errors: true
+
+    - name: Assert that task was falied
+      ansible.builtin.assert:
+        that: zabbix_host_tags_w_invalid_type is failed
+
+# Clear tags
+- name: Test - Clean all tags
+  zabbix.zabbix.zabbix_host:
+    host: zabbix_test_host
+    tags: []
+  register: zabbix_host_tags_clean_all
+
+- name: Assert that tags was updated
+  ansible.builtin.assert:
+    that:
+      - zabbix_host_tags_clean_all is changed
+      - "'Successfully updated host: zabbix_test_host' == zabbix_host_tags_clean_all.result"
+
+- name: Test - Clean all tags again
+  zabbix.zabbix.zabbix_host:
+    host: zabbix_test_host
+    tags: []
+  register: zabbix_host_tags_clean_all_again
+
+- name: Assert that tags was not updated
+  ansible.builtin.assert:
+    that:
+      - zabbix_host_tags_clean_all_again is not changed
+      - "'No need to update host: zabbix_test_host' == zabbix_host_tags_clean_all_again.result"

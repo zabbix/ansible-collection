@@ -1,0 +1,397 @@
+---
+- name: Check status parameter
+  block:
+    - name: Test - Change status to disabled
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        status: disabled
+      register: zabbix_host_status_disabled
+
+    - name: Assert that status was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_status_disabled is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_status_disabled.result"
+
+    - name: Test - Change status to disabled again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        status: disabled
+      register: zabbix_host_status_disabled_again
+
+    - name: Assert that status was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_status_disabled_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_status_disabled_again.result"
+
+    - name: Test - Change status to enabled
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        status: enabled
+      register: zabbix_host_status_enabled
+
+    - name: Assert that status was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_status_enabled is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_status_enabled.result"
+
+    - name: Test - Change status to enabled again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        status: enabled
+      register: zabbix_host_status_enabled_again
+
+    - name: Assert that status was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_status_enabled_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_status_enabled_again.result"
+
+- name: Check description parameter
+  block:
+    - name: Test - Set host description
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        description: test description
+      register: zabbix_host_description
+
+    - name: Assert that description was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_description is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_description.result"
+
+    - name: Test - Set host description again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        description: test description
+      register: zabbix_host_description_again
+
+    - name: Assert that description was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_description_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_description_again.result"
+
+    - name: Test - Set host description to empty value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        description: ''
+      register: zabbix_host_description
+
+    - name: Assert that description was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_description is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_description.result"
+
+    - name: Test - Set host description to empty value again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        description: ''
+      register: zabbix_host_description_again
+
+    - name: Assert that description was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_description_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_description_again.result"
+
+- name: Check visible name parameter
+  block:
+    - name: Test - Set host visible name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: test visible name
+      register: zabbix_host_visible_name
+
+    - name: Assert that visible name was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_visible_name.result"
+
+    - name: Test - Set host visible name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: test visible name
+      register: zabbix_host_visible_name_again
+
+    - name: Assert that visible name was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_visible_name_again.result"
+
+    - name: Test - Set host visible name to empty value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: ''
+      register: zabbix_host_visible_name
+
+    - name: Assert that visible name was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_visible_name.result"
+
+    - name: Test - Set host visible name to empty value again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: ''
+      register: zabbix_host_visible_name_again
+
+    - name: Assert that visible name was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_visible_name_again.result"
+
+- name: Check visible name parameter
+  block:
+    - name: Test - Set host visible name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: test visible name
+      register: zabbix_host_visible_name
+
+    - name: Assert that visible name was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_visible_name.result"
+
+    - name: Test - Set host visible name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: test visible name
+      register: zabbix_host_visible_name_again
+
+    - name: Assert that visible name was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_visible_name_again.result"
+
+    - name: Test - Set host visible name to empty value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: ''
+      register: zabbix_host_visible_name
+
+    - name: Assert that visible name was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_visible_name.result"
+
+    - name: Test - Set host visible name to empty value again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        name: ''
+      register: zabbix_host_visible_name_again
+
+    - name: Assert that visible name was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_visible_name_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_visible_name_again.result"
+
+- name: Check ipmi parameters
+  block:
+    # ipmi_authtype
+    - name: Test - Set ipmi_authtype
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_authtype: md2
+      register: zabbix_host_ipmi_authtype
+
+    - name: Assert that ipmi_authtype was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_authtype is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_authtype.result"
+
+    - name: Test - Set ipmi_authtype again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_authtype: md2
+      register: zabbix_host_ipmi_authtype_again
+
+    - name: Assert that ipmi_authtype was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_authtype_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_authtype_again.result"
+
+    - name: Test - Set incorrect value for ipmi_authtype
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_authtype: incorrect_value
+      register: zabbix_host_ipmi_authtype_incorrect_value
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_ipmi_authtype_incorrect_value is failed
+
+      # ipmi_privilege
+    - name: Test - Set ipmi_privilege
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_privilege: admin
+      register: zabbix_host_ipmi_privilege
+
+    - name: Assert that ipmi_privilege was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_privilege is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_privilege.result"
+
+    - name: Test - Set ipmi_privilege again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_privilege: admin
+      register: zabbix_host_ipmi_privilege_again
+
+    - name: Assert that ipmi_privilege was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_privilege_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_privilege_again.result"
+
+    - name: Test - Set incorrect value for ipmi_privilege
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_privilege: incorrect_value
+      register: zabbix_host_ipmi_privilege_incorrect_value
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_ipmi_privilege_incorrect_value is failed
+
+    # ipmi_username
+    - name: Test - Set ipmi_username
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_username: ipmi_username
+      register: zabbix_host_ipmi_username
+
+    - name: Assert that ipmi_username was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_username is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_username.result"
+
+    - name: Test - Set host ipmi_username again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_username: ipmi_username
+      register: zabbix_host_ipmi_usernameagain
+
+    - name: Assert that ipmi_username was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_usernameagain is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_usernameagain.result"
+
+    - name: Test - Set host ipmi_username to empty value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_username: ''
+      register: zabbix_host_ipmi_username
+
+    - name: Assert that ipmi_username was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_username is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_username.result"
+
+    - name: Test - Set host ipmi_username to empty value again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_username: ''
+      register: zabbix_host_ipmi_username_again
+
+    - name: Assert that ipmi_username was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_username_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_username_again.result"
+
+    # ipmi_password
+    - name: Test - Set ipmi_password
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_password: test_ipmi_password
+      register: zabbix_host_ipmi_password
+
+    - name: Assert that ipmi_password was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_password is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_password.result"
+
+    - name: Test - Set host ipmi_password again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_password: test_ipmi_password
+      register: zabbix_host_ipmi_passwordagain
+
+    - name: Assert that ipmi_password was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_passwordagain is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_passwordagain.result"
+
+    - name: Test - Set host ipmi_password to empty value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_password: ''
+      register: zabbix_host_ipmi_password
+
+    - name: Assert that ipmi_password was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_password is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_ipmi_password.result"
+
+    - name: Test - Set host ipmi_password to empty value again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        ipmi_password: ''
+      register: zabbix_host_ipmi_password_again
+
+    - name: Assert that ipmi_password was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_ipmi_password_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_password_again.result"
+
+- name: Check proxy parameters
+  block:
+    - name: Test - Set proxy for monitoring via zabbix-server
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: ''
+      register: zabbix_host_proxy
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_proxy.result"
+
+    - name: Test - Set non-existent proxy
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'integration test proxy'
+      register: zabbix_host_proxy_error
+      ignore_errors: true
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        that: zabbix_host_proxy_error is failed

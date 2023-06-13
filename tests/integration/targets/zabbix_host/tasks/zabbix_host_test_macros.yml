@@ -1,0 +1,407 @@
+---
+- name: Check basic macro parameters
+  block:
+    # Check macro with incorrect parameters
+    - name: Test - Creating macro with incorrect value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros: '{$TEST_MACRO}'
+      register: zabbix_host_macro_incorrect_value
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_incorrect_value is failed
+
+    - name: Test - Creating macro without macro name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - value: test value
+            type: text
+            description: test description
+      register: zabbix_host_macro_wo_macro_name
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_wo_macro_name is failed
+
+    - name: Test - Creating macro with incorrect macro name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: []
+            value: test value
+            type: text
+            description: test description
+      register: zabbix_host_macro_w_incorrect_macro_name
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_w_incorrect_macro_name is failed
+
+    - name: Test - Creating macro with incorrect type
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            type: incorrect_type
+      register: zabbix_host_macro_incorrect_type
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_incorrect_type is failed
+
+    - name: Test - Creating macro with incorrect type 2
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            type: ''
+      register: zabbix_host_macro_incorrect_type_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_incorrect_type_2 is failed
+
+    # Check macro with correct parameters and other parameters by default
+    - name: Test - Creating macro with correct value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+      register: zabbix_host_macro_correct_value
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_correct_value is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_correct_value.result"
+
+    # Check macro with all parameters like default. Check Check idempotency and default value.
+    - name: Test - Creating macro with full default value
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            value: ''
+            description: ''
+            type: text
+      register: zabbix_host_macro_check_default_value
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_default_value is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_default_value.result"
+
+    # Check value and description parameters
+    - name: Test - Creating macro with value and description parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            value: value_of_macro
+            description: description_of_macro
+      register: zabbix_host_macro_check_value_and_description_full
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_value_and_description_full is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_value_and_description_full.result"
+
+    - name: Test - Creating macro with empty value and description parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            value: ''
+            description: ''
+      register: zabbix_host_macro_check_value_and_description_empty
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_value_and_description_empty is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_value_and_description_empty.result"
+
+    - name: Test - Creating macro with empty value and description parameters again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO}'
+            value: ''
+            description: ''
+      register: zabbix_host_macro_check_value_and_description_empty_again
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_value_and_description_empty_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_value_and_description_empty_again.result"
+
+    # Check all variant of text macros
+    - name: Test - Creating macro with all variant of text macros
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1}'
+          - macro: '{$TEST_MACRO_2}'
+            value: ''
+          - macro: '{$TEST_MACRO_3}'
+            value: TEST_MACRO_3_value
+          - macro: '{$TEST_MACRO_4}'
+            description: ''
+          - macro: '{$TEST_MACRO_5}'
+            description: TEST_MACRO_5_description
+          - macro: '{$TEST_MACRO_6}'
+            value: TEST_MACRO_6_value
+            description: TEST_MACRO_6_description
+          - macro: '{$TEST_MACRO_7}'
+            value: ''
+            description: ''
+          - macro: '{$TEST_MACRO_8}'
+            value: ''
+            description: ''
+            type: text
+          - macro: '{$TEST_MACRO_9}'
+            value: TEST_MACRO_9_value
+            description: TEST_MACRO_9_description
+            type: text
+      register: zabbix_host_macro_check_full_parameters
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_full_parameters is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_full_parameters.result"
+
+    # Check idempotency
+    - name: Test - Creating macro with all variant of text macros again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1}'
+          - macro: '{$TEST_MACRO_2}'
+            value: ''
+          - macro: '{$TEST_MACRO_3}'
+            value: TEST_MACRO_3_value
+          - macro: '{$TEST_MACRO_4}'
+            description: ''
+          - macro: '{$TEST_MACRO_5}'
+            description: TEST_MACRO_5_description
+          - macro: '{$TEST_MACRO_6}'
+            value: TEST_MACRO_6_value
+            description: TEST_MACRO_6_description
+          - macro: '{$TEST_MACRO_7}'
+            value: ''
+            description: ''
+          - macro: '{$TEST_MACRO_8}'
+            value: ''
+            description: ''
+            type: text
+          - macro: '{$TEST_MACRO_9}'
+            value: TEST_MACRO_9_value
+            description: TEST_MACRO_9_description
+            type: text
+      register: zabbix_host_macro_check_full_parameters_again
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_full_parameters_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_full_parameters_again.result"
+
+- name: Check preprocessing macro name parameters
+  block:
+    # Creating macro without brackets (start, end, both)
+    - name: Test - Creating macro without brackets
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'TEST_MACRO_1'
+          - macro: '{TEST_MACRO_2'
+          - macro: '$TEST_MACRO_3'
+          - macro: '{$TEST_MACRO_4'
+          - macro: 'TEST_MACRO_5}'
+          - macro: '{$TEST_MACRO_6}'
+      register: zabbix_host_macro_check_name_wo_brackets
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_name_wo_brackets is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_name_wo_brackets.result"
+
+    - name: Test - Check macro name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1}'
+          - macro: '{$TEST_MACRO_2}'
+          - macro: '{$TEST_MACRO_3}'
+          - macro: '{$TEST_MACRO_4}'
+          - macro: '{$TEST_MACRO_5}'
+          - macro: '{$TEST_MACRO_6}'
+      register: zabbix_host_macro_check_name_wo_brackets_check
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_name_wo_brackets_check is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_name_wo_brackets_check.result"
+
+    # Creating macro with lower symbols
+    - name: Test - Creating macro with lower symbols
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'test_macro_1'
+          - macro: '{$test_macro_2}'
+      register: zabbix_host_macro_check_lower_name
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_lower_name is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_lower_name.result"
+
+    - name: Test - Check macro name with lower symbols
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1}'
+          - macro: '{$TEST_MACRO_2}'
+      register: zabbix_host_macro_check_lower_name_check
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_lower_name_check is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_lower_name_check.result"
+
+    # Creating macro with spaces in the name
+    - name: Test - Creating macro with spaces in the name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'test macro_1'
+      register: zabbix_host_macro_check_spaces_in_name
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_spaces_in_name is failed
+          - "'Invalid macro name' in zabbix_host_macro_check_spaces_in_name.msg"
+
+- name: Check secret macros
+  block:
+    # Creating secret macro
+    - name: Test - Creating secret macro
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'secret_macro_1'
+            value: secret value
+            type: secret
+            description: secret description
+      register: zabbix_host_macro_secret
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_secret is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_secret.result"
+
+    # check idempotency violation
+    # We specify the same parameters as in the previous task.
+    # The parameters will be updated again, since Zabbix GUI does not have access
+    # to the secret macros and we cannot compare the current value with the given one.
+    # Each task with secret macros will updated.
+    - name: Test - Check secret macro
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'secret_macro_1'
+            value: secret value
+            type: secret
+            description: secret description
+      register: zabbix_host_macro_secret_again
+      ignore_errors: true
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_secret_again is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_secret_again.result"
+
+- name: Check vault secret macros
+  block:
+    # Creating secret macro
+    - name: Test - Creating vault secret macro
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'vault_secret_macro_1'
+            value: path/to/your/store:key
+            type: vault_secret
+            description: vault_secret description
+      register: zabbix_host_macro_vault_secret
+
+    - name: Assert that macros was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_vault_secret is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_vault_secret.result"
+
+    # check idempotency
+    - name: Test - Creating vault secret macro again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'vault_secret_macro_1'
+            value: path/to/your/store:key
+            type: vault_secret
+            description: vault_secret description
+      register: zabbix_host_macro_vault_secret_again
+
+    - name: Assert that macros was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_vault_secret_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_vault_secret_again.result"
+
+    # check invalid value
+    - name: Test - Creating vault secret macro again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: 'vault_secret_macro_1'
+            value: /path/to/your/store
+            type: vault_secret
+            description: vault_secret description
+      register: zabbix_host_macro_vault_secret_again
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_macro_vault_secret_again is failed
+
+# Clear macros
+- name: Test - Clean all macros
+  zabbix.zabbix.zabbix_host:
+    host: zabbix_test_host
+    macros: []
+  register: zabbix_host_macro_clean_all
+
+- name: Assert that macros was updated
+  ansible.builtin.assert:
+    that:
+      - zabbix_host_macro_clean_all is changed
+      - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_clean_all.result"

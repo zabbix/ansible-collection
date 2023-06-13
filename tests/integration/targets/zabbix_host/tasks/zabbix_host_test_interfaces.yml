@@ -1,0 +1,513 @@
+---
+- name: 'Variables: Generate SNMP credentials'
+  ansible.builtin.set_fact:
+    zabbix_snmp_authpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+    zabbix_snmp_privpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+
+- name: Basic checks
+  block:
+    - name: Test - Adding all interfaces with default parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+          - type: snmp
+          - type: ipmi
+          - type: jmx
+      register: zabbix_host_interface_adding_all_by_default
+
+    - name: Assert that host was updated and interfaces was added
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_adding_all_by_default is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_adding_all_by_default.result"
+
+    # Check idempotency and default value for an interface
+    - name: Test - Update all interfaces with manual default parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            ip: 127.0.0.1
+            dns: ''
+            main: true
+            useip: true
+            port: 10050
+          - type: snmp
+            ip: 127.0.0.1
+            dns: ''
+            main: true
+            useip: true
+            port: 161
+            details:
+              version: 2
+              contextname: ''
+              securityname: ''
+              bulk: true
+          - type: ipmi
+            ip: 127.0.0.1
+            dns: ''
+            main: true
+            useip: true
+            port: 623
+          - type: jmx
+            ip: 127.0.0.1
+            dns: ''
+            main: true
+            useip: true
+            port: 12345
+      register: zabbix_host_interface_updating_all_with_manual_default_param
+
+    - name: Assert that host was not updated and interfaces was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_updating_all_with_manual_default_param is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_updating_all_with_manual_default_param.result"
+
+    - name: Test - Update all interfaces with manual parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            ip: 192.168.1.2
+            dns: test.com
+            main: true
+            useip: true
+            port: 10060
+          - type: snmp
+            ip: 192.168.1.2
+            dns: test.com
+            main: true
+            useip: true
+            port: 169
+          - type: ipmi
+            ip: 192.168.1.2
+            dns: test.com
+            main: true
+            useip: true
+            port: 650
+          - type: jmx
+            ip: 192.168.1.2
+            dns: test.com
+            main: true
+            useip: true
+            port: 12354
+      register: zabbix_host_interface_updating_all_with_manual_param
+
+    - name: Assert that host was updated and interfaces was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_updating_all_with_manual_param is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_updating_all_with_manual_param.result"
+
+- name: Main parameter checks
+  block:
+    - name: Test - Create two interface without main parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+          - type: agent
+            ip: 192.168.1.2
+            dns: test.com
+            useip: true
+            port: 10060
+      register: zabbix_host_interface_update_two_wo_main
+      ignore_errors: true
+
+    - name: Assert that host update was failed
+      ansible.builtin.assert:
+        that: zabbix_host_interface_update_two_wo_main is failed
+
+    # Check that two main interfaces impossible to update
+    - name: Test - Create two interface with two main parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            main: true
+          - type: agent
+            main: true
+            ip: 192.168.1.2
+            dns: test.com
+            useip: true
+            port: 10060
+      register: zabbix_host_interface_update_two_w_two_main
+      ignore_errors: true
+
+    - name: Assert that host update was failed
+      ansible.builtin.assert:
+        that: zabbix_host_interface_update_two_w_two_main is failed
+
+    # Check that we can set only main interface and don't specify main for other interface
+    - name: Test - Create two interface with one main parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+          - type: agent
+            main: true
+            ip: 192.168.1.2
+            dns: test.com
+            useip: true
+            port: 10060
+      register: zabbix_host_interface_update_two_w_one_main
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_two_w_one_main is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_two_w_one_main.result"
+
+    # Check idempotence and 'main: false'
+    - name: Test - Create two interface with two right main parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            main: false
+          - type: agent
+            main: true
+            ip: 192.168.1.2
+            dns: test.com
+            useip: true
+            port: 10060
+      register: zabbix_host_interface_update_two_w_two_right_main
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_two_w_two_right_main is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_two_w_two_right_main.result"
+
+- name: IP/DNS checks
+  block:
+    - name: Test - Create interface with dns monitoring without dns name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            ip: 192.168.1.2
+            useip: false
+      register: zabbix_host_interface_update_dns_wo_dns_name
+      ignore_errors: true
+
+    - name: Assert that host update was failed
+      ansible.builtin.assert:
+        that: zabbix_host_interface_update_dns_wo_dns_name is failed
+
+    - name: Test - Create interface with dns monitoring with dns name
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            dns: test.com
+            useip: false
+      register: zabbix_host_interface_update_dns_w_dns_name
+      ignore_errors: true
+
+    - name: Assert that host interfaces were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_dns_w_dns_name is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_dns_w_dns_name.result"
+
+    # Сheck that the ip field was empty and ip and dns can be set at the same time
+    - name: Test - Create interface with dns monitoring with dns name and ip
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+            ip: 127.0.0.1
+            dns: test.com
+            useip: false
+      register: zabbix_host_interface_update_dns_w_dns_name_and_ip
+
+    - name: Assert that host interfaces were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_dns_w_dns_name_and_ip is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_dns_w_dns_name_and_ip.result"
+
+- name: SNMP checks
+  block:
+    - name: Test - Create snmp interface with empty details
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details: {}
+      register: zabbix_host_interface_update_empty_snmp_details
+
+    - name: Assert that host interface was updated with default value
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_empty_snmp_details is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_empty_snmp_details.result"
+
+    - name: Test - Create snmp interface with details only version
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+      register: zabbix_host_interface_update_w_only_version
+
+    - name: Assert that host interface was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_w_only_version is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_w_only_version.result"
+
+    # Check v1 and v2 interfaces
+    - name: Test - Create snmp interface 1 and 2 versions
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            main: true
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 1
+              contextname: ''
+              securityname: ''
+              bulk: true
+          - type: snmp
+            main: false
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              contextname: ''
+              securityname: ''
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v1_v2
+
+    - name: Assert that host interface was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v1_v2 is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v1_v2.result"
+
+    # Check that the parameters from the snmp v3 will be ignored
+    - name: Test - Create snmp v2 interface with parameters from v3
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            main: true
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              contextname: my contextname name
+              securityname: my securityname name
+              securitylevel: authPriv
+              authprotocol: md5
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: des
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: false
+
+    - name: Test - Check current snmp parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            main: true
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              community: '{$SNMP_COMMUNITY}'
+              bulk: false
+      register: zabbix_host_interface_update_snmp_v2_w_v3_parameters
+
+    - name: Assert that host interface was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v2_w_v3_parameters is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v2_w_v3_parameters.result"
+
+    # Check default parameters for snmp v3
+    - name: Test - Create snmp v3 with default parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 3
+
+    - name: Test - Check current snmp parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: noAuthNoPriv
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_default_parameters
+
+    - name: Assert that host interface was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_default_parameters is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_default_parameters.result"
+
+    # authNoPriv
+    - name: Test - Create snmp v3 with authNoPriv without parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters
+
+    - name: Assert that host interface was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters.result"
+
+    - name: Test - Create snmp v3 with authNoPriv with empty parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              authprotocol: md5
+              authpassphrase: ''
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters
+
+    - name: Assert that host interface was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters.result"
+
+    - name: Test - Create snmp v3 with authNoPriv with parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters
+
+    - name: Assert that host interface was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters.result"
+
+    # authPriv
+    - name: Test - Create snmp v3 with authPriv without parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters
+
+    - name: Assert that host interface was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters.result"
+
+    - name: Test - Create snmp v3 with authPriv with empty parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              authprotocol: md5
+              authpassphrase: ''
+              privprotocol: des
+              privpassphrase: ''
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters
+
+    - name: Assert that host interface was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_w_parameters.result"
+
+    - name: Test - Create snmp v3 with authPriv with parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            main: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters
+
+    - name: Assert that host interface was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_w_parameters.result"

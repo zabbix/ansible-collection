@@ -1,0 +1,83 @@
+---
+- name: Check templates parameter
+  block:
+    # Check update template
+    - name: Test - Updating templates
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates:
+          - Zabbix agent active
+          - Windows by Zabbix agent active
+      register: zabbix_host_template_update
+
+    - name: Assert that template was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_template_update is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_template_update.result"
+
+    # Check deleting template
+    - name: Test - Deleting one templates
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates:
+          - Zabbix agent active
+      register: zabbix_host_template_delete
+
+    - name: Assert that template was deleted
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_template_delete is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_template_delete.result"
+
+    # Remove all templates from host
+    - name: Test - Deleting all templates from host
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates: []
+      register: zabbix_host_template_delete_all
+
+    - name: Assert that all template was deleted
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_template_delete_all is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_template_delete_all.result"
+
+    # Check idempotence and removing all templates
+    - name: Test - Deleting all templates from host again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates: []
+      register: zabbix_host_template_delete_all_again
+
+    - name: Assert that all template was deleted
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_template_delete_all_again is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_template_delete_all_again.result"
+
+    # Check updating to missing templates
+    - name: Test - Updating to missing templates
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates:
+          - Missing template
+      register: zabbix_host_template_to_missing
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_template_to_missing is failed
+
+    # Check templates with passive agent without interface
+    - name: Test - Updating to templates with passive agent without interface
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates:
+          - Zabbix agent
+      register: zabbix_host_template_with_passive_agent
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_template_with_passive_agent is failed

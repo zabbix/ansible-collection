@@ -1,0 +1,24 @@
+---
+- name: Create host hostgroups by name
+  zabbix.zabbix.zabbix_hostgroup:
+    state: present
+    hostgroups:
+      - G1
+      - G2
+  register: zabbix_hostgroup_create
+
+- name: Assert that hostgroups was created
+  ansible.builtin.assert:
+    that: zabbix_hostgroup_create is changed
+
+- name: Delete host hostgroups by name
+  zabbix.zabbix.zabbix_hostgroup:
+    state: absent
+    hostgroups:
+      - G1
+      - G2
+  register: zabbix_hostgroup_delete
+
+- name: Assert that hostgroups was deleted
+  ansible.builtin.assert:
+    that: zabbix_hostgroup_delete is changed

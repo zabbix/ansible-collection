@@ -1,0 +1,298 @@
+---
+- name: Check minimal parameters
+  block:
+    # Check the required parameter 'host'
+    - name: Test - Creating empty host
+      zabbix.zabbix.zabbix_host:
+        state: present
+      register: zabbix_host_create_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_create_empty is failed
+          - "'missing required arguments: host' in zabbix_host_create_empty.msg"
+
+    - name: Test - Creating host with empty 'host' parameter
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: ""
+        hostgroups:
+          - Linux servers
+      register: zabbix_host_create_empty_2
+      ignore_errors: true
+
+    - name: Assert that host was not created
+      ansible.builtin.assert:
+        that: zabbix_host_create_empty_2 is failed
+
+    # Check the required parameter 'hostgroup'
+    - name: Test - Creating host wo hostgroups
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: zabbix_test_host
+      register: zabbix_host_create_wo_hostgroups
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_create_wo_hostgroups is failed
+          - "'Required parameter not found: hostgroups' in zabbix_host_create_wo_hostgroups.msg"
+
+    - name: Test - Creating host with hostgroups
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+      register: zabbix_host_create
+
+    - name: Assert that host was created
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_create is changed
+          - "'Successfully created host: zabbix_test_host' == zabbix_host_create.result"
+
+    # Check idempotence
+    - name: Test - Creating host with 'state' by default and same parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+      register: zabbix_host_create_again
+
+    - name: Assert that host was not changed
+      ansible.builtin.assert:
+        that: zabbix_host_create_again is not changed
+
+    # Check updating
+    - name: Test - Updating host with hostgroup parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Discovered hosts
+      register: zabbix_host_update_hostgroup
+
+    - name: Assert that host was updated and changed group
+      ansible.builtin.assert:
+        that: zabbix_host_update_hostgroup is changed
+
+    - name: Test - Updating host with only template parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates:
+          - Zabbix agent active
+      register: zabbix_host_update_templates
+
+    - name: Assert that host was updated and added template
+      ansible.builtin.assert:
+        that: zabbix_host_update_templates is changed
+
+    # We check that the parameters are independent of each other when updated.
+    # And changing one parameter does not affect the others.
+    - name: Test - Updating host with same hostgroup and template
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups:
+          - Discovered hosts
+        templates:
+          - Zabbix agent active
+      register: zabbix_host_update_hostgroup_and_template
+
+    - name: Assert that hostgroup and template no need to update
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_update_hostgroup_and_template is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_update_hostgroup_and_template.result"
+        fail_msg: The hostgroup or template has been modified but should not.
+
+- name: Check deleting
+  block:
+    # Check the required parameter 'host'
+    - name: Test - Deleting empty host
+      zabbix.zabbix.zabbix_host:
+        state: absent
+      register: zabbix_host_delete_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_delete_empty is failed
+
+    - name: Test - Deleting empty host 2
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: ""
+      register: zabbix_host_delete_empty_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_delete_empty_2 is failed
+
+    # Deleting host
+    - name: Test - Deleting host
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: zabbix_test_host
+      register: zabbix_host_delete
+      ignore_errors: true
+
+    - name: Assert that host was deleted
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_delete is changed
+          - "'Successfully delete host: zabbix_test_host' == zabbix_host_delete.result"
+
+    # Check idempotence
+    - name: Test - Deleting non exist host
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: zabbix_test_host
+      register: zabbix_host_delete_non_exist
+      ignore_errors: true
+
+    - name: Assert that host was not found
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_delete_non_exist is not changed
+          - "'No need to delete host: zabbix_test_host' == zabbix_host_delete_non_exist.result"
+
+- name: 'Variables: Generate PSK keys'
+  ansible.builtin.set_fact:
+    zabbix_psk_value: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=64") | lower }}'
+
+- name: 'Variables: Generate SNMP credentials'
+  ansible.builtin.set_fact:
+    zabbix_snmp_authpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+    zabbix_snmp_privpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+
+- name: Check maximim parameters
+  block:
+    # Creating hosts with all parameters
+    - name: Create host with maximum parameters
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+        templates:
+          - Zabbix agent active
+        status: disabled
+        description: 'Test host'
+        name: 'Test host'
+        tags:
+          - tag: scope
+            value: test
+          - tag: scope
+            value: test_2
+          - tag: wo_value
+        macros:
+          - macro: TEST_MACRO
+            value: example
+            description: Description of example macros
+            type: text
+          - macro: TEST_MACRO_2
+          - macro: TEST_MACRO_3
+            value: example_3
+            description: Description of secret test macros
+            type: secret
+          - macro: TEST_MACRO_4
+            value: path/to/secret:example_4
+            description: Description of vault_secret macros
+            type: vault_secret
+        ipmi_authtype: straight
+        ipmi_privilege: admin
+        ipmi_username: admin
+        ipmi_password: your_password
+        tls_accept:
+          - unencrypted
+          - psk
+          - cert
+        tls_psk_identity: my_example_identy
+        tls_psk: '{{ zabbix_psk_value }}'
+        tls_issuer: Example Issuer
+        tls_subject: Example Subject
+        tls_connect: psk
+        inventory_mode: manual
+        inventory:
+          type: ''
+          serialno_b: example value
+          hardware_full: |
+            very very long
+            multiple string value
+        proxy: ''
+        interfaces:
+          - type: agent
+          - type: agent
+            ip: 192.168.1.51
+            useip: false
+            main: true
+            dns: test_dns_name
+            port: 10060
+          - type: jmx
+          - type: jmx
+            ip: 192.168.1.52
+            useip: true
+            main: true
+            port: 13245
+          - type: ipmi
+          - type: ipmi
+            useip: false
+            main: true
+            dns: test_dns_name
+            port: 624
+          - type: snmp
+          - type: snmp
+            ip: 192.168.1.50
+            main: true
+            dns: switch.local
+            port: 169
+            details:
+              version: 3
+              contextname: my contextname name
+              securityname: my securityname name
+              securitylevel: authPriv
+              authprotocol: md5
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: des
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+      register: zabbix_host_create
+
+    - name: Assert that host with all parameters was created
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_create is changed
+          - "'Successfully created host: zabbix_test_host' == zabbix_host_create.result"
+
+    - name: Clean all parameters from host
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: zabbix_test_host
+        hostgroups:
+          - Linux servers
+        templates: []
+        status: enabled
+        description: ''
+        name: ''
+        tags: []
+        macros: []
+        ipmi_authtype: default
+        ipmi_privilege: user
+        ipmi_username: ''
+        ipmi_password: ''
+        tls_accept:
+          - unencrypted
+        tls_issuer: ''
+        tls_subject: ''
+        tls_connect: unencrypted
+        proxy: ''
+        inventory_mode: disabled
+        interfaces: []
+      register: zabbix_host_update
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that: zabbix_host_update is changed

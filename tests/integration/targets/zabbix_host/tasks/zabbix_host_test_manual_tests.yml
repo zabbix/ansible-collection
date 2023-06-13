@@ -1,0 +1,83 @@
+---
+# Before testing, you need to create a proxy with the name "test proxy"
+- name: Check proxy parameter
+  block:
+    - name: Test - Set proxy for monitoring via test proxy
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'test proxy'
+      register: zabbix_host_proxy
+
+    - name: Assert that proxy was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_proxy.result"
+
+    - name: Test - Set proxy for monitoring via test proxy again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'test proxy'
+      register: zabbix_host_proxy_again
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_proxy_again.result"
+
+    - name: Test - Set proxy for monitoring via zabbix-server
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: ''
+
+# Before testing, you need to set automatic inventory mode and create any item
+# on the "zabbix_test_host" host and link it with the "type" inventory field.
+# The "type_full" inventory field must NOT be linked to any metric.
+- name: Check inventory automatic mode parameter
+  block:
+    - name: Test - Check linked inventory field 'type'
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_set_linked_field
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_linked_field is failed
+          - "'already linked to the item' in zabbix_host_inventory_set_linked_field.msg"
+
+    - name: Test - Check unlinked inventory field 'type_full'
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type_full: test
+      register: zabbix_host_inventory_set_unlinked_field
+
+    - name: Assert that inventory was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_unlinked_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_set_unlinked_field.result"
+
+    - name: Test - Check unlinked inventory field 'type_full' again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type_full: test
+      register: zabbix_host_inventory_set_unlinked_field_again
+
+    - name: Assert that inventory was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_unlinked_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_set_unlinked_field_again.result"
+
+    - name: Test - Clean up inventory field 'type_full'
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type_full: ''
