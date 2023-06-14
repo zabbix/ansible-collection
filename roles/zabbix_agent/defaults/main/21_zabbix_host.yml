@@ -1,0 +1,43 @@
+---
+### default values to use when adding host to zabbix with "zabbix.zabbix.zabbix_host" module
+#
+## using inventory name of the host
+zabbix_host_host_name: '{{ inventory_hostname }}'
+# zabbix_host_visible_name:
+## using group names from inventory
+zabbix_host_hostgroups: '{{ group_names }}'
+zabbix_host_description: 'Managed by Ansible. Added with "zabbix_host" module.'
+# zabbix_host_templates:
+
+## linked to agent parameter
+zabbix_host_tls_accept: '{{ param_tlsaccept }}'
+## linked to agent parameter
+zabbix_host_tls_connect: '{{ param_tlsconnect }}'
+# zabbix_host_tls_issuer:
+# zabbix_host_tls_subject:
+
+## linked to agent parameter
+zabbix_host_tls_psk_identity: '{{ param_tlspskidentity }}'
+
+zabbix_host_interfaces:
+  - type: agent
+    ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
+    dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
+    useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
+    port: '{{ param_listenport }}'
+    main: true
+## ipmi settings undefined
+# zabbix_host_ipmi_authtype:
+# zabbix_host_ipmi_privilege:
+# zabbix_host_ipmi_username:
+# zabbix_host_ipmi_password:
+
+## marking host managed by ansible
+zabbix_host_tags:
+  - tag: managed
+# zabbix_host_macros:
+# zabbix_host_inventory_mode:
+# zabbix_host_inventory:
+zabbix_host_status: enabled
+
+# zabbix_host_proxy:
