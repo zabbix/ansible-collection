@@ -51,13 +51,17 @@
   tags: [vars, verify, remove]
 
 - name: 'Variables: Get/Generate PSK keys'
-  when: param_tlsconnect == "psk" or "psk" in param_tlsaccept
+  when: >-
+    (param_tlsconnect == "psk" or "psk" in param_tlsaccept
+     or zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
+    and
+    ("host" in ansible_run_tags or run_host_tasks is defined and run_host_tasks)
   ansible.builtin.set_fact:
     # value of hexadecimal within range 32 to 128 chars | choosing 128
     # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
     zabbix_agent_psk_value: '{{ lookup("password",
                   source_tlspskfile + " chars=hexdigits length=128") | lower }}'
-  tags: [vars, verify]
+  tags: [vars, verify, host]
 
 - name: 'Variables: TLS Certificate parameters'
   when: >-
@@ -404,4 +408,7 @@
 
 - name: 'Include : host tasks'
   ansible.builtin.include_tasks: 'host.yml'
-  tags: [never, host]
+  when: >-
+    "host" in ansible_run_tags
+    or run_host_tasks is defined and run_host_tasks
+  tags: [host]

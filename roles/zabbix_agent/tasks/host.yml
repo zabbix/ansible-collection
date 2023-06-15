@@ -1,5 +1,5 @@
 - name: 'Zabbix API block'
-  when: add_host is defined and add_host or "host" in ansible_run_tags
+  when: run_host_tasks is defined and run_host_tasks or "host" in ansible_run_tags
   throttle: 1
   delegate_to: '{{ zabbix_api_host }}'
   vars:
@@ -13,12 +13,14 @@
   tags: [host]
   block:
     - name: 'Zabbix API : Hostgroup presence'
+      when: >-
+        "remove" not in ansible_run_tags
       zabbix.zabbix.zabbix_hostgroup:
         name: '{{ zabbix_host_hostgroups }}'
         state: present
     - name: 'Zabbix API : Host presence'
       zabbix.zabbix.zabbix_host:
-        state: present
+        state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
         host_name: '{{ zabbix_host_host_name }}'
         visible_name: '{{ zabbix_host_visible_name | default(omit) }}'
         description: '{{ zabbix_host_description | default(omit) }}'
