@@ -25,7 +25,7 @@
         and ansible_distribution_version
           is regex(map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version])
       }}'
-  tags: [assert]
+  tags: [assert, deploy, config]
 
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
@@ -38,7 +38,7 @@
       - '{{ ansible_os_family | lower }}'
       # - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
       # - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux", "Amazon", "Fedora"] else None }}'
-  tags: [vars, verify, remove]
+  tags: [vars, verify, remove, deploy, config]
 
 - name: 'Variables : Custom user : Overrides'
   when: >
@@ -48,7 +48,7 @@
     and service_group != "zabbix"
   # variable change required for custome user
   ansible.builtin.include_vars: custom_user_overrides.yml
-  tags: [vars, verify, remove]
+  tags: [vars, verify, remove, deploy, config]
 
 - name: 'Variables: Get/Generate PSK keys'
   when: >-
@@ -61,7 +61,7 @@
     # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
     zabbix_agent_psk_value: '{{ lookup("password",
                   source_tlspskfile + " chars=hexdigits length=128") | lower }}'
-  tags: [vars, verify, host]
+  tags: [vars, verify, host, deploy, config]
 
 - name: 'Variables: TLS Certificate parameters'
   when: >-
@@ -71,12 +71,12 @@
      and source_tlskeyfile is defined
      and source_tlscafile is defined)
   ansible.builtin.include_vars: tls_cert_parameters.yml
-  tags: [vars, verify]
+  tags: [vars, verify, deploy, config]
 
 - name: 'Variables: Agent2 plugin settings'
   when: agent_variant | string == '2'
   ansible.builtin.include_tasks: agent2_plugin_settings.yml
-  tags: [vars, verify, remove]
+  tags: [vars, verify, remove, deploy, config]
 
 - name: 'DEBUG : Package info'
   ansible.builtin.debug:
@@ -93,7 +93,7 @@
     remove_previous_packages is defined and remove_previous_packages
     or "remove" in ansible_run_tags
   ansible.builtin.include_tasks: 'remove_packages_{{ ansible_system | lower }}.yml'
-  tags: [remove]
+  tags: [remove, deploy]
 
 - name: Include OS packager(yum/apt) specific tasks
   ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'
@@ -105,6 +105,7 @@
     or not service_user
     or service_user == "zabbix"
   ansible.builtin.include_tasks: 'custom_user_clean_{{ ansible_system | lower }}.yml'
+  tags: [deploy]
 
 - name: Include custom user tasks
   when: >
@@ -112,6 +113,7 @@
     and service_user
     and service_user != "zabbix"
   ansible.builtin.include_tasks: 'custom_user_{{ ansible_system | lower }}.yml'
+  tags: [deploy]
 
 - name: Firewall task list include
   ansible.builtin.include_tasks: '{{ firewall_task_item }}.yml'
@@ -122,7 +124,7 @@
     zabbix_agent_task_list:
       - '{{ "firewalld" if (apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]) else None }}'
       - '{{ "iptables" if (apply_iptables_rule is defined and apply_iptables_rule) else None }}'
-  tags: [firewall]
+  tags: [firewall, deploy]
 
 # changing only main conf file. Free to use customization in includes(unless no includes specified or include path changed)
 - name: Configuration file maintenance
@@ -136,6 +138,7 @@
     mode: '{{ agent.conf_file.permissions.mode }}'
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
+  tags: [deploy, config]
 
 - name: 'Upload : Included configuration dir (to the 1st include path)'
   when: source_conf_dir is defined and source_conf_dir
@@ -153,7 +156,7 @@
     group: '{{ agent.conf_file.permissions.group }}'
     # recursive: true
     # delete: true
-  tags: [userparam]
+  tags: [userparam, deploy, config]
 
 - name: 'Zabbix agent configuration "Include folders" maintenance'
   # create path & apply permissions
@@ -167,6 +170,7 @@
     group: '{{ agent.conf_folder.permissions.group }}'
     # recurse: true
   loop: '{{ param_include + param_includeplugins | select | list if agent_variant | string == "2" else param_include }}'
+  tags: [deploy, config]
 
 - name: 'Zabbix agent2 plugin configuration maintenance : Deploy configuration files'
   when: package_state != 'absent' and agent_variant | string == '2'
@@ -182,6 +186,7 @@
   loop_control:
     loop_var: plugin_name
   loop: '{{ agent2_plugin_list | select | list }}'
+  tags: [deploy, config]
 
 - name: 'Zabbix agent2 plugin configuration maintenance : Clear previous excess plugin configuration files'
   # remove plugin configuration files from previous installation if needed
@@ -199,6 +204,7 @@
     loop_var: excess_plugin_name
   # loop over a list of plugins not used in current setup
   loop: '{{ full_agent2_plugin_list | difference(agent2_plugin_list) }}'
+  tags: [deploy, config]
 
 - name: 'Upload : "scripts" folder'
   when: source_scripts_dir is defined and source_scripts_dir
@@ -214,7 +220,7 @@
     # recursive: true
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
-  tags: [userparam]
+  tags: [userparam, deploy, config]
 
 - name: 'Upload : "modules" folder'
   when: source_modules_dir is defined and source_modules_dir and agent_variant | string != '2'
@@ -231,6 +237,7 @@
     # recursive: true
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
+  tags: [deploy]
 
 # Add userparams to first include folder
 - name: 'Fill configuration with custom UserParameters'
@@ -248,7 +255,7 @@
   vars:
     zabbix_agent_template_list:
       - userparameters.conf
-  tags: [userparam]
+  tags: [userparam, deploy, config]
 
 # Add aliases to first include folder
 - name: 'Fill configuration with custom Aliases'
@@ -266,6 +273,7 @@
   vars:
     zabbix_agent_template_list:
       - aliases.conf
+  tags: [deploy, config]
 
 # Creates TLS folder path and applies permissions
 - name: 'Folder maintenance : TLS folders'
@@ -287,6 +295,7 @@
       - '{{ agent.file_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
       - '{{ agent.file_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
       - '{{ agent.file_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
+  tags: [deploy, config]
 
 - name: 'Upload : TLS Certificates'
   when: >-
@@ -314,6 +323,7 @@
       - '{{ {"source": source_tlscrlfile, "target": param_tlscrlfile} if source_tlscrlfile is defined else None }}'
       - {source: "{{ source_tlscertfile }}", target: "{{ param_tlscertfile }}"}
       - {source: "{{ source_tlskeyfile }}", target: "{{ param_tlskeyfile }}"}
+  tags: [deploy, config]
 
 - name: 'Placing PSK key file'
   when: package_state != 'absent' and (param_tlsconnect == "psk" or "psk" in param_tlsaccept )
@@ -326,6 +336,7 @@
     mode: 'u=rw,g=,o='
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
+  tags: [deploy, config]
 
 - name: 'Upload : Zabbix agent2 : TLS certificates for plugins'
   when: >-
@@ -348,6 +359,7 @@
           + zabbix_agent_plugins_postgresql_tls_file_list | default([])
           + zabbix_agent_plugins_mongodb_tls_file_list | default([])
           }}'
+  tags: [deploy, config]
 
 - name: 'Logrotate file maintenance'
   become: true
@@ -359,12 +371,13 @@
     mode: '{{ agent.conf_file.permissions.mode }}'
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
+  tags: [deploy]
 
 ### including SE tasks when ansible_facts testifies that SELinux is enabled
 - name: 'Include : Selinux tasks'
   when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
   ansible.builtin.include_tasks: 'selinux.yml'
-  tags: [selinux]
+  tags: [selinux, deploy]
 
 - name: 'Systemctl : Service enabled'
   become: true
@@ -372,6 +385,7 @@
   ansible.builtin.systemd:
     name: '{{ agent.service_name }}'
     enabled: true
+  tags: [deploy]
 
 - name: Forcing service restart
   ansible.builtin.debug:
@@ -392,7 +406,7 @@
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified)
-  tags: [restart]
+  tags: [restart, deploy, config]
 
 # consider running check in default run
 # - name: 'Service started'

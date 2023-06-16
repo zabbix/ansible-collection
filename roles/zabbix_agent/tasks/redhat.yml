@@ -9,6 +9,7 @@
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+  tags: [deploy]
 
 - name: DEBUG
   ansible.builtin.debug:
@@ -27,6 +28,7 @@
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+  tags: [deploy]
 
 ### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
 - name: 'YUM : Set Zabbix repo priority'
@@ -37,6 +39,7 @@
     insertafter: '^\[zabbix\]'
     regexp: '^priority='
     line: 'priority={{ repository_priority | string }}'
+  tags: [deploy]
 
 - name: 'YUM : Plugin "priorities" presence'
   when: >-
@@ -52,13 +55,14 @@
   ansible.builtin.yum:
     name: 'yum-plugin-priorities'
     state: '{{ package_state }}'
+  tags: [deploy]
 
 - name: 'YUM : yum clean all'
   when: zabbix_agent_repository.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
-  tags: [skip_ansible_lint]
+  tags: [skip_ansible_lint, deploy]
 
 - name: 'YUM : Zabbix packages presence'
   become: true
@@ -90,3 +94,4 @@
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+  tags: [deploy]

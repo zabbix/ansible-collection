@@ -8,4 +8,4 @@
     protocol: tcp
     jump: ACCEPT
     action: insert
-  tags: [firewall]
+  tags: [firewall, deploy]
