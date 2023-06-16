@@ -48,6 +48,13 @@
         very very long
         multiple string value
     interfaces:
+      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: ipmi
+      - type: jmx
+        ip: 192.168.100.51
+        dns: test.com
+        useip: true
+        port: 12345
       - type: snmp
         ip: 192.168.100.50
         dns: switch.local
@@ -61,12 +68,6 @@
           authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
           privprotocol: des
           privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
-      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
-      - type: agent
-        ip: 192.168.100.51
-        main: true   # To specify a main interface
-      - type: jmx
-      - type: ipmi
   register: zabbix_host_create
 
 - name: Assert that host was created

@@ -12,10 +12,10 @@ DOCUMENTATION = r'''
 module: zabbix_host
 short_description: Module for creating hosts, deleting and updating existing hosts.
 description:
-   - The module is designed to create, update or delete a host in Zabbix.
-   - In case of updating an existing host, only the specified parameters will be updated
+    - The module is designed to create, update or delete a host in Zabbix.
+    - In case of updating an existing host, only the specified parameters will be updated.
 author:
-  - Zabbix Ltd (@zabbix)
+    - Zabbix Ltd (@zabbix)
 requirements:
     - "python >= 2.6"
 options:
@@ -51,7 +51,7 @@ options:
         elements: str
         aliases: [ link_templates, host_templates, template ]
     status:
-        description: Host status (enabled or disabled)
+        description: Host status (enabled or disabled).
         type: str
         choices: [ enabled, disabled ]
     description:
@@ -77,7 +77,7 @@ options:
         description:
             - User macros to replace the current user macros.
             - All macros that are not listed in the task will be removed.
-            - If a secret macro is specified, the host will be updated every time the task is run
+            - If a secret macro is specified, the host will be updated every time the task is run.
         type: list
         elements: dict
         suboptions:
@@ -88,7 +88,7 @@ options:
             value:
                 description:
                     - Value of the macro.
-                    - Write-only if I(type=secret)
+                    - Write-only if I(type=secret).
                 type: str
                 default: ''
             description:
@@ -173,6 +173,7 @@ options:
         elements: dict
         description:
             - Host interfaces to replace the current host interfaces.
+            - Only one interface of each type is supported.
             - All interfaces that are not listed in the request will be removed.
         suboptions:
             type:
@@ -180,12 +181,6 @@ options:
                 description: Interface type.
                 choices: [ agent, snmp, ipmi, jmx ]
                 required: True
-            main:
-                type: bool
-                description:
-                    - Whether the interface is used as default on the host.
-                    - Only one interface of some type can be set as default on a host.
-                default: False
             useip:
                 type: bool
                 description: Whether the connection should be made through IP.
@@ -201,7 +196,7 @@ options:
                 description:
                     - DNS name used by the interface.
                     - Can be empty if the connection is made through IP.
-                    - Require if I(useip=False)
+                    - Require if I(useip=False).
                 default: ''
             port:
                 type: str
@@ -211,7 +206,7 @@ options:
             details:
                 description:
                     - Additional details object for interface.
-                    - Require if I(type=snmp)
+                    - Used only if I(type=snmp).
                 default: {}
                 type: dict
                 suboptions:
@@ -285,6 +280,7 @@ options:
 notes:
     - If I(tls_psk_identity) or I(tls_psk) is defined or macros I(type=secret), then every launch of the task will update the host.
       Because Zabbix API does not have access to an existing PSK key or secret macros and we cannot compare the specified value with an existing one.
+    - Only one interface of each type is supported.
 '''
 
 EXAMPLES = r'''
@@ -343,6 +339,13 @@ EXAMPLES = r'''
         very very long
         multiple string value
     interfaces:
+      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: ipmi
+      - type: jmx
+        ip: 192.168.100.51
+        dns: test.com
+        useip: true
+        port: 12345
       - type: snmp
         ip: 192.168.100.50
         dns: switch.local
@@ -356,12 +359,6 @@ EXAMPLES = r'''
           authpassphrase: SET_YOUR_PWD
           privprotocol: des
           privpassphrase: SET_YOUR_PWD
-      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
-      - type: agent
-        ip: 192.168.100.51
-        main: true   # To specify a main interface
-      - type: jmx
-      - type: ipmi
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
@@ -491,7 +488,8 @@ class Host(object):
             'selectTags': ['tag', 'value'],
             'selectMacros': ['macro', 'value', 'type', 'description'],
             'selectInterfaces': [
-                'main', 'type', 'useip', 'ip', 'dns', 'port', 'details'],
+                'interfaceid', 'main', 'type', 'useip',
+                'ip', 'dns', 'port', 'details'],
             'hostids': hostid}
 
         if self.module.params.get('inventory') is not None:
@@ -763,12 +761,12 @@ class Host(object):
         # interface
         if self.module.params.get('interfaces') is not None:
             host_params['interfaces'] = []
-            interface_by_type = {'agent': [], 'snmp': [], 'ipmi': [], 'jmx': []}
+            interface_by_type = dict((k, []) for k in interface_types)
             for each in self.module.params.get('interfaces'):
                 interface = {}
                 # resolv_type
                 interface['type'] = interface_types.get(each['type'])
-                interface['main'] = '1' if each['main'] else '0'
+                interface['main'] = '1'
                 interface['useip'] = '1' if each['useip'] else '0'
                 # ip
                 if (each['useip'] is True and
@@ -823,29 +821,18 @@ class Host(object):
 
                 interface_by_type[each['type']].append(interface)
 
-            # check main interfaces
+            # Сheck count interfaces
             for interface in interface_by_type:
                 if len(interface_by_type[interface]) == 0:
                     continue
                 if len(interface_by_type[interface]) > 1:
-                    count_main = 0
-                    for each in interface_by_type[interface]:
-                        if 'main' in each:
-                            if each['main'] == '1':
-                                count_main += 1
-                    if count_main > 1:
+                    # If more than 1 interface of any type is specified to update
+                    if exist_host['interfaces']:
                         self.module.fail_json(
-                            msg="Incorrect 'main' parameter for {0} interfaces. {1} 'main' interfaces specified".format(
-                                interface, count_main))
-                    if count_main == 0:
-                        self.module.fail_json(
-                            msg="There are more 1 {0} interfaces. Specify main interface".format(
-                                interface))
+                            msg="{0} {1} interfaces defined in the task. Module supports only 1 interface per each type.".format(
+                                len(interface_by_type[interface]), interface))
                 else:
-                    interface_by_type[interface][0]['main'] = '1'
-
-                # Add all interfaces of this type if the 'main' parameter is valid
-                host_params['interfaces'].extend(interface_by_type[interface])
+                    host_params['interfaces'].extend(interface_by_type[interface])
 
         return host_params
 
@@ -951,16 +938,40 @@ class Host(object):
 
         # interfaces
         if new_host.get('interfaces') is not None:
+            # Check the number of interfaces by type on the host
+            interfaces_types_name = dict((v, k) for k, v in interface_types.items())
+            exist_interfaces_by_type = dict((v, 0) for v in interface_types.values())
+            for interface in exist_host['interfaces']:
+                exist_interfaces_by_type[interface['type']] += 1
+
+            for each in exist_interfaces_by_type:
+                if exist_interfaces_by_type[each] > 1:
+                    self.module.fail_json(
+                        msg="Detected {0} {1} inerfaces on the host. Module supports only 1 interface per each type. Please resolve conflict manually.".format(
+                            exist_interfaces_by_type[each],
+                            interfaces_types_name[each]))
+
+            # Check the differences between interfaces
+            interface_updating_flag = False
+            new_interfaces = []
             if len(new_host['interfaces']) != len(exist_host['interfaces']):
-                param_to_update['interfaces'] = new_host['interfaces']
-            else:
-                for each in new_host['interfaces']:
-                    for interface in exist_host['interfaces']:
-                        if each == interface:
-                            break
-                    else:
-                        param_to_update['interfaces'] = new_host['interfaces']
+                interface_updating_flag = True
+
+            for each in new_host['interfaces']:
+                for interface in exist_host['interfaces']:
+                    if each['type'] == interface['type']:
+                        total_interface = each
+                        total_interface['interfaceid'] = interface['interfaceid']
+                        new_interfaces.append(total_interface)
+                        if total_interface != interface:
+                            interface_updating_flag = True
                         break
+                else:
+                    new_interfaces.append(each)
+                    interface_updating_flag = True
+
+            if interface_updating_flag is True:
+                param_to_update['interfaces'] = new_interfaces
 
         return param_to_update
 
@@ -1046,7 +1057,6 @@ def main():
                     'type': 'str',
                     'required': True,
                     'choices': ['agent', 'snmp', 'ipmi', 'jmx']},
-                'main': {'type': 'bool', 'default': False},
                 'useip': {'type': 'bool', 'default': True},
                 'ip': {'type': 'str', 'default': ''},
                 'dns': {'type': 'str', 'default': ''},
@@ -1117,9 +1127,11 @@ def main():
             if compare_result:
                 # Update host
                 compare_result['hostid'] = result[0]['hostid']
+
                 update_result = host.host_api_request(
                     method='host.update',
                     params=compare_result)
+
                 if update_result:
                     module.exit_json(
                         changed=True,

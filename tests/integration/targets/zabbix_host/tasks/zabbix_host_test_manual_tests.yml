@@ -81,3 +81,17 @@
         host: zabbix_test_host
         inventory:
           type_full: ''
+
+- name: Check msg in case of two interfaces one of type on the host
+  block:
+    - name: Test - Check failed status in case two interfaces one of type on the host
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: agent
+      register: zabbix_host_interface_w_two_interfaces_on_host
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_host_interface_w_two_interfaces_on_host is failed

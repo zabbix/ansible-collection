@@ -226,28 +226,17 @@
         proxy: ''
         interfaces:
           - type: agent
-          - type: agent
             ip: 192.168.1.51
             useip: false
-            main: true
             dns: test_dns_name
             port: 10060
           - type: jmx
-          - type: jmx
-            ip: 192.168.1.52
-            useip: true
-            main: true
-            port: 13245
-          - type: ipmi
           - type: ipmi
             useip: false
-            main: true
             dns: test_dns_name
             port: 624
           - type: snmp
-          - type: snmp
             ip: 192.168.1.50
-            main: true
             dns: switch.local
             port: 169
             details:

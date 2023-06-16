@@ -12,11 +12,11 @@ DOCUMENTATION = r'''
 module: zabbix_hostgroup
 short_description: Module for creating and deleting hostgroups
 description:
-   - Creation of new hostgroups.
-   - The module will only create the missing hostgroups if the part is already created in Zabbix.
-   - Removing hostgroups from Zabbix.
+    - Creation of new hostgroups.
+    - The module will only create the missing hostgroups if the part is already created in Zabbix.
+    - Removing hostgroups from Zabbix.
 author:
-  - Zabbix Ltd (@zabbix)
+    - Zabbix Ltd (@zabbix)
 requirements:
     - "python >= 2.6"
 options:

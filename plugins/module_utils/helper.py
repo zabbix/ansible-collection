@@ -22,7 +22,15 @@ class Zabbix_version:
         self.zapi_verion = self._parse(zapi_verion)
 
     def _parse(self, version):
-        return [int(v) for v in version.split('.')]
+        result = []
+        for v in version.split('.'):
+            if len(v) > 0:
+                if v.isdigit():
+                    result.append(int(v))
+                else:
+                    raise ValueError('Unsupported element: {0}'.format(v))
+
+        return result
 
     def _compare(self, other):
         max_length = max(len(self.zapi_verion), len(other.zapi_verion))
@@ -43,6 +51,10 @@ class Zabbix_version:
     def __eq__(self, other):
         result = self._compare(other)
         return result == 0
+
+    def __ne__(self, other):
+        result = self._compare(other)
+        return result != 0
 
     def __lt__(self, other):
         result = self._compare(other)
