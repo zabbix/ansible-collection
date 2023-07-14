@@ -12,14 +12,14 @@ class Zabbix_version:
     """
     Class for comparing Zabbix API version
 
-    :param zapi_verion: Zabbix API Version
-    :type zapi_verion: str
+    :param zapi_version: Zabbix API Version
+    :type zapi_version: str
 
     :rtype: bool
     :return: result of comparing
     """
-    def __init__(self, zapi_verion):
-        self.zapi_verion = self._parse(zapi_verion)
+    def __init__(self, zapi_version):
+        self.zapi_version = self._parse(zapi_version)
 
     def _parse(self, version):
         result = []
@@ -33,18 +33,18 @@ class Zabbix_version:
         return result
 
     def _compare(self, other):
-        max_length = max(len(self.zapi_verion), len(other.zapi_verion))
-        if len(self.zapi_verion) < max_length:
-            add_num = max_length - len(self.zapi_verion)
-            self.zapi_verion.extend([0] * add_num)
-        if len(other.zapi_verion) < max_length:
-            add_num = max_length - len(other.zapi_verion)
-            other.zapi_verion.extend([0] * add_num)
+        max_length = max(len(self.zapi_version), len(other.zapi_version))
+        if len(self.zapi_version) < max_length:
+            add_num = max_length - len(self.zapi_version)
+            self.zapi_version.extend([0] * add_num)
+        if len(other.zapi_version) < max_length:
+            add_num = max_length - len(other.zapi_version)
+            other.zapi_version.extend([0] * add_num)
 
         for i in range(max_length):
-            if self.zapi_verion[i] > other.zapi_verion[i]:
+            if self.zapi_version[i] > other.zapi_version[i]:
                 return 1
-            if self.zapi_verion[i] < other.zapi_verion[i]:
+            if self.zapi_version[i] < other.zapi_version[i]:
                 return -1
         return 0
 
@@ -206,13 +206,13 @@ snmp_securitylevel_types = {
     'authPriv': '2'
 }
 
-# Dictionary for converting uthprotocol type to a numeric value
+# Dictionary for converting authprotocol type to a numeric value
 # https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details-tag
 snmp_authprotocol_types = {
     'md5': '0', 'sha1': '1', 'sha224': '2',
     'sha256': '3', 'sha384': '4', 'sha512': '5'}
 
-# Dictionary for converting uthprotocol type to a numeric value
+# Dictionary for converting privprotocol type to a numeric value
 # https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details-tag
 snmp_privprotocol_types = {
     'des': '0', 'aes128': '1', 'aes192': '2',

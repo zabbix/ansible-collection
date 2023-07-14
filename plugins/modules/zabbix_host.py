@@ -284,7 +284,7 @@ notes:
 '''
 
 EXAMPLES = r'''
-# To create host with miminum parameters
+# To create host with minimum parameters
 # Host groups is required
 - name: Create host
   zabbix.zabbix.zabbix_host:

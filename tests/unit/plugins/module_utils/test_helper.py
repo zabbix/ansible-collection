@@ -18,16 +18,16 @@ class TestParsing(unittest.TestCase):
 
     def test_parse(self):
         version = Zabbix_version('6.4.0')
-        self.assertEqual(version.zapi_verion, [6, 4, 0])
+        self.assertEqual(version.zapi_version, [6, 4, 0])
 
         version = Zabbix_version('6.4')
-        self.assertEqual(version.zapi_verion, [6, 4])
+        self.assertEqual(version.zapi_version, [6, 4])
 
         version = Zabbix_version('6.4.')
-        self.assertEqual(version.zapi_verion, [6, 4])
+        self.assertEqual(version.zapi_version, [6, 4])
 
         version = Zabbix_version('..6.4.')
-        self.assertEqual(version.zapi_verion, [6, 4])
+        self.assertEqual(version.zapi_version, [6, 4])
 
         try:
             version = Zabbix_version('6.4a')
