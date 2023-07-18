@@ -290,13 +290,13 @@
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         ipmi_username: ipmi_username
-      register: zabbix_host_ipmi_usernameagain
+      register: zabbix_host_ipmi_username_again
 
     - name: Assert that ipmi_username was not updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_ipmi_usernameagain is not changed
-          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_usernameagain.result"
+          - zabbix_host_ipmi_username_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_username_again.result"
 
     - name: Test - Set host ipmi_username to empty value
       zabbix.zabbix.zabbix_host:
@@ -339,13 +339,13 @@
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         ipmi_password: test_ipmi_password
-      register: zabbix_host_ipmi_passwordagain
+      register: zabbix_host_ipmi_password_again
 
     - name: Assert that ipmi_password was not updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_ipmi_passwordagain is not changed
-          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_passwordagain.result"
+          - zabbix_host_ipmi_password_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_ipmi_password_again.result"
 
     - name: Test - Set host ipmi_password to empty value
       zabbix.zabbix.zabbix_host:

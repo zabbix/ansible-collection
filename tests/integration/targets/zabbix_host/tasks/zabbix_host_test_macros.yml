@@ -82,7 +82,7 @@
           - zabbix_host_macro_correct_value is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_correct_value.result"
 
-    # Check macro with all parameters like default. Check Check idempotency and default value.
+    # Check macro with all parameters like default. Check Check idempotence and default value.
     - name: Test - Creating macro with full default value
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -181,7 +181,7 @@
           - zabbix_host_macro_check_full_parameters is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_full_parameters.result"
 
-    # Check idempotency
+    # Check idempotence
     - name: Test - Creating macro with all variant of text macros again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -319,7 +319,7 @@
           - zabbix_host_macro_secret is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_secret.result"
 
-    # check idempotency violation
+    # check idempotence violation
     # We specify the same parameters as in the previous task.
     # The parameters will be updated again, since Zabbix GUI does not have access
     # to the secret macros and we cannot compare the current value with the given one.
@@ -360,7 +360,7 @@
           - zabbix_host_macro_vault_secret is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_vault_secret.result"
 
-    # check idempotency
+    # check idempotence
     - name: Test - Creating vault secret macro again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host

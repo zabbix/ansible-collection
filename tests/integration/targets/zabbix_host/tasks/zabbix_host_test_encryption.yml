@@ -218,7 +218,7 @@
       register: zabbix_host_encryption_psk_check_wo_params
       ignore_errors: true
 
-    - name: Assert that taks was failed
+    - name: Assert that task was failed
       ansible.builtin.assert:
         that:
           - zabbix_host_encryption_psk_check_wo_params is failed
@@ -233,7 +233,7 @@
       register: zabbix_host_encryption_psk_check_w_tls_psk
       ignore_errors: true
 
-    - name: Assert that taks was failed
+    - name: Assert that task was failed
       ansible.builtin.assert:
         that:
           - zabbix_host_encryption_psk_check_w_tls_psk is failed
@@ -248,7 +248,7 @@
       register: zabbix_host_encryption_psk_check_w_tls_psk_identity
       ignore_errors: true
 
-    - name: Assert that taks was failed
+    - name: Assert that task was failed
       ansible.builtin.assert:
         that:
           - zabbix_host_encryption_psk_check_w_tls_psk_identity is failed
@@ -269,7 +269,7 @@
           - zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity.result"
 
-    # check idempotency violation
+    # check idempotence violation
     # We specify the same parameters as in the previous task.
     # The parameters will be updated again, since Zabbix GUI does not have access
     # to the psk keys and we cannot compare the current key with the given one.
@@ -287,7 +287,7 @@
           - zabbix_host_encryption_tls_psk_and_tls_psk_identity is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_psk_and_tls_psk_identity.result"
 
-    # Сheck that we can work with psk encryption without the obligatory specification
+    # Check that we can work with psk encryption without the obligatory specification
     # of psk keys, if the host already has psk encryption and, accordingly, there is a psk key.
     - name: Test - Creating encryption with psk without tls_psk and tls_psk_identity
       zabbix.zabbix.zabbix_host:

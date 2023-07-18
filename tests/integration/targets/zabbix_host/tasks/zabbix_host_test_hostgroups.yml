@@ -1,7 +1,7 @@
 ---
 - name: Check hostgroups parameter
   block:
-    - name: Test - Addind hostgroups
+    - name: Test - Adding hostgroups
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         hostgroups:

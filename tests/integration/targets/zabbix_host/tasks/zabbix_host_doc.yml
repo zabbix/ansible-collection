@@ -35,7 +35,7 @@
       - unencrypted
       - psk
       - cert
-    tls_psk_identity: my_example_identy
+    tls_psk_identity: my_example_identity
     tls_psk: '{{ zabbix_psk_value }}'
     tls_issuer: Example Issuer
     tls_subject: Example Subject

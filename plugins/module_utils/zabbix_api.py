@@ -37,19 +37,19 @@ class ZabbixApi(object):
         self.module = module
         self.connection = Connection(self.module._socket_path)
         self.connection.setup_connection()
-        self.jsonrpc_verion = '2.0'
+        self.jsonrpc_version = '2.0'
         self.zbx_api_version = None
 
     def api_version(self):
         """
         Function for getting api version
 
-        :return: API verion
+        :return: API version
         :rtype: str
         """
         if not self.zbx_api_version:
             payload = {
-                'jsonrpc': self.jsonrpc_verion, 'method': 'apiinfo.version',
+                'jsonrpc': self.jsonrpc_version, 'method': 'apiinfo.version',
                 'id': str(uuid4()), 'params': {}}
             code, result = self.connection.send_request(data=payload)
             if code == 200 and result != '':
@@ -70,7 +70,7 @@ class ZabbixApi(object):
         :rtype: dict
         """
         payload = {
-            'jsonrpc': self.jsonrpc_verion, 'method': method,
+            'jsonrpc': self.jsonrpc_version, 'method': method,
             'id': str(uuid4()), 'params': params}
         try:
             code, response = self.connection.send_request(data=payload)

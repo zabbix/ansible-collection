@@ -169,7 +169,7 @@
     zabbix_snmp_authpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
     zabbix_snmp_privpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
 
-- name: Check maximim parameters
+- name: Check maximum parameters
   block:
     # Creating hosts with all parameters
     - name: Create host with maximum parameters
@@ -211,7 +211,7 @@
           - unencrypted
           - psk
           - cert
-        tls_psk_identity: my_example_identy
+        tls_psk_identity: my_example_identity
         tls_psk: '{{ zabbix_psk_value }}'
         tls_issuer: Example Issuer
         tls_subject: Example Subject

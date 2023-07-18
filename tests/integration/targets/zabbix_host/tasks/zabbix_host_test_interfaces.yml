@@ -27,7 +27,7 @@
           - zabbix_host_interface_adding_all_by_default is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_adding_all_by_default.result"
 
-    # Check idempotency and default value for an interface
+    # Check idempotence and default value for an interface
     - name: Test - Update all interfaces with manual default parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -121,13 +121,13 @@
             dns: test.com
             useip: true
             port: 12354
-      register: zabbix_host_interface_check_interfase_setting
+      register: zabbix_host_interface_check_interface_setting
 
     - name: Assert that host was not updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_check_interfase_setting is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_check_interfase_setting.result"
+          - zabbix_host_interface_check_interface_setting is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_check_interface_setting.result"
 
     # Clean all interfaces
     - name: Test - Clean all interfaces
@@ -427,8 +427,8 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
-    # Removing inetrface with attached items
-    - name: Test - Removing inetrface with attached items
+    # Removing interface with attached items
+    - name: Test - Removing interface with attached items
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces: []
@@ -496,7 +496,7 @@
           - zabbix_host_interface_update_dns_w_dns_name is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_dns_w_dns_name.result"
 
-    # Сheck that the ip field was empty and ip and dns can be set at the same time
+    # Check that the ip field was empty and ip and dns can be set at the same time
     - name: Test - Create interface with dns monitoring with dns name and ip
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host

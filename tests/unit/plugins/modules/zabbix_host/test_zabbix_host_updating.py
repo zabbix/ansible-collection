@@ -256,7 +256,7 @@ class TestUpdating(TestModules):
             'ipmi_username': 'admin',
             'ipmi_password': 'test_pwd',
             'tls_accept': ['unencrypted', 'psk', 'cert'],
-            'tls_psk_identity': 'my_example_identy',
+            'tls_psk_identity': 'my_example_identity',
             'tls_psk': uuid.uuid4().hex,
             'tls_issuer': 'Example Issuer',
             'tls_subject': 'Example Subject',

@@ -17,7 +17,7 @@
           - zabbix_host_tags_w_and_wo_value is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_tags_w_and_wo_value.result"
 
-    - name: Test - Check idempotency
+    - name: Test - Check idempotence
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tags:
@@ -49,7 +49,7 @@
           - zabbix_host_tags_w_same_name is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_tags_w_same_name.result"
 
-    - name: Test - Check idempotency
+    - name: Test - Check idempotence
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tags:
@@ -76,7 +76,7 @@
       register: zabbix_host_tags_wo_name
       ignore_errors: true
 
-    - name: Assert that task was falied
+    - name: Assert that task was failed
       ansible.builtin.assert:
         that: zabbix_host_tags_wo_name is failed
 
@@ -88,7 +88,7 @@
       register: zabbix_host_tags_w_invalid_type
       ignore_errors: true
 
-    - name: Assert that task was falied
+    - name: Assert that task was failed
       ansible.builtin.assert:
         that: zabbix_host_tags_w_invalid_type is failed
 

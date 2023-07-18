@@ -156,7 +156,7 @@ options:
     inventory:
         description:
             - The host inventory object.
-            - "All posible fields:"
+            - "All possible fields:"
             - type, type_full, name, alias, os, os_full, os_short, serialno_a, serialno_b, tag, asset_tag, macaddress_a,
               macaddress_b, hardware, hardware_full, software, software_full, software_app_a, software_app_b, software_app_c, software_app_d,
               software_app_e, contact, location, location_lat, location_lon, notes, chassis, model, hw_arch, vendor, contract_number,
@@ -326,7 +326,7 @@ EXAMPLES = r'''
       - unencrypted
       - psk
       - certificate
-    tls_psk_identity: my_example_identy
+    tls_psk_identity: my_example_identity
     tls_psk: SET_YOUR_PSK_KEY
     tls_issuer: Example Issuer
     tls_subject: Example Subject
@@ -518,7 +518,7 @@ class Host(object):
 
         :param method: method for request
         :type method: str
-        :param params: perameters for request
+        :param params: parameters for request
         :type params: dict
 
         :rtype: bool
@@ -726,25 +726,25 @@ class Host(object):
                 self.module.params.get('inventory_mode')]
 
         # future inventory mode
-        future_inventry_mode = '0'
+        future_inventory_mode = '0'
         if self.module.params.get('inventory_mode') is not None:
-            future_inventry_mode = host_params['inventory_mode']
+            future_inventory_mode = host_params['inventory_mode']
             inventory_disable_reason_msg = 'Inventory mode is set to disabled in the task'
         else:
             if exist_host is not None:
-                future_inventry_mode = exist_host['inventory_mode']
+                future_inventory_mode = exist_host['inventory_mode']
                 inventory_disable_reason_msg = 'Inventory mode is set to disabled on the host'
 
         # Inventory
         if self.module.params.get('inventory') is not None:
-            if future_inventry_mode == '-1':
+            if future_inventory_mode == '-1':
                 self.module.fail_json(
                     msg="Inventory parameters not applicable. {0}".format(inventory_disable_reason_msg))
             inventory = {}
             param_inventory = self.module.params.get('inventory')
             for each in param_inventory:
                 if each in inventory_fields.values():
-                    if (future_inventry_mode == '1' and hasattr(self, 'inventory_links') and
+                    if (future_inventory_mode == '1' and hasattr(self, 'inventory_links') and
                             each in self.inventory_links):
                         self.module.fail_json(
                             msg="Inventory field '{0}' is already linked to the item '{1}' and cannot be updated".format(
@@ -764,7 +764,7 @@ class Host(object):
             interface_by_type = dict((k, []) for k in interface_types)
             for each in self.module.params.get('interfaces'):
                 interface = {}
-                # resolv_type
+                # resolve_type
                 interface['type'] = interface_types.get(each['type'])
                 interface['main'] = '1'
                 interface['useip'] = '1' if each['useip'] else '0'
@@ -821,7 +821,7 @@ class Host(object):
 
                 interface_by_type[each['type']].append(interface)
 
-            # Сheck count interfaces
+            # Check count interfaces
             for interface in interface_by_type:
                 if len(interface_by_type[interface]) == 0:
                     continue
@@ -947,7 +947,7 @@ class Host(object):
             for each in exist_interfaces_by_type:
                 if exist_interfaces_by_type[each] > 1:
                     self.module.fail_json(
-                        msg="Detected {0} {1} inerfaces on the host. Module supports only 1 interface per each type. Please resolve conflict manually.".format(
+                        msg="Detected {0} {1} interfaces on the host. Module supports only 1 interface per each type. Please resolve conflict manually.".format(
                             exist_interfaces_by_type[each],
                             interfaces_types_name[each]))
 

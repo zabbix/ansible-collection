@@ -246,7 +246,7 @@ class HttpApi(HttpApiBase):
 
     def _response_to_json(self, response_text):
         """
-        Function for trnsformation response to json
+        Function for transformation response to json
 
         :param response_text: text for transformation
         :type response_text: dict
