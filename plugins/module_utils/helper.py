@@ -217,3 +217,18 @@ snmp_authprotocol_types = {
 snmp_privprotocol_types = {
     'des': '0', 'aes128': '1', 'aes192': '2',
     'aes256': '3', 'aes192c': '4', 'aes256c': '5'}
+
+# Dictionary for snmp parameters
+# If the new field only depends on the version, then it must be added here.
+# If the new field needs some logic, then it must be added in file zabbix_host.py in section with snmp checks.
+# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details
+snmp_parameters = {
+    '1': ['version', 'bulk', 'community'],
+    '2': ['version', 'bulk', 'community'],
+    '3': {
+        'noAuthNoPriv': ['version', 'bulk', 'contextname', 'securityname', 'securitylevel'],
+        'authNoPriv': ['version', 'bulk', 'contextname', 'securityname', 'securitylevel',
+                       'authprotocol', 'authpassphrase'],
+        'authPriv': ['version', 'bulk', 'contextname', 'securityname', 'securitylevel',
+                     'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']}
+}

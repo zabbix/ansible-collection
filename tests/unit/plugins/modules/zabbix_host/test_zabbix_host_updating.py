@@ -269,13 +269,12 @@ class TestUpdating(TestModules):
                 {'type': 'agent'},
                 {'type': 'ipmi'},
                 {'type': 'jmx', 'ip': '192.168.100.51', 'dns': 'test.com',
-                 'useip': True, 'port': '23456'},
+                    'useip': True, 'port': '23456'},
                 {'type': 'snmp', 'ip': '192.168.100.51', 'dns': 'switch.local',
-                 'useip': False, 'port': '164', 'details': {
-                     'version': 3, 'contextname': 'contextname',
-                     'securityname': 'securityname', 'securitylevel': 'authPriv',
-                     'authprotocol': 'md5', 'privprotocol': 'des',
-                     'authpassphrase': uuid.uuid4().hex, 'privpassphrase': uuid.uuid4().hex}}]})
+                    'useip': False, 'port': '164', 'details': {
+                        'version': '3', 'bulk': True, 'max_repetitions': None, 'contextname': 'contextname',
+                        'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': 'md5', 'authpassphrase': 'authpassphrase',
+                        'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}]})
 
         with patch.multiple(
                 self.zabbix_api_module_path,

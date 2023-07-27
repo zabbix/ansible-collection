@@ -206,77 +206,65 @@ options:
             details:
                 description:
                     - Additional details object for interface.
-                    - Used only if I(type=snmp).
-                default: {}
+                    - Required if I(type=snmp).
                 type: dict
                 suboptions:
                     version:
                         description: SNMP interface version.
                         type: str
                         choices: [ '1', '2', '3' ]
-                        default: '2'
                     bulk:
                         description: Whether to use bulk SNMP requests.
                         type: bool
-                        default: True
                     community:
                         description:
                             - SNMP community.
                             - Used only if I(version=1) or I(version=2).
                         type: str
-                        default: '{$SNMP_COMMUNITY}'
                     max_repetitions:
                         description:
                             - Max repetition count is applicable to discovery and walk only.
                             - Used only if I(version=2) or I(version=3).
                             - Used only for zabbix versions above 6.4.
                         type: str
-                        default: '10'
                     contextname:
                         description:
                             - SNMPv3 context name.
                             - Used only if I(version=3).
                         type: str
-                        default: ''
                     securityname:
                         description:
                             - SNMPv3 security name.
                             - Used only if I(version=3).
                         type: str
-                        default: ''
                     securitylevel:
                         description:
                             - SNMPv3 security level.
                             - Used only if I(version=3).
                         type: str
-                        default: noAuthNoPriv
                         choices: [ noAuthNoPriv, authNoPriv, authPriv ]
                     authprotocol:
                         description:
                             - SNMPv3 authentication protocol.
                             - Used only if I(version=3).
                         type: str
-                        default: md5
                         choices: [ md5, sha1, sha224, sha256, sha384, sha512 ]
                     authpassphrase:
                         description:
                             - SNMPv3 authentication passphrase.
                             - Used only if I(version=3).
                         type: str
-                        default: ''
                     privprotocol:
                         description:
                             - SNMPv3 privacy protocol.
                             - Used only if I(version=3).
                         type: str
-                        default: des
                         choices: [ des, aes128, aes192, aes256, aes192c, aes256c ]
                     privpassphrase:
                         description:
                             - SNMPv3 privacy passphrase.
                             - Used only if I(version=3).
                         type: str
-                        default: ''
 notes:
     - If I(tls_psk_identity) or I(tls_psk) is defined or macros I(type=secret), then every launch of the task will update the host.
       Because Zabbix API does not have access to an existing PSK key or secret macros and we cannot compare the specified value with an existing one.
@@ -352,6 +340,7 @@ EXAMPLES = r'''
         port: 169   # To specify a non-standard value
         details:
           version: 3
+          bulk: true
           contextname: my contextname name
           securityname: my securityname name
           securitylevel: authPriv
@@ -458,7 +447,7 @@ from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
     tag_to_dict_transform, macro_types, ipmi_authtype_type,
     ipmi_privilege_type, default_values, tls_type, inventory_mode_types,
     inventory_fields, interface_types, snmp_securitylevel_types,
-    snmp_authprotocol_types, snmp_privprotocol_types, Zabbix_version)
+    snmp_authprotocol_types, snmp_privprotocol_types, Zabbix_version, snmp_parameters)
 
 
 class Host(object):
@@ -524,6 +513,10 @@ class Host(object):
         :rtype: bool
         :return: result of request
         """
+        # Check mode
+        if self.module.check_mode:
+            self.module.exit_json(changed=True)
+
         try:
             self.zapi.send_api_request(
                 method=method,
@@ -769,16 +762,13 @@ class Host(object):
                 interface['main'] = '1'
                 interface['useip'] = '1' if each['useip'] else '0'
                 # ip
-                if (each['useip'] is True and
-                        (each['ip'] is None or len(each['ip']) == 0)):
+                if (each['useip'] is True and (each['ip'] is None or len(each['ip']) == 0)):
                     interface['ip'] = '127.0.0.1'
                 else:
                     interface['ip'] = each['ip']
                 # dns
-                if (each['useip'] is False and
-                        (each['dns'] is None or len(each['dns']) == 0)):
-                    self.module.fail_json(
-                        msg="Required parameter not found: dns")
+                if (each['useip'] is False and (each['dns'] is None or len(each['dns']) == 0)):
+                    self.module.fail_json(msg="Required parameter not found: dns")
                 else:
                     interface['dns'] = each['dns']
                 # ports
@@ -789,6 +779,35 @@ class Host(object):
                 # snmp
                 details = []
                 if each['type'] == 'snmp':
+                    # Check the requirement fields for snmp
+                    if each['details'] is None:
+                        self.module.fail_json(msg="Not found parameter 'details' for SNMP interface")
+                    if each['details']['version'] is None:
+                        self.module.fail_json(msg="Not found parameter 'version'")
+                    if each['details']['version'] in ['1', '2']:
+                        req_parameters = snmp_parameters[each['details']['version']]
+                    else:
+                        if each['details']['securitylevel'] is None:
+                            self.module.fail_json(msg="Not found parameter 'securitylevel'")
+                        req_parameters = snmp_parameters[each['details']['version']][each['details']['securitylevel']]
+
+                    # If additional fields need to be added and some logic is required, then this can be done here.
+                    # If the new field only depends on the version, then it must be added to the helper.
+                    if each['details']['version'] in ['2', '3'] and (Zabbix_version(self.zbx_api_version) >= Zabbix_version('6.4.0')):
+                        req_parameters.append('max_repetitions')
+
+                    input_arguments = [e for e in each['details'] if each['details'][e] is not None]
+                    more_parameters = list(set(input_arguments) - set(req_parameters))
+                    less_parameters = list(set(req_parameters) - set(input_arguments))
+                    if more_parameters:
+                        self.module.fail_json(msg="Incorrect arguments for SNMPv{0}: {1}".format(
+                            each['details']['version'],
+                            ', '.join(more_parameters)))
+                    if less_parameters:
+                        self.module.fail_json(msg="Not found arguments for SNMPv{0}: {1}".format(
+                            each['details']['version'],
+                            ', '.join(less_parameters)))
+
                     details = {}
                     # v1 and v2c
                     details['version'] = each['details']['version']
@@ -1063,40 +1082,24 @@ def main():
                 'port': {'type': 'str'},
                 'details': {
                     'type': 'dict',
-                    'default': {},
                     'options': {
-                        'version': {
-                            'type': 'str',
-                            'default': '2',
-                            'choices': ['1', '2', '3']},
-                        'bulk': {'type': 'bool', 'default': True},
-                        'community': {
-                            'type': 'str',
-                            'default': '{$SNMP_COMMUNITY}'},
-                        'max_repetitions': {
-                            'type': 'str',
-                            'default': '10'},
-                        'contextname': {'type': 'str', 'default': ''},
-                        'securityname': {'type': 'str', 'default': ''},
+                        'version': {'type': 'str', 'choices': ['1', '2', '3']},
+                        'bulk': {'type': 'bool'},
+                        'community': {'type': 'str'},
+                        'max_repetitions': {'type': 'str'},
+                        'contextname': {'type': 'str'},
+                        'securityname': {'type': 'str'},
                         'securitylevel': {
                             'type': 'str',
-                            'default': 'noAuthNoPriv',
-                            'choices': [
-                                'noAuthNoPriv', 'authNoPriv', 'authPriv']},
+                            'choices': ['noAuthNoPriv', 'authNoPriv', 'authPriv']},
                         'authprotocol': {
                             'type': 'str',
-                            'default': 'md5',
-                            'choices': ['md5', 'sha1', 'sha224',
-                                        'sha256', 'sha384', 'sha512']},
-                        'authpassphrase': {
-                            'type': 'str', 'default': '', 'no_log': True},
+                            'choices': ['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512']},
+                        'authpassphrase': {'type': 'str', 'no_log': True},
                         'privprotocol': {
                             'type': 'str',
-                            'default': 'des',
-                            'choices': ['des', 'aes128', 'aes192',
-                                        'aes256', 'aes192c', 'aes256c']},
-                        'privpassphrase': {
-                            'type': 'str', 'default': '', 'no_log': True}}}}}}
+                            'choices': ['des', 'aes128', 'aes192', 'aes256', 'aes192c', 'aes256c']},
+                        'privpassphrase': {'type': 'str', 'no_log': True}}}}}}
 
     module = AnsibleModule(
         argument_spec=spec,

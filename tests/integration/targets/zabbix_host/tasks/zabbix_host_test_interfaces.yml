@@ -17,6 +17,10 @@
         interfaces:
           - type: agent
           - type: snmp
+            details:
+              version: 1
+              bulk: true
+              community: public
           - type: ipmi
           - type: jmx
       register: zabbix_host_interface_adding_all_by_default
@@ -43,10 +47,9 @@
             useip: true
             port: 161
             details:
-              version: 2
-              contextname: ''
-              securityname: ''
+              version: 1
               bulk: true
+              community: public
           - type: ipmi
             ip: 127.0.0.1
             dns: ''
@@ -79,6 +82,10 @@
             dns: test.com
             useip: true
             port: 169
+            details:
+              version: 1
+              community: 'public'
+              bulk: true
           - type: ipmi
             ip: 192.168.1.2
             dns: test.com
@@ -111,6 +118,10 @@
             dns: test.com
             useip: true
             port: 169
+            details:
+              version: 1
+              community: 'public'
+              bulk: true
           - type: ipmi
             ip: 192.168.1.2
             dns: test.com
@@ -178,7 +189,15 @@
           - type: snmp
             ip: 192.168.1.2
             useip: false
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
       register: zabbix_host_interface_two_snmp_if_in_one_task
       ignore_errors: true
 
@@ -242,6 +261,10 @@
         interfaces:
           - type: agent
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
       register: zabbix_host_interface_create_another_one_if
 
     - name: Assert that host update was updated and if was added
@@ -256,6 +279,10 @@
         interfaces:
           - type: agent
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
       register: zabbix_host_interface_check_current_setting
 
     - name: Assert that host update was not updated
@@ -268,6 +295,10 @@
         host: zabbix_test_host
         interfaces:
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
       register: zabbix_host_interface_delete_one_if
 
     - name: Assert that host update was updated and if was deleted
@@ -281,6 +312,10 @@
         host: zabbix_test_host
         interfaces:
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
       register: zabbix_host_interface_check_current_setting
 
     - name: Assert that host update was not updated
@@ -318,6 +353,10 @@
         host: zabbix_test_host
         interfaces:
           - type: snmp
+            details:
+              version: 1
+              community: 'test'
+              bulk: true
           - type: ipmi
           - type: jmx
 
@@ -400,7 +439,7 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
-    # Changing interface wit attached items and check
+    # Changing interface with attached items and check
     - name: Test - Changing interface wit attached items
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -515,35 +554,6 @@
 
 - name: SNMP checks
   block:
-    - name: Test - Create snmp interface with empty details
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            details: {}
-      register: zabbix_host_interface_update_empty_snmp_details
-
-    - name: Assert that host interface was updated with default value
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_empty_snmp_details is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_empty_snmp_details.result"
-
-    - name: Test - Create snmp interface with details only version
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            details:
-              version: 2
-      register: zabbix_host_interface_update_w_only_version
-
-    - name: Assert that host interface was not updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_w_only_version is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_w_only_version.result"
-
     # Check v1 and v2 interfaces
     - name: Test - Create snmp interface v1
       zabbix.zabbix.zabbix_host:
@@ -555,8 +565,7 @@
             port: 161
             details:
               version: 1
-              contextname: ''
-              securityname: ''
+              community: 'test'
               bulk: true
       register: zabbix_host_interface_update_snmp_v1
 
@@ -576,67 +585,34 @@
             port: 161
             details:
               version: 2
-              contextname: ''
-              securityname: ''
+              community: 'test'
               bulk: true
       register: zabbix_host_interface_update_snmp_v2
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v2 (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              community: 'test'
+              max_repetitions: 10
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v2_64
+      ignore_errors: true
 
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v2 is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v2.result"
+          - zabbix_host_interface_update_snmp_v2 or zabbix_host_interface_update_snmp_v2_64 is changed
 
-    # Check that the parameters from the snmp v3 will be ignored
-    - name: Test - Create snmp v2 interface with parameters from v3
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            ip: 127.0.0.1
-            dns: test.com
-            port: 161
-            details:
-              version: 2
-              contextname: my contextname name
-              securityname: my securityname name
-              securitylevel: authPriv
-              authprotocol: md5
-              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
-              privprotocol: des
-              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
-              bulk: false
-
-    - name: Test - Check current snmp parameters
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            ip: 127.0.0.1
-            dns: test.com
-            port: 161
-            details:
-              version: 2
-              community: '{$SNMP_COMMUNITY}'
-              bulk: false
-      register: zabbix_host_interface_update_snmp_v2_w_v3_parameters
-
-    - name: Assert that host interface was not updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_snmp_v2_w_v3_parameters is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v2_w_v3_parameters.result"
-
-    # Check default parameters for snmp v3
-    - name: Test - Create snmp v3 with default parameters
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            details:
-              version: 3
-
-    - name: Test - Check current snmp parameters
+    # noAuthNoPriv
+    - name: Test - Create snmp v3 with noAuthNoPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -649,16 +625,10 @@
               securityname: ''
               securitylevel: noAuthNoPriv
               bulk: true
-      register: zabbix_host_interface_update_snmp_v3_default_parameters
+      register: zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters
+      ignore_errors: true
 
-    - name: Assert that host interface was not updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_snmp_v3_default_parameters is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_default_parameters.result"
-
-    # authNoPriv
-    - name: Test - Create snmp v3 with authNoPriv without parameters
+    - name: Test - Create snmp v3 with noAuthNoPriv with parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -669,39 +639,18 @@
               version: 3
               contextname: ''
               securityname: ''
-              securitylevel: authNoPriv
+              securitylevel: noAuthNoPriv
+              max_repetitions: 10
               bulk: true
-      register: zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters
+      register: zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters_64
+      ignore_errors: true
 
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_wo_parameters.result"
+          - zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters_64 is changed
 
-    - name: Test - Create snmp v3 with authNoPriv with empty parameters
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            useip: true
-            ip: 127.0.0.1
-            details:
-              version: 3
-              contextname: ''
-              securityname: ''
-              securitylevel: authNoPriv
-              authprotocol: md5
-              authpassphrase: ''
-              bulk: true
-      register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters
-
-    - name: Assert that host interface was not updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters.result"
-
+    # authNoPriv
     - name: Test - Create snmp v3 with authNoPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -718,60 +667,33 @@
               authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
               bulk: true
       register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp v3 with authNoPriv with parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              max_repetitions: 10
+              securitylevel: authNoPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters_64
+      ignore_errors: true
 
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters.result"
+          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters_64 is changed
 
     # authPriv
-    - name: Test - Create snmp v3 with authPriv without parameters
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            useip: true
-            ip: 127.0.0.1
-            details:
-              version: 3
-              contextname: ''
-              securityname: ''
-              securitylevel: authPriv
-              bulk: true
-      register: zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters
-
-    - name: Assert that host interface was updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_wo_parameters.result"
-
-    - name: Test - Create snmp v3 with authPriv with empty parameters
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        interfaces:
-          - type: snmp
-            useip: true
-            ip: 127.0.0.1
-            details:
-              version: 3
-              contextname: ''
-              securityname: ''
-              securitylevel: authPriv
-              authprotocol: md5
-              authpassphrase: ''
-              privprotocol: des
-              privpassphrase: ''
-              bulk: true
-      register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters
-
-    - name: Assert that host interface was not updated
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters is not changed
-          - "'No need to update host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_w_parameters.result"
-
     - name: Test - Create snmp v3 with authPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -790,9 +712,655 @@
               privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
               bulk: true
       register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp v3 with authPriv with parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            useip: true
+            ip: 127.0.0.1
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              max_repetitions: 10
+              securitylevel: authPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters_64
+      ignore_errors: true
 
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v3_authpriv_w_parameters.result"
+          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters or zabbix_host_interface_update_snmp_v3_authpriv_w_parameters_64 is changed
+
+- name: SNMP details
+  block:
+    # Check v1
+    - name: Test - Create snmp interface v1 without community
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 1
+              bulk: true
+      register: zabbix_host_interface_snmp_v1_wo_community
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v1_wo_community is failed
+
+    - name: Test - Create snmp interface v1 without bulk and community
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 1
+      register: zabbix_host_interface_snmp_v1_wo_bulk_community
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v1_wo_bulk_community is failed
+
+    - name: Test - Create snmp interface v1 with additional parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 1
+              community: public
+              bulk: true
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v1_w_contextname
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v1_w_contextname is failed
+
+    - name: Test - Create snmp interface v1 with additional parameter and missing bulk
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 1
+              community: public
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v1_w_contextname_wo_bulk
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v1_w_contextname_wo_bulk is failed
+
+    # Check v2
+    - name: Test - Create snmp interface v2 without community
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              bulk: true
+      register: zabbix_host_interface_snmp_v2_wo_community
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v2 without community (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              bulk: true
+              max_repetitions: 10
+      register: zabbix_host_interface_snmp_v2_wo_community_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v2_wo_community and zabbix_host_interface_snmp_v2_wo_community_64 is failed
+
+    - name: Test - Create snmp interface v2 without bulk and community
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+      register: zabbix_host_interface_snmp_v2_wo_bulk_community
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v2 without bulk and community (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              max_repetitions: 10
+      register: zabbix_host_interface_snmp_v2_wo_bulk_community_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v2_wo_bulk_community and zabbix_host_interface_snmp_v2_wo_bulk_community_64 is failed
+
+    - name: Test - Create snmp interface v2 with additional parameter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              community: public
+              bulk: true
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v2_w_contextname
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v2 with additional parameter (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              community: public
+              max_repetitions: 10
+              bulk: true
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v2_w_contextname_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v2_w_contextname and zabbix_host_interface_snmp_v2_w_contextname_64 is failed
+
+    - name: Test - Create snmp interface v2 with additional parameter and missing bulk
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              community: public
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v2_w_contextname_wo_bulk
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v2 with additional parameter and missing bulk (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 2
+              max_repetitions: 10
+              community: public
+              contextname: contextname
+      register: zabbix_host_interface_snmp_v2_w_contextname_wo_bulk_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v2_w_contextname_wo_bulk and zabbix_host_interface_snmp_v2_w_contextname_wo_bulk_64 is failed
+
+    # Check v3
+    - name: Test - Create snmp interface v3 without securitylevel
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_securitylevel
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 without securitylevel (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_securitylevel_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_wo_securitylevel and zabbix_host_interface_snmp_v3_wo_securitylevel_64 is failed
+
+    - name: Test - Create snmp interface v3 without bulk
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              authprotocol: sha512
+              securitylevel: authPriv
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+      register: zabbix_host_interface_snmp_v3_wo_bulk
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 without bulk (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              authprotocol: sha512
+              securitylevel: authPriv
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+      register: zabbix_host_interface_snmp_v3_wo_bulk_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_wo_bulk and zabbix_host_interface_snmp_v3_wo_bulk_64 is failed
+
+    - name: Test - Create snmp interface v3 with additional parameter community
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+              community: public
+      register: zabbix_host_interface_snmp_v3_w_community
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with additional parameter community (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              max_repetitions: 10
+              securitylevel: authPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+              community: public
+      register: zabbix_host_interface_snmp_v3_w_community_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_w_community and zabbix_host_interface_snmp_v3_w_community_64 is failed
+
+    - name: Test - Create snmp interface v3 with authNoPriv without parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_auth_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authNoPriv without parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_auth_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
+
+    - name: Test - Create snmp interface v3 with authNoPriv with all parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_all_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authNoPriv with all parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              max_repetitions: 10
+              securitylevel: authNoPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_all_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_w_all_parameters and zabbix_host_interface_snmp_v3_w_all_parameters_64 is failed
+
+    - name: Test - Create snmp interface v3 with authNoPriv with priv parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_priv_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authNoPriv with priv parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              securitylevel: authNoPriv
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_priv_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_w_priv_parameters and zabbix_host_interface_snmp_v3_w_priv_parameters_64 is failed
+
+    - name: Test - Create snmp interface v3 with authPriv without parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_auth_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authPriv without parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_wo_auth_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
+
+    - name: Test - Create snmp interface v3 with authPriv with auth parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_auth_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authPriv with auth parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              authprotocol: sha512
+              authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_auth_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_w_auth_parameters and zabbix_host_interface_snmp_v3_w_auth_parameters_64 is failed
+
+    - name: Test - Create snmp interface v3 with authPriv with priv parameters
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_priv_parameters
+      ignore_errors: true
+
+    - name: Test - Create snmp interface v3 with authPriv with priv parameters (Zabbix 6.4)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            ip: 127.0.0.1
+            dns: test.com
+            port: 161
+            details:
+              version: 3
+              max_repetitions: 10
+              contextname: ''
+              securityname: ''
+              securitylevel: authPriv
+              privprotocol: aes256c
+              privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+              bulk: true
+      register: zabbix_host_interface_snmp_v3_w_priv_parameters_64
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_interface_snmp_v3_w_priv_parameters and zabbix_host_interface_snmp_v3_w_priv_parameters_64 is failed

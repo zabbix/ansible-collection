@@ -116,7 +116,7 @@ class TestCreating(TestModules):
                  'useip': True, 'port': '23456'},
                 {'type': 'snmp', 'ip': '192.168.100.51', 'dns': 'switch.local',
                  'useip': False, 'port': '164', 'details': {
-                     'version': 3, 'contextname': 'contextname',
+                     'version': 3, 'bulk': True, 'contextname': 'contextname',
                      'securityname': 'securityname', 'securitylevel': 'authPriv',
                      'authprotocol': 'md5', 'privprotocol': 'des',
                      'authpassphrase': uuid.uuid4().hex, 'privpassphrase': uuid.uuid4().hex}}]})

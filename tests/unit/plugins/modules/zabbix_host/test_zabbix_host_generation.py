@@ -1443,6 +1443,279 @@ class TestInterfaces(TestModules):
                 'Required parameter not found: dns',
                 ansible_result.exception.args[0]['msg'])
 
+    def test_validations_snmp_parameters(self):
+        """
+        Testing details of SNMP interfaces.
+        Test cases:
+
+        1. Interface without version.
+
+        SNMPv1:
+        2. Interface version 1 without bulk (one parameter).
+        3. Interface version 1 without bulk and community (two parameter with list of missing parameters in error).
+        4. Interface version 1 with additional parameter from SNMPv3 (contextname).
+        5. Interface version 1 with additional parameter (contextname) and missing parameters (community).
+
+        SNMPv2:
+        6. Interface version 2 without bulk (one parameter).
+        7. Interface version 2 without bulk and community (two parameter with list of missing parameters in error).
+        8. Interface version 2 with additional parameter from SNMPv3 (contextname).
+        9. Interface version 2 with additional parameter (contextname) and missing parameters (community).
+
+        SNMPv3 (noAuthNoPriv):
+        10. Interface version 3 without securitylevel (Checks error message).
+        11. Interface version 3 without bulk (one parameter).
+        12. Interface version 3 without bulk and contextname (two parameter with list of missing parameters in error).
+        13. Interface version 3 with additional parameter from SNMPv1 (community).
+        14. Interface version 1 with additional parameter (community) and missing parameters (contextname).
+
+        SNMPv3 (authNoPriv):
+        15. Interface version 3 without authprotocol (Checks error message).
+        16. Interface version 3 without authprotocol and contextname (two parameter with list of missing parameters in error),
+        (Check two independent parameters, because authprotocol depends on securitylevel only).
+        17. Interface version 3 with additional parameters for 'authPriv'.
+        18. Interface version 3 without auth parameters, but with priv parameters.
+
+        SNMPv3 (authPriv):
+        19. Interface version 3 without auth parameters.
+        20. Interface version 3 without priv parameters.
+        21. Interface version 3 without auth and priv parameters.
+        22. Interface version 3 with additional parameters (community).
+        23. Interface version 3 without auth and priv parameters and with additional parameters (community).
+
+        Expected result: all test cases run successfully.
+        """
+        test_cases = [
+            {
+                'number_test_case': 1,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': None, 'bulk': True, 'community': '111', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found parameter 'version'"]
+            },
+            {
+                'number_test_case': 2,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '1', 'bulk': None, 'community': '111', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv1: bulk"]
+            },
+            {
+                'number_test_case': 3,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '1', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv1:", 'bulk', 'community']
+            },
+            {
+                'number_test_case': 4,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '1', 'bulk': True, 'community': 'test', 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv1:", 'contextname']
+            },
+            {
+                'number_test_case': 5,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '1', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv1:", 'contextname']
+            },
+            {
+                'number_test_case': 6,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '2', 'bulk': None, 'community': '111', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv2: bulk"]
+            },
+            {
+                'number_test_case': 7,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '2', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv2:", 'bulk', 'community']
+            },
+            {
+                'number_test_case': 8,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '2', 'bulk': True, 'community': 'test', 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv2:", 'contextname']
+            },
+            {
+                'number_test_case': 9,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '2', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv2:", 'contextname']
+            },
+            {
+                'number_test_case': 10,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': 'securityname', 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found parameter 'securitylevel'"]
+            },
+            {
+                'number_test_case': 11,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'bulk']
+            },
+            {
+                'number_test_case': 12,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'bulk', 'contextname']
+            },
+            {
+                'number_test_case': 13,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': 'test', 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'community']
+            },
+            {
+                'number_test_case': 14,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': None, 'community': 'test', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'community']
+            },
+            {
+                'number_test_case': 15,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol']
+            },
+            {
+                'number_test_case': 16,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol', 'contextname']
+            },
+            {
+                'number_test_case': 17,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': 'md5', 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'privprotocol', 'privpassphrase']
+            },
+            {
+                'number_test_case': 18,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'privprotocol', 'privpassphrase']
+            },
+            {
+                'number_test_case': 19,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
+                                 'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol']
+            },
+            {
+                'number_test_case': 20,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': 'md5', 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'privprotocol', 'privpassphrase']
+            },
+            {
+                'number_test_case': 21,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']
+            },
+            {
+                'number_test_case': 22,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': 'test', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': 'md5', 'authpassphrase': 'authpassphrase',
+                                 'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'community']
+            },
+            {
+                'number_test_case': 23,
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '', 'port': None,
+                     'details': {'version': '3', 'bulk': True, 'community': 'test', 'max_repetitions': None, 'contextname': None,
+                                 'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': None, 'authpassphrase': None,
+                                 'privprotocol': None, 'privpassphrase': None}}],
+                'expected_errors': ["Incorrect arguments for SNMPv3:", 'community']
+            }]
+
+        exist_host = {'host': 'test_host', 'inventory_mode': '1'}
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version):
+
+            for test_case in test_cases:
+                input_param = {
+                    'host': 'test_host',
+                    'interfaces': test_case['input']}
+
+                self.mock_module_functions.params = input_param
+                host = self.module.Host(self.mock_module_functions)
+
+                with self.assertRaises(AnsibleFailJson) as ansible_result:
+                    host.generate_zabbix_host(exist_host)
+                self.assertTrue(ansible_result.exception.args[0]['failed'])
+                for expected_error in test_case['expected_errors']:
+                    self.assertIn(
+                        expected_error,
+                        ansible_result.exception.args[0]['msg'])
+
     def test_snmp_v1_v2(self):
         """
         Testing SNMP interfaces version 1 and 2.

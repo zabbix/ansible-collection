@@ -122,7 +122,7 @@ It supports working with a list of hostgroups. During the creation process, if a
 ## Hostgroups module parameters:
 | Parameter | Type | Default | Description |
 |--|--|--|--|
-| state | `string` | present | Perform actions with hostgroups: `create` to add hostgroups, and `absent` to delete them.
+| state | `string` | present | Perform actions with hostgroups: `present` to add hostgroups, and `absent` to delete them.
 | hostgroups | `list` || Specify a list of hostgroups to create or remove. You can use the aliases `host_group`, `host_groups`, or `name` to refer to the hostgroups.
 
 
@@ -184,7 +184,7 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">state</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left">present</td>
-            <td colspan=1 align="left">Perform actions with host: <code>create</code> to add host (update, in case the host is already created), and <code>absent</code> to delete them.</td>
+            <td colspan=1 align="left">Perform actions with host: <code>present</code> to add host (update, in case the host is already created), and <code>absent</code> to delete them.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">host</td>
@@ -378,7 +378,7 @@ This module provides functionality to create, update, and delete hosts in Zabbix
         <tr>
             <td colspan=2 align="left">dns</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">text</td>
+            <td colspan=1 align="left">''</td>
             <td colspan=1 align="left">The DNS name used by the interface. Can be empty if the connection is made through IP.</td>
         </tr>
         <tr>
@@ -391,74 +391,74 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=2 align="left">details</td>
             <td colspan=1 align="left"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Additional details object for interface. Used only with snmp interface. Has additional options.</td>
+            <td colspan=1 align="left">Additional details object for interface. Required with snmp interfaces. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=11></td>
             <td colspan=1 align="left">version</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">2</td>
-            <td colspan=1 align="left">SNMP interface version. Available values: <li>1<li>2<li>3</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMP interface version. Required with snmp interfaces. Available values: <li>1<li>2<li>3</td>
         </tr>
         <tr>
             <td colspan=1 align="left">bulk</td>
             <td colspan=1 align="left"><code>bool</code></td>
-            <td colspan=1 align="left">True</td>
-            <td colspan=1 align="left">Whether to use bulk SNMP.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Whether to use bulk SNMP. Required with snmp interfaces.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">community</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">{$SNMP_COMMUNITY}</td>
-            <td colspan=1 align="left">SNMP community. Used only with snmp interfaces version 1 and 2.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMP community. Required with snmp interfaces. Used only with snmp interfaces version 1 and 2.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">max_repetitions</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">10</td>
-            <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Used only with snmp interfaces version 2 and 3. Used only for zabbix versions above 6.4.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Required with snmp interfaces. Used only with snmp interfaces version 2 and 3. Used only for zabbix versions above 6.4.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">contextname</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">''</td>
-            <td colspan=1 align="left">SNMPv3 context name. Used only with snmp interfaces version 3.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 context name. Required with snmp interfaces version 3.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">securityname</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">text</td>
-            <td colspan=1 align="left">SNMPv3 security name. Used only with snmp interfaces version 3.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 security name. Required with snmp interfaces version 3.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">securitylevel</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">noAuthNoPriv</td>
-            <td colspan=1 align="left">SNMPv3 security level. Used only with snmp interfaces version 3. Available values: <li>noAuthNoPriv<li>authNoPriv<li>authPriv</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 security level. Required with snmp interfaces version 3. Available values: <li>noAuthNoPriv<li>authNoPriv<li>authPriv</td>
         </tr>
         <tr>
             <td colspan=1 align="left">authprotocol</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">md5</td>
-            <td colspan=1 align="left">SNMPv3 authentication protocol. Used only with snmp interfaces version 3. Available values: <li>md5<li>sha1<li>sha224<li>sha256<li>sha384<li>sha512</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 authentication protocol. Required with snmp interfaces version 3 and securitylevel equals <code>authNoPriv</code>. Available values: <li>md5<li>sha1<li>sha224<li>sha256<li>sha384<li>sha512</td>
         </tr>
         <tr>
             <td colspan=1 align="left">authpassphrase</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">''</td>
-            <td colspan=1 align="left">SNMPv3 authentication passphrase. Used only with snmp interfaces version 3.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 authentication passphrase. Required with snmp interfaces version 3 and securitylevel equals <code>authNoPriv</code>.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">privprotocol</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">des</td>
-            <td colspan=1 align="left">SNMPv3 privacy protocol. Used only with snmp interfaces version 3. Available values: <li>des<li>aes128<li>aes192<li>aes256<li>aes192c<li>aes256c</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 privacy protocol. Required with snmp interfaces version 3 and securitylevel equals <code>authPriv</code>. Available values: <li>des<li>aes128<li>aes192<li>aes256<li>aes192c<li>aes256c</td>
         </tr>
         <tr>
             <td colspan=1 align="left">privpassphrase</td>
             <td colspan=1 align="left"><code>string</code></td>
-            <td colspan=1 align="left">''</td>
-            <td colspan=1 align="left">SNMPv3 privacy passphrase. Used only with snmp interfaces version 3.</td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">SNMPv3 privacy passphrase. Required with snmp interfaces version 3 and securitylevel equals <code>authPriv</code>.</td>
         </tr>
     </tbody>
 </table>
@@ -537,6 +537,7 @@ To create host with maximum parameters you can use this example.
         port: 169                         # To specify a non-standard value
         details:
           version: 3
+          bulk: true
           contextname: my contextname name
           securityname: my securityname name
           securitylevel: authPriv
