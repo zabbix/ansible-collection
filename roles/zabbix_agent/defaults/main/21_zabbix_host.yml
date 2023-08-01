@@ -25,7 +25,6 @@ zabbix_host_interfaces:
     dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
     useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
     port: '{{ param_listenport }}'
-    main: true
 ## IPMI settings undefined
 # zabbix_host_ipmi_authtype:
 # zabbix_host_ipmi_privilege:
