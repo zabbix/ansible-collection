@@ -20,7 +20,7 @@
         state: present
     - name: 'Zabbix API : Host presence'
       zabbix.zabbix.zabbix_host:
-        state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
+        state: '{{ zabbix_host_state }}'
         host_name: '{{ zabbix_host_host_name }}'
         visible_name: '{{ zabbix_host_visible_name | default(omit) }}'
         description: '{{ zabbix_host_description | default(omit) }}'

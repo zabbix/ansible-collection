@@ -1,6 +1,7 @@
 ---
 ### Default values to use when adding host to zabbix with "zabbix.zabbix.zabbix_host" module
 #
+zabbix_host_state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
 ## Using inventory name of the host
 zabbix_host_host_name: '{{ inventory_hostname }}'
 # zabbix_host_visible_name:
