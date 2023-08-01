@@ -10,7 +10,7 @@
     ansible_httpapi_pass: '{{ zabbix_api_password if zabbix_api_token is not defined else omit }}'
     ansible_httpapi_use_ssl: '{{ zabbix_api_use_ssl | default("False") }}'
     ansible_httpapi_validate_certs: '{{ zabbix_api_validate_certs | default("False") }}'
-  tags: [host]
+  tags: [host, remove]
   block:
     - name: 'Zabbix API : Hostgroup presence'
       when: >-
