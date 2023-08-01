@@ -1,39 +1,30 @@
   - hosts: all 
     roles:
       - role: zabbix_agent
-        # remove_previous_packages: true
+        remove_previous_packages: true
         package_state: latest
-        agent_variant: 1
-        param_listenport: 10050
-        agent_major_version: 6.4
-#        source_scripts_dir: scripts
-#        param_userparameter:
-#          - traces, ~/ZABBIX_AGENT2/scripts/traces.sh
-        zabbix_api_host: localhost
-        zabbix_api_port: 8070
-#        zabbix_api_host: 192.168.13.90
-#        zabbix_api_port: 8000
-#        zabbix_api_user: Admin
-#        zabbix_api_password: zabbix
-        # zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
-        # zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
-        zabbix_host_templates: ["Linux by Zabbix agent"]
-        # zabbix_host_interfaces: []
-        # zabbix_host_agent_interface: '{{ ansible_host }}'
-        #param_tlsaccept: "unencrypted"
-        #param_tlsaccept: "unencrypted"
-        zabbix_host_interfaces:
-          - type: agent
-            ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
-            dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
-            useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
-            port: '{{ param_listenport }}'
-            main: true
-#          - type: agent
-#            ip: 127.0.0.1
-#            useip: true
-#            port: 10050
-#            main: false
-#        param_tlsconnect: "psk"
-#        param_tlsaccept: ["psk","unencrypted"]
+        agent_variant: 2
+        param_hostname: '{{ inventory_hostname }}'
+        param_listenport: 10020
+        param_serveractive: 192.168.13.90:51000
+        agent_major_version: 6.0
+        agent_minor_version: 10 
+############################################################################################################################################
         run_host_tasks: true
+############################################################################################################################################
+        zabbix_api_host: 192.168.13.90
+        zabbix_api_port: 8000
+        zabbix_api_user: Admin
+        zabbix_api_password: password
+        # zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
+############################################################################################################################################
+        # zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
+        zabbix_host_templates: ["Linux by Zabbix agent active"]
+        zabbix_host_host_name: '{{ inventory_hostname }}'
+        zabbix_host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'
+#        zabbix_host_interfaces:
+#          - type: agent
+#            ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
+#            dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
+#            useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
+#            port: '{{ param_listenport }}'
