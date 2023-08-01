@@ -113,20 +113,20 @@ Example of using options to create a host group. For a typical application, it i
     ansible_httpapi_pass: zabbix
 ```
 
-Hostgroups module
+Hostgroup module
 ------------
-## Hostgroups module overview:
-This module provides functionality to create and delete hostgroups in Zabbix. 
+## Hostgroup module overview:
+This module provides functionality to create and delete hostgroups in Zabbix.
 It supports working with a list of hostgroups. During the creation process, if any hostgroups specified in the list already exist in Zabbix, only the missing groups will be created.
 
-## Hostgroups module parameters:
+## Hostgroup module parameters:
 | Parameter | Type | Default | Description |
 |--|--|--|--|
 | state | `string` | present | Perform actions with hostgroups: `present` to add hostgroups, and `absent` to delete them.
 | hostgroups | `list` || Specify a list of hostgroups to create or remove. You can use the aliases `host_group`, `host_groups`, or `name` to refer to the hostgroups.
 
 
-## Hostgroups module examples:
+## Hostgroup module examples:
 
 ### Example 1
 To create hostgroups you can use:
@@ -214,19 +214,19 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">status</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The host status. Available values: <code>enabled</code> or <code>disabled</code>.</td> 
+            <td colspan=1 align="left">The host status. Available values: <code>enabled</code> or <code>disabled</code>.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">description</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The host description.</td> 
+            <td colspan=1 align="left">The host description.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tags</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The tags that will replace the current host's tags. Any tags not specified in the task will be removed. You can use the alias <code>host_tags</code> to refer to the tags. To remove all tags from a host, you can specify an empty list, <code>tags=[]</code>. Has additional options.</td> 
+            <td colspan=1 align="left">The tags that will replace the current host's tags. Any tags not specified in the task will be removed. You can use the alias <code>host_tags</code> to refer to the tags. To remove all tags from a host, you can specify an empty list, <code>tags=[]</code>. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=2></td>
@@ -245,7 +245,7 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">macros</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The macros that will replace the current host's macros. Any macros not specified in the task will be removed. If a macro of secret type specified, each execution of the task will result in an update. To remove all macros from a host, you can specify an empty list, <code>macros=[]</code>. Has additional options.</td> 
+            <td colspan=1 align="left">The macros that will replace the current host's macros. Any macros not specified in the task will be removed. If a macro of secret type specified, each execution of the task will result in an update. To remove all macros from a host, you can specify an empty list, <code>macros=[]</code>. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=4></td>
@@ -276,85 +276,85 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">ipmi_authtype</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">IPMI authentication algorithm. Available values: <li>default<li>none<li>md2<li>md5<li>straight<li>oem<li>rmcp+</td> 
+            <td colspan=1 align="left">IPMI authentication algorithm. Available values: <li>default<li>none<li>md2<li>md5<li>straight<li>oem<li>rmcp+</td>
         </tr>
         <tr>
             <td colspan=3 align="left">ipmi_privilege</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">IPMI privilege level. Available values: <li>callback<li>user<li>operator<li>admin<li>oem</td> 
+            <td colspan=1 align="left">IPMI privilege level. Available values: <li>callback<li>user<li>operator<li>admin<li>oem</td>
         </tr>
         <tr>
             <td colspan=3 align="left">ipmi_username</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">IPMI username.</td> 
+            <td colspan=1 align="left">IPMI username.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">ipmi_password</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">IPMI password.</td> 
+            <td colspan=1 align="left">IPMI password.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_accept</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Connections type from host. Available values: <li>unencrypted<li>psk<li>cert</td> 
+            <td colspan=1 align="left">Connections type from host. Available values: <li>unencrypted<li>psk<li>cert</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_connect</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Connections to the host. Available values: <li>unencrypted<li>psk<li>cert</td> 
+            <td colspan=1 align="left">Connections to the host. Available values: <li>unencrypted<li>psk<li>cert</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_psk_identity</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">PSK identity.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td> 
+            <td colspan=1 align="left">PSK identity.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_psk</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The preshared key, at least 32 hex digits.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td> 
+            <td colspan=1 align="left">The preshared key, at least 32 hex digits.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_issuer</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Certificate issuer.</td> 
+            <td colspan=1 align="left">Certificate issuer.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_subject</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Certificate subject.</td> 
+            <td colspan=1 align="left">Certificate subject.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">proxy</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Name of the proxy that is used to monitor the host.</td> 
+            <td colspan=1 align="left">Name of the proxy that is used to monitor the host.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">inventory_mode</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Host inventory population mode. Available values: <li>automatic<li>manual<li>disabled</td> 
+            <td colspan=1 align="left">Host inventory population mode. Available values: <li>automatic<li>manual<li>disabled</td>
         </tr>
         <tr>
             <td colspan=3 align="left" valign="top">inventory</td>
             <td colspan=1 align="left" valign="top"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The host inventory object.<br>Available values:<br>type, type_full, name, alias, os, os_full, os_short, serialno_a, serialno_b, tag, asset_tag, macaddress_a, macaddress_b, hardware, hardware_full, software, software_full, software_app_a, software_app_b, software_app_c, software_app_d, software_app_e, contact, location, location_lat, location_lon, notes, chassis, model, hw_arch, vendor, contract_number, installer_name, deployment_status, url_a, url_b, url_c, host_networks, host_netmask, host_router, oob_ip, oob_netmask, oob_router, date_hw_purchase, date_hw_install, date_hw_expiry, date_hw_decomm, site_address_a, site_address_b, site_address_c, site_city, site_state, site_country, site_zip, site_rack, site_notes, poc_1_name, poc_1_email, poc_1_phone_a, poc_1_phone_b, poc_1_cell, poc_1_screen, poc_1_notes, poc_2_name, poc_2_email, poc_2_phone_a, poc_2_phone_b, poc_2_cell, poc_2_screen, poc_2_notes.</td> 
+            <td colspan=1 align="left">The host inventory object.<br>Available values:<br>type, type_full, name, alias, os, os_full, os_short, serialno_a, serialno_b, tag, asset_tag, macaddress_a, macaddress_b, hardware, hardware_full, software, software_full, software_app_a, software_app_b, software_app_c, software_app_d, software_app_e, contact, location, location_lat, location_lon, notes, chassis, model, hw_arch, vendor, contract_number, installer_name, deployment_status, url_a, url_b, url_c, host_networks, host_netmask, host_router, oob_ip, oob_netmask, oob_router, date_hw_purchase, date_hw_install, date_hw_expiry, date_hw_decomm, site_address_a, site_address_b, site_address_c, site_city, site_state, site_country, site_zip, site_rack, site_notes, poc_1_name, poc_1_email, poc_1_phone_a, poc_1_phone_b, poc_1_cell, poc_1_screen, poc_1_notes, poc_2_name, poc_2_email, poc_2_phone_a, poc_2_phone_b, poc_2_cell, poc_2_screen, poc_2_notes.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">interfaces</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The interfaces that will replace the current host's interfaces. Any interfaces not specified in the task will be removed. Only one interface of each type is supported. Has additional options.</td> 
+            <td colspan=1 align="left">The interfaces that will replace the current host's interfaces. Any interfaces not specified in the task will be removed. Only one interface of each type is supported. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=17></td>
