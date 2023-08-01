@@ -30,6 +30,11 @@ For collection component dependencies and other details, navigate to the compone
 
 Roles:
   - [**zabbix_agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/zabbix_agent/README.md) - the role to deploy, configure and maintain Zabbix agent on a target device.
+Plugins:
+  - [**http api**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) - Zabbix API interface for Ansible.
+Modules:
+  - [**zabbix_hostgroup**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#hostgroup-module) - Ansible module for Zabbix hostgroups management (Uses [**httpapi**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
+  - [**zabbix_host**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#host-module) - Ansible module for Zabbix hosts management (Uses [**httpapi**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
 
 ## Under development
 
@@ -42,7 +47,7 @@ Roles:
   - Zabbix media type pushes events to EDA;
   - EDA webhook receives incoming events and passes those to processing via rulebook.
 
-EDA helps with automation of issue remediation and debugging tasks. Basically, EDA receives events sent from Zabbix and triggers different playbook execution, according to the conditions set. 
+EDA helps with automation of issue remediation and debugging tasks. Basically, EDA receives events sent from Zabbix and triggers different playbook execution, according to the conditions set.
 EDA integration is included in Zabbix out of the box and is available starting with Zabbix 6.0 version. Refer to [EDA media type documentation](https://www.zabbix.com/integrations/ansible#event_driven_ansible) for more details on setup.
 
 ## License
