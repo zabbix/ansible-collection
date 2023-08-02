@@ -165,7 +165,7 @@ Host module
 ## Host module overview:
 This module provides functionality to create, update, and delete hosts in Zabbix. If the specified host already exists, its settings will be updated based on the provided input parameters. Only the specified settings will be updated, while any settings not included in the task will remain unchanged.
 
-**Note**: This module supports the update mode with only one interface of each type. If the host already has multiple interfaces of the same type, the module will raise an error indicating the need to manually resolve the conflict.
+**Note**: This module supports only one interface of each type. If the host already has multiple interfaces of the same type, the module will raise an error indicating the need to manually resolve the conflict.
 
 **Note**: If the task includes the tls_psk_identity and tls_psk parameters, or a macro of secret type, each execution of the task will result in an update.
 
