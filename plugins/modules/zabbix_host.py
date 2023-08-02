@@ -845,11 +845,10 @@ class Host(object):
                 if len(interface_by_type[interface]) == 0:
                     continue
                 if len(interface_by_type[interface]) > 1:
-                    # If more than 1 interface of any type is specified to update
-                    if exist_host['interfaces']:
-                        self.module.fail_json(
-                            msg="{0} {1} interfaces defined in the task. Module supports only 1 interface per each type.".format(
-                                len(interface_by_type[interface]), interface))
+                    # If more than 1 interface of any type is specified in task
+                    self.module.fail_json(
+                        msg="{0} {1} interfaces defined in the task. Module supports only 1 interface per each type.".format(
+                            len(interface_by_type[interface]), interface))
                 else:
                     host_params['interfaces'].extend(interface_by_type[interface])
 
