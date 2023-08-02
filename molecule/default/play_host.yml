@@ -1,4 +1,4 @@
-  - hosts: all 
+  - hosts: all
     roles:
       - role: zabbix_agent
         remove_previous_packages: true
@@ -8,7 +8,7 @@
         param_listenport: 10020
         param_serveractive: 192.168.13.90:51000
         agent_major_version: 6.0
-        agent_minor_version: 10 
+        agent_minor_version: 10
 ############################################################################################################################################
         run_host_tasks: true
 ############################################################################################################################################
