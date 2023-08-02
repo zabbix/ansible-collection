@@ -30,8 +30,10 @@ For collection component dependencies and other details, navigate to the compone
 
 Roles:
   - [**zabbix_agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/zabbix_agent/README.md) - the role to deploy, configure and maintain Zabbix agent on a target device.
+
 Plugins:
   - [**http api**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) - Zabbix API interface for Ansible.
+
 Modules:
   - [**zabbix_hostgroup**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#hostgroup-module) - Ansible module for Zabbix hostgroups management (Uses [**httpapi**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
   - [**zabbix_host**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#host-module) - Ansible module for Zabbix hosts management (Uses [**httpapi**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
