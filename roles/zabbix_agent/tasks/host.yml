@@ -32,7 +32,7 @@
         inventory_mode: '{{ zabbix_host_inventory_mode | default(omit) }}'
         inventory: '{{ zabbix_host_inventory | default(omit) }}'
         status: '{{ zabbix_host_status | default(omit) }}'
-        proxy: '{{ zabbix_host_proxy | default(omit) }}'
+        proxy: '{{ zabbix_host_proxy | default(None) }}'
         ### tls
         tls_accept: '{{ zabbix_host_tls_accept }}'
         tls_connect: '{{ zabbix_host_tls_connect }}'

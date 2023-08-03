@@ -40,4 +40,5 @@ zabbix_host_tags:
 # zabbix_host_inventory:
 zabbix_host_status: enabled
 
-zabbix_host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(omit) }}' # assign inventory group name containing regex as host proxy (takes first match)
+### assign inventory group name containing regex as host proxy (takes first match)
+zabbix_host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(None) }}'
