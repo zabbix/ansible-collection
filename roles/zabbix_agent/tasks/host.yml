@@ -5,7 +5,7 @@
   vars:
     ansible_connection: httpapi
     ansible_network_os: zabbix.zabbix.zabbix
-    ansible_httpapi_port: '{{ zabbix_api_port }}' # if no port specified?
+    ansible_httpapi_port: '{{ zabbix_api_port }}'
     ansible_user: '{{ zabbix_api_user if zabbix_api_token is not defined else omit }}'
     ansible_httpapi_pass: '{{ zabbix_api_password if zabbix_api_token is not defined else omit }}'
     ansible_httpapi_use_ssl: '{{ zabbix_api_use_ssl | default("False") }}'
