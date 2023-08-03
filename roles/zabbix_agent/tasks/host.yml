@@ -1,6 +1,6 @@
 - name: 'Zabbix API block'
   when: run_host_tasks is defined and run_host_tasks or "host" in ansible_run_tags
-  throttle: 1
+  # throttle: 1
   delegate_to: '{{ zabbix_api_host }}'
   vars:
     ansible_connection: httpapi
