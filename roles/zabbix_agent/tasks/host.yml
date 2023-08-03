@@ -1,5 +1,8 @@
 - name: 'Zabbix API block'
-  when: run_host_tasks is defined and run_host_tasks or "host" in ansible_run_tags
+  when: >-
+    "host" in ansible_run_tags
+    or "remove" in ansible_run_tags
+    or run_host_tasks is defined and run_host_tasks
   # throttle: 1
   delegate_to: '{{ zabbix_api_host }}'
   vars:

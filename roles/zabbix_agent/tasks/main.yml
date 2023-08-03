@@ -425,4 +425,4 @@
   when: >-
     "host" in ansible_run_tags
     or run_host_tasks is defined and run_host_tasks
-  tags: [host, remove]
+  tags: [host]
