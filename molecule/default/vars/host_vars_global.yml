@@ -1,0 +1,7 @@
+---
+run_host_tasks: false
+############################################################################################################################################
+# zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
+zabbix_host_templates: ["Linux by Zabbix agent active"]
+zabbix_host_host_name: '{{ inventory_hostname }}'
+zabbix_host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'

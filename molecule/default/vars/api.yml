@@ -1,14 +1,7 @@
 ---
 ############################################################################################################################################
-run_host_tasks: false
-############################################################################################################################################
 zabbix_api_host: localhost
 zabbix_api_port: 8060
 zabbix_api_user: Admin
 zabbix_api_password: zabbix
-# zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
-############################################################################################################################################
-# zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
-zabbix_host_templates: ["Linux by Zabbix agent active"]
-zabbix_host_host_name: '{{ inventory_hostname }}'
-zabbix_host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'
+# zabbix_api_token:05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7

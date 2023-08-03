@@ -1,9 +1,7 @@
 ---
-
-- name: Import task vars
+- name: Converge
   hosts: all
-  gather_facts: false
-  tasks:
+  pre_tasks:
     - name: Include all from vars folder
       ansible.builtin.include_vars:
         dir: vars
@@ -11,16 +9,6 @@
         extensions:
           - 'yaml'
           - 'yml'
-
-# - name: Show vars
-#   hosts: all
-#   gather_facts: false
-#   tasks:
-#     - name: DEBUG
-#       ansible.builtin.debug:
-#         var: zabbix_api_port
-
-- name: Converge
-  hosts: all
+      tags: [always]
   roles:
     - role: zabbix_agent
