@@ -1,9 +1,29 @@
+- name: 'Prepare hostgroups block'
+  when: >-
+    "host" in ansible_run_tags
+    or run_host_tasks is defined and run_host_tasks
+  delegate_to: 'localhost'
+  tags: [host]
+  block:
+    - name: 'SET FACT : Populate "hostvars" magic variable with zabbix_host_hostgroups'
+      ansible.builtin.set_fact:
+        zabbix_host_hostgroups: '{{ zabbix_host_hostgroups }}'
+    - name: 'SET FACT : prepare list of hostgroups'
+      when: >-
+        "remove" not in ansible_run_tags
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.set_fact:
+        full_hostgroup_list: '{{
+            ((full_hostgroup_list | default([])) + hostvars[item]["zabbix_host_hostgroups"]) | unique
+          }}'
+      loop: '{{ ansible_play_hosts }}'
+
 - name: 'Zabbix API block'
   when: >-
     "host" in ansible_run_tags
     or "remove" in ansible_run_tags
     or run_host_tasks is defined and run_host_tasks
-  # throttle: 1
   delegate_to: '{{ zabbix_api_host }}'
   vars:
     ansible_connection: httpapi
@@ -18,8 +38,10 @@
     - name: 'Zabbix API : Hostgroup presence'
       when: >-
         "remove" not in ansible_run_tags
+      run_once: true
+      delegate_to: localhost
       zabbix.zabbix.zabbix_hostgroup:
-        name: '{{ zabbix_host_hostgroups }}'
+        name: '{{ full_hostgroup_list }}'
         state: present
     - name: 'Zabbix API : Host presence'
       zabbix.zabbix.zabbix_host:
