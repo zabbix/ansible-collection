@@ -1146,6 +1146,196 @@ keyed_groups:
     separator: ""
 ```
 
+### Example 11
+For search by tag 'Location' and grouping by tag values.
+In this example hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
+than the following groups will be created: Ring, Berlin.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search by tag name
+filter:
+  tags:
+    - tag: Location
+
+# Add query for select tags from hosts. This parameters will be used for grouping.
+query:
+  selectTags: 'extend'
+
+# Grouping with keyed_group.
+# As key for grouping will be used Jijna pattern. As result we will have groups tag values in Zabbix.
+keyed_groups:
+  - key: dict(zabbix_tags | items2dict(key_name="tag"))['Location']
+    separator: ""
+```
+
+### Example 12
+For transform given interfaces to list of ip addresses you can use 'compose' and following example.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search
+filter:
+  hostgroups: 'Linux*'
+
+# Add query for select interfaces from hosts. This parameters will be used for compose.
+query:
+  selectInterfaces: ['ip']
+
+# Add compose for transformation Zabbix interfaces to list
+compose:
+  zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
+```
+
+### Example 13
+For transform given host groups to list you can use 'compose' and following example.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search
+filter:
+  hostgroups: 'Linux*'
+
+# Add query for select hostgroups from hosts. This parameters will be used for compose.
+query:
+  selectGroups: ['name']
+
+# Add compose for transformation Zabbix host groups to list
+compose:
+  zabbix_groups_list: zabbix_groups | map(attribute='name')
+```
+
+### Example 14
+You can use cache for inventory.
+During load cached data plugin compare input parameters. If any parameters, that impacts to given data were changed,
+(login, password, API token, url, output, filter, query) than cached data will be skipped and new data will be requested from Zabbix.
+For use caching you can use following example:
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search
+filter:
+  hostgroups: 'Linux*'
+
+# Add caching options
+cache: yes
+cache_plugin: jsonfile
+cache_timeout: 7200
+cache_connection: /tmp/zabbix_inventory
+```
+
+### Complex examples
+
+### Example 15
+In this example you can use filter by host groups, templates, proxy, tags, names, status.
+Grouping by Zabbix host groups.
+Transform ip addresses to list of ip.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search
+filter:
+  hostgroups: ['Linux', 'Linux servers']
+  templates: ['*HTTP*', '*agent*']
+  name: ['*sql*', '*SQL*']
+  host: ['*sql*', '*SQL*']
+  proxy: ['Riga*']
+  status: enabled
+  tags_behavior: 'and/or'
+  tags:
+    - tag: scope
+    - tag: Location
+      value: Riga
+      operator: equals
+
+# Add query for host groups and interfaces
+query:
+  selectGroups: ['name']
+  selectInterfaces: ['ip']
+
+# Add output
+output:
+  - name
+
+# Add post processing. Converting zabbix_interfaces to list of interfaces and creating groups, based on zabbix host groups.
+compose:
+  zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
+keyed_groups:
+  - key: zabbix_groups | map(attribute='name')
+    separator: ""
+```
+
+### Example 16
+In this example you can filter by tag 'Location' with empty value and grouping by status (enabled, disabled).
+In this example status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add condition for search
+filter:
+  tags:
+    - tag: Location
+      value: ''
+      operator: equals
+
+# Add query for host groups and interfaces
+query:
+  selectTags: 'extend'
+
+# Add output
+output:
+  - name
+
+# Add post processing
+keyed_groups:
+  - key: zabbix_verbose_status
+    separator: ""
+compose:
+  zabbix_verbose_status: zabbix_status.replace("1", "Disabled").replace("0", "Enabled")
+```
+
 License
 -------
 
