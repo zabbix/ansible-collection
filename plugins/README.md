@@ -976,8 +976,10 @@ filter:
 
 ### Example 5
 You can use all available filter options for search hosts in Zabbix.
-You can use wildcard search for: hostgroups, templates, proxy, name (visible name), host (technical name). Also you can use for filtering 'status' and search only enabled or disabled hosts. Also you can use tags for searching by tag name or tag value.
-In this example will be given all hosts, that are linked to the host groups 'Linux' and linked to any `'*http*'` or `'*agent*'` templates and visible name contains `sql` or `SQL`.
+You can use wildcard search for: hostgroups, templates, proxy, name (visible name), host (technical name).
+Also you can use for filtering `status` and search only enabled or disabled hosts. 
+Also you can use tags for searching by tag name or tag value.
+In this example will be given all hosts, that are linked to the host groups `Linux` and linked to any `'*http*'` or `'*agent*'` templates and visible name contains `sql` or `SQL`.
 
 ```yaml
 ---
@@ -1147,9 +1149,9 @@ keyed_groups:
 ```
 
 ### Example 11
-For search by tag 'Location' and grouping by tag values.
+For search by tag `Location` and grouping by tag values.
 In this example hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
-than the following groups will be created: Ring, Berlin.
+than the following groups will be created: Riga, Berlin.
 
 ```yaml
 ---
@@ -1177,7 +1179,7 @@ keyed_groups:
 ```
 
 ### Example 12
-For transform given interfaces to list of ip addresses you can use 'compose' and following example.
+For transform given interfaces to list of ip addresses you can use `compose` and following example.
 
 ```yaml
 ---
@@ -1188,7 +1190,7 @@ zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search
+# Add condition for search by host groups
 filter:
   hostgroups: 'Linux*'
 
@@ -1196,7 +1198,7 @@ filter:
 query:
   selectInterfaces: ['ip']
 
-# Add compose for transformation Zabbix interfaces to list
+# Add compose for transformation Zabbix interfaces to list of ip addresses
 compose:
   zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
 ```
@@ -1213,7 +1215,7 @@ zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search
+# Add condition for search by host groups
 filter:
   hostgroups: 'Linux*'
 
@@ -1221,7 +1223,7 @@ filter:
 query:
   selectGroups: ['name']
 
-# Add compose for transformation Zabbix host groups to list
+# Add compose for transformation Zabbix host groups to list of host groups
 compose:
   zabbix_groups_list: zabbix_groups | map(attribute='name')
 ```
@@ -1241,7 +1243,7 @@ zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search
+# Add condition for search by host groups
 filter:
   hostgroups: 'Linux*'
 
@@ -1301,8 +1303,8 @@ keyed_groups:
 ```
 
 ### Example 16
-In this example you can filter by tag 'Location' with empty value and grouping by status (enabled, disabled).
-In this example status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
+In this example you can filter by tag `Location` with empty value and grouping by status (enabled, disabled).
+In this example status was transformed from digit value to verbose value and than used in `keyed_groups` for grouping by verbose statuses.
 
 ```yaml
 ---
@@ -1320,7 +1322,7 @@ filter:
       value: ''
       operator: equals
 
-# Add query for host groups and interfaces
+# Add query for tags
 query:
   selectTags: 'extend'
 

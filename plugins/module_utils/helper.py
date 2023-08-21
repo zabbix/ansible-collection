@@ -233,6 +233,8 @@ snmp_parameters = {
                      'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']}
 }
 
+# Dictionary for tag operator parameters
+# See also https://www.zabbix.com/documentation/current/manual/api/reference/host/get
 tags_compare_operators = {
     'contains': '0',
     'equals': '1',
@@ -242,6 +244,8 @@ tags_compare_operators = {
     'not exists': '5'
 }
 
+# All available query
+# See also https://www.zabbix.com/documentation/current/manual/api/reference/host/get
 host_subquery = [
     "selectDiscoveries", "selectDiscoveryRule", "selectGraphs", "selectHostDiscovery",
     "selectHostGroups", "selectHttpTests", "selectInterfaces", "selectInventory",
