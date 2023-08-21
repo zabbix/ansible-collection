@@ -232,3 +232,18 @@ snmp_parameters = {
         'authPriv': ['version', 'bulk', 'contextname', 'securityname', 'securitylevel',
                      'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']}
 }
+
+tags_compare_operators = {
+    'contains': '0',
+    'equals': '1',
+    'not like': '2',
+    'not equal': '3',
+    'exists': '4',
+    'not exists': '5'
+}
+
+host_subquery = [
+    "selectDiscoveries", "selectDiscoveryRule", "selectGraphs", "selectHostDiscovery",
+    "selectHostGroups", "selectHttpTests", "selectInterfaces", "selectInventory",
+    "selectItems", "selectMacros", "selectParentTemplates", "selectDashboards",
+    "selectTags", "selectInheritedTags", "selectTriggers", "selectValueMaps", "selectGroups"]
