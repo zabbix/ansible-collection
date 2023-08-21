@@ -1,0 +1,32 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Query for tags
+query:
+  selectTags: extend
+  selectInterfaces: ['ip']
+
+# Filtering by host group names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group *'
+
+# keyed_groups by tag value and by templates
+keyed_groups:
+  - key: zabbix_tags | map(attribute='value')
+    separator: ""
+
+# Composing by host groups, status and interfaces
+compose:
+  zabbix_verbose_status: zabbix_status.replace("1", "Disabled").replace("0", "Enabled")
+  zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
+
+# groups by status
+groups:
+  enabled: zabbix_status == "0"
+  disabled: zabbix_status == "1"

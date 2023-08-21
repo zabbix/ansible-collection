@@ -1,0 +1,24 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Filtering by host group names, templates, tags, status, visible and technical names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group 1'
+  templates:
+    - 'Zabbix agent active'
+  TAGS:
+    - TAG: integration test
+      value: host 1
+      operator: equals
+  status: enabled
+  name: 'Integration test*'
+  host: 'Integration test*'
+
+# Add output fields
+output: extend

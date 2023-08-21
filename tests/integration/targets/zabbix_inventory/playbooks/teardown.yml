@@ -1,0 +1,27 @@
+---
+- name: Clear hosts and groups
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    - name: Delete host 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: Integration test host 1
+
+    - name: Delete host 'Integration test host 2'
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: Integration test host 2
+
+    - name: Delete host groups
+      zabbix.zabbix.zabbix_hostgroup:
+        state: absent
+        hostgroups:
+          - Integration test group 1
+          - Integration test group 2

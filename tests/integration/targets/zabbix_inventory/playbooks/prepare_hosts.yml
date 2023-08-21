@@ -1,0 +1,52 @@
+---
+- name: Add hosts
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    - name: Create host hostgroups for testing
+      zabbix.zabbix.zabbix_hostgroup:
+        state: present
+        hostgroups:
+          - Integration test group 1
+          - Integration test group 2
+
+    - name: Create host 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        hostgroups:
+          - Integration test group 1
+        templates:
+          - Zabbix agent active
+        status: enabled
+        name: Integration test host 1 (visible)
+        tags:
+          - tag: integration test
+            value: host 1
+        macros:
+          - macro: TEST_MACRO
+            value: example
+            description: Description of example macros
+            type: text
+        interfaces:
+          - type: agent
+
+    - name: Create host 'Integration test host 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        hostgroups:
+          - Integration test group 2
+        templates:
+          - Zabbix agent active
+        status: disabled
+        name: Integration test host 2 (visible)
+        tags:
+          - tag: integration test
+            value: host 2

@@ -1,0 +1,136 @@
+---
+- name: Check basic inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    - name: Assert status is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_status'] == '0'
+          - vars.hostvars['Integration test host 2']['zabbix_test_status'] == '1'
+
+    # Host parameter always must be present
+    - name: Assert host name is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_host'] == 'Integration test host 1'
+          - vars.hostvars['Integration test host 2']['zabbix_test_host'] == 'Integration test host 2'
+
+    - name: Assert Discovery is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_hostDiscovery'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_hostDiscovery'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_discoveries'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_discoveries'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_discoveryRule'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_discoveryRule'] is defined
+
+    - name: Assert Graphs is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_graphs'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_graphs'] is defined
+
+    - name: Assert Host Groups is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_hostgroups'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_hostgroups'] is defined
+
+    - name: Assert HTTP Tests is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_httpTests'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_httpTests'] is defined
+
+    - name: Assert InheritedTags is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_inheritedTags'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_inheritedTags'] is defined
+
+    - name: Assert Interfaces is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_interfaces'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_interfaces'] is defined
+
+    - name: Assert Inventory is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_inventory'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_inventory'] is defined
+
+    - name: Assert Items is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_items'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_items'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_items'] | length == 4
+          - vars.hostvars['Integration test host 2']['zabbix_test_items'] | length == 4
+
+    - name: Assert Macros is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_macros'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_macros'] is defined
+
+    - name: Assert Templates is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_parentTemplates'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_parentTemplates'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_parentTemplates'] | length == 1
+          - vars.hostvars['Integration test host 2']['zabbix_test_parentTemplates'] | length == 1
+
+    - name: Assert Tags is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_tags'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_tags'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_tags'] | length == 1
+          - vars.hostvars['Integration test host 2']['zabbix_test_tags'] | length == 1
+
+    - name: Assert Triggers is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_triggers'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_triggers'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_triggers'] | length == 2
+          - vars.hostvars['Integration test host 2']['zabbix_test_triggers'] | length == 2
+
+    - name: Assert Value Maps is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_valuemaps'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_test_valuemaps'] is defined
+
+    # Change status for Integration test host 2
+    - name: Change status for 'Integration test host 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        status: enabled
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that inventory plugin gets new data after updating in Zabbix
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_status'] == '0'
+          - vars.hostvars['Integration test host 2']['zabbix_test_status'] == '0'
+
+    # Change status for Integration test host 2 back
+    - name: Change status for 'Integration test host 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        status: disabled
