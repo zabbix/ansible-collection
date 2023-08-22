@@ -418,6 +418,8 @@
 
 - name: 'Include : verify steps'
   ansible.builtin.include_tasks: 'verify.yml'
+  when: >-
+    "remove" not in ansible_run_tags
   tags: [never, verify]
 
 - name: 'Include : host tasks'
