@@ -65,3 +65,12 @@ Running roles through multiple test scenarios:
 molecule test --all
 molecule test -s agent2 -s agent2_cert -s agent2_psk
 
+-------------------------------------------------------------------------------
+Use different platforms preset
+-------------------------------------------------------------------------------
+molecue test -c ".config/molecule/config.full.yml"
+
+-------------------------------------------------------------------------------
+Converge example for host module checks
+-------------------------------------------------------------------------------
+molecule converge -s agent2_cert -- -t all,host -e "param_serveractive=host.containers.internal:17051 zabbix_api_host=192.168.13.90 zabbix_api_port=8070 zabbix_host_templates=[\"Linux by Zabbix agent active\"]"
