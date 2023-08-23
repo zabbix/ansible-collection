@@ -1,3 +1,4 @@
+### Compone list of unique hostgroup names from all hosts, that reached this taks without failures.
 - name: 'Prepare hostgroups block'
   when: >-
     "host" in ansible_run_tags
@@ -19,6 +20,7 @@
           }}'
       loop: '{{ ansible_play_hosts }}'
 
+### Add hostgroups and manage hosts using Zabbix API
 - name: 'Zabbix API block'
   when: >-
     "host" in ansible_run_tags

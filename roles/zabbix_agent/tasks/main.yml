@@ -297,6 +297,13 @@
       - '{{ agent.file_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
+## To consider: Extract subject and issuer from host certificates
+# requires openssl installation on controller
+#  openssl x509 -in agent.crt -noout -subject -issuer
+#   when: >-
+#     "host" in ansible_run_tags
+#     and cert_extract
+
 - name: 'Upload : TLS Certificates'
   when: >-
     (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
