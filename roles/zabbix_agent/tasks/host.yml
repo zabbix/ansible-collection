@@ -40,6 +40,7 @@
     - name: 'Zabbix API : Hostgroup presence'
       when: >-
         "remove" not in ansible_run_tags
+        and zabbix_host_state == "present"
       run_once: true
       delegate_to: localhost
       zabbix.zabbix.zabbix_hostgroup:
