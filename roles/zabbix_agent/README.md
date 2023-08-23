@@ -41,6 +41,9 @@ Table of contents
         * [MySQL plugin parameters](#zabbix-agent2-mysql-plugin-parameters)
         * [Redis plugin parameters](#zabbix-agent2-redis-plugin-parameters)
         * [Smart plugin parameters](#zabbix-agent2-smart-plugin-parameters)
+    * [Zabbix host via Zabbix API](#zabbix-host-via-zabbix-api)
+      * [API connection parameters](#api-connection-parameters)
+      * [Zabbix host configuration parameters](#zabbix-host-configuration-parameters)
   * [Hints & Tags](#hints--tags)
   * [Example playbooks](#example-playbooks)
     * [Playbook 1: Latest LTS Zabbix agentd deploy for active checks only](#playbook-1)
@@ -419,6 +422,67 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
 | param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 
+
+Zabbix host via Zabbix API
+-----
+Register agents with passive data collection only, using Zabbix API within the same role.
+To make it work, just fill Zabbix API connection parameters and pass additional [tag "host"](#hints--tags) to playbook execution.
+
+### API connection parameters
+
+| Variable | Type | Default | Description |
+|--|--|--|--|
+| zabbix_api_host | `string` | `localhost` | Hostname or IP Address of Zabbix Frontend (Zabbix API). Controller will use it to initiate connection.
+| zabbix_api_url | `string` | `''` | Path to access Zabbix Frontend (Zabbix API). Specify only if Zabbix Frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<zabbix_api_host>/<zabbix_api_url>`.
+| zabbix_api_port | `int` | `80` | Port which Zabbix Frontend listens.
+| zabbix_api_token | `string` | | Zabbix API access token.
+| zabbix_api_user | `string` | `Admin` | Zabbix API user name. Ignored if token is provided instead.
+| zabbix_api_password | `string` | `zabbix` | Zabbix API user password. Ignored if token is provided instead.
+| zabbix_api_use_ssl | `boolean` | `False` | Set to `True` for secure connection.
+| zabbix_api_validate_certs | `boolean` | `False` | Set to `True` to validate certifacats during SSL handshake.
+
+### Zabbix host configuration parameters
+
+| Variable | Type | Default | Description |
+|--|--|--|--|
+| zabbix_host_state  | `string` | `present` | Default value ensures presence of the host in Zabbix.
+| zabbix_host_host_name | `string` | `{{ inventory_hostname }}` | Unique name of the host.
+| zabbix_host_visible_name | `string` || Unique visible name of the host.
+| zabbix_host_description | `string` | `Managed by Ansible. Added with "zabbix_host" module.` | Describe instance.
+| zabbix_host_hostgroups | `list` | `{{ group_names }}` | List of hostgroup names assigned to the host. At least one hostgroup needed. By default uses list of groups host is assigned in Ansible inventory.
+| zabbix_host_templates | `list` | `[]` | List of template names, that should be attached to the host.
+| zabbix_host_interfaces | `list` | [↓](#zabbix-host-interfaces-default) | Holds a list of dictionaries. Each dictionary describes an [interface](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters), attached to the host. Only one interface of each type is supported. Look [below](#zabbix-host-interfaces-default) for default description.
+| zabbix_host_tags | `list` | `[{"tag": "managed"}]` | Accepts host level tags in a list of dictionaries format.
+| zabbix_host_macros | `list` || Accepts macroses in a list of dictionaries format.
+| zabbix_host_inventory_mode | `string` || Host [inventory population mode](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_status | `string` | `enabled` | The host status. Available values: `enabled` or `disabled`.
+| zabbix_host_proxy | `string` | `{{ group_names \| select("match", "^zabbix_proxy.*") \| first \| default(None) }}` | Assign proxy to the host. Default value filters groups of the host from Ansible inventory and checks for regex match. If group is matched its name will be assigned as the host proxy. Note that proxy with same name should exist in setup.
+| zabbix_host_tls_accept | `list` | `{{ param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) if needed.
+| zabbix_host_tls_connect | `string` | `{{ param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override, if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) for **passive checks**.
+| zabbix_host_tls_psk_identity | `string` | `{{ param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
+| zabbix_host_tls_psk_value | `string` | `{{ zabbix_agent_psk_value }}` | By default, sets the same key, that was used in Zabbix agent deploy.
+| zabbix_host_tls_issuer | `string` || Set issuer of Zabbix agent certificate for TLS connection.
+| zabbix_host_tls_subject | `string` || Set subject of Zabbix agent certificate for TLS connection.
+|--|
+| zabbix_host_ipmi_authtype | `string` || Set IPMI [authentication type](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_ipmi_privilege | `string` || Set IPMI [privelege level](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_ipmi_username | `string` || Set IPMI user name.
+| zabbix_host_ipmi_password | `string` || Set IPMI password.
+
+#### Zabbix host interfaces default
+
+Default value describes interface of Zabbix agent type. If `ansible_host` is filled with IP address, then host will use IP field for connection.
+
+    zabbix_host_interfaces:
+      - type: agent
+        ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
+        dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
+        useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
+        port: '{{ param_listenport }}'
+
+[More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+
 Hints & Tags
 -----
 
@@ -442,6 +506,15 @@ Hints & Tags
   - Runtime command to reload userparameters.
 
         ansible-playbook -i inventory play.yml -t userparam
+
+- By default host module(Zabbix hosts management via API) is turned off. To enable it, set `run_host_tasks` variable to `True` or pass additional tag to playbook execution. Usefull tags combinations:
+  - To deploy Zabbix agent and add hosts to Zabbix use next combo:
+
+        ansible-playbook -i inventory play.yml -t all,host
+
+  - To remove hosts from Zabbix and uninstall Zabbix agents use tags `remove` and `host`:
+
+        ansible-playbook -i inventory play.yml -t remove,host
 
 
 Example Playbooks
