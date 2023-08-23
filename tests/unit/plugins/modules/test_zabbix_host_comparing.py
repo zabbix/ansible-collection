@@ -16,7 +16,7 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
@@ -161,7 +161,7 @@ class TestGroups(TestModules):
         4. Change one group.
         5. Change all groups.
 
-        Expected result: all test cases ran successfully..
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -263,7 +263,7 @@ class TestTemplates(TestModules):
         1. Templates are equals.
         2. New template to add.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -318,7 +318,7 @@ class TestTemplates(TestModules):
         2. Change one template.
         3. Change all templates.
 
-        Expected result: all test cases ran successfully..
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -402,11 +402,11 @@ class TestVisibleName(TestModules):
         """
         Testing the visible name parameter.
         Test cases:
-        1. visible names are equals.
+        1. Visible names are equals.
         2. New visible name.
         3. Empty visible name. Must be technical name.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -459,12 +459,12 @@ class TestTags(TestModules):
         Test cases:
         1. Tags are equals.
         2. New tag.
-        3. New tag in case empty tags on host.
+        3. New tag in case of empty tags on host.
         4. Remove one tag.
         5. Remove all tags.
-        6. Change one tag to other
+        6. Change one tag to other.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -568,7 +568,7 @@ class TestTags(TestModules):
         2. Clear value.
         3. Change name.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -628,12 +628,12 @@ class TestMacros(TestModules):
         Test cases:
         1. Macros are equals.
         2. New macro.
-        3. New macro in case empty macros on host.
+        3. New macro in case of empty macros on host.
         4. Remove one macro.
-        5. Remove all macro.
+        5. Remove all macros.
         6. Change one macro to other.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -799,9 +799,9 @@ class TestMacros(TestModules):
         3. Change description.
         4. Clear value.
         5. Clear description.
-        6. Change value in case secret macros (exist macro value is empty).
+        6. Change value in case of secret macros (existing macro value is empty).
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -937,10 +937,10 @@ class TestInterfaces(TestModules):
         """
         Testing the interface count on existing hosts.
         Test cases:
-        1. One interface exist.
+        1. One interface exists.
         2. One interface of each type exist.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -983,11 +983,11 @@ class TestInterfaces(TestModules):
         Testing the interface count in case of several interfaces of some
         type.
         Test cases:
-        1. Two agent interface exist.
-        2. Two snmp interface exist.
-        3. Two ipmi interface exist.
-        4. Two jmx interface exist.
-        5. One agent and two jmx interfaces exist.
+        1. Two agent interfaces exist.
+        2. Two SNMP interfaces exist.
+        3. Two IPMI interfaces exist.
+        4. Two JMX interfaces exist.
+        5. One agent and two JMX interfaces exist.
 
         Expected result: an exception with an error message.
         """
@@ -1058,7 +1058,7 @@ class TestInterfaces(TestModules):
                         case['new'])
                 self.assertTrue(ansible_result.exception.args[0]['failed'])
                 self.assertIn(
-                    'Module supports only 1 interface per each type. Please resolve conflict manually.',
+                    'Module supports only 1 interface of each type. Please resolve conflict manually.',
                     ansible_result.exception.args[0]['msg'])
 
     def test_interface(self):
@@ -1066,14 +1066,14 @@ class TestInterfaces(TestModules):
         Testing operations with interfaces.
         Test cases:
         1. Add new interface.
-        2. Add another one interface.
-        3. Change one interface in case of existing one.
-        4. Change one interface in case of existing both interfaces.
-        5. Delete one interface in case existing two interfaces.
+        2. Add another interface.
+        3. Change one interface when one interface exists.
+        4. Change one interface when two interfaces exist.
+        5. Delete one interface when two interfaces exist.
         6. Clear all interfaces.
 
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {
@@ -1226,16 +1226,16 @@ class TestInterfaces(TestModules):
 
     def test_interface_snmp(self):
         """
-        Testing operations with snmp interfaces.
+        Testing operations with SNMP interfaces.
         Test cases:
         1. Interfaces are equals.
         2. Interfaces are equals but in a different order.
-        3. Add one snmp interface.
-        4. Change parameter of snmp interface.
-        5. Change details of snmp interface.
-        6. Change parameters and details of snmp interfaces.
+        3. Add one SNMP interface.
+        4. Change parameter of SNMP interface.
+        5. Change details of SNMP interface.
+        6. Change parameters and details of SNMP interfaces.
 
-        Expected result: all test cases ran successfully.
+        Expected result: all test cases run successfully.
         """
         test_cases = [
             {

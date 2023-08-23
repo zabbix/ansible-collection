@@ -16,7 +16,7 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
@@ -26,7 +26,7 @@ class TestCheckElements(TestModules):
 
     def test_check_elements(self):
         """
-        Testing the function of checking the presence of the required elements
+        Testing the function of checking the presence of required elements
         in the resulting list.
 
         Expected result: all executions of the function return True.
@@ -50,7 +50,7 @@ class TestCheckElements(TestModules):
 
     def test_check_elements_error(self):
         """
-        Testing the function of checking the presence of the required
+        Testing the function of checking the presence of required
         elements in the received list in case any elements are not present in
         the received list.
 

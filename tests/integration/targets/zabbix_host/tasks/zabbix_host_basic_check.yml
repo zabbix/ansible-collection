@@ -28,7 +28,7 @@
         that: zabbix_host_create_empty_2 is failed
 
     # Check the required parameter 'hostgroup'
-    - name: Test - Creating host wo hostgroups
+    - name: Test - Creating host wo host groups
       zabbix.zabbix.zabbix_host:
         state: present
         host: zabbix_test_host
@@ -41,7 +41,7 @@
           - zabbix_host_create_wo_hostgroups is failed
           - "'Required parameter not found: hostgroups' in zabbix_host_create_wo_hostgroups.msg"
 
-    - name: Test - Creating host with hostgroups
+    - name: Test - Creating host with host groups
       zabbix.zabbix.zabbix_host:
         state: present
         host: zabbix_test_host
@@ -56,7 +56,7 @@
           - "'Successfully created host: zabbix_test_host' == zabbix_host_create.result"
 
     # Check idempotence
-    - name: Test - Creating host with 'state' by default and same parameters
+    - name: Test - Creating host with default 'state' and the same parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         hostgroups:
@@ -68,31 +68,31 @@
         that: zabbix_host_create_again is not changed
 
     # Check updating
-    - name: Test - Updating host with hostgroup parameters
+    - name: Test - Updating host with host group parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         hostgroups:
           - Discovered hosts
       register: zabbix_host_update_hostgroup
 
-    - name: Assert that host was updated and changed group
+    - name: Assert that host was updated and group changed
       ansible.builtin.assert:
         that: zabbix_host_update_hostgroup is changed
 
-    - name: Test - Updating host with only template parameter
+    - name: Test - Updating host with 'template' parameter only
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         templates:
           - Zabbix agent active
       register: zabbix_host_update_templates
 
-    - name: Assert that host was updated and added template
+    - name: Assert that host was updated and template added
       ansible.builtin.assert:
         that: zabbix_host_update_templates is changed
 
     # We check that the parameters are independent of each other when updated.
-    # And changing one parameter does not affect the others.
-    - name: Test - Updating host with same hostgroup and template
+    # Changing one parameter does not affect the others.
+    - name: Test - Updating host with the same host group and template
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         hostgroups:
@@ -101,12 +101,12 @@
           - Zabbix agent active
       register: zabbix_host_update_hostgroup_and_template
 
-    - name: Assert that hostgroup and template no need to update
+    - name: Assert that the host group and template do not need to be updated
       ansible.builtin.assert:
         that:
           - zabbix_host_update_hostgroup_and_template is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_update_hostgroup_and_template.result"
-        fail_msg: The hostgroup or template has been modified but should not.
+        fail_msg: The host group or template has been modified, but it should not.
 
 - name: Check deleting
   block:
@@ -147,7 +147,7 @@
           - "'Successfully delete host: zabbix_test_host' == zabbix_host_delete.result"
 
     # Check idempotence
-    - name: Test - Deleting non exist host
+    - name: Test - Deleting non-existing host
       zabbix.zabbix.zabbix_host:
         state: absent
         host: zabbix_test_host
@@ -192,7 +192,7 @@
         macros:
           - macro: TEST_MACRO
             value: example
-            description: Description of example macros
+            description: Description of macro example
             type: text
           - macro: TEST_MACRO_2
           - macro: TEST_MACRO_3
@@ -272,7 +272,7 @@
         macros:
           - macro: TEST_MACRO
             value: example
-            description: Description of example macros
+            description: Description of macro example
             type: text
           - macro: TEST_MACRO_2
           - macro: TEST_MACRO_3

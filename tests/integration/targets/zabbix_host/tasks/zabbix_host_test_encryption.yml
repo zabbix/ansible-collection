@@ -2,7 +2,7 @@
 - name: Check basic tls_accept encryption parameters
   block:
     # Check tls_accept and str parameters
-    - name: Test - Creating encryption from str of parameter
+    - name: Test - Creating encryption from str of parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_accept: cert
@@ -70,7 +70,7 @@
 - name: Check basic tls_connect encryption parameters
   block:
     # Check tls_connect and str parameters
-    - name: Test - Creating encryption from str of parameter
+    - name: Test - Creating encryption from str of parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: cert
@@ -97,7 +97,7 @@
         that: zabbix_host_encryption_tls_connect_list_check is failed
 
     # Check tls_connect and empty str parameters
-    - name: Test - Creating encryption from empty list of parameters
+    - name: Test - Creating encryption from empty str parameter
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: ''
@@ -207,10 +207,10 @@
   ansible.builtin.set_fact:
     zabbix_psk_value: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=64") | lower }}'
 
-- name: Check psk parameters
+- name: Check PSK parameters
   block:
-    # Check psk encryption without tls_psk and tls_psk_identity
-    - name: Test - Creating encryption with psk without tls_psk and tls_psk_identity
+    # Check PSK encryption without tls_psk and tls_psk_identity
+    - name: Test - Creating encryption with PSK without tls_psk and tls_psk_identity
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk
@@ -222,9 +222,9 @@
       ansible.builtin.assert:
         that:
           - zabbix_host_encryption_psk_check_wo_params is failed
-          - "'Missing tls psk params' in zabbix_host_encryption_psk_check_wo_params.msg"
+          - "'Missing TLS PSK params' in zabbix_host_encryption_psk_check_wo_params.msg"
 
-    - name: Test - Creating encryption with psk with tls_psk
+    - name: Test - Creating encryption with PSK with tls_psk
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk
@@ -239,7 +239,7 @@
           - zabbix_host_encryption_psk_check_w_tls_psk is failed
           - "'parameters are required together' in zabbix_host_encryption_psk_check_w_tls_psk.msg"
 
-    - name: Test - Creating encryption with psk with tls_psk_identity
+    - name: Test - Creating encryption with PSK with tls_psk_identity
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk
@@ -254,7 +254,7 @@
           - zabbix_host_encryption_psk_check_w_tls_psk_identity is failed
           - "'parameters are required together' in zabbix_host_encryption_psk_check_w_tls_psk_identity.msg"
 
-    - name: Test - Creating encryption with psk with tls_psk and tls_psk_identity
+    - name: Test - Creating encryption with PSK with tls_psk and tls_psk_identity
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk
@@ -269,11 +269,11 @@
           - zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_w_tls_psk_and_tls_psk_identity.result"
 
-    # check idempotence violation
+    # Check idempotence violation
     # We specify the same parameters as in the previous task.
     # The parameters will be updated again, since Zabbix GUI does not have access
-    # to the psk keys and we cannot compare the current key with the given one.
-    # Each task with psk keys will updated.
+    # to PSK keys and we cannot compare the current key with the given one.
+    # Each task with PSK keys will be updated.
     - name: Test - Set tls_psk and tls_psk_identity
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -287,9 +287,9 @@
           - zabbix_host_encryption_tls_psk_and_tls_psk_identity is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_tls_psk_and_tls_psk_identity.result"
 
-    # Check that we can work with psk encryption without the obligatory specification
-    # of psk keys, if the host already has psk encryption and, accordingly, there is a psk key.
-    - name: Test - Creating encryption with psk without tls_psk and tls_psk_identity
+    # Check that we can work with PSK encryption without the obligatory specification
+    # of PSK keys, if the host already has PSK encryption and, accordingly, there is a PSK key.
+    - name: Test - Creating encryption with PSK without tls_psk and tls_psk_identity
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: cert
@@ -315,8 +315,8 @@
           - zabbix_host_encryption_psk_check_wo_params is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_psk_check_wo_params.result"
 
-    # Clean psk encryption
-    - name: Test - Clean psk encryption
+    # Clean PSK encryption
+    - name: Test - Clean PSK encryption
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: cert
@@ -329,8 +329,8 @@
           - zabbix_host_encryption_clean_psk is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_encryption_clean_psk.result"
 
-    # Try to add psk without keys
-    - name: Test - Add psk without keys
+    # Try to add PSK without keys
+    - name: Test - Add PSK without keys
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk
@@ -341,9 +341,9 @@
       ansible.builtin.assert:
         that:
           - zabbix_host_encryption_psk_wo_keys is failed
-          - "'Missing tls psk params' in zabbix_host_encryption_psk_wo_keys.msg"
+          - "'Missing TLS PSK params' in zabbix_host_encryption_psk_wo_keys.msg"
 
-    - name: Test - Add psk with keys
+    - name: Test - Add PSK with keys
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tls_connect: psk

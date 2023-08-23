@@ -16,20 +16,20 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. For this module,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
 
 class TestCreating(TestModules):
-    """Class for testing the create of hostgroups"""
+    """Class for testing the creation of host groups"""
     module = zabbix_hostgroup
 
     def test_create_one_hostgroup(self):
         """
-        Testing the creation of one hostgroup.
+        Testing the creation of one host group.
 
-        Expected result: the task has been changed and the hostgroup
+        Expected result: the task has been changed and the host group
         has been created successfully.
         """
         def mock_send_request(self, method, params):
@@ -51,14 +51,14 @@ class TestCreating(TestModules):
             self.assertTrue(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'Successfully created hostgroup(s): {0}'.format(', '.join(zabbix_hostgroup_name)))
+                'Successfully created host group(s): {0}'.format(', '.join(zabbix_hostgroup_name)))
 
     def test_create_one_exist_hostgroup(self):
         """
-        Testing the creation of a hostgroup in case it has already
+        Testing the creation of a host group in case it has already
         been created.
 
-        Expected result: the task has not been changed and hostgroup
+        Expected result: the task has not been changed and host group
         has not been created.
         """
         def mock_send_request(self, method, params):
@@ -80,14 +80,14 @@ class TestCreating(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'All specified hostgroup(s) already exist')
+                'All specified host groups already exist')
 
     def test_create_two_hostgroup(self):
         """
-        Testing the creation of two hostgroup. The test checks the
-        possibility of passing a list of hostgroups for creation.
+        Testing the creation of two host groups. The test checks the
+        possibility of passing the list of host groups for creation.
 
-        Expected result: the task has been changed and hostgroups
+        Expected result: the task has been changed and host groups
         have been created successfully.
         """
         def mock_send_request(self, method, params):
@@ -115,12 +115,12 @@ class TestCreating(TestModules):
 
     def test_create_two_hostgroup_one_exist(self):
         """
-        Testing the creation of two hostgroup. The test checks the
-        possibility of passing the list of hostgroups for creation
+        Testing the creation of two host groups. The test checks the
+        possibility of passing the list of host groups for creation
         and work if one of the groups has already been created.
 
-        Expected result: the task has been changed and only one hostgroup
-        have been created successfully.
+        Expected result: the task has been changed and only one host group
+        has been created successfully.
         """
         def mock_send_request(self, method, params):
             if method == 'hostgroup.get':
@@ -141,14 +141,14 @@ class TestCreating(TestModules):
             self.assertTrue(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'Successfully created hostgroup(s): {0}'.format('Test group 2'))
+                'Successfully created host group(s): {0}'.format('Test group 2'))
 
     def test_create_empty_hostgroup_list(self):
         """
-        Testing the creation of a hostgroup in case of passing an empty
+        Testing the creation of a host group in case of passing an empty
         list for creation in different ways.
 
-        Expected result: the task has not been changed and hostgroup
+        Expected result: the task has not been changed and host group
         has not been created.
         """
         def mock_send_request(self, method, params):
@@ -171,7 +171,7 @@ class TestCreating(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'All specified hostgroup(s) already exist')
+                'All specified host groups already exist')
 
         # the second way
         zabbix_hostgroup_name = ['   ']
@@ -187,7 +187,7 @@ class TestCreating(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'All specified hostgroup(s) already exist')
+                'All specified host groups already exist')
 
         # the third way
         zabbix_hostgroup_name = ['   ', '']
@@ -203,7 +203,7 @@ class TestCreating(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'All specified hostgroup(s) already exist')
+                'All specified host groups already exist')
 
         # the fourth way
         zabbix_hostgroup_name = ['   ', '', 'Test group']
@@ -219,14 +219,14 @@ class TestCreating(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'All specified hostgroup(s) already exist')
+                'All specified host groups already exist')
 
     def test_failed_to_get_hostgroups(self):
         """
-        Testing the creation of hostgroups in case of an error while
-        querying existing hostgroups in Zabbix.
+        Testing the creation of host groups in case of an error while
+        querying existing host groups in Zabbix.
 
-        Expected result: the task has failed and hostgroup
+        Expected result: the task has failed and host group
         has not been created.
         """
         def mock_send_request(self, method, params):
@@ -247,15 +247,15 @@ class TestCreating(TestModules):
                 self.module.main()
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertIn(
-                'Failed to get existing hostgroup(s):',
+                'Failed to get existing host group(s):',
                 ansible_result.exception.args[0]['msg'])
 
     def test_failed_to_create_hostgroups(self):
         """
-        Testing the creation of hostgroups in case of an error while
-        querying the request to create hostgroups in Zabbix.
+        Testing the creation of host groups in case of an error while
+        querying the request to create host groups in Zabbix.
 
-        Expected result: the task has failed and hostgroup
+        Expected result: the task has failed and host group
         has not been created.
         """
         def mock_send_request(self, method, params):
@@ -276,5 +276,5 @@ class TestCreating(TestModules):
                 self.module.main()
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertIn(
-                'Failed to create hostgroup(s):',
+                'Failed to create host group(s):',
                 ansible_result.exception.args[0]['msg'])

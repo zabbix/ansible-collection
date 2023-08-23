@@ -18,18 +18,18 @@ from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
 
 class TestWOProcessing(TestModules):
-    """Class for testing parameters that do not require pre-processing"""
+    """Class for testing parameters that do not require preprocessing"""
     module = zabbix_host
 
     def test_param_wo_processing(self):
         """
-        Testing parameters that do not require pre-processing.
+        Testing parameters that do not require preprocessing.
 
         Expected result: all parameters will be added in the
         same form as in the input data.
@@ -71,13 +71,13 @@ class TestWOProcessing(TestModules):
 
 
 class TestHostgroups(TestModules):
-    """Class for testing the operation of the module with hostgroups"""
+    """Class for testing the operation of the module with host groups"""
     module = zabbix_host
 
     def test_hostgroups_in_param(self):
         """
-        Testing the processing of the hostgroups parameter.
-        In this case, input parameters must be precessed successful.
+        Testing the processing of the host group parameter.
+        In this case, input parameters must be processed successfully.
 
         Expected result: the resulting data equals the expected result.
         """
@@ -105,8 +105,8 @@ class TestHostgroups(TestModules):
 
     def test_empty_hostgroups(self):
         """
-        Testing the processing with an empty hostgroups parameter.
-        In this case, the hostgroup parameter must not be empty.
+        Testing the processing with an empty host group parameter.
+        In this case, the host group parameter must not be empty.
 
         Expected result: an exception with an error message.
         """
@@ -125,13 +125,13 @@ class TestHostgroups(TestModules):
                 host.generate_zabbix_host()
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertEqual(
-                'Can not remove all hostgroups from a host',
+                'Cannot remove all host groups from a host',
                 ansible_result.exception.args[0]['msg'])
 
     def test_wo_hostgroups_wo_exist_host(self):
         """
-        Testing the processing without the hostgroups parameter
-        for creating a new host. In this case, hostgroups are required.
+        Testing the processing without the host group parameter
+        for creating a new host. In this case, host groups are required.
 
         Expected result: an exception with an error message.
         """
@@ -153,8 +153,8 @@ class TestHostgroups(TestModules):
 
     def test_wo_hostgroups_w_exist_host(self):
         """
-        Testing the processing in case without the hostgroups parameter, but with
-        an existing host. In this case, the hostgroup parameter is not required.
+        Testing the processing of a case without the host group parameter, but with
+        an existing host. In this case, the host group parameter is not required.
 
         Expected result: the resulting data equals the expected result, and in the resulting
         data, only the host parameter is present.
@@ -180,11 +180,11 @@ class TestTemplates(TestModules):
 
     def test_removing_templates(self):
         """
-        Testing the processing of the template parameter.
+        Testing the processing of the templates parameter.
         In this case we can clear template from host.
 
-        Expected result: result data equals expected result and templates
-        parameters are empty.
+        Expected result: result data equals expected result and the templates
+        parameter is empty.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1'}
         with patch.multiple(
@@ -206,7 +206,7 @@ class TestTemplates(TestModules):
 
     def test_processing_templates(self):
         """
-        Testing the processing of the template parameter.
+        Testing the processing of the templates parameter.
         In this case, input parameters must be processed successfully.
 
         Expected result: the resulting data equals the expected result.
@@ -320,7 +320,7 @@ class TestProxy(TestModules):
                 host.generate_zabbix_host(exist_host)
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertEqual(
-                'Proxy not found in zabbix: Test Proxy',
+                'Proxy not found in Zabbix: Test Proxy',
                 ansible_result.exception.args[0]['msg'])
 
 
@@ -385,10 +385,10 @@ class TestMacro(TestModules):
 
     def test_macros_removing(self):
         """
-        Testing the delete of macros from the host.
-        To delete, you need pass an empty value to the 'macros' field.
+        Testing the deletion of macros from the host.
+        To delete, you need to pass an empty value to the 'macros' field.
 
-        Expected result: 'macros' field is empty.
+        Expected result: the 'macros' field is empty.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1'}
         with patch.multiple(
@@ -502,7 +502,7 @@ class TestIPMI(TestModules):
 
     def test_ipmi_authtype(self):
         """
-        Testing IPMI authorization types parameter. The test includes
+        Testing IPMI authorization type parameter. The test includes
         all possible authorization types.
 
         Expected result: All possible authorization types can
@@ -626,7 +626,7 @@ class TestTLS(TestModules):
         """
         Testing encryption mode using a certificate for acceptance.
 
-        Expected result: encryption parameter value set to '4'.
+        Expected result: the encryption parameter value is set to '4'.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1',
                       'tls_accept': '1', 'tls_connect': '1'}
@@ -648,7 +648,7 @@ class TestTLS(TestModules):
         """
         Testing encryption mode using a certificate for connection.
 
-        Expected result: encryption parameter value set to '4'.
+        Expected result: the encryption parameter value is set to '4'.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1',
                       'tls_accept': '1', 'tls_connect': '1'}
@@ -671,7 +671,7 @@ class TestTLS(TestModules):
         Testing the encryption mode reset for acceptance. To reset encryption to
         the default value, you must specify an empty value.
 
-        Expected result: encryption parameter value set to '1'.
+        Expected result: the encryption parameter value is set to '1'.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1',
                       'tls_accept': '1', 'tls_connect': '1'}
@@ -694,7 +694,7 @@ class TestTLS(TestModules):
         Testing the encryption mode reset for connection. To reset encryption
         to the default value, you must specify an empty value.
 
-        Expected result: encryption parameter value set to '1'.
+        Expected result: the encryption parameter value is set to '1'.
         """
         exist_host = {'host': 'exist host', 'inventory_mode': '1',
                       'tls_accept': '1', 'tls_connect': '1'}
@@ -804,7 +804,7 @@ class TestTLS(TestModules):
         """
         Testing the PSK encryption mode for acceptance.
         The test includes all possible settings for an existing host and
-        verifies the ability to enable the PSK encryption mode from these
+        verifies the ability to enable the PSK encryption mode with these
         settings.
 
         Expected result: all test cases run successfully.
@@ -853,7 +853,7 @@ class TestTLS(TestModules):
         """
         Testing the PSK encryption mode for connection.
         The test includes all possible settings for an existing host and
-        verifies the ability to enable the PSK encryption mode from these
+        verifies the ability to enable the PSK encryption mode with these
         settings.
 
         Expected result: all test cases run successfully.
@@ -929,7 +929,7 @@ class TestTLS(TestModules):
                 self.zabbix_api_module_path,
                 api_version=mock_api_version):
 
-            # id and key are not required
+            # ID and key are not required
             for case in exist_cases:
                 exist_host = {
                     'host': 'exist host',
@@ -950,7 +950,7 @@ class TestTLS(TestModules):
                     result = host.generate_zabbix_host(exist_host)
                     self.assertEqual(result, expected_result)
 
-            # tls all cases with id and key
+            # TLS all cases with ID and key
             for accept in range(1, 8):
                 for connect in [1, 2, 4]:
                     exist_host = {
@@ -1003,7 +1003,7 @@ class TestTLS(TestModules):
                 self.zabbix_api_module_path,
                 api_version=mock_api_version):
 
-            # id and key are not required
+            # ID and key are not required
             for case in exist_cases:
                 exist_host = {
                     'host': 'exist host',
@@ -1024,7 +1024,7 @@ class TestTLS(TestModules):
                     result = host.generate_zabbix_host(exist_host)
                     self.assertEqual(result, expected_result)
 
-            # tls all cases with id and key
+            # TLS all cases with ID and key
             for accept in range(1, 8):
                 for connect in [1, 2, 4]:
                     exist_host = {
@@ -1091,7 +1091,7 @@ class TestTLS(TestModules):
                             host.generate_zabbix_host(exist_host)
                         self.assertTrue(ansible_result.exception.args[0]['failed'])
                         self.assertEqual(
-                            'Missing tls psk params',
+                            'Missing TLS PSK params',
                             ansible_result.exception.args[0]['msg'])
 
 
@@ -1452,36 +1452,36 @@ class TestInterfaces(TestModules):
 
         SNMPv1:
         2. Interface version 1 without bulk (one parameter).
-        3. Interface version 1 without bulk and community (two parameter with list of missing parameters in error).
-        4. Interface version 1 with additional parameter from SNMPv3 (contextname).
-        5. Interface version 1 with additional parameter (contextname) and missing parameters (community).
+        3. Interface version 1 without bulk and community (two parameters, with the list of missing parameters in error).
+        4. Interface version 1 with additional parameter from SNMPv3 (context name).
+        5. Interface version 1 with additional parameter (context name) and missing parameter (community).
 
         SNMPv2:
         6. Interface version 2 without bulk (one parameter).
-        7. Interface version 2 without bulk and community (two parameter with list of missing parameters in error).
-        8. Interface version 2 with additional parameter from SNMPv3 (contextname).
-        9. Interface version 2 with additional parameter (contextname) and missing parameters (community).
+        7. Interface version 2 without bulk and community (two parameters, with the list of missing parameters in error).
+        8. Interface version 2 with additional parameter from SNMPv3 (context name).
+        9. Interface version 2 with additional parameter (context name) and missing parameter (community).
 
         SNMPv3 (noAuthNoPriv):
-        10. Interface version 3 without securitylevel (Checks error message).
+        10. Interface version 3 without security level (checks error message).
         11. Interface version 3 without bulk (one parameter).
-        12. Interface version 3 without bulk and contextname (two parameter with list of missing parameters in error).
+        12. Interface version 3 without bulk and context name (two parameters, with the list of missing parameters in error).
         13. Interface version 3 with additional parameter from SNMPv1 (community).
-        14. Interface version 1 with additional parameter (community) and missing parameters (contextname).
+        14. Interface version 1 with additional parameter (community) and missing parameter (context name).
 
         SNMPv3 (authNoPriv):
-        15. Interface version 3 without authprotocol (Checks error message).
-        16. Interface version 3 without authprotocol and contextname (two parameter with list of missing parameters in error),
-        (Check two independent parameters, because authprotocol depends on securitylevel only).
+        15. Interface version 3 without authentication protocol (checks error message).
+        16. Interface version 3 without authentication protocol and context name (two parameters, with the list of missing parameters in error;
+        check two independent parameters, because authentication protocol depends on security level only).
         17. Interface version 3 with additional parameters for 'authPriv'.
-        18. Interface version 3 without auth parameters, but with priv parameters.
+        18. Interface version 3 without authentication parameters, but with privacy parameters.
 
         SNMPv3 (authPriv):
-        19. Interface version 3 without auth parameters.
-        20. Interface version 3 without priv parameters.
-        21. Interface version 3 without auth and priv parameters.
-        22. Interface version 3 with additional parameters (community).
-        23. Interface version 3 without auth and priv parameters and with additional parameters (community).
+        19. Interface version 3 without authentication parameters.
+        20. Interface version 3 without privacy parameters.
+        21. Interface version 3 without authentication and privacy parameters.
+        22. Interface version 3 with additional parameter (community).
+        23. Interface version 3 without authentication and privacy parameters and with additional parameter (community).
 
         Expected result: all test cases run successfully.
         """
@@ -1493,7 +1493,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': None, 'bulk': True, 'community': '111', 'max_repetitions': None, 'contextname': None,
                                  'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found parameter 'version'"]
+                'expected_errors': ["Required parameter not found: version"]
             },
             {
                 'number_test_case': 2,
@@ -1502,7 +1502,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '1', 'bulk': None, 'community': '111', 'max_repetitions': None, 'contextname': None,
                                  'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv1: bulk"]
+                'expected_errors': ["Required parameter not found for SNMPv1: bulk"]
             },
             {
                 'number_test_case': 3,
@@ -1511,7 +1511,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '1', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv1:", 'bulk', 'community']
+                'expected_errors': ["Required parameter not found for SNMPv1:", 'bulk', 'community']
             },
             {
                 'number_test_case': 4,
@@ -1538,7 +1538,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '2', 'bulk': None, 'community': '111', 'max_repetitions': None, 'contextname': None,
                                  'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv2: bulk"]
+                'expected_errors': ["Required parameter not found for SNMPv2: bulk"]
             },
             {
                 'number_test_case': 7,
@@ -1547,7 +1547,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '2', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': None, 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv2:", 'bulk', 'community']
+                'expected_errors': ["Required parameter not found for SNMPv2:", 'bulk', 'community']
             },
             {
                 'number_test_case': 8,
@@ -1574,7 +1574,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
                                  'securityname': 'securityname', 'securitylevel': None, 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found parameter 'securitylevel'"]
+                'expected_errors': ["Required parameter not found: securitylevel"]
             },
             {
                 'number_test_case': 11,
@@ -1583,7 +1583,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
                                  'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'bulk']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'bulk']
             },
             {
                 'number_test_case': 12,
@@ -1592,7 +1592,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': None, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': 'securityname', 'securitylevel': 'noAuthNoPriv', 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'bulk', 'contextname']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'bulk', 'contextname']
             },
             {
                 'number_test_case': 13,
@@ -1619,7 +1619,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
                                  'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'authprotocol']
             },
             {
                 'number_test_case': 16,
@@ -1628,7 +1628,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': 'securityname', 'securitylevel': 'authNoPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol', 'contextname']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'authprotocol', 'contextname']
             },
             {
                 'number_test_case': 17,
@@ -1655,7 +1655,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': 'contextname',
                                  'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': None, 'authpassphrase': 'authpassphrase',
                                  'privprotocol': 'des', 'privpassphrase': 'privpassphrase'}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'authprotocol']
             },
             {
                 'number_test_case': 20,
@@ -1664,7 +1664,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': 'md5', 'authpassphrase': 'authpassphrase',
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'privprotocol', 'privpassphrase']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'privprotocol', 'privpassphrase']
             },
             {
                 'number_test_case': 21,
@@ -1673,7 +1673,7 @@ class TestInterfaces(TestModules):
                      'details': {'version': '3', 'bulk': True, 'community': None, 'max_repetitions': None, 'contextname': None,
                                  'securityname': 'securityname', 'securitylevel': 'authPriv', 'authprotocol': None, 'authpassphrase': None,
                                  'privprotocol': None, 'privpassphrase': None}}],
-                'expected_errors': ["Not found arguments for SNMPv3:", 'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']
+                'expected_errors': ["Required parameter not found for SNMPv3:", 'authprotocol', 'authpassphrase', 'privprotocol', 'privpassphrase']
             },
             {
                 'number_test_case': 22,
@@ -2273,5 +2273,5 @@ class TestInterfaces(TestModules):
                     host.generate_zabbix_host(exist_host)
                 self.assertTrue(ansible_result.exception.args[0]['failed'])
                 self.assertIn(
-                    'interfaces defined in the task. Module supports only 1 interface per each type.',
+                    'interfaces defined in the task. Module supports only 1 interface of each type.',
                     ansible_result.exception.args[0]['msg'])

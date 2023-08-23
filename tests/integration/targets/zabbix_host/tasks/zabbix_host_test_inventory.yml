@@ -37,7 +37,7 @@
         inventory_mode: manual
       register: zabbix_host_inventory_mode_manual
 
-    - name: Assert that tags was updated
+    - name: Assert that tags were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_mode_manual is changed
@@ -110,7 +110,7 @@
           type: test
       register: zabbix_host_inventory_mode_automatic_and_field
 
-    - name: Assert that inventory mode and field was updated
+    - name: Assert that inventory mode and field were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_mode_automatic_and_field is changed
@@ -131,7 +131,7 @@
           type: test
       register: zabbix_host_inventory_mode_manual_and_field
 
-    - name: Assert that inventory mode and field was updated
+    - name: Assert that inventory mode and field were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_mode_manual_and_field is changed
@@ -237,7 +237,7 @@
         host: zabbix_test_host
         inventory_mode: manual
 
-    - name: Test - Check all inventory field
+    - name: Test - Check all inventory fields
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -313,13 +313,13 @@
           poc_2_notes: test_poc_2_notes
       register: zabbix_host_inventory_all_inventory_field
 
-    - name: Assert that inventory field was updated
+    - name: Assert that inventory fields were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_all_inventory_field is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field.result"
 
-    - name: Test - Check all inventory field again
+    - name: Test - Check all inventory fields again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -395,13 +395,13 @@
           poc_2_notes: test_poc_2_notes
       register: zabbix_host_inventory_all_inventory_field_again
 
-    - name: Assert that inventory field was not updated
+    - name: Assert that inventory fields were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_all_inventory_field_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field_again.result"
 
-    - name: Test - Clean all inventory field
+    - name: Test - Clean all inventory fields
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -477,13 +477,13 @@
           poc_2_notes: ""
       register: zabbix_host_inventory_clean_all_inventory_field
 
-    - name: Assert that inventory field was updated
+    - name: Assert that inventory fields were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_clean_all_inventory_field is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field.result"
 
-    - name: Test - Clean all inventory field again
+    - name: Test - Clean all inventory fields again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -559,7 +559,7 @@
           poc_2_notes: ""
       register: zabbix_host_inventory_clean_all_inventory_field_again
 
-    - name: Assert that inventory field was not updated
+    - name: Assert that inventory fields were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_clean_all_inventory_field_again is not changed
@@ -571,7 +571,7 @@
         host: zabbix_test_host
         inventory_mode: automatic
 
-    - name: Test - Check all inventory field
+    - name: Test - Check all inventory fields
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -647,13 +647,13 @@
           poc_2_notes: test_poc_2_notes
       register: zabbix_host_inventory_all_inventory_field
 
-    - name: Assert that inventory field was updated
+    - name: Assert that inventory fields were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_all_inventory_field is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field.result"
 
-    - name: Test - Check all inventory field again
+    - name: Test - Check all inventory fields again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -729,13 +729,13 @@
           poc_2_notes: test_poc_2_notes
       register: zabbix_host_inventory_all_inventory_field_again
 
-    - name: Assert that inventory field was not updated
+    - name: Assert that inventory fields were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_all_inventory_field_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field_again.result"
 
-    - name: Test - Clean all inventory field
+    - name: Test - Clean all inventory fields
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -811,13 +811,13 @@
           poc_2_notes: ""
       register: zabbix_host_inventory_clean_all_inventory_field
 
-    - name: Assert that inventory field was updated
+    - name: Assert that inventory fields were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_clean_all_inventory_field is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field.result"
 
-    - name: Test - Clean all inventory field again
+    - name: Test - Clean all inventory fields again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         inventory:
@@ -893,7 +893,7 @@
           poc_2_notes: ""
       register: zabbix_host_inventory_clean_all_inventory_field_again
 
-    - name: Assert that inventory field was not updated
+    - name: Assert that inventory fields were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_inventory_clean_all_inventory_field_again is not changed
@@ -927,7 +927,7 @@
           - zabbix_host_inventory_set_field is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_set_field.result"
 
-    # Use disabled mode for clean up inventory field
+    # Use disabled mode for cleaning up inventory field
     - name: Set manual inventory mode
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host

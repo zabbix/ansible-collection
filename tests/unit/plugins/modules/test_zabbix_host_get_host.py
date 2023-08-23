@@ -16,7 +16,7 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 

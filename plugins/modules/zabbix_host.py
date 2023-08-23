@@ -27,13 +27,13 @@ options:
         choices: [ present, absent ]
     host:
         description:
-            - Hostname to create.
+            - Host name to create.
             - The name of an existing host in case of an update.
         type: str
         required: true
         aliases: [ host_name ]
     name:
-        description: Visible hostname
+        description: Visible host name
         type: str
         aliases: [ visible_name ]
     hostgroups:
@@ -46,7 +46,7 @@ options:
     templates:
         description:
             - Templates to replace the currently linked templates.
-            - All templates that are not listed in the task will be only unlinked.
+            - All templates that are not listed in the task will be unlinked.
         type: list
         elements: str
         aliases: [ link_templates, host_templates, template ]
@@ -96,7 +96,7 @@ options:
                 type: str
                 default: ''
             type:
-                description: Type of macro.
+                description: Type of the macro.
                 type: str
                 default: text
                 choices: [ text, secret, vault_secret ]
@@ -127,18 +127,18 @@ options:
     tls_psk_identity:
         description:
             - PSK identity.
-            - required if I(tls_connect=psk) , or I(tls_accept) contains the 'psk'.
-            - In the case of updating an existing host, if the host already has psk enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the host
-              Because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with an existing one.
+            - Required if I(tls_connect=psk) , or I(tls_accept) contains the 'psk'.
+            - In case of updating an existing host, if the host already has PSK enabled, the parameter is not required.
+            - If the parameter is defined, then every launch of the task will update the host,
+              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
         type: str
     tls_psk:
         description:
-            - The preshared key, at least 32 hex digits.
-            - required if I(tls_connect=psk), or I(tls_accept) contains the 'psk'.
-            - In the case of updating an existing host, if the host already has psk enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the host.
-              Because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with an existing one.
+            - The pre-shared key, at least 32 hex digits.
+            - Required if I(tls_connect=psk), or I(tls_accept) contains the 'psk'.
+            - In case of updating an existing host, if the host already has PSK enabled, the parameter is not required.
+            - If the parameter is defined, then every launch of the task will update the host,
+              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
         type: str
     tls_issuer:
         description: Certificate issuer.
@@ -225,7 +225,7 @@ options:
                         description:
                             - Max repetition count is applicable to discovery and walk only.
                             - Used only if I(version=2) or I(version=3).
-                            - Used only for zabbix versions above 6.4.
+                            - Used only for Zabbix versions above 6.4.
                         type: str
                     contextname:
                         description:
@@ -266,14 +266,14 @@ options:
                             - Used only if I(version=3).
                         type: str
 notes:
-    - If I(tls_psk_identity) or I(tls_psk) is defined or macros I(type=secret), then every launch of the task will update the host.
-      Because Zabbix API does not have access to an existing PSK key or secret macros and we cannot compare the specified value with an existing one.
+    - If I(tls_psk_identity) or I(tls_psk) is defined or macro I(type=secret), then every launch of the task will update the host,
+      because Zabbix API does not have access to an existing PSK key or secret macros and we cannot compare the specified value with the existing one.
     - Only one interface of each type is supported.
 '''
 
 EXAMPLES = r'''
 # To create host with minimum parameters
-# Host groups is required
+# Host group is required
 - name: Create host
   zabbix.zabbix.zabbix_host:
     state: present
@@ -296,7 +296,7 @@ EXAMPLES = r'''
     templates:
       - Zabbix agent active
     status: enabled
-    description: 'Example host'
+    description: 'Host example'
     name: 'Example host'
     tags:
       - tag: scope
@@ -304,7 +304,7 @@ EXAMPLES = r'''
     macros:
       - macro: TEST_MACRO
         value: example
-        description: Description of example macros
+        description: Description of macro example
         type: text
     ipmi_authtype: default
     ipmi_privilege: user
@@ -327,7 +327,7 @@ EXAMPLES = r'''
         very very long
         multiple string value
     interfaces:
-      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: agent # To specify an interface with default parameters (the IP will be 127.0.0.1)
       - type: ipmi
       - type: jmx
         ip: 192.168.100.51
@@ -385,7 +385,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To update only one parameter, you can only specify
+# To update only one parameter, you can specify just
 # the hostname (used for searching) and the desired parameter.
 # The rest of the host parameters will not be changed.
 # For example, you want to turn off a host
@@ -399,7 +399,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To remove a host you can use:
+# To remove a host, you can use:
 - name: Delete host
   zabbix.zabbix.zabbix_host:
     state: absent
@@ -419,23 +419,23 @@ EXAMPLES = r'''
      - Linux servers
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'
-    ansible_connection: httpapi                 # Specifying to use httpapi plugin
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which httpapi plugin to use
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API
+    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
     ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation
+    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
     # User parameters for connecting to Zabbix API
-    ansible_user: Admin                         # Username to connect to Zabbix API
-    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API
+    ansible_user: Admin                         # Username to connect to Zabbix API.
+    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
     # Token for connecting to Zabbix API
-    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API
+    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API.
     # Path to connect to Zabbix API
-    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path. (e.g., '/zabbix')
-    # User parameters for Basic HTTP Authorization
-    # These options only affect the Basic HTTP Authorization configured on the web server.
-    http_login: my_http_login                   # Username for connecting to the API in case of additional Basic HTTP Authorization
-    http_password: my_http_password             # Password for connecting to the API in case of additional Basic HTTP Authorization
+    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path (e.g., '/zabbix').
+    # User parameters for basic HTTP authorization
+    # These options only affect the basic HTTP authorization configured on the web server.
+    http_login: my_http_login                   # Username for connecting to API in case of additional basic HTTP authorization.
+    http_password: my_http_password             # Password for connecting to API in case of additional basic HTTP authorization.
 '''
 
 RETURN = r""" # """
@@ -466,8 +466,8 @@ class Host(object):
 
         :rtype: dict
         :returns:
-            *   dict with host parameters, if host exist
-            *   empty dict if host not exist
+            *   dict with host parameters if host exists
+            *   empty dict if host does not exist
         """
         host = {}
         params = {
@@ -503,7 +503,7 @@ class Host(object):
 
     def host_api_request(self, method, params):
         """
-        The function sends a request to the Zabbix API.
+        The function sends a request to Zabbix API.
 
         :param method: method for request
         :type method: str
@@ -528,7 +528,7 @@ class Host(object):
 
     def check_elements(self, require, exist):
         """
-        The function checks that all required elements are found in zabbix.
+        The function checks that all required elements are found in Zabbix.
         If any element from the required list is missing,
         the module will be stopped.
 
@@ -538,7 +538,7 @@ class Host(object):
         :type params: list
 
         :rtype: bool
-        :return: True if all required elements are found in zabbix.
+        :return: True if all required elements are found in Zabbix.
 
         notes::
             *  If an element from the required list is missing,
@@ -547,7 +547,7 @@ class Host(object):
         missing = list(set(require) - set(exist))
         if missing:
             self.module.fail_json(
-                msg="Not found in zabbix: {0}".format(
+                msg="Not found in Zabbix: {0}".format(
                     ', '.join(missing)))
 
         return True
@@ -581,7 +581,7 @@ class Host(object):
         The returned dictionary can be used to create a host, as well as to
         compare with an existing host.
 
-        :param exist_host: parameters of existing zabbix host
+        :param exist_host: parameters of existing Zabbix host
         :type exist_host: dict
 
         :rtype: dict
@@ -605,10 +605,10 @@ class Host(object):
 
         # host groups
         if self.module.params.get('hostgroups') is not None:
-            # Check hostgroups for empty
+            # Check host groups for empty
             if len(self.module.params.get('hostgroups')) == 0:
                 self.module.fail_json(
-                    msg="Can not remove all hostgroups from a host")
+                    msg="Cannot remove all host groups from a host")
             # Get existing groups from Zabbix
             groups = self.zapi.find_zabbix_hostgroups_by_names(
                 self.module.params['hostgroups'])
@@ -645,7 +645,7 @@ class Host(object):
                     host_params['proxy_hostid'] = proxy[0]['proxyid']
                 else:
                     self.module.fail_json(
-                        msg="Proxy not found in zabbix: {0}".format(
+                        msg="Proxy not found in Zabbix: {0}".format(
                             self.module.params.get('proxy')))
 
         # status
@@ -666,7 +666,7 @@ class Host(object):
                     'description': each['description']}
                 host_params['macros'].append(macro)
 
-        # ipmi
+        # IPMI
         if self.module.params.get('ipmi_authtype') is not None:
             host_params['ipmi_authtype'] = ipmi_authtype_type.get(
                 self.module.params.get('ipmi_authtype'))
@@ -675,7 +675,7 @@ class Host(object):
                 self.module.params.get('ipmi_privilege'))
 
         # Check the current encryption settings if the host exists.
-        # If the host exists and already has psk encryption,
+        # If the host exists and already has PSK encryption,
         # then the tls_psk and tls_psk_identity parameters are optional.
         if (self.module.params.get('tls_accept') is not None or
                 self.module.params.get('tls_connect') is not None):
@@ -694,11 +694,11 @@ class Host(object):
             if result_dec_num == 0:
                 result_dec_num = 1
             host_params['tls_accept'] = str(result_dec_num)
-            # check psk params
+            # check PSK params
             if 'psk' in self.module.params.get('tls_accept'):
                 if (('tls_psk_identity' not in host_params or
                         'tls_psk' not in host_params) and exist_psk_keys is False):
-                    self.module.fail_json(msg="Missing tls psk params")
+                    self.module.fail_json(msg="Missing TLS PSK params")
 
         # tls_connect
         if self.module.params.get('tls_connect') is not None:
@@ -707,11 +707,11 @@ class Host(object):
             else:
                 host_params['tls_connect'] = str(tls_type.get(
                     self.module.params.get('tls_connect')))
-            # check psk params
+            # check PSK params
             if host_params['tls_connect'] == '2':
                 if (('tls_psk_identity' not in host_params or
                         'tls_psk' not in host_params) and exist_psk_keys is False):
-                    self.module.fail_json(msg="Missing tls psk params")
+                    self.module.fail_json(msg="Missing TLS PSK params")
 
         # inventory mode
         if self.module.params.get('inventory_mode') is not None:
@@ -766,7 +766,7 @@ class Host(object):
                     interface['ip'] = '127.0.0.1'
                 else:
                     interface['ip'] = each['ip']
-                # dns
+                # DNS
                 if (each['useip'] is False and (each['dns'] is None or len(each['dns']) == 0)):
                     self.module.fail_json(msg="Required parameter not found: dns")
                 else:
@@ -776,19 +776,19 @@ class Host(object):
                     interface['port'] = each['port']
                 else:
                     interface['port'] = default_values['ports'][each['type']]
-                # snmp
+                # SNMP
                 details = []
                 if each['type'] == 'snmp':
-                    # Check the requirement fields for snmp
+                    # Check the required fields for SNMP
                     if each['details'] is None:
-                        self.module.fail_json(msg="Not found parameter 'details' for SNMP interface")
+                        self.module.fail_json(msg="Required parameter for SNMP interface not found: details")
                     if each['details']['version'] is None:
-                        self.module.fail_json(msg="Not found parameter 'version'")
+                        self.module.fail_json(msg="Required parameter not found: version")
                     if each['details']['version'] in ['1', '2']:
                         req_parameters = snmp_parameters[each['details']['version']]
                     else:
                         if each['details']['securitylevel'] is None:
-                            self.module.fail_json(msg="Not found parameter 'securitylevel'")
+                            self.module.fail_json(msg="Required parameter not found: securitylevel")
                         req_parameters = snmp_parameters[each['details']['version']][each['details']['securitylevel']]
 
                     # If additional fields need to be added and some logic is required, then this can be done here.
@@ -804,7 +804,7 @@ class Host(object):
                             each['details']['version'],
                             ', '.join(more_parameters)))
                     if less_parameters:
-                        self.module.fail_json(msg="Not found arguments for SNMPv{0}: {1}".format(
+                        self.module.fail_json(msg="Required parameter not found for SNMPv{0}: {1}".format(
                             each['details']['version'],
                             ', '.join(less_parameters)))
 
@@ -812,7 +812,7 @@ class Host(object):
                     # v1 and v2c
                     details['version'] = each['details']['version']
                     details['bulk'] = '1' if each['details']['bulk'] else '0'
-                    # Only for zabbix versions above 6.4
+                    # Only for Zabbix versions above 6.4
                     if Zabbix_version(self.zbx_api_version) >= Zabbix_version('6.4.0'):
                         if details['version'] == '2' or details['version'] == '3':
                             details['max_repetitions'] = each['details']['max_repetitions']
@@ -840,14 +840,14 @@ class Host(object):
 
                 interface_by_type[each['type']].append(interface)
 
-            # Check count interfaces
+            # Check count of interfaces
             for interface in interface_by_type:
                 if len(interface_by_type[interface]) == 0:
                     continue
                 if len(interface_by_type[interface]) > 1:
                     # If more than 1 interface of any type is specified in task
                     self.module.fail_json(
-                        msg="{0} {1} interfaces defined in the task. Module supports only 1 interface per each type.".format(
+                        msg="{0} {1} interfaces defined in the task. Module supports only 1 interface of each type.".format(
                             len(interface_by_type[interface]), interface))
                 else:
                     host_params['interfaces'].extend(interface_by_type[interface])
@@ -859,7 +859,7 @@ class Host(object):
         The function compares the parameters of an existing host with the
         desired new host parameters.
 
-        :param exist_host: parameters of existing zabbix host
+        :param exist_host: parameters of existing Zabbix host
         :type exist_host: dict
         :param new_host: parameters of desired host
         :type new_host: dict
@@ -965,7 +965,7 @@ class Host(object):
             for each in exist_interfaces_by_type:
                 if exist_interfaces_by_type[each] > 1:
                     self.module.fail_json(
-                        msg="Detected {0} {1} interfaces on the host. Module supports only 1 interface per each type. Please resolve conflict manually.".format(
+                        msg="Detected {0} {1} interfaces on the host. Module supports only 1 interface of each type. Please resolve conflict manually.".format(
                             exist_interfaces_by_type[each],
                             interfaces_types_name[each]))
 
@@ -1110,7 +1110,7 @@ def main():
 
     host = Host(module)
 
-    # Find a host in zabbix
+    # Find a host in Zabbix
     result = host.zapi.find_zabbix_host_by_host(host_name)
 
     if state == 'present':

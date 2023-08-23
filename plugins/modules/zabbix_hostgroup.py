@@ -10,24 +10,24 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: zabbix_hostgroup
-short_description: Module for creating and deleting hostgroups
+short_description: Module for creating and deleting host groups
 description:
-    - Creation of new hostgroups.
-    - The module will only create the missing hostgroups if the part is already created in Zabbix.
-    - Removing hostgroups from Zabbix.
+    - Creation of new host groups.
+    - The module will only create the missing host groups if some of the listed are already created in Zabbix.
+    - Removing host groups from Zabbix.
 author:
     - Zabbix Ltd (@zabbix)
 requirements:
     - "python >= 2.6"
 options:
     state:
-        description: Action with hostgroups. Present to create, absent to remove.
+        description: Action with host groups. Present to create, absent to remove.
         type: str
         default: present
         required: false
         choices: [ present, absent ]
     hostgroups:
-        description: List of hostgroups to create/remove.
+        description: List of host groups to create/remove.
         type: list
         elements: str
         required: true
@@ -35,8 +35,8 @@ options:
 '''
 
 EXAMPLES = r'''
-# To create hostgroups you can use:
-- name: Create hostgroups
+# To create host groups, you can use:
+- name: Create host groups
   zabbix.zabbix.zabbix_hostgroup:
     state: present
     hostgroups:
@@ -48,8 +48,8 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To delete two hostgroups: G1 and G2
-- name: Delete hostgroups by name
+# To delete two host groups - G1 and G2
+- name: Delete host groups by name
   zabbix.zabbix.zabbix_hostgroup:
     state: absent
     hostgroups:
@@ -62,30 +62,30 @@ EXAMPLES = r'''
     ansible_httpapi_pass: zabbix
 
 # You can configure Zabbix API connection settings with the following parameters:
-- name: Create hostgroups
+- name: Create host groups
   zabbix.zabbix.zabbix_hostgroup:
     state: present
     hostgroups:
      - G1
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'
-    ansible_connection: httpapi                 # Specifying to use httpapi plugin
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which httpapi plugin to use
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API
+    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
     ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation
+    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
     # User parameters for connecting to Zabbix API
-    ansible_user: Admin                         # Username to connect to Zabbix API
-    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API
+    ansible_user: Admin                         # Username to connect to Zabbix API.
+    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
     # Token for connecting to Zabbix API
-    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API
+    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API.
     # Path to connect to Zabbix API
-    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path. (e.g., '/zabbix')
-    # User parameters for Basic HTTP Authorization
-    # These options only affect the Basic HTTP Authorization configured on the web server.
-    http_login: my_http_login                   # Username for connecting to the API in case of additional Basic HTTP Authorization
-    http_password: my_http_password             # Password for connecting to the API in case of additional Basic HTTP Authorization
+    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path (e.g., '/zabbix').
+    # User parameters for basic HTTP authorization
+    # These options only affect the basic HTTP authorization configured on the web server.
+    http_login: my_http_login                   # Username for connecting to API in case of additional basic HTTP authorization.
+    http_password: my_http_password             # Password for connecting to API in case of additional basic HTTP authorization.
 '''
 
 RETURN = r""" # """
@@ -103,15 +103,15 @@ class HostGroup(object):
 
     def create(self, hostgroups):
         """
-        The function creates a hostgroup if it doesn't exist.
-        If a list of hostgroups is received, some of which have already
-        been created, then only the missing hostgroups will be created.
+        The function creates a host group if it doesn't exist.
+        If a list of host groups is received, some of which have already
+        been created, then only the missing host groups will be created.
 
-        :param hostgroups: list of hostgroup names
+        :param hostgroups: list of host group names
         :type hostgroups: list
 
         :rtype: list
-        :return: list of created hostgroup
+        :return: list of created host groups
         """
         hostgroup_names = []
         if hostgroups:
@@ -121,23 +121,23 @@ class HostGroup(object):
         if hostgroups is None or len(hostgroup_names) == 0:
             return []
 
-        # get existing hostgroup
+        # get existing host group
         try:
             existing_hostgroups = self.zapi.send_api_request(
                 method='hostgroup.get',
                 params={'output': ['name'], 'filter': {'name': hostgroup_names}})
         except Exception as e:
             self.module.fail_json(
-                msg="Failed to get existing hostgroup(s): {0}".format(e))
+                msg="Failed to get existing host group(s): {0}".format(e))
 
-        # search hostgroup for creating
+        # search for host group to create
         hostgroup_for_create = list(
             set(hostgroup_names) - set(eg['name'] for eg in existing_hostgroups))
 
         if self.module.check_mode:
             self.module.exit_json(changed=True)
 
-        # creating hostgroup
+        # creating host group
         added_hostgroups = []
         for group in hostgroup_for_create:
             try:
@@ -146,29 +146,29 @@ class HostGroup(object):
                     params={'name': group})
             except Exception as e:
                 self.module.fail_json(
-                    msg="Failed to create hostgroup(s): {0}".format(e))
+                    msg="Failed to create host group(s): {0}".format(e))
             added_hostgroups.append(group)
 
         return added_hostgroups
 
     def delete(self, hostgroups):
         """
-        The function removes hostgroups from Zabbix.
-        Before deleting, the function checks which of the required hostgroups
+        The function removes host groups from Zabbix.
+        Before deleting, the function checks which of the required host groups
         exist.
 
-        :param hostgroups: list of hostgroups names
+        :param hostgroups: list of host group names
         :type hostgroups: list
 
         :rtype: list
-        :return: list of deleted hostgroups
+        :return: list of deleted host groups
         """
         if hostgroups and len(hostgroups) > 0:
             group_filter = {'name': hostgroups}
         else:
             return []
 
-        # get existing hostgroup
+        # get existing host group
         try:
             existing_hostgroups = self.zapi.send_api_request(
                 method='hostgroup.get',
@@ -178,9 +178,9 @@ class HostGroup(object):
                     'preservekeys': True})
         except Exception as e:
             self.module.fail_json(
-                msg="Failed to get existing hostgroup(s): {0}".format(e))
+                msg="Failed to get existing host group(s): {0}".format(e))
 
-        # search hostgroup(s) for deleting
+        # search host group(s) for deleting
         hostgroup_ids_for_delete = [existing_hostgroups[g]['groupid'] for g in existing_hostgroups]
 
         if len(hostgroup_ids_for_delete) == 0:
@@ -188,14 +188,14 @@ class HostGroup(object):
         if self.module.check_mode:
             self.module.exit_json(changed=True)
 
-        # deleting hostgroup(s)
+        # deleting host group(s)
         try:
             result = self.zapi.send_api_request(
                 method='hostgroup.delete',
                 params=hostgroup_ids_for_delete)
         except Exception as e:
             self.module.fail_json(
-                msg="Failed to delete hostgroup(s): {0}".format(e))
+                msg="Failed to delete host group(s): {0}".format(e))
 
         return [existing_hostgroups[g]['name'] for g in result['groupids']]
 
@@ -223,29 +223,29 @@ def main():
     hostGroup = HostGroup(module)
 
     if state == 'present':
-        # create hostgroup
+        # create host group
         result = hostGroup.create(hostgroups)
         if len(result) > 0:
             module.exit_json(
                 changed=True,
-                result="Successfully created hostgroup(s): {0}".format(
+                result="Successfully created host group(s): {0}".format(
                     ", ".join(result)))
         else:
             module.exit_json(
                 changed=False,
-                result="All specified hostgroup(s) already exist")
+                result="All specified host groups already exist")
     else:
-        # delete hostgroup
+        # delete host group
         result = hostGroup.delete(hostgroups)
         if len(result) > 0:
             module.exit_json(
                 changed=True,
-                result="Successfully deleted hostgroup(s): {0}".format(
+                result="Successfully deleted host group(s): {0}".format(
                     ", ".join(result)))
         else:
             module.exit_json(
                 changed=False,
-                result="No hostgroup(s) to delete")
+                result="No host group(s) to delete")
 
 
 if __name__ == '__main__':

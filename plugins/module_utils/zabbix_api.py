@@ -27,7 +27,7 @@ class NotExistInZabbix(ZabbixException):
 
 
 class NoParametersForSearch(ZabbixException):
-    """Exception class when there are no objects to search in Zabbix"""
+    """Exception class when there are no objects to search for in Zabbix"""
     pass
 
 
@@ -42,7 +42,7 @@ class ZabbixApi(object):
 
     def api_version(self):
         """
-        Function for getting api version
+        Function for getting API version
 
         :return: API version
         :rtype: str
@@ -59,7 +59,7 @@ class ZabbixApi(object):
 
     def send_api_request(self, method, params):
         """
-        Function for sending request via httpapi plugin
+        Function for sending request via HTTP API plugin
 
         :param method: required Zabbix API method
         :type method: str
@@ -127,7 +127,7 @@ class ZabbixApi(object):
         if host_name and len(host_name) > 0:
             search_filter = {'host': host_name}
         else:
-            raise NoParametersForSearch("No parameters for search zabbix host")
+            raise NoParametersForSearch("No parameters for searching for Zabbix host")
 
         return self.find_zabbix_host(search_filter)
 
@@ -147,7 +147,7 @@ class ZabbixApi(object):
         if visible_name and len(visible_name) > 0:
             search_filter = {'name': visible_name}
         else:
-            raise NoParametersForSearch("No parameters for search zabbix host")
+            raise NoParametersForSearch("No parameters for searching for Zabbix host")
 
         return self.find_zabbix_host(search_filter)
 
@@ -167,20 +167,20 @@ class ZabbixApi(object):
         if hostid and len(hostid) > 0:
             search_filter = {'hostid': hostid}
         else:
-            raise NoParametersForSearch("No parameters for search zabbix host")
+            raise NoParametersForSearch("No parameters for searching for Zabbix host")
 
         return self.find_zabbix_host(search_filter)
 
     # #########################################################
-    # ZABBIX HOSTGROUPS
+    # ZABBIX HOST GROUPS
     def find_zabbix_hostgroups(self, search_filter):
         """
-        Function to search for a hostgroups in Zabbix by a given filter
+        Function to search for host groups in Zabbix by a given filter
 
-        :param search_filter: hostgroups search filter
+        :param search_filter: host groups search filter
         :type search_filter: dict
 
-        :return: found hostgroups
+        :return: found host groups
         :rtype: dict
         """
         existing_groups = self.send_api_request(
@@ -193,12 +193,12 @@ class ZabbixApi(object):
 
     def find_zabbix_hostgroups_by_names(self, hostgroup_names):
         """
-        Function to search for a hostgroups in Zabbix by hostgroup_names
+        Function to search for host groups in Zabbix by hostgroup_names
 
-        :param hostgroup_names: hostgroup names for search
+        :param hostgroup_names: host group names for search
         :type hostgroup_names: list
 
-        :return: found hostgroups
+        :return: found host groups
         :rtype: dict
 
         :raise:
@@ -208,18 +208,18 @@ class ZabbixApi(object):
             search_filter = {'name': hostgroup_names}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix hostgroup(s)")
+                "No parameters for searching for Zabbix host group(s)")
 
         return self.find_zabbix_hostgroups(search_filter)
 
     def find_zabbix_hostgroups_by_group_ids(self, hostgroup_ids):
         """
-        Function to search for a hostgroups in Zabbix by hostgroup_ids
+        Function to search for host groups in Zabbix by hostgroup_ids
 
-        :param hostgroup_ids: hostgroup ids for search
+        :param hostgroup_ids: host group IDs for search
         :type hostgroup_ids: list
 
-        :return: found hostgroups
+        :return: found host groups
         :rtype: dict
 
         :raise:
@@ -229,7 +229,7 @@ class ZabbixApi(object):
             search_filter = {'groupid': hostgroup_ids}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix hostgroup(s)")
+                "No parameters for searching for Zabbix host group(s)")
 
         return self.find_zabbix_hostgroups(search_filter)
 
@@ -237,7 +237,7 @@ class ZabbixApi(object):
     # ZABBIX TEMPLATES
     def find_zabbix_templates(self, search_filter):
         """
-        Function to search for a templates in Zabbix by a given filter
+        Function to search for templates in Zabbix by a given filter
 
         :param search_filter: templates search filter
         :type search_filter: dict
@@ -254,7 +254,7 @@ class ZabbixApi(object):
 
     def find_zabbix_templates_by_names(self, template_names):
         """
-        Function to search for a templates in Zabbix by template_names
+        Function to search for templates in Zabbix by template_names
 
         :param template_names: template names for search
         :type template_names: list
@@ -269,15 +269,15 @@ class ZabbixApi(object):
             search_filter = {'name': template_names}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix templates")
+                "No parameters for searching for Zabbix templates")
 
         return self.find_zabbix_templates(search_filter)
 
     def find_zabbix_templates_by_ids(self, template_ids):
         """
-        Function to search for a templates in Zabbix by template_ids
+        Function to search for templates in Zabbix by template_ids
 
-        :param template_ids: template ids for search
+        :param template_ids: template IDs for search
         :type template_ids: list
 
         :return: found templates
@@ -290,7 +290,7 @@ class ZabbixApi(object):
             search_filter = {'templateid': template_ids}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix templates")
+                "No parameters for searching for Zabbix templates")
 
         return self.find_zabbix_templates(search_filter)
 
@@ -321,7 +321,7 @@ class ZabbixApi(object):
         :param proxy_names: proxy names for search
         :type proxy_names: list
 
-        :return: found proxys
+        :return: found proxies
         :rtype: list
 
         :raise:
@@ -331,7 +331,7 @@ class ZabbixApi(object):
             search_filter = {'host': proxy_names}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix proxy")
+                "No parameters for searching for Zabbix proxy")
 
         return self.find_zabbix_proxys(search_filter)
 
@@ -339,7 +339,7 @@ class ZabbixApi(object):
         """
         Function to search for a proxy in Zabbix by proxy_ids
 
-        :param proxy_ids: proxy ids for search
+        :param proxy_ids: proxy IDs for search
         :type proxy_ids: list
 
         :return: found proxys
@@ -352,6 +352,6 @@ class ZabbixApi(object):
             search_filter = {'proxyid': proxy_ids}
         else:
             raise NoParametersForSearch(
-                "No parameters for search zabbix proxy")
+                "No parameters for searching for Zabbix proxy")
 
         return self.find_zabbix_proxys(search_filter)

@@ -25,7 +25,7 @@
           - type: jmx
       register: zabbix_host_interface_adding_all_by_default
 
-    - name: Assert that host was updated and interfaces was added
+    - name: Assert that host was updated and interfaces were added
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_adding_all_by_default is changed
@@ -62,7 +62,7 @@
             port: 12345
       register: zabbix_host_interface_updating_all_with_manual_default_param
 
-    - name: Assert that host was not updated and interfaces was not updated
+    - name: Assert that host was not updated and interfaces were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_updating_all_with_manual_default_param is not changed
@@ -98,13 +98,13 @@
             port: 12354
       register: zabbix_host_interface_updating_all_with_manual_param
 
-    - name: Assert that host was updated and interfaces was updated
+    - name: Assert that host was updated and interfaces were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_updating_all_with_manual_param is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_updating_all_with_manual_param.result"
 
-    - name: Test - Check current interfaces setting
+    - name: Test - Check current interface settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -147,13 +147,13 @@
         interfaces: []
       register: zabbix_host_interface_clean_all_interfaces
 
-    - name: Assert that host was updated and interfaces was cleaned
+    - name: Assert that host was updated and interfaces were cleaned
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_clean_all_interfaces is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_clean_all_interfaces.result"
 
-    - name: Test - Check current setting after cleaning
+    - name: Test - Check current settings after cleaning
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces: []
@@ -182,7 +182,7 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_two_agent_if_in_one_task is failed
 
-    - name: Test - Specifying two snmp interfaces in one task
+    - name: Test - Specifying two SNMP interfaces in one task
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -205,7 +205,7 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_two_snmp_if_in_one_task is failed
 
-    - name: Test - Specifying two ipmi interfaces in one task
+    - name: Test - Specifying two IPMI interfaces in one task
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -220,7 +220,7 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_two_ipmi_if_in_one_task is failed
 
-    - name: Test - Specifying two jmx interfaces in one task
+    - name: Test - Specifying two JMX interfaces in one task
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -237,25 +237,25 @@
 
 - name: Changing Interfaces
   block:
-    - name: Preparation - Clean previous setting and create one interface
+    - name: Preparation - Clean previous settings and create one interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
           - type: agent
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
           - type: agent
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
-    # Create another one interface and check
-    - name: Test - Create another one interface
+    # Create another interface and check
+    - name: Test - Create another interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -267,13 +267,13 @@
               bulk: true
       register: zabbix_host_interface_create_another_one_if
 
-    - name: Assert that host update was updated and if was added
+    - name: Assert that host was updated and interface was added
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_create_another_one_if is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_create_another_one_if.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -285,7 +285,7 @@
               bulk: true
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
@@ -301,13 +301,13 @@
               bulk: true
       register: zabbix_host_interface_delete_one_if
 
-    - name: Assert that host update was updated and if was deleted
+    - name: Assert that host was updated and interface was deleted
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_delete_one_if is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_delete_one_if.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -318,11 +318,11 @@
               bulk: true
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
-    # Replacing with another type of interface. Adding new if and deleting old if within the same task
+    # Replacing with another type of interface. Adding new interface and deleting old one within the same task
     - name: Test - Delete one interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -330,25 +330,25 @@
           - type: ipmi
       register: zabbix_host_interface_replacing_interfaces
 
-    - name: Assert that host update was updated and if was replaced
+    - name: Assert that host was updated and interface was replaced
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_replacing_interfaces is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_replacing_interfaces.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
           - type: ipmi
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
     # All operations: create, delete, update, nothing to do in one task
-    - name: Preparation - Create 3 if for next task
+    - name: Preparation - Create 3 interfaces for next task
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -370,13 +370,13 @@
             ip: 127.0.0.5
       register: zabbix_host_interface_all_operations_with_interfaces
 
-    - name: Assert that host update was updated and if was replaced/deleted/created
+    - name: Assert that host was updated and interface was replaced/deleted/created
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_all_operations_with_interfaces is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_all_operations_with_interfaces.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -386,7 +386,7 @@
             ip: 127.0.0.5
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
@@ -406,7 +406,7 @@
       register: zabbix_host_interface_temp_wo_if
       ignore_errors: true
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_temp_wo_if is failed
 
@@ -420,13 +420,13 @@
           - Linux by Zabbix agent
       register: zabbix_host_interface_add_if_and_templ
 
-    - name: Assert that host update was updated and if was added
+    - name: Assert that host was updated and interface was added
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_add_if_and_templ is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_add_if_and_templ.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -435,12 +435,12 @@
           - Linux by Zabbix agent
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
     # Changing interface with attached items and check
-    - name: Test - Changing interface wit attached items
+    - name: Test - Changing interface with attached items
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -448,13 +448,13 @@
             ip: 127.0.0.5
       register: zabbix_host_interface_change_if_with_items
 
-    - name: Assert that host update was updated and if was updated
+    - name: Assert that host was updated and interface was updated
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_change_if_with_items is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_change_if_with_items.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -462,7 +462,7 @@
             ip: 127.0.0.5
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
@@ -474,7 +474,7 @@
       register: zabbix_host_interface_remove_if_w_attached_items
       ignore_errors: true
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_remove_if_w_attached_items is failed
 
@@ -486,26 +486,26 @@
         templates: []
       register: zabbix_host_interface_clean_templ_and_if
 
-    - name: Assert that host update was updated and if with templates was deleted
+    - name: Assert that host was updated and both interfaces and templates were deleted
       ansible.builtin.assert:
         that:
           - zabbix_host_interface_clean_templ_and_if is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_clean_templ_and_if.result"
 
-    - name: Test - Check current setting
+    - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces: []
         templates: []
       register: zabbix_host_interface_check_current_setting
 
-    - name: Assert that host update was not updated
+    - name: Assert that host was not updated
       ansible.builtin.assert:
         that: zabbix_host_interface_check_current_setting is not changed
 
 - name: IP/DNS checks
   block:
-    - name: Test - Create interface with dns monitoring without dns name
+    - name: Test - Create interface with DNS monitoring without DNS name
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -519,7 +519,7 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_update_dns_wo_dns_name is failed
 
-    - name: Test - Create interface with dns monitoring with dns name
+    - name: Test - Create interface with DNS monitoring with DNS name
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -535,8 +535,8 @@
           - zabbix_host_interface_update_dns_w_dns_name is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_dns_w_dns_name.result"
 
-    # Check that the ip field was empty and ip and dns can be set at the same time
-    - name: Test - Create interface with dns monitoring with dns name and ip
+    # Check that the IP field was empty and IP and DNS can be set at the same time
+    - name: Test - Create interface with DNS monitoring with DNS name and IP
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -555,7 +555,7 @@
 - name: SNMP checks
   block:
     # Check v1 and v2 interfaces
-    - name: Test - Create snmp interface v1
+    - name: Test - Create SNMPv1 interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -575,7 +575,7 @@
           - zabbix_host_interface_update_snmp_v1 is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_update_snmp_v1.result"
 
-    - name: Test - Create snmp interface v2
+    - name: Test - Create SNMPv2 interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -590,7 +590,7 @@
       register: zabbix_host_interface_update_snmp_v2
       ignore_errors: true
 
-    - name: Test - Create snmp interface v2 (Zabbix 6.4)
+    - name: Test - Create SNMPv2 interface (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -612,7 +612,7 @@
           - zabbix_host_interface_update_snmp_v2 or zabbix_host_interface_update_snmp_v2_64 is changed
 
     # noAuthNoPriv
-    - name: Test - Create snmp v3 with noAuthNoPriv with parameters
+    - name: Test - Create SNMPv3 interface with noAuthNoPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -628,7 +628,7 @@
       register: zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp v3 with noAuthNoPriv with parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with noAuthNoPriv with parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -651,7 +651,7 @@
           - zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters_64 is changed
 
     # authNoPriv
-    - name: Test - Create snmp v3 with authNoPriv with parameters
+    - name: Test - Create SNMPv3 interface with authNoPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -669,7 +669,7 @@
       register: zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp v3 with authNoPriv with parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authNoPriv with parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -694,7 +694,7 @@
           - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters_64 is changed
 
     # authPriv
-    - name: Test - Create snmp v3 with authPriv with parameters
+    - name: Test - Create SNMPv3 interface with authPriv with parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -714,7 +714,7 @@
       register: zabbix_host_interface_update_snmp_v3_authpriv_w_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp v3 with authPriv with parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authPriv with parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -743,7 +743,7 @@
 - name: SNMP details
   block:
     # Check v1
-    - name: Test - Create snmp interface v1 without community
+    - name: Test - Create SNMPv1 interface without community
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -762,7 +762,7 @@
         that:
           - zabbix_host_interface_snmp_v1_wo_community is failed
 
-    - name: Test - Create snmp interface v1 without bulk and community
+    - name: Test - Create SNMPv1 interface without bulk and community
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -780,7 +780,7 @@
         that:
           - zabbix_host_interface_snmp_v1_wo_bulk_community is failed
 
-    - name: Test - Create snmp interface v1 with additional parameter
+    - name: Test - Create SNMPv1 interface with additional parameter
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -801,7 +801,7 @@
         that:
           - zabbix_host_interface_snmp_v1_w_contextname is failed
 
-    - name: Test - Create snmp interface v1 with additional parameter and missing bulk
+    - name: Test - Create SNMPv1 interface with additional parameter and missing bulk
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -822,7 +822,7 @@
           - zabbix_host_interface_snmp_v1_w_contextname_wo_bulk is failed
 
     # Check v2
-    - name: Test - Create snmp interface v2 without community
+    - name: Test - Create SNMPv2 interface without community
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -836,7 +836,7 @@
       register: zabbix_host_interface_snmp_v2_wo_community
       ignore_errors: true
 
-    - name: Test - Create snmp interface v2 without community (Zabbix 6.4)
+    - name: Test - Create SNMPv2 interface without community (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -856,7 +856,7 @@
         that:
           - zabbix_host_interface_snmp_v2_wo_community and zabbix_host_interface_snmp_v2_wo_community_64 is failed
 
-    - name: Test - Create snmp interface v2 without bulk and community
+    - name: Test - Create SNMPv2 interface without bulk and community
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -869,7 +869,7 @@
       register: zabbix_host_interface_snmp_v2_wo_bulk_community
       ignore_errors: true
 
-    - name: Test - Create snmp interface v2 without bulk and community (Zabbix 6.4)
+    - name: Test - Create SNMPv2 interface without bulk and community (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -888,7 +888,7 @@
         that:
           - zabbix_host_interface_snmp_v2_wo_bulk_community and zabbix_host_interface_snmp_v2_wo_bulk_community_64 is failed
 
-    - name: Test - Create snmp interface v2 with additional parameter
+    - name: Test - Create SNMPv2 interface with additional parameter
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -904,7 +904,7 @@
       register: zabbix_host_interface_snmp_v2_w_contextname
       ignore_errors: true
 
-    - name: Test - Create snmp interface v2 with additional parameter (Zabbix 6.4)
+    - name: Test - Create SNMPv2 interface with additional parameter (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -926,7 +926,7 @@
         that:
           - zabbix_host_interface_snmp_v2_w_contextname and zabbix_host_interface_snmp_v2_w_contextname_64 is failed
 
-    - name: Test - Create snmp interface v2 with additional parameter and missing bulk
+    - name: Test - Create SNMPv2 interface with additional parameter and missing bulk
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -941,7 +941,7 @@
       register: zabbix_host_interface_snmp_v2_w_contextname_wo_bulk
       ignore_errors: true
 
-    - name: Test - Create snmp interface v2 with additional parameter and missing bulk (Zabbix 6.4)
+    - name: Test - Create SNMPv2 interface with additional parameter and missing bulk (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -963,7 +963,7 @@
           - zabbix_host_interface_snmp_v2_w_contextname_wo_bulk and zabbix_host_interface_snmp_v2_w_contextname_wo_bulk_64 is failed
 
     # Check v3
-    - name: Test - Create snmp interface v3 without securitylevel
+    - name: Test - Create SNMPv3 interface without security level
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -983,7 +983,7 @@
       register: zabbix_host_interface_snmp_v3_wo_securitylevel
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 without securitylevel (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface without security level (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1009,7 +1009,7 @@
         that:
           - zabbix_host_interface_snmp_v3_wo_securitylevel and zabbix_host_interface_snmp_v3_wo_securitylevel_64 is failed
 
-    - name: Test - Create snmp interface v3 without bulk
+    - name: Test - Create SNMPv3 interface without bulk
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1029,7 +1029,7 @@
       register: zabbix_host_interface_snmp_v3_wo_bulk
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 without bulk (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface without bulk (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1055,7 +1055,7 @@
         that:
           - zabbix_host_interface_snmp_v3_wo_bulk and zabbix_host_interface_snmp_v3_wo_bulk_64 is failed
 
-    - name: Test - Create snmp interface v3 with additional parameter community
+    - name: Test - Create SNMPv3 interface with additional parameter 'community'
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1077,7 +1077,7 @@
       register: zabbix_host_interface_snmp_v3_w_community
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with additional parameter community (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with additional parameter 'community' (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1105,7 +1105,7 @@
         that:
           - zabbix_host_interface_snmp_v3_w_community and zabbix_host_interface_snmp_v3_w_community_64 is failed
 
-    - name: Test - Create snmp interface v3 with authNoPriv without parameters
+    - name: Test - Create SNMPv3 interface with authNoPriv without parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1122,7 +1122,7 @@
       register: zabbix_host_interface_snmp_v3_wo_auth_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authNoPriv without parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authNoPriv without parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1145,7 +1145,7 @@
         that:
           - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
 
-    - name: Test - Create snmp interface v3 with authNoPriv with all parameters
+    - name: Test - Create SNMPv3 interface with authNoPriv with all parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1166,7 +1166,7 @@
       register: zabbix_host_interface_snmp_v3_w_all_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authNoPriv with all parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authNoPriv with all parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1193,7 +1193,7 @@
         that:
           - zabbix_host_interface_snmp_v3_w_all_parameters and zabbix_host_interface_snmp_v3_w_all_parameters_64 is failed
 
-    - name: Test - Create snmp interface v3 with authNoPriv with priv parameters
+    - name: Test - Create SNMPv3 interface with authNoPriv with priv parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1212,7 +1212,7 @@
       register: zabbix_host_interface_snmp_v3_w_priv_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authNoPriv with priv parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authNoPriv with priv parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1237,7 +1237,7 @@
         that:
           - zabbix_host_interface_snmp_v3_w_priv_parameters and zabbix_host_interface_snmp_v3_w_priv_parameters_64 is failed
 
-    - name: Test - Create snmp interface v3 with authPriv without parameters
+    - name: Test - Create SNMPv3 interface with authPriv without parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1254,7 +1254,7 @@
       register: zabbix_host_interface_snmp_v3_wo_auth_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authPriv without parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authPriv without parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1277,7 +1277,7 @@
         that:
           - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
 
-    - name: Test - Create snmp interface v3 with authPriv with auth parameters
+    - name: Test - Create SNMPv3 interface with authPriv with auth parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1296,7 +1296,7 @@
       register: zabbix_host_interface_snmp_v3_w_auth_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authPriv with auth parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authPriv with auth parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1321,7 +1321,7 @@
         that:
           - zabbix_host_interface_snmp_v3_w_auth_parameters and zabbix_host_interface_snmp_v3_w_auth_parameters_64 is failed
 
-    - name: Test - Create snmp interface v3 with authPriv with priv parameters
+    - name: Test - Create SNMPv3 interface with authPriv with priv parameters
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:
@@ -1340,7 +1340,7 @@
       register: zabbix_host_interface_snmp_v3_w_priv_parameters
       ignore_errors: true
 
-    - name: Test - Create snmp interface v3 with authPriv with priv parameters (Zabbix 6.4)
+    - name: Test - Create SNMPv3 interface with authPriv with priv parameters (Zabbix 6.4)
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:

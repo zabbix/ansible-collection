@@ -14,7 +14,7 @@ from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
 
 
 class TestParsing(unittest.TestCase):
-    """Testing the parsing of the Zabbix API version"""
+    """Testing the parsing of Zabbix API version"""
 
     def test_parse(self):
         version = Zabbix_version('6.4.0')

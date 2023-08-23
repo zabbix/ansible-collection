@@ -10,18 +10,18 @@ DOCUMENTATION = r'''
 name: zabbix
 author:
     - Zabbix Ltd (@zabbix)
-short_description: Zabbix HttpApi Plugin
+short_description: Zabbix HTTP API plugin
 description:
     - This plugin is designed to work with Zabbix API.
 options:
     http_login:
         type: str
-        description: Username for Basic HTTP authorization to Zabbix API
+        description: Username for basic HTTP authorization to Zabbix API
         vars:
             - name: http_login
     http_password:
         type: str
-        description: Password for Basic HTTP authorization to Zabbix API
+        description: Password for basic HTTP authorization to Zabbix API
         vars:
             - name: http_password
     zabbix_api_token:
@@ -49,23 +49,23 @@ EXAMPLES = r'''
      - Group 1
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'
-    ansible_connection: httpapi                 # Specifying to use httpapi plugin
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which httpapi plugin to use
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API
+    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
     ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation
+    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
     # User parameters for connecting to Zabbix API
-    ansible_user: Admin                         # Username to connect to Zabbix API
-    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API
+    ansible_user: Admin                         # Username to connect to Zabbix API.
+    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
     # Token for connecting to Zabbix API
-    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API
+    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API.
     # Path to connect to Zabbix API
-    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path. (e.g., '/zabbix')
-    # User parameters for Basic HTTP Authorization
-    # These options only affect the Basic HTTP Authorization configured on the web server.
-    http_login: my_http_login                   # Username for connecting to the API in case of additional Basic HTTP Authorization
-    http_password: my_http_password             # Password for connecting to the API in case of additional Basic HTTP Authorization
+    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path (e.g., '/zabbix').
+    # User parameters for basic HTTP authorization
+    # These options only affect the basic HTTP authorization configured on the web server.
+    http_login: my_http_login                   # Username for connecting to API in case of additional basic HTTP authorization.
+    http_password: my_http_password             # Password for connecting to API in case of additional basic HTTP authorization.
 
 # Example of using options to create a host group
 # For a typical application, it is enough to specify only a few parameters

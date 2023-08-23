@@ -16,20 +16,20 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. For this module,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
 
 class TestDeleting(TestModules):
-    """Class for testing the removing of hostgroups"""
+    """Class for testing the removing of host groups"""
     module = zabbix_hostgroup
 
     def test_delete_one_hostgroup(self):
         """
-        Testing the deletion of one hostgroup.
+        Testing the deletion of one host group.
 
-        Expected result: the task has been changed and the hostgroup
+        Expected result: the task has been changed and the host group
         has been deleted successfully.
         """
         def mock_send_request(self, method, params):
@@ -51,14 +51,14 @@ class TestDeleting(TestModules):
             self.assertTrue(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'Successfully deleted hostgroup(s): {0}'.format(', '.join(zabbix_hostgroup_name)))
+                'Successfully deleted host group(s): {0}'.format(', '.join(zabbix_hostgroup_name)))
 
     def test_delete_non_existent_hostgroup(self):
         """
-        Testing the deletion of a hostgroup in case it has already
+        Testing the deletion of a host group in case it has already
         been deleted.
 
-        Expected result: the task has not been changed and hostgroup
+        Expected result: the task has not been changed and host group
         has not been deleted.
         """
         def mock_send_request(self, method, params):
@@ -80,14 +80,14 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
     def test_delete_two_hostgroup(self):
         """
-        Testing the deletion of two hostgroup. The test checks the
-        possibility of passing a list of hostgroups for deletion.
+        Testing the deletion of two host groups. The test checks the
+        possibility of passing the list of host groups for deletion.
 
-        Expected result: the task has been changed and hostgroups
+        Expected result: the task has been changed and host groups
         have been deleted successfully.
         """
         def mock_send_request(self, method, params):
@@ -109,7 +109,7 @@ class TestDeleting(TestModules):
                 self.module.main()
             self.assertTrue(ansible_result.exception.args[0]['changed'])
             self.assertIn(
-                'Successfully deleted hostgroup(s):',
+                'Successfully deleted host group(s):',
                 ansible_result.exception.args[0]['result'])
 
             parse_response = ansible_result.exception.args[0]['result'].split(':')[1]
@@ -118,13 +118,13 @@ class TestDeleting(TestModules):
 
     def test_delete_two_hostgroup_one_exist(self):
         """
-        Testing the deletion of two hostgroups. The test checks the
-        possibility of passing a list of hostgroups for deletion
+        Testing the deletion of two host groups. The test checks the
+        possibility of passing the list of host groups for deletion
         and verifies if the function works correctly when one of the groups
         has already been deleted.
 
-        Expected result: the task has been changed and only one hostgroups
-        have been deleted successfully.
+        Expected result: the task has been changed and only one host group
+        has been deleted successfully.
         """
         def mock_send_request(self, method, params):
             if method == 'hostgroup.get':
@@ -145,16 +145,16 @@ class TestDeleting(TestModules):
             self.assertTrue(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'Successfully deleted hostgroup(s): Test group')
+                'Successfully deleted host group(s): Test group')
 
     def test_delete_two_deleted_hostgroup(self):
         """
-        Testing the deletion of two hostgroups. The test checks the
-        possibility of passing a list of hostgroups for deletion
-        and verifies if the function works correctly when both hostgroups
+        Testing the deletion of two host groups. The test checks the
+        possibility of passing the list of host groups for deletion
+        and verifies if the function works correctly when both host groups
         have already been deleted.
 
-        Expected result: the task has not been changed and hostgroups
+        Expected result: the task has not been changed and host groups
         have not been deleted.
         """
         def mock_send_request(self, method, params):
@@ -176,14 +176,14 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
     def test_create_empty_hostgroup_list(self):
         """
-        Testing the deletion of a hostgroup in case of passing an empty
+        Testing the deletion of a host group in case of passing an empty
         list for removal in different ways.
 
-        Expected result: the task has not been changed and hostgroup
+        Expected result: the task has not been changed and host group
         has not been deleted.
         """
         def mock_send_request(self, method, params):
@@ -206,7 +206,7 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
         # the second way
         zabbix_hostgroup_name = ['   ']
@@ -222,7 +222,7 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
         # the third way
         zabbix_hostgroup_name = ['   ', '']
@@ -238,7 +238,7 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
         # the fourth way
         zabbix_hostgroup_name = ['   ', '', 'Test group']
@@ -254,14 +254,14 @@ class TestDeleting(TestModules):
             self.assertFalse(ansible_result.exception.args[0]['changed'])
             self.assertEqual(
                 ansible_result.exception.args[0]['result'],
-                'No hostgroup(s) to delete')
+                'No host group(s) to delete')
 
     def test_failed_to_get_hostgroups(self):
         """
-        Testing the deletion of hostgroups in case of an error while
-        querying existing hostgroups in Zabbix.
+        Testing the deletion of host groups in case of an error while
+        querying existing host groups in Zabbix.
 
-        Expected result: the task has failed and hostgroup
+        Expected result: the task has failed and host group
         has not been deleted.
         """
         def mock_send_request(self, method, params):
@@ -282,15 +282,15 @@ class TestDeleting(TestModules):
                 self.module.main()
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertIn(
-                'Failed to get existing hostgroup(s):',
+                'Failed to get existing host group(s):',
                 ansible_result.exception.args[0]['msg'])
 
     def test_failed_to_create_hostgroups(self):
         """
-        Testing the deletion of hostgroups in case of an error while
-        querying to delete hostgroups in Zabbix.
+        Testing the deletion of host groups in case of an error while
+        querying to delete host groups in Zabbix.
 
-        Expected result: the task has failed and hostgroup
+        Expected result: the task has failed and host group
         has not been deleted.
         """
         def mock_send_request(self, method, params):
@@ -311,5 +311,5 @@ class TestDeleting(TestModules):
                 self.module.main()
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertIn(
-                'Failed to delete hostgroup(s):',
+                'Failed to delete host group(s):',
                 ansible_result.exception.args[0]['msg'])

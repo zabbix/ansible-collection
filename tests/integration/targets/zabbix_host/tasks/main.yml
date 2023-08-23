@@ -4,19 +4,19 @@
     - name: Documentation example tests
       ansible.builtin.include_tasks: zabbix_host_doc.yml
 
-    # Checks the basic functionality of creating/updating/deleting a host
+    # Check the basic functionality of creating/updating/deleting a host
     # Check the minimum set of options to create a host
-    # Checks that changing one parameter does not affect other parameters
-    - name: Checks the basic functionality
+    # Check that changing one parameter does not affect other parameters
+    - name: Check the basic functionality
       ansible.builtin.include_tasks: zabbix_host_basic_check.yml
 
-    - name: Testing options to specify hostgroups
+    - name: Testing options to specify host groups
       ansible.builtin.include_tasks: zabbix_host_test_hostgroups.yml
 
     - name: Testing options to specify templates
       ansible.builtin.include_tasks: zabbix_host_test_templates.yml
 
-    # Includes checks for all types of interfaces (agent, ipmi, jmx, snmp)
+    # Include checks for all types of interfaces (agent, IPMI, JMX, SNMP)
     - name: Testing options to specify interfaces
       ansible.builtin.include_tasks: zabbix_host_test_interfaces.yml
 
@@ -32,7 +32,7 @@
     - name: Testing options to specify inventory
       ansible.builtin.include_tasks: zabbix_host_test_inventory.yml
 
-    # Includes the following checks:
+    # Include the following checks:
     # - Host status (enabled/disabled)
     # - Description of the host
     # - Visible name
@@ -44,7 +44,7 @@
     - name: Testing options to specify other parameters
       ansible.builtin.include_tasks: zabbix_host_test_other_params.yml
 
-    # zabbix_host test for manual testing proxy and inventory parameters
+    # zabbix_host test for manual testing of proxy and inventory parameters
     #
     # Before testing:
     # 1. You need to create a proxy with the name "test proxy"
@@ -52,7 +52,7 @@
     #    on the "zabbix_test_host" host and link it with the "type" inventory field.
     #    The "type_full" inventory field must NOT be linked to any metric.
     # 3. You need to create two agent interfaces on the host.
-    #    It is enough to create with default parameters.
+    #    It is enough to create those with default parameters.
     #
     # - name: Manual testing options
     #   ansible.builtin.include_tasks: zabbix_host_test_manual_tests.yml

@@ -44,7 +44,7 @@ Plugins and modules are supported under the following conditions:
 - Ansible core >= 2.12
 - Python >= 2.6
 
-Zabbix http api plugin requires additional tools from two Ansible certified collections:
+Zabbix HTTP API plugin requires additional tools from two Ansible certified collections:
 - ansible.posix >= 2.8
 - ansible.utils >= 1.4
 
@@ -57,15 +57,15 @@ ansible-galaxy collection install ansible.utils ansible.posix
 HTTP API plugin
 ------------
 ## HTTP API plugin overview:
-HTTP API plugin provides an interface for working with the Zabbix API. Using the available modules you can create, update and delete entities in Zabbix.
+HTTP API plugin provides an interface for working with Zabbix API. Using the available modules, you can create, update and delete entities in Zabbix.
 
 ## HTTP API plugin parameters:
 | Parameter | Type | Default | Description |
 |--|--|--|--|
-| zabbix_api_token | `string` || Token for authorization in Zabbix API. Available environment variables: `ZABBIX_API_TOKEN`
-| zabbix_api_url | `string` | '' | Path to access Zabbix API. Available environment variables: `ZABBIX_API_URL`
-| http_login | `string` || Username for Basic HTTP authorization to Zabbix API.
-| http_password | `string` || Password for Basic HTTP authorization to Zabbix API.
+| zabbix_api_token | `string` || Token for authorization in Zabbix API. Available environment variables: `ZABBIX_API_TOKEN`.
+| zabbix_api_url | `string` | '' | Path to access Zabbix API. Available environment variables: `ZABBIX_API_URL`.
+| http_login | `string` || Username for basic HTTP authorization to Zabbix API.
+| http_password | `string` || Password for basic HTTP authorization to Zabbix API.
 
 
 ## HTTP API plugin examples:
@@ -82,22 +82,22 @@ You can configure Zabbix API connection settings with the following parameters:
   vars:
     # Connection parameters
     ansible_host: zabbix-api.com                # Specifying Zabbix API address.
-    ansible_connection: httpapi                 # Specifying to use httpapi plugin.
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which httpapi plugin to use.
+    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
     ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
     ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation
+    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
     # User parameters for connecting to Zabbix API
-    ansible_user: Admin                         # Username to connect to Zabbix API
-    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API
+    ansible_user: Admin                         # Username to connect to Zabbix API.
+    ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
     # Token for connecting to Zabbix API
-    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API
+    zabbix_api_token: your_secret_token         # Specify your token to connect to Zabbix API.
     # Path to connect to Zabbix API
-    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path. (e.g., '/zabbix')
-    # User parameters for Basic HTTP Authorization
-    # These options only affect the Basic HTTP Authorization configured on the web server.
-    http_login: my_http_login                   # Username for connecting to the API in case of additional Basic HTTP Authorization
-    http_password: my_http_password             # Password for connecting to the API in case of additional Basic HTTP Authorization
+    zabbix_api_url: '/zabbix'                   # The field is empty by default. You can specify your connection path (e.g., '/zabbix').
+    # User parameters for basic HTTP authorization
+    # These options only affect the basic HTTP authorization configured on the web server.
+    http_login: my_http_login                   # Username for connecting to API in case of additional basic HTTP authorization.
+    http_password: my_http_password             # Password for connecting to API in case of additional basic HTTP authorization.
 
 ```
 
@@ -121,22 +121,22 @@ Example of using options to create a host group. For a typical application, it i
 Hostgroup module
 ------------
 ## Hostgroup module overview:
-This module provides functionality to create and delete hostgroups in Zabbix.
-It supports working with a list of hostgroups. During the creation process, if any hostgroups specified in the list already exist in Zabbix, only the missing groups will be created.
+This module provides functionality to create and delete host groups in Zabbix.
+It supports working with a list of host groups. During the creation process, if any host groups specified in the list already exist in Zabbix, only the missing groups will be created.
 
 ## Hostgroup module parameters:
 | Parameter | Type | Default | Description |
 |--|--|--|--|
-| state | `string` | present | Perform actions with hostgroups: `present` to add hostgroups, and `absent` to delete them.
-| hostgroups | `list` || Specify a list of hostgroups to create or remove. You can use the aliases `host_group`, `host_groups`, or `name` to refer to the hostgroups.
+| state | `string` | present | Perform actions with host groups: `present` to add host groups, and `absent` to delete them.
+| hostgroups | `list` || Specify a list of host groups to create or remove. You can use the aliases `host_group`, `host_groups`, or `name` to refer to the host groups.
 
 
 ## Hostgroup module examples:
 
 ### Example 1
-To create hostgroups you can use:
+To create host groups, you can use:
 ```yaml
-- name: Create hostgroups
+- name: Create host groups
   zabbix.zabbix.zabbix_hostgroup:
     state: present
     hostgroups:
@@ -150,9 +150,9 @@ To create hostgroups you can use:
 ```
 
 ### Example 2
-To delete two hostgroups: G1 and G2:
+To delete two host groups - G1 and G2:
 ```yaml
-- name: Delete hostgroups by name
+- name: Delete host groups by name
   zabbix.zabbix.zabbix_hostgroup:
     state: absent
     hostgroups:
@@ -189,25 +189,25 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">state</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left">present</td>
-            <td colspan=1 align="left">Perform actions with host: <code>present</code> to add host (update, in case the host is already created), and <code>absent</code> to delete them.</td>
+            <td colspan=1 align="left">Perform actions with host: <code>present</code> to add host (update, in case the host is already created) and <code>absent</code> to delete it.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">host</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Hostname to create. The name of an existing host in case of an update. You can use the aliases <code>host_name</code> to refer to the host name.</td>
+            <td colspan=1 align="left">Host name to create. The name of an existing host in case of an update. You can use the aliases <code>host_name</code> to refer to the host name.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">name</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The visible hostname. You can use the aliases <code>visible_name</code> to refer to the host name.</td>
+            <td colspan=1 align="left">The visible host name. You can use the aliases <code>visible_name</code> to refer to the host name.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">hostgroups</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The hostgroups that will replace the current host's hostgroups. Any hostgroups not specified in the task will be unlinked. If you are creating a new host, this field is required. You can use the aliases <code>host_group</code> or <code>host_groups</code> to refer to the hostgroups.</td>
+            <td colspan=1 align="left">The host groups that will replace the current host's host groups. Any host groups not specified in the task will be unlinked. If you are creating a new host, this field is required. You can use the aliases <code>host_group</code> or <code>host_groups</code> to refer to the host groups.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">templates</td>
@@ -250,7 +250,7 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">macros</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The macros that will replace the current host's macros. Any macros not specified in the task will be removed. If a macro of secret type specified, each execution of the task will result in an update. To remove all macros from a host, you can specify an empty list, <code>macros=[]</code>. Has additional options.</td>
+            <td colspan=1 align="left">The macros that will replace the current host's macros. Any macros not specified in the task will be removed. If a macro of secret type is specified, each execution of the task will result in an update. To remove all macros from a host, you can specify an empty list, <code>macros=[]</code>. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=4></td>
@@ -317,13 +317,13 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=3 align="left">tls_psk_identity</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">PSK identity.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td>
+            <td colspan=1 align="left">PSK identity.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameter, each execution of the task will result in an update.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_psk</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The preshared key, at least 32 hex digits.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameters, each execution of the task will result in an update.</td>
+            <td colspan=1 align="left">The preshared key, at least 32 hex digits.<br>If you are creating a new host and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing host and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the task includes this parameter, each execution of the task will result in an update.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">tls_issuer</td>
@@ -396,74 +396,74 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=2 align="left">details</td>
             <td colspan=1 align="left"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Additional details object for interface. Required with snmp interfaces. Has additional options.</td>
+            <td colspan=1 align="left">Additional details object for interface. Required with SNMP interfaces. Has additional options.</td>
         </tr>
         <tr>
             <td rowspan=11></td>
             <td colspan=1 align="left">version</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMP interface version. Required with snmp interfaces. Available values: <li>1<li>2<li>3</td>
+            <td colspan=1 align="left">SNMP interface version. Required with SNMP interfaces. Available values: <li>1<li>2<li>3</td>
         </tr>
         <tr>
             <td colspan=1 align="left">bulk</td>
             <td colspan=1 align="left"><code>bool</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Whether to use bulk SNMP. Required with snmp interfaces.</td>
+            <td colspan=1 align="left">Whether to use bulk SNMP. Required with SNMP interfaces.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">community</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMP community. Required with snmp interfaces. Used only with snmp interfaces version 1 and 2.</td>
+            <td colspan=1 align="left">SNMP community. Required with SNMP interfaces. Used only with SNMP interface version 1 and 2.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">max_repetitions</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Required with snmp interfaces. Used only with snmp interfaces version 2 and 3. Used only for zabbix versions above 6.4.</td>
+            <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Required with SNMP interfaces. Used only with SNMP interface version 2 and 3. Used only for Zabbix versions above 6.4.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">contextname</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 context name. Required with snmp interfaces version 3.</td>
+            <td colspan=1 align="left">SNMPv3 context name. Required with SNMP interface version 3.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">securityname</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 security name. Required with snmp interfaces version 3.</td>
+            <td colspan=1 align="left">SNMPv3 security name. Required with SNMP interface version 3.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">securitylevel</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 security level. Required with snmp interfaces version 3. Available values: <li>noAuthNoPriv<li>authNoPriv<li>authPriv</td>
+            <td colspan=1 align="left">SNMPv3 security level. Required with SNMP interface version 3. Available values: <li>noAuthNoPriv<li>authNoPriv<li>authPriv</td>
         </tr>
         <tr>
             <td colspan=1 align="left">authprotocol</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 authentication protocol. Required with snmp interfaces version 3 and securitylevel equals <code>authNoPriv</code>. Available values: <li>md5<li>sha1<li>sha224<li>sha256<li>sha384<li>sha512</td>
+            <td colspan=1 align="left">SNMPv3 authentication protocol. Required with SNMP interface version 3 and <code>securitylevel</code> set to <code>authNoPriv</code>. Available values: <li>md5<li>sha1<li>sha224<li>sha256<li>sha384<li>sha512</td>
         </tr>
         <tr>
             <td colspan=1 align="left">authpassphrase</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 authentication passphrase. Required with snmp interfaces version 3 and securitylevel equals <code>authNoPriv</code>.</td>
+            <td colspan=1 align="left">SNMPv3 authentication passphrase. Required with SNMP interface version 3 and <code>securitylevel</code> set to <code>authNoPriv</code>.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">privprotocol</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 privacy protocol. Required with snmp interfaces version 3 and securitylevel equals <code>authPriv</code>. Available values: <li>des<li>aes128<li>aes192<li>aes256<li>aes192c<li>aes256c</td>
+            <td colspan=1 align="left">SNMPv3 privacy protocol. Required with SNMP interface version 3 and <code>securitylevel</code> set to <code>authPriv</code>. Available values: <li>des<li>aes128<li>aes192<li>aes256<li>aes192c<li>aes256c</td>
         </tr>
         <tr>
             <td colspan=1 align="left">privpassphrase</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">SNMPv3 privacy passphrase. Required with snmp interfaces version 3 and securitylevel equals <code>authPriv</code>.</td>
+            <td colspan=1 align="left">SNMPv3 privacy passphrase. Required with SNMP interface version 3 and <code>securitylevel</code> set to <code>authPriv</code>.</td>
         </tr>
     </tbody>
 </table>
@@ -471,7 +471,7 @@ This module provides functionality to create, update, and delete hosts in Zabbix
 ## Host module examples:
 
 ### Example 1
-To create host with minimum parameters you can use this example. Note that the hostgroup parameter is required.
+To create host with minimum parameters, you can use this example. Note that the <code>hostgroup</code> parameter is required.
 ```yaml
 - name: Create host
   zabbix.zabbix.zabbix_host:
@@ -487,7 +487,7 @@ To create host with minimum parameters you can use this example. Note that the h
 ```
 
 ### Example 2
-To create host with maximum parameters you can use this example.
+To create host with maximum parameters, you can use this example.
 ```yaml
 - name: Create host with maximum parameters
   zabbix.zabbix.zabbix_host:
@@ -498,7 +498,7 @@ To create host with maximum parameters you can use this example.
     templates:
       - Zabbix agent active
     status: enabled
-    description: 'Example host'
+    description: 'Host example'
     name: 'Example host'
     tags:
       - tag: scope
@@ -506,7 +506,7 @@ To create host with maximum parameters you can use this example.
     macros:
       - macro: TEST_MACRO
         value: example
-        description: Description of example macros
+        description: Description of macro example
         type: text
     ipmi_authtype: default
     ipmi_privilege: user
@@ -529,7 +529,7 @@ To create host with maximum parameters you can use this example.
         very very long
         multiple string value
     interfaces:
-      - type: agent                       # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: agent                       # To specify an interface with default parameters (the IP will be 127.0.0.1)
       - type: ipmi
       - type: jmx
         ip: 192.168.100.51
@@ -558,7 +558,7 @@ To create host with maximum parameters you can use this example.
 ```
 
 ### Example 3
-To update host to empty parameters you can use this example.
+To update host to empty parameters, you can use this example.
 ```yaml
 - name: Clean all parameters from host
   zabbix.zabbix.zabbix_host:
@@ -592,7 +592,7 @@ To update host to empty parameters you can use this example.
 ```
 
 ### Example 4
-To update only one parameter, you can only specify the hostname (used for searching) and the desired parameter. The rest of the host parameters will not be changed. For example, if you want to turn off a host you can use the following example:
+To update only one parameter, you can specify just the host name (used for searching) and the desired parameter. The rest of the host parameters will not be changed. For example, if you want to turn off a host, you can use the following example:
 ```yaml
 - name: Update host status
   zabbix.zabbix.zabbix_host:
@@ -606,7 +606,7 @@ To update only one parameter, you can only specify the hostname (used for search
 ```
 
 ### Example 4
-To remove a host you can use:
+To remove a host, you can use:
 ```yaml
 - name: Delete host
   zabbix.zabbix.zabbix_host:
@@ -920,7 +920,7 @@ zabbix_password: zabbix
 ### Filter examples
 
 ### Example 2
-To select hosts by host groups name you can use the following example. In this example will be given all hosts, that are linked to any host groups, which names starts from 'Linux'. (Linux, Linux servers, Linux Ubuntu and etc.)
+To select hosts by host groups name, you can use the following example. In this example will be given all hosts, that are linked to any host groups, which names starts from 'Linux' (Linux, Linux servers, Linux Ubuntu and etc.).
 
 ```yaml
 ---
@@ -937,7 +937,7 @@ filter:
 ```
 
 ### Example 3
-To select hosts by certain host group name you can use the following example. In this example will be given all hosts, that are linked only to host group 'Linux'.
+To select hosts by certain host group name, you can use the following example. In this example will be given all hosts, that are linked only to host group 'Linux'.
 
 ```yaml
 ---
@@ -954,7 +954,7 @@ filter:
 ```
 
 ### Example 4
-To select hosts from several host groups you can use the following example.
+To select hosts from several host groups, you can use the following example.
 In this example will be given all hosts, that are linked to any host groups 'Linux', 'Linux Ubuntu' or all host group which names starts from 'Windows'.
 
 ```yaml
@@ -1000,7 +1000,7 @@ filter:
 ### Output examples
 
 ### Example 6
-To limit fields in output you can specified list of fields in output options.
+To limit fields in output, you can specified list of fields in output options.
 In this example will be given only name and two mandatory fields (hostid and host).
 
 ```yaml
@@ -1021,7 +1021,7 @@ output: name
 ```
 
 ### Example 7
-To give several output fields you need specify it in list format.
+To give several output fields, you need specify it in list format.
 In this example will be given name, status and two mandatory fields (hostid and host).
 
 ```yaml
@@ -1051,12 +1051,12 @@ For post processing you can use:
 
 ### Example 8
 To convert digit status to verbose, you can use `compose` from next example.
-To group by status (enabled, disabled) from output you can use `groups` from next example.
-To group by Zabbix host groups you can use `keyed_groups` from next example.
+To group by status (enabled, disabled) from output, you can use `groups` from next example.
+To group by Zabbix host groups, you can use `keyed_groups` from next example.
 
 **IMPORTANT**: Be sure, that necessary data will be present in output. For this example `groups` must be present for grouping with `keyed_groups`.
 
-**IMPORTANT**: Keep in mind, that all parameters from Zabbix will with prefix (by default `zabbix_`). And you need specify it in post processing. (zabbix_groups, zabbix_status and etc.)
+**IMPORTANT**: Keep in mind, that all parameters from Zabbix will with prefix (by default `zabbix_`). And you need specify it in post processing (zabbix_groups, zabbix_status and etc.).
 
 ```yaml
 ---
@@ -1179,7 +1179,7 @@ keyed_groups:
 ```
 
 ### Example 12
-For transform given interfaces to list of ip addresses you can use `compose` and following example.
+For transform given interfaces to list of ip addresses, you can use `compose` and following example.
 
 ```yaml
 ---
@@ -1204,7 +1204,7 @@ compose:
 ```
 
 ### Example 13
-For transform given host groups to list you can use 'compose' and following example.
+For transform given host groups to list, you can use 'compose' and following example.
 
 ```yaml
 ---
@@ -1232,7 +1232,7 @@ compose:
 You can use cache for inventory.
 During load cached data plugin compare input parameters. If any parameters, that impacts to given data were changed,
 (login, password, API token, url, output, filter, query) than cached data will be skipped and new data will be requested from Zabbix.
-For use caching you can use following example:
+For use caching, you can use following example:
 
 ```yaml
 ---
@@ -1257,9 +1257,9 @@ cache_connection: /tmp/zabbix_inventory
 ### Complex examples
 
 ### Example 15
-In this example you can use filter by host groups, templates, proxy, tags, names, status.
+In this example, you can use filter by host groups, templates, proxy, tags, names, status.
 Grouping by Zabbix host groups.
-Transform ip addresses to list of ip.
+Transform IP addresses to list of IP.
 
 ```yaml
 ---
@@ -1303,7 +1303,7 @@ keyed_groups:
 ```
 
 ### Example 16
-In this example you can filter by tag `Location` with empty value and grouping by status (enabled, disabled).
+In this example, you can filter by tag `Location` with empty value and grouping by status (enabled, disabled).
 In this example status was transformed from digit value to verbose value and than used in `keyed_groups` for grouping by verbose statuses.
 
 ```yaml

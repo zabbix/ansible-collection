@@ -82,9 +82,9 @@
         inventory:
           type_full: ''
 
-- name: Check msg in case of two interfaces one of type on the host
+- name: Check msg in case of two interfaces of one type on the host
   block:
-    - name: Test - Check failed status in case two interfaces one of type on the host
+    - name: Test - Check failed status in case of two interfaces of one type on the host
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces:

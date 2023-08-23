@@ -16,18 +16,18 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
 
 class TestCreating(TestModules):
-    """Class for testing the create of the host"""
+    """Class for testing creation of a host"""
     module = zabbix_host
 
     def test_create_host_wo_parameters(self):
         """
-        Testing the host create function without additional parameters.
+        Testing the host creation function without additional parameters.
 
         Expected result: the task has been changed and the host
         has been created successfully.
@@ -63,7 +63,7 @@ class TestCreating(TestModules):
 
     def test_create_host_w_all_parameters(self):
         """
-        Testing the host create function with all possible options.
+        Testing the host creation function with all possible options.
 
         Expected result: the task has been changed and the host
         has been created successfully.
@@ -87,13 +87,13 @@ class TestCreating(TestModules):
             'hostgroups': ['Linux servers'],
             'templates': ['Basic Linux'],
             'status': 'enabled',
-            'description': 'Example host',
+            'description': 'Host example',
             'name': 'Test host',
             'tags': [{'tag': 'scope', 'value': 'test'}],
             'macros': [
                 {'macro': 'TEST_MACRO',
                  'value': 'example',
-                 'description': 'Description of example macros',
+                 'description': 'Description of macro example',
                  'type': 'text'}],
             'ipmi_authtype': 'default',
             'ipmi_privilege': 'user',
@@ -138,7 +138,7 @@ class TestCreating(TestModules):
 
     def test_create_host_error(self):
         """
-        Testing the host create function in case of encountering an error
+        Testing the host creation function in case of encountering an error
         during the creation.
 
         Expected result: the task has been failed.

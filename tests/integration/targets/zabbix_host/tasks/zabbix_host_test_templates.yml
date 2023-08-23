@@ -17,7 +17,7 @@
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_template_update.result"
 
     # Check deleting template
-    - name: Test - Deleting one templates
+    - name: Test - Deleting one template
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         templates:
@@ -37,20 +37,20 @@
         templates: []
       register: zabbix_host_template_delete_all
 
-    - name: Assert that all template was deleted
+    - name: Assert that all templates were deleted
       ansible.builtin.assert:
         that:
           - zabbix_host_template_delete_all is changed
           - "'Successfully updated host: zabbix_test_host' in zabbix_host_template_delete_all.result"
 
-    # Check idempotence and removing all templates
+    # Check idempotence and remove all templates
     - name: Test - Deleting all templates from host again
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         templates: []
       register: zabbix_host_template_delete_all_again
 
-    - name: Assert that all template was deleted
+    - name: Assert that all templates were deleted
       ansible.builtin.assert:
         that:
           - zabbix_host_template_delete_all_again is not changed

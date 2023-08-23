@@ -12,7 +12,7 @@ class Zabbix_version:
     """
     Class for comparing Zabbix API version
 
-    :param zapi_version: Zabbix API Version
+    :param zapi_version: Zabbix API version
     :type zapi_version: str
 
     :rtype: bool
@@ -76,7 +76,7 @@ class Zabbix_version:
 def tag_to_dict_transform(tags):
     """
     The function converts tags into a dictionary,
-    where the key is the tag name, and the value is a list of tag values.
+    where the key is the tag name and the value is a list of tag values.
     Example input:
         [
             {'tag': 'component', 'value': 'application'},
@@ -120,14 +120,14 @@ default_values = {
 }
 
 # Dictionary for converting macro types to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/usermacro/object#host-macro
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/usermacro/object#host-macro)
 macro_types = {
     'text': '0',
     'secret': '1',
     'vault_secret': '2'}
 
-# Dictionary for converting ipmi authtype to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host
+# Dictionary for converting IPMI authtype to a numeric value
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 ipmi_authtype_type = {
     'default': '-1',
     'none': '0',
@@ -138,8 +138,8 @@ ipmi_authtype_type = {
     'rmcp+': '6'
 }
 
-# Dictionary for converting ipmi privilege to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host
+# Dictionary for converting IPMI privilege to a numeric value
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 ipmi_privilege_type = {
     'callback': '1',
     'user': '2',
@@ -148,8 +148,8 @@ ipmi_privilege_type = {
     'oem': '5'
 }
 
-# Dictionary for converting tls type to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host
+# Dictionary for converting TLS type to a numeric value
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 tls_type = {
     'unencrypted': 1,
     'psk': 2,
@@ -157,7 +157,7 @@ tls_type = {
 }
 
 # Dictionary for converting inventory mode to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 inventory_mode_types = {
     'automatic': '1',
     'manual': '0',
@@ -165,7 +165,7 @@ inventory_mode_types = {
 }
 
 # Dictionary with available inventory fields
-# https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host-inventory
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host-inventory)
 inventory_fields = {
     '1': 'type', '2': 'type_full', '3': 'name', '4': 'alias', '5': 'os',
     '6': 'os_full', '7': 'os_short', '8': 'serialno_a', '9': 'serialno_b',
@@ -191,15 +191,15 @@ inventory_fields = {
     '70': 'poc_2_notes'}
 
 # Dictionary for converting interface type to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#host-interface
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#host-interface)
 interface_types = {
     'agent': '1',
     'snmp': '2',
     'ipmi': '3',
     'jmx': '4'}
 
-# Dictionary for converting securitylevel type to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details-tag
+# Dictionary for converting security level type to a numeric value
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_securitylevel_types = {
     'noAuthNoPriv': '0',
     'authNoPriv': '1',
@@ -207,21 +207,21 @@ snmp_securitylevel_types = {
 }
 
 # Dictionary for converting authprotocol type to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details-tag
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_authprotocol_types = {
     'md5': '0', 'sha1': '1', 'sha224': '2',
     'sha256': '3', 'sha384': '4', 'sha512': '5'}
 
 # Dictionary for converting privprotocol type to a numeric value
-# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details-tag
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_privprotocol_types = {
     'des': '0', 'aes128': '1', 'aes192': '2',
     'aes256': '3', 'aes192c': '4', 'aes256c': '5'}
 
-# Dictionary for snmp parameters
+# Dictionary for SNMP parameters
 # If the new field only depends on the version, then it must be added here.
-# If the new field needs some logic, then it must be added in file zabbix_host.py in section with snmp checks.
-# https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#details
+# If the new field needs some logic, then it must be added in file zabbix_host.py in section with SNMP checks.
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_parameters = {
     '1': ['version', 'bulk', 'community'],
     '2': ['version', 'bulk', 'community'],
@@ -234,7 +234,7 @@ snmp_parameters = {
 }
 
 # Dictionary for tag operator parameters
-# See also https://www.zabbix.com/documentation/current/manual/api/reference/host/get
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/get)
 tags_compare_operators = {
     'contains': '0',
     'equals': '1',
@@ -245,7 +245,7 @@ tags_compare_operators = {
 }
 
 # All available query
-# See also https://www.zabbix.com/documentation/current/manual/api/reference/host/get
+# (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/get)
 host_subquery = [
     "selectDiscoveries", "selectDiscoveryRule", "selectGraphs", "selectHostDiscovery",
     "selectHostGroups", "selectHttpTests", "selectInterfaces", "selectInventory",

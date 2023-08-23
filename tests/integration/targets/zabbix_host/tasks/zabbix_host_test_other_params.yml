@@ -199,7 +199,7 @@
           - zabbix_host_visible_name_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_visible_name_again.result"
 
-- name: Check ipmi parameters
+- name: Check IPMI parameters
   block:
     # ipmi_authtype
     - name: Test - Set ipmi_authtype

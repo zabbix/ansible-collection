@@ -1,13 +1,13 @@
 ---
-- name: Integration tests for the module for creating hostgroups
+- name: Integration tests for the module for creating host groups
   block:
     - name: Documentation example tests
       ansible.builtin.include_tasks: zabbix_hostgroups_doc.yml
 
-    - name: Zabbix hostgroups test
+    - name: Zabbix host groups test
       ansible.builtin.include_tasks: zabbix_hostgroups_test.yml
   always:
-    - name: Cleanup a hostgroups
+    - name: Clean up host groups
       zabbix.zabbix.zabbix_hostgroup:
         state: absent
         hostgroups:
@@ -16,7 +16,7 @@
           - G1
           - G2
 
-    - name: Cleanup a test host
+    - name: Clean up a test host
       zabbix.zabbix.zabbix_host:
         state: absent
         host: zabbix_test_host

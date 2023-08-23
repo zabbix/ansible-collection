@@ -17,7 +17,7 @@
     templates:
       - Zabbix agent active
     status: enabled
-    description: 'Example host'
+    description: 'Host example'
     name: 'Example host'
     tags:
       - tag: scope
@@ -25,7 +25,7 @@
     macros:
       - macro: TEST_MACRO
         value: example
-        description: Description of example macros
+        description: Description of macro example
         type: text
     ipmi_authtype: default
     ipmi_privilege: user
@@ -48,7 +48,7 @@
         very very long
         multiple string value
     interfaces:
-      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: agent # To specify an interface with default parameters (the IP will be 127.0.0.1)
       - type: ipmi
       - type: jmx
         ip: 192.168.100.51
@@ -81,7 +81,7 @@
     templates:
       - Zabbix agent active
     status: enabled
-    description: 'Example host'
+    description: 'Host example'
     name: 'Example host'
     tags:
       - tag: scope
@@ -89,7 +89,7 @@
     macros:
       - macro: TEST_MACRO
         value: example
-        description: Description of example macros
+        description: Description of macro example
         type: text
     ipmi_authtype: default
     ipmi_privilege: user
@@ -112,7 +112,7 @@
         very very long
         multiple string value
     interfaces:
-      - type: agent # To specify an interface with default parameters (the ip will be 127.0.0.1)
+      - type: agent # To specify an interface with default parameters (the IP will be 127.0.0.1)
       - type: ipmi
       - type: jmx
         ip: 192.168.100.51

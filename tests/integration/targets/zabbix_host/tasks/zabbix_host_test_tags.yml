@@ -11,7 +11,7 @@
           - tag: without_value
       register: zabbix_host_tags_w_and_wo_value
 
-    - name: Assert that tags was updated
+    - name: Assert that tags were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_tags_w_and_wo_value is changed
@@ -27,14 +27,14 @@
             value: ''
       register: zabbix_host_tags_w_and_wo_value_again
 
-    - name: Assert that tags was not updated
+    - name: Assert that tags were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_tags_w_and_wo_value_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_tags_w_and_wo_value_again.result"
 
-    # Check tags with same name
-    - name: Test - Creating tags with same name
+    # Check tags with the same name
+    - name: Test - Creating tags with the same name
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         tags:
@@ -43,7 +43,7 @@
           - tag: tag_name
       register: zabbix_host_tags_w_same_name
 
-    - name: Assert that tags was updated
+    - name: Assert that tags were updated
       ansible.builtin.assert:
         that:
           - zabbix_host_tags_w_same_name is changed
@@ -59,7 +59,7 @@
             value: value
       register: zabbix_host_tags_w_same_name_again
 
-    - name: Assert that tags was not updated
+    - name: Assert that tags were not updated
       ansible.builtin.assert:
         that:
           - zabbix_host_tags_w_same_name_again is not changed
@@ -99,7 +99,7 @@
     tags: []
   register: zabbix_host_tags_clean_all
 
-- name: Assert that tags was updated
+- name: Assert that tags were updated
   ansible.builtin.assert:
     that:
       - zabbix_host_tags_clean_all is changed
@@ -111,7 +111,7 @@
     tags: []
   register: zabbix_host_tags_clean_all_again
 
-- name: Assert that tags was not updated
+- name: Assert that tags were not updated
   ansible.builtin.assert:
     that:
       - zabbix_host_tags_clean_all_again is not changed

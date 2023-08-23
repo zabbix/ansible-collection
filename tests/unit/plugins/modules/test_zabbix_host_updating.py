@@ -16,7 +16,7 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
@@ -243,13 +243,13 @@ class TestUpdating(TestModules):
             'hostgroups': ['Linux'],
             'templates': ['Basic Linux'],
             'status': 'enabled',
-            'description': 'Example host',
+            'description': 'Host example',
             'name': 'Test host',
             'tags': [{'tag': 'scope', 'value': 'test'}],
             'macros': [
                 {'macro': 'TEST_MACRO',
                  'value': 'example',
-                 'description': 'Description of example macros',
+                 'description': 'Description of macro example',
                  'type': 'text'}],
             'ipmi_authtype': 'default',
             'ipmi_privilege': 'user',

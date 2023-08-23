@@ -15,18 +15,18 @@ from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import 
 def mock_api_version(self):
     """
     Mock function to get Zabbix API version. In this case,
-    it doesn't matter which version of the API is returned.
+    it doesn't matter which version of API is returned.
     """
     return '6.0.18'
 
 
 class TestDeleting(TestModules):
-    """Class for testing the delete of the host"""
+    """Class for testing deletion of a host"""
     module = zabbix_host
 
     def test_delete_not_exist_host(self):
         """
-        Testing the delete host function in case the specified host
+        Testing the host deletion function in case the specified host
         does not exist.
 
         Expected result: the task has not been changed and the host
@@ -54,7 +54,7 @@ class TestDeleting(TestModules):
 
     def test_deleting_host(self):
         """
-        Testing the delete host function if the specified host exists.
+        Testing the host deletion function if the specified host exists.
 
         Expected result: the task has been changed and the host
         has been updated successfully.
@@ -85,7 +85,7 @@ class TestDeleting(TestModules):
 
     def test_deleting_host_error(self):
         """
-        Testing the delete host function in case of encountering an error
+        Testing the host deletion function in case of encountering an error
         during the deletion.
 
         Expected result: the task has been failed.
