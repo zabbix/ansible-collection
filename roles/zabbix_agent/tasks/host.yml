@@ -26,8 +26,9 @@
     "host" in ansible_run_tags
     or "remove" in ansible_run_tags
     or run_host_tasks is defined and run_host_tasks
-  delegate_to: '{{ zabbix_api_host }}'
+  delegate_to: localhost
   vars:
+    ansible_host: '{{ zabbix_api_host }}'
     ansible_connection: httpapi
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_httpapi_port: '{{ zabbix_api_port }}'
@@ -42,7 +43,6 @@
         "remove" not in ansible_run_tags
         and zabbix_host_state == "present"
       run_once: true
-      delegate_to: localhost
       zabbix.zabbix.zabbix_hostgroup:
         name: '{{ full_hostgroup_list }}'
         state: present
