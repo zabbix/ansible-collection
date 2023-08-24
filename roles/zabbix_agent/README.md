@@ -156,6 +156,8 @@ Firewalld is a recommended way of applying firewall rule as it works with iptabl
 | firewalld_zone | `string` | default | Firewalld zone for rule application.
 | firewall_allow_from | `string` || Limits source address of passive check using firewall rule. For firewalld, this setting will change the rule from simple to rich rule.
 
+***You can notice python module "firewall" sometimes fails to import during these tasks. Most common solution is to provide `ansible_python_interpreter` a correct path to legit python installation on target hosts for specific Operating Systems. Normally it is defined on inventory level.***
+
 ### **Logrotate** configuration for Zabbix agent
 
 You can modify rotation options of Zabbix agent[2] log file. It requires default option overriding in `logrotate_options` variable.
