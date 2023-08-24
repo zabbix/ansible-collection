@@ -55,6 +55,7 @@ Table of contents
     * [Playbook 7: Zabbix agentd running under custom user](#playbook-7)
     * [Playbook 8: Update Zabbix agentd to the latest minor version](#playbook-8)
     * [Playbook 9: Deploy Zabbix agentd without direct internet access, by using HTTP proxy](#playbook-9)
+    * [Playbook 10: Deploy Zabbix agent with passive checks only and add hosts to Zabbix](#playbook-10)
   * [License](#license)
 
 <!--te-->
@@ -509,7 +510,7 @@ Hints & Tags
 
         ansible-playbook -i inventory play.yml -t userparam
 
-- By default host module(Zabbix hosts management via API) is turned off. To enable it, set `run_host_tasks` variable to `True` or pass additional tag to playbook execution. Usefull tags combinations:
+- By default host module(Zabbix hosts management via API) is turned off. To enable it, set `run_host_tasks` variable to `True` or pass additional tag to playbook execution. Check example of [playbook 10](#playbook-10). Usefull tags combinations:
   - To deploy Zabbix agent and add hosts to Zabbix use next combo:
 
         ansible-playbook -i inventory play.yml -t all,host
@@ -699,7 +700,7 @@ Example Playbooks
           http_proxy: http://host.containers.internal:8123  # HTTP proxy address.
   ```
 
-- ### Playbook 11:
+- ### Playbook 10:
   **Deploy Zabbix agent with passive checks only and add hosts to Zabbix.**
   1. Active agent autoregistration does not work with passive checks. So we need to use Zabbix API to add new host with passive checks only. Enable host module with `run_host_tasks = True`.
   2. Fill Zabbix API connection properties
