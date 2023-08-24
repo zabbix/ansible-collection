@@ -697,6 +697,30 @@ Example Playbooks
           http_proxy: http://host.containers.internal:8123  # HTTP proxy address.
   ```
 
+- ### Playbook 11:
+  **Deploy Zabbix agent with passive checks only and add hosts to Zabbix.**
+  1. Active agent autoregistration does not work with passive checks. So we need to use Zabbix API to add new host with passive checks only. Enable host module with `run_host_tasks = True`.
+  2. Fill Zabbix API connection properties
+  3. Fill Zabbix host configuration. This time, we will add only template to assign. Default configuration will apply host name and agent connection properties from Ansible inventory.
+  4. Fill Zabbix agent configuration. Here we will allow Zabbix server to communicate with agent and apply firewall rule to accept connection only from Zabbix server.
+  ```yaml
+    - hosts: all
+      roles:
+        - role: zabbix.zabbix.zabbix_agent
+          run_host_tasks: True                             # enable Zabbix API host tasks;
+          ### Zabbix API properties
+          zabbix_api_host: zabbix.frontend.loc             # Zabbix frontend server;
+          zabbix_api_port: 443                             # Zabbix fronted connection port;
+          zabbix_api_user: Admin                           # Zabbix user name for API connection;
+          zabbix_api_password: zabbix                      # Zabbix user password for API connection;
+          zabbix_api_use_ssl: True                         # Use secure connection;
+          ### Zabbix host configuration
+          zabbix_host_templates: ["Linux by Zabbix agent"]  # Assign list of templates to the host;
+          ### Zabbix agent configuration
+          param_server: 256.256.256.256                     # address of Zabbix server to accept connections from;
+          firewall_allow_from: 256.256.256.256              # address of Zabbix server to allow connections from using firewalld;
+  ```
+
 License
 -------
 
