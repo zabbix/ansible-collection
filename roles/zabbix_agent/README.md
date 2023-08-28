@@ -465,8 +465,9 @@ To make it work, just fill Zabbix API connection parameters and pass additional 
 | zabbix_host_tls_connect | `string` | `{{ param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) for **passive checks**.
 | zabbix_host_tls_psk_identity | `string` | `{{ param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
 | zabbix_host_tls_psk_value | `string` | `{{ zabbix_agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
-| zabbix_host_tls_issuer | `string` || Set issuer of Zabbix agent certificate for TLS connection.
-| zabbix_host_tls_subject | `string` || Set subject of Zabbix agent certificate for TLS connection.
+| zabbix_host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `source_tlscertfile`. Requires Openssl installation on Ansible Controller.
+| zabbix_host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
+| zabbix_host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.
 |--|
 | zabbix_host_ipmi_authtype | `string` || Set IPMI [authentication type](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
 | zabbix_host_ipmi_privilege | `string` || Set IPMI [privilege level](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
