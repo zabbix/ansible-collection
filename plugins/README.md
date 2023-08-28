@@ -857,7 +857,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">strict</td>
             <td colspan=1 align="left"><code>bool</code></td>
             <td colspan=1 align="left">False</td>
-            <td colspan=1 align="left">If <code>yes</code> make invalid entries a fatal error, otherwise skip and continue. Since it is possible to use facts in the expressions they might not always be available and we ignore those errors by default.</td>
+            <td colspan=1 align="left">If <code>true</code> make invalid entries a fatal error, otherwise skip and continue. Since it is possible to use facts in the expressions they might not always be available and we ignore those errors by default.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">use_extra_vars</td>
@@ -1087,7 +1087,7 @@ groups:
   disabled: zabbix_status == "1"
 
 # Grouping with keyed_group.
-# As key for grouping will be used Jijna pattern. As result we will have the same groups as in Zabbix.
+# As key for grouping will be used jinja pattern. As result we will have the same groups as in Zabbix.
 keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
@@ -1114,7 +1114,7 @@ query:
   selectParentTemplates: ['name']
 
 # Grouping with keyed_group.
-# As key for grouping will be used Jijna pattern. As result we will have groups as template names in Zabbix.
+# As key for grouping will be used jinja pattern. As result we will have groups as template names in Zabbix.
 keyed_groups:
   - key: zabbix_parentTemplates | map(attribute='name')
     separator: ""
@@ -1142,7 +1142,7 @@ query:
   selectTags: 'extend'
 
 # Grouping with keyed_group.
-# As key for grouping will be used Jijna pattern. As result we will have groups tag names in Zabbix.
+# As key for grouping will be used jinja pattern. As result we will have groups tag names in Zabbix.
 keyed_groups:
   - key: zabbix_tags | map(attribute='tag')
     separator: ""
@@ -1172,7 +1172,7 @@ query:
   selectTags: 'extend'
 
 # Grouping with keyed_group.
-# As key for grouping will be used Jijna pattern. As result we will have groups tag values in Zabbix.
+# As key for grouping will be used jinja pattern. As result we will have groups tag values in Zabbix.
 keyed_groups:
   - key: dict(zabbix_tags | items2dict(key_name="tag"))['Location']
     separator: ""
