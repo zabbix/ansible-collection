@@ -3,7 +3,7 @@
   when: >-
     (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
     and source_tlscertfile is defined
-    and certificate_extract_data is defined and certificate_extract_data
+    and zabbix_host_get_cert_info is defined and zabbix_host_get_cert_info
   tags: [host]
   block:
     - name: Get certificate info
