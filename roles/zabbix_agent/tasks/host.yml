@@ -4,16 +4,18 @@
     (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
     and source_tlscertfile is defined
     and certificate_extract_data is defined and certificate_extract_data
+  tags: [host]
   block:
     - name: Get certificate info
-      local_action: ansible.builtin.command openssl x509 -in {{ source_tlscertfile }} -noout --subject --issuer
+      delegate_to: localhost
+      ansible.builtin.command: 'openssl x509 -in {{ source_tlscertfile }} -noout --subject --issuer'
+      # local_action: ansible.builtin.command openssl x509 -in {{ source_tlscertfile }} -noout --subject --issuer
       changed_when: false
       register: zabbix_agent_cert_data
     - name: 'SET FACT : Certificate issuer and subject'
       ansible.builtin.set_fact:
         zabbix_host_tls_issuer: '{{ zabbix_agent_cert_data.stdout | regex_search("issuer=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
-        zabbix_host_tls_subject: '{{ zabbix_agent_cert_data.stdout| regex_search("subject=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
-  tags: [host]
+        zabbix_host_tls_subject: '{{ zabbix_agent_cert_data.stdout | regex_search("subject=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
 
 ### Compone list of unique hostgroup names from all hosts, that reached this taks without failures.
 - name: 'Prepare hostgroups block'
