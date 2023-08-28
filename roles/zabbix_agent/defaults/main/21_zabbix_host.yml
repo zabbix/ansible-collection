@@ -14,8 +14,9 @@ zabbix_host_description: 'Managed by Ansible. Added with "zabbix_host" module.'
 zabbix_host_tls_accept: '{{ param_tlsconnect }}'
 ## Mirrors agent outgoing connection behavior. Override, if you need different encryption for passive checks.
 zabbix_host_tls_connect: '{{ param_tlsconnect }}'
-# zabbix_host_tls_issuer:
-# zabbix_host_tls_subject:
+zabbix_host_get_cert_info: False
+zabbix_host_tls_issuer: ""
+zabbix_host_tls_subject: ""
 
 ## Linked to agent parameter
 zabbix_host_tls_psk_identity: '{{ param_tlspskidentity }}'
