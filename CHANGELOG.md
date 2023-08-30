@@ -1,12 +1,13 @@
 # v1.1.0
 
+## Feature
+
 - Zabbix agent role: added config and deploy tags
 - Zabbix agent role: added host management using Zabbix API
 - Modules: Added zabbix_host module
 - Modules: Added zabbix_hostgroup module
 - Plugins: Added httpapi plugin
-
-# v1.0.7
+- Plugins: Added inventory plugin
 
 # v1.0.6
 
