@@ -429,7 +429,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 Zabbix host via Zabbix API
 -----
 Register agents with passive data collection only, using Zabbix API within the same role.
-To make it work, just fill Zabbix API connection parameters and pass additional [tag "host"](#hints--tags) to playbook execution.
+To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connection parameters and pass additional [tag "host"](#hints--tags) to playbook execution. Check example of [playbook 10](#playbook-10).
 
 ### API connection parameters
 
