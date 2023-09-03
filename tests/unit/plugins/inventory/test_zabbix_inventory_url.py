@@ -25,27 +25,27 @@ class TestUrlNormalization(unittest.TestCase):
 
     def test_check_url(self):
         """
-        This test checks function for normalization URL.
+        This test checks function of URL normalization.
 
         Test cases:
-            1. Only URL (without schema, api path)
-            2. URL with schema
-            3. The same as previous, but with additional slash at the end
-            4. Full URL with schema and api path
-            5. URL with additional path (/zabbix)
-            6. The same as previous, but with additional slash at the end
-            7. The same as previous, but with additional two slashes at the end
-            8. Full URL with schema, additional path and api path
-            9. URL with schema https
-            10. The same as previous, but with additional slash at the end
-            11. Full URL with https schema and api path
-            12. URL with additional path (/zabbix) and schema https
-            13. The same as previous, but with additional slash at the end
-            14. The same as previous, but with additional two slashes at the end
-            15. Full URL with https schema, additional path and api path
-            16. Empty URL and expected 'localhost'
+            1. Only URL (without schema, API path).
+            2. URL with schema.
+            3. Same as previous but with additional slash at the end.
+            4. Full URL with schema and API path.
+            5. URL with additional path (/zabbix).
+            6. Same as previous but with additional slash at the end.
+            7. Same as previous but with two additional slashes at the end.
+            8. Full URL with schema, additional path and API path.
+            9. URL with https schema.
+            10. Same as previous but with additional slash at the end.
+            11. Full URL with https schema and API path.
+            12. URL with additional path (/zabbix) and https schema.
+            13. Same as previous but with additional slash at the end.
+            14. Same as previous but with two additional slashes at the end.
+            15. Full URL with https schema, additional path and API path.
+            16. Empty URL and expected 'localhost'.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': '127.0.0.1', 'expected': 'http://127.0.0.1/api_jsonrpc.php'},

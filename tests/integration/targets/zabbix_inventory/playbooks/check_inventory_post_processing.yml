@@ -9,7 +9,7 @@
     ansible_httpapi_pass: zabbix
     ansible_host: testhost
   tasks:
-    # We need to be sure, that we have both test host
+    # We need to ensure that we have both test hosts.
     - name: Assert that only 'Integration test host 1' was given
       ansible.builtin.assert:
         that:
@@ -17,7 +17,7 @@
           - vars.hostvars['Integration test host 1'] is defined
           - vars.hostvars['Integration test host 2'] is defined
 
-    - name: Assert that all necessary groups was created
+    - name: Assert that all necessary groups were created
       ansible.builtin.assert:
         that:
           - groups | length == 6

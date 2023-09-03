@@ -4,8 +4,8 @@ Zabbix Plugins
 This file contains description, available arguments and examples of working with plugins and modules from official Zabbix collection.
 
 The following plugins are supported:
-- [http api](#http-api-plugin)
-- [inventory](#inventory-plugin)
+- [HTTP API](#http-api-plugin)
+- [Inventory](#inventory-plugin)
 
 The following modules are supported:
 - [zabbix_host](#host-module)
@@ -621,7 +621,7 @@ To remove a host, you can use:
 Inventory plugin
 ------------
 ## Inventory plugin overview:
-Inventory Plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation. Using the available filtering methods, the user can specify the search criteria for hosts in Zabbix, as well as limit the set of returned fields.
+Inventory plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation. Using the available filtering methods, the user can specify the search criteria for hosts in Zabbix, as well as limit the set of returned fields.
 
 ## Inventory plugin parameters:
 <table>
@@ -650,7 +650,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">cache_plugin</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">memory</td>
-            <td colspan=1 align="left">Cache plugin to use for the inventory's source data. To see all available methods you can use <code>ansible-doc -t cache -l</code>.</td>
+            <td colspan=1 align="left">Cache plugin to use for the inventory's source data. To see all available methods, you can use <code>ansible-doc -t cache -l</code>.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">cache_prefix</td>
@@ -668,7 +668,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">compose</td>
             <td colspan=1 align="left"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Create vars from jinja2 expressions.</td>
+            <td colspan=1 align="left">Create vars from Jinja2 expressions.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">connection_timeout</td>
@@ -680,76 +680,76 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">filter</td>
             <td colspan=1 align="left"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The parameter is used to select hosts in Zabbix. Each parameter refines the search. Between themselves, the parameters work according to the logic AND. If you specify <code>hostgroups</code> and <code>templates</code>, this means that a host will be found that is a member of any of the specified host groups and has any of the specified templates at the same time.</td>
+            <td colspan=1 align="left">The parameter is used to select hosts in Zabbix. Each parameter refines the search. For multiple parameters, 'AND' logic is applied. If you specify <code>hostgroups</code> and <code>templates</code>, this means a host that both is a member of any of the specified host groups and has any of the specified templates will be found.</td>
         </tr>
         <tr>
             <td rowspan=11></td>
             <td colspan=2 align="left">host</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of host names (technical name) for search hosts in Zabbix. Will be return hosts that are match to he given technical host names. Available wildcard search. Case sensitive search.</td>
+            <td colspan=1 align="left">List of host names (technical names) for host search in Zabbix. Will return hosts that match the given technical host names. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">hostgroups</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of host groups for search hosts in Zabbix. Will be return hosts that are linked to the given host groups. Available wildcard search. Case sensitive search.</td>
+            <td colspan=1 align="left">List of host groups for host search in Zabbix. Will return hosts that are linked to the given host groups. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">name</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of host names (visible name) for search hosts in Zabbix. Will be return hosts that are match to he given visible host names. Available wildcard search. Case sensitive search.</td>
+            <td colspan=1 align="left">List of host names (visible names) for host search in Zabbix. Will return hosts that match the given visible host names. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">proxy</td>
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of proxies for search hosts in Zabbix. Will be return hosts that are linked to the given proxies. Available wildcard search. Case sensitive search.</td>
+            <td colspan=1 align="left">List of proxies for host search in Zabbix. Will return hosts that are linked to the given proxies. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">status</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Desired host status for search hosts in Zabbix. Can be only <code>enabled</code> or <code>disabled</code>.</td>
+            <td colspan=1 align="left">Desired host status for host search in Zabbix. Can be only <code>enabled</code> or <code>disabled</code>.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">tags</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of tags for search hosts in Zabbix. The logic of work between different tags is regulated by another parameter <code>tags_behavior</code>.</td>
+            <td colspan=1 align="left">List of tags for host search in Zabbix. For multiple tags, the logic to be applied is determined by <code>tags_behavior</code> parameter.</td>
         </tr>
         <tr>
             <td rowspan=3></td>
             <td colspan=1 align="left">operator</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">contains</td>
-            <td colspan=1 align="left">Mode of searching by tags. Available values: <li>contains<li>equals<li>not like<li>not equal<li>exists<li>not exists</td>
+            <td colspan=1 align="left">Mode of searching by tags. Available values: <li>contains<li>equals<li>not like<li>not equal<li>exists<li>not exists.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">tag</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Tag name for search hosts in Zabbix.</td>
+            <td colspan=1 align="left">Tag name for host search in Zabbix.</td>
         </tr>
         <tr>
             <td colspan=1 align="left">value</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">''</td>
-            <td colspan=1 align="left">Tag value for search hosts in Zabbix.</td>
+            <td colspan=1 align="left">Tag value for host search in Zabbix.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">tags_behavior</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">and/or</td>
             <td colspan=1 align="left">Desired logic for searching by tags.
-            This parameter impacts to logic for searching by tags. Can be <code>and/or</code> or <code>or</code>.</td>
+            This parameter impacts the logic of searching by tags. Can be <code>and/or</code> or <code>or</code>.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">templates</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">List of templates for search hosts in Zabbix. Will be return hosts that are linked to the given templates. Available wildcard search. Case sensitive search.</td>
+            <td colspan=1 align="left">List of templates for host search in Zabbix. Will return hosts that are linked to the given templates. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">groups</td>
@@ -792,25 +792,25 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=2 align="left">key</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The key from input dictionary used to generate groups</td>
+            <td colspan=1 align="left">The key from input dictionary used to generate groups.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">parent_group</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">parent group for keyed group</td>
+            <td colspan=1 align="left">Parent group for keyed group.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">prefix</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">A keyed group name will start with this prefix</td>
+            <td colspan=1 align="left">A keyed group name will start with this prefix.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">separator</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">_</td>
-            <td colspan=1 align="left">separator used to build the keyed group name</td>
+            <td colspan=1 align="left">Separator used to build the keyed group name.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">trailing_separator</td>
@@ -827,7 +827,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             "_".
             Set this option to False to omit the leading underscore (or other
             separator) if no prefix is given.
-            If the group name is derived from a mapping the separator is still used
+            If the group name is derived from a mapping, the separator is still used
             to concatenate the items. To not use a separator in the group name at all, set the separator for the keyed group to an empty string instead.</td>
         </tr>
         <tr>
@@ -836,7 +836,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=1 align="left">extend</td>
             <td colspan=1 align="left">Object properties to be returned. List of available fields depends on Zabbix version. <br>See also https://www.zabbix.com/documentation/6.0/en/manual/api/reference/host/object
             <br>See also https://www.zabbix.com/documentation/current/en/manual/api/reference/host/object
-            <br>Fields <code>hostid</code> and <code>host</code> always will be given from Zabbix.</td>
+            <br>Fields <code>hostid</code> and <code>host</code> will always be given from Zabbix.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">prefix</td>
@@ -848,7 +848,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">query</td>
             <td colspan=1 align="left"><code>dict</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Additional parameters for getting linked objects for  the host.
+            <td colspan=1 align="left">Additional parameters for getting linked objects for the host.
             List of available fields depends on Zabbix version. Available query for Zabbix 6.0: selectDiscoveries<li>selectDiscoveryRule<li>selectGraphs, selectHostDiscovery<li>selectHostGroups<li>selectGroups<li>selectHttpTests, selectInterfaces<li>selectInventory<li>selectItems<li>selectMacros, selectParentTemplates<li>selectDashboards<li>selectTags<li>selectInheritedTags, selectTriggers<li>selectValueMaps.<br>
             In Zabbix 6.4 selectGroups was deprecated. Please use selectHostGroups instead.<br>
             See also https://www.zabbix.com/documentation/current/en/manual/api/reference/host/get#parameters</td>
@@ -857,7 +857,7 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">strict</td>
             <td colspan=1 align="left"><code>bool</code></td>
             <td colspan=1 align="left">False</td>
-            <td colspan=1 align="left">If <code>true</code> make invalid entries a fatal error, otherwise skip and continue. Since it is possible to use facts in the expressions they might not always be available and we ignore those errors by default.</td>
+            <td colspan=1 align="left">If <code>true</code>, make invalid entries a fatal error, otherwise skip and continue. Since it is possible to use facts in the expressions, they might not always be available and those errors are ignored by default.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">use_extra_vars</td>
@@ -887,13 +887,13 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=3 align="left">zabbix_password</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Password for login to Zabbix API.</td>
+            <td colspan=1 align="left">Password for logging in to Zabbix API.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">zabbix_user</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">User name for login to Zabbix API.</td>
+            <td colspan=1 align="left">User name for logging in to Zabbix API.</td>
         </tr>
     </tbody>
 </table>
@@ -902,15 +902,15 @@ Inventory Plugin allows Ansible users to generate a dynamic inventory based on d
 
 ### Example 1
 Minimal set of parameters for searching.
-You need specify name of plugin, url and credentials (login and password or API token).
+You need to specify the name of plugin, URL and credentials (login and password or API token).
 
-**IMPORTANT**: Keep in mind, that with this parameters will be given all hosts from Zabbix with all host parameters. This can create an excessive load on the Zabbix server. For select host and fields use the filter and output options.
+**IMPORTANT**: Keep in mind that with these parameters all hosts with all host parameters will be returned from Zabbix. This can create excessive load on Zabbix server. For selecting host and fields, use the filter and output options.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
@@ -920,53 +920,53 @@ zabbix_password: zabbix
 ### Filter examples
 
 ### Example 2
-To select hosts by host groups name, you can use the following example. In this example will be given all hosts, that are linked to any host groups, which names starts from 'Linux' (Linux, Linux servers, Linux Ubuntu and etc.).
+To select hosts by host groups name, you can use the following example. In this example, all hosts linked to any host groups the names of which start with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups (in string format with asterisk)
+# Add condition for searching by host groups (in string format with asterisk).
 filter:
   hostgroups: 'Linux*'
 ```
 
 ### Example 3
-To select hosts by certain host group name, you can use the following example. In this example will be given all hosts, that are linked only to host group 'Linux'.
+To select hosts by certain host group name, you can use the following example. In this example, all hosts linked only to host group 'Linux' will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups (in string format)
+# Add condition for searching by host groups (in string format).
 filter:
   hostgroups: Linux
 ```
 
 ### Example 4
 To select hosts from several host groups, you can use the following example.
-In this example will be given all hosts, that are linked to any host groups 'Linux', 'Linux Ubuntu' or all host group which names starts from 'Windows'.
+In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups the names of which start with 'Windows' will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups (in list format)
+# Add condition for searching by host groups (in list format).
 filter:
   hostgroups:
     - Linux
@@ -975,22 +975,22 @@ filter:
 ```
 
 ### Example 5
-You can use all available filter options for search hosts in Zabbix.
-You can use wildcard search for: hostgroups, templates, proxy, name (visible name), host (technical name).
-Also you can use for filtering `status` and search only enabled or disabled hosts. 
-Also you can use tags for searching by tag name or tag value.
-In this example will be given all hosts, that are linked to the host groups `Linux` and linked to any `'*http*'` or `'*agent*'` templates and visible name contains `sql` or `SQL`.
+You can use all available filter options to search for hosts in Zabbix.
+You can use wildcard search for: host groups, templates, proxy, name (visible name), host (technical name).
+Also, you can use `status` for filtering and search only for enabled or disabled hosts. 
+Also, you can use tags for searching by tag name or tag value.
+In this example, all hosts linked to the host group `Linux` and to any of the `'*http*'` or `'*agent*'` templates as well as containing `sql` or `SQL` in their visible names will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups, templates and visible name at the same time.
+# Add condition for searching by host groups, templates and visible name at the same time.
 filter:
   hostgroups: Linux
   templates: ['*HTTP*', '*agent*']
@@ -1000,19 +1000,19 @@ filter:
 ### Output examples
 
 ### Example 6
-To limit fields in output, you can specified list of fields in output options.
-In this example will be given only name and two mandatory fields (hostid and host).
+To limit fields in output, you can specify the list of fields in output options.
+In this example, only name and two mandatory fields (hostid and host) will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups.
+# Add condition for searching by host groups.
 filter:
   hostgroups: Linux
 
@@ -1021,30 +1021,30 @@ output: name
 ```
 
 ### Example 7
-To give several output fields, you need specify it in list format.
-In this example will be given name, status and two mandatory fields (hostid and host).
+To have several output fields, you need to specify those in the list format.
+In this example, name, status and two mandatory fields (hostid and host) will be returned.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups.
+# Add condition for searching by host groups.
 filter:
   hostgroups: Linux
 
-# Add list of output parameters
+# Add the list of output parameters.
 output:
   - name
   - status
 ```
 
-### Post processing examples
-For post processing you can use:
+### Postprocessing examples
+For postprocessing, you can use:
 - keyed_groups
 - groups
 - compose
@@ -1054,24 +1054,24 @@ To convert digit status to verbose, you can use `compose` from next example.
 To group by status (enabled, disabled) from output, you can use `groups` from next example.
 To group by Zabbix host groups, you can use `keyed_groups` from next example.
 
-**IMPORTANT**: Be sure, that necessary data will be present in output. For this example `groups` must be present for grouping with `keyed_groups`.
+**IMPORTANT**: Make sure that necessary data will be present in output. For this example, `groups` must be present for grouping with `keyed_groups`.
 
-**IMPORTANT**: Keep in mind, that all parameters from Zabbix will with prefix (by default `zabbix_`). And you need specify it in post processing (zabbix_groups, zabbix_status and etc.).
+**IMPORTANT**: Keep in mind that all parameters from Zabbix will have prefix (by default, `zabbix_`). And you need to specify it in postprocessing (zabbix_groups, zabbix_status, etc.).
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups.
+# Add condition for searching by host groups.
 filter:
   hostgroups: 'Linux*'
 
-# Add query for select host groups from hosts. This parameters will be used for grouping.
+# Add query for selecting host groups from hosts. This parameter will be used for grouping.
 query:
   selectGroups: ['name']
 
@@ -1080,14 +1080,14 @@ compose:
   zabbix_verbose_status: zabbix_status.replace("1", "Disabled").replace("0", "Enabled")
 
 # Grouping by status. 
-# If status '0', host will be added to group 'enabled'.
-# If status '1', host will be added to group 'disabled'.
+# If status is '0', host will be added to group 'enabled'.
+# If status is '1', host will be added to group 'disabled'.
 groups:
   enabled: zabbix_status == "0"
   disabled: zabbix_status == "1"
 
 # Grouping with keyed_group.
-# As key for grouping will be used jinja pattern. As result we will have the same groups as in Zabbix.
+# Jinja pattern will be used as a key for grouping. As a result, we will have the same groups as in Zabbix.
 keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
@@ -1100,154 +1100,154 @@ For grouping by template names.
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups
+# Add condition for searching by host groups.
 filter:
   hostgroups: 'Linux*'
 
-# Add query for select templates from hosts. This parameters will be used for grouping.
+# Add query for selecting templates from hosts. This parameter will be used for grouping.
 query:
   selectParentTemplates: ['name']
 
 # Grouping with keyed_group.
-# As key for grouping will be used jinja pattern. As result we will have groups as template names in Zabbix.
+# Jinja pattern will be used as a key for grouping. As a result, we will have groups corresponding to the template names in Zabbix.
 keyed_groups:
   - key: zabbix_parentTemplates | map(attribute='name')
     separator: ""
 ```
 
 ### Example 10
-For search by tag `Location` and grouping by tag names.
+For searching by `Location` tag and grouping by tag names.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by tag name
+# Add condition for searching by tag name.
 filter:
   tags:
     - tag: Location
 
-# Add query for select tags from hosts. This parameters will be used for grouping.
+# Add query for selecting tags from hosts. This parameter will be used for grouping.
 query:
   selectTags: 'extend'
 
 # Grouping with keyed_group.
-# As key for grouping will be used jinja pattern. As result we will have groups tag names in Zabbix.
+# Jinja pattern will be used as a key for grouping. As a result, we will have groups corresponding to the tag names in Zabbix.
 keyed_groups:
   - key: zabbix_tags | map(attribute='tag')
     separator: ""
 ```
 
 ### Example 11
-For search by tag `Location` and grouping by tag values.
-In this example hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
-than the following groups will be created: Riga, Berlin.
+For searching by `Location` tag and grouping by tag values.
+In this example, hosts will be grouped by tag value. If you have the tags: (Location: Riga, Location: Berlin),
+then the following groups will be created: Riga, Berlin.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by tag name
+# Add condition for searching by tag name.
 filter:
   tags:
     - tag: Location
 
-# Add query for select tags from hosts. This parameters will be used for grouping.
+# Add query for selecting tags from hosts. This parameter will be used for grouping.
 query:
   selectTags: 'extend'
 
 # Grouping with keyed_group.
-# As key for grouping will be used jinja pattern. As result we will have groups tag values in Zabbix.
+# Jinja pattern will be used as a key for grouping. As a result, we will have groups corresponding to the tag values in Zabbix.
 keyed_groups:
   - key: dict(zabbix_tags | items2dict(key_name="tag"))['Location']
     separator: ""
 ```
 
 ### Example 12
-For transform given interfaces to list of ip addresses, you can use `compose` and following example.
+For transforming given interfaces to the list of IP addresses, you can use `compose` and the following example.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups
+# Add condition for searching by host groups.
 filter:
   hostgroups: 'Linux*'
 
-# Add query for select interfaces from hosts. This parameters will be used for compose.
+# Add query for selecting interfaces from hosts. This parameter will be used for composing.
 query:
   selectInterfaces: ['ip']
 
-# Add compose for transformation Zabbix interfaces to list of ip addresses
+# Add 'compose' for transforming Zabbix interfaces to the list of IP addresses.
 compose:
   zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
 ```
 
 ### Example 13
-For transform given host groups to list, you can use 'compose' and following example.
+For transforming given host groups to the list, you can use 'compose' and the following example.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups
+# Add condition for searching by host groups.
 filter:
   hostgroups: 'Linux*'
 
-# Add query for select hostgroups from hosts. This parameters will be used for compose.
+# Add query for selecting host groups from hosts. This parameter will be used for composing.
 query:
   selectGroups: ['name']
 
-# Add compose for transformation Zabbix host groups to list of host groups
+# Add 'compose' for transforming Zabbix host groups to the list of host groups.
 compose:
   zabbix_groups_list: zabbix_groups | map(attribute='name')
 ```
 
 ### Example 14
 You can use cache for inventory.
-During load cached data plugin compare input parameters. If any parameters, that impacts to given data were changed,
-(login, password, API token, url, output, filter, query) than cached data will be skipped and new data will be requested from Zabbix.
-For use caching, you can use following example:
+During the loading of cached data, the plugin will compare the input parameters. If any parameters impacting the given data
+(login, password, API token, URL, output, filter, query) have been changed, then cached data will be skipped and new data will be requested from Zabbix.
+For caching, you can use the following example:
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search by host groups
+# Add condition for searching by host groups.
 filter:
   hostgroups: 'Linux*'
 
-# Add caching options
+# Add caching options.
 cache: yes
 cache_plugin: jsonfile
 cache_timeout: 7200
@@ -1257,20 +1257,20 @@ cache_connection: /tmp/zabbix_inventory
 ### Complex examples
 
 ### Example 15
-In this example, you can use filter by host groups, templates, proxy, tags, names, status.
+In this example, you can use filtering by host groups, templates, proxy, tags, names, status.
 Grouping by Zabbix host groups.
-Transform IP addresses to list of IP.
+Transforming IP addresses to the list of IP.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search
+# Add condition for searching.
 filter:
   hostgroups: ['Linux', 'Linux servers']
   templates: ['*HTTP*', '*agent*']
@@ -1285,16 +1285,16 @@ filter:
       value: Riga
       operator: equals
 
-# Add query for host groups and interfaces
+# Add query for host groups and interfaces.
 query:
   selectGroups: ['name']
   selectInterfaces: ['ip']
 
-# Add output
+# Add output.
 output:
   - name
 
-# Add post processing. Converting zabbix_interfaces to list of interfaces and creating groups, based on zabbix host groups.
+# Add postprocessing for converting zabbix_interfaces to the list of interfaces and creating groups based on Zabbix host groups.
 compose:
   zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
 keyed_groups:
@@ -1303,34 +1303,34 @@ keyed_groups:
 ```
 
 ### Example 16
-In this example, you can filter by tag `Location` with empty value and grouping by status (enabled, disabled).
-In this example status was transformed from digit value to verbose value and than used in `keyed_groups` for grouping by verbose statuses.
+In this example, you can apply filtering by `Location` tag with empty value and grouping by status (enabled, disabled).
+In this example, status was transformed from digit value to verbose value and then used in `keyed_groups` for grouping by verbose statuses.
 
 ```yaml
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 
-# Set credentials
+# Set credentials.
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add condition for search
+# Add condition for searching.
 filter:
   tags:
     - tag: Location
       value: ''
       operator: equals
 
-# Add query for tags
+# Add query for tags.
 query:
   selectTags: 'extend'
 
-# Add output
+# Add output.
 output:
   - name
 
-# Add post processing
+# Add postprocessing.
 keyed_groups:
   - key: zabbix_verbose_status
     separator: ""

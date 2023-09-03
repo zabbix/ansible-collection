@@ -9,7 +9,7 @@
     ansible_httpapi_pass: zabbix
     ansible_host: testhost
   tasks:
-    - name: Create host hostgroups for testing
+    - name: Create host groups for testing
       zabbix.zabbix.zabbix_hostgroup:
         state: present
         hostgroups:
@@ -32,7 +32,7 @@
         macros:
           - macro: TEST_MACRO
             value: example
-            description: Description of example macros
+            description: Description of macro example
             type: text
         interfaces:
           - type: agent

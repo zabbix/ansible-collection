@@ -25,18 +25,18 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_simple_params(self):
         """
-        This test checks function for comparing simple arguments in input parameters.
+        This test checks function of comparing simple arguments in input parameters.
 
         Test cases:
-            1. Old and new values are the same
-            2. Old and new values are difference
-            3. Old and new values are difference, but old is include part of new value
-            4. Old value is empty
-            5. New value is empty
-            6. Old value is None
-            7. New value is None
+            1. Old and new values are the same.
+            2. Old and new values are different.
+            3. Old and new values are different, but the old one includes a part of the new value.
+            4. Old value is empty.
+            5. New value is empty.
+            6. Old value is None.
+            7. New value is None.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -59,19 +59,19 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_output(self):
         """
-        This test checks function for comparing output arguments in input parameters.
+        This test checks function of comparing output arguments in input parameters.
 
         Test cases:
-            1. Old and new values are the same
-            2. Old and new values are the same but set as a list
-            3. Old and new values are the same but set as a list in different orders
-            4. Old value has another one elements in list
-            5. New value has another one elements in list
-            6. New value is empty
-            7. Old value is empty
-            8. Old and new values are empty at the same time
+            1. Old and new values are the same.
+            2. Old and new values are the same but set as a list.
+            3. Old and new values are the same but set as a list in a different order.
+            4. Old value has one more element in the list.
+            5. New value has one more element in the list.
+            6. New value is empty.
+            7. Old value is empty.
+            8. Old and new values are empty at the same time.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -93,23 +93,23 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_query(self):
         """
-        This test checks function for comparing query arguments in input parameters.
+        This test checks function of comparing query arguments in input parameters.
 
         Test cases:
-            1. Old and new values are the same
-            2. Old and new values are the same but set as a list
-            3. Old and new values are the same but set as a list and with two values
-            4. Old and new values are the same but set as a list in different orders
-            5. New value has another one elements in list
-            6. Old value has another one elements in list
-            7. New value has another one query
-            8. Old value has another one query
-            9. Different values
-            10. New value is empty
-            11. Old value is empty
-            12. New and old values are empty at the same time
+            1. Old and new values are the same.
+            2. Old and new values are the same but set as a list.
+            3. Old and new values are the same but set as a list and with two values.
+            4. Old and new values are the same but set as a list in a different order.
+            5. New value has one more element in the list.
+            6. Old value has one more element in the list.
+            7. New value has one more query.
+            8. Old value has one more query.
+            9. Different values.
+            10. New value is empty.
+            11. Old value is empty.
+            12. New and old values are empty at the same time.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -144,14 +144,14 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_filter(self):
         """
-        This test checks function for comparing input arguments.
+        This test checks function of comparing input arguments.
 
         Test cases:
-            1. Old and new values are the same
-            2. Old value has another one elements in list
-            3. New value has another one elements in list
+            1. Old and new values are the same.
+            2. Old value has one more element in the list.
+            3. New value has one more element in the list.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -171,20 +171,20 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_filter_simple(self):
         """
-        This test checks function for comparing simple input arguments.
+        This test checks function of comparing simple input arguments.
 
         Test cases:
-            1. Old and new values are the same
-            2. Old and new values are different
-            3. Old and new values are the same, but in list
-            4. Old and new values are the same, but in list with two values per each
-            5. Like in previous, but in different orders
-            6. Old value has another one values
-            7. New value has another one values
-            8. Old value is empty
-            9. New value is empty
+            1. Old and new values are the same.
+            2. Old and new values are different.
+            3. Old and new values are the same but set as a list.
+            4. Old and new values are the same but set as a list with two values each.
+            5. Same as previous but in a different order.
+            6. Old value has one more element.
+            7. New value has one more element.
+            8. Old value is empty.
+            9. New value is empty.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -209,19 +209,19 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_filter_status_and_tags_behavior(self):
         """
-        This test checks function for comparing input arguments.
+        This test checks function of comparing input arguments.
 
         Test cases:
-            1. Status value the same 'enabled'
-            2. Status value the same 'disabled'
-            3. Status value the different
-            4. Like in previous, but in different orders
-            5. tags_behavior value the same 'or'
-            6. tags_behavior value the same 'and/or'
-            7. tags_behavior value the different
-            8. Like in previous, but in different orders
+            1. Status value is the same, i.e., 'enabled'.
+            2. Status value is the same, i.e., 'disabled'.
+            3. Status values are different.
+            4. Same as previous but in a different order.
+            5. tags_behavior value is the same, i.e., 'or'.
+            6. tags_behavior value is the same, i.e., 'and/or'.
+            7. tags_behavior values are different.
+            8. Same as previous but in a different order.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -243,19 +243,19 @@ class TestCompareCachedInputArgs(unittest.TestCase):
 
     def test_compare_input_args_filter_tags(self):
         """
-        This test checks function for comparing input arguments.
+        This test checks function of comparing input arguments.
 
         Test cases:
-            1. The same value
-            2. Values have two values, but again the same
-            3. Like in previous, but in different orders
-            4. New value has another one tag
-            5. Old value has another one tag
-            6. Different count of elements in the first tag in new value
-            7. Different count of elements in the first tag in old value
-            8. The same value, but in different orders
+            1. The same value.
+            2. Two equal values.
+            3. Same as previous but in a different order.
+            4. New value has one more tag.
+            5. Old value has one more tag.
+            6. Different count of elements in the first tag in new value.
+            7. Different count of elements in the first tag in old value.
+            8. The same values but in a different order.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [

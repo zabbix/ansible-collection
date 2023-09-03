@@ -9,20 +9,20 @@
     ansible_httpapi_pass: zabbix
     ansible_host: testhost
   tasks:
-    - name: Assert status is defined
+    - name: Assert that status is defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_status'] == '0'
           - vars.hostvars['Integration test host 2']['zabbix_test_status'] == '1'
 
-    # Host parameter always must be present
-    - name: Assert host name is defined
+    # Host parameter must always be present.
+    - name: Assert that host name is defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_host'] == 'Integration test host 1'
           - vars.hostvars['Integration test host 2']['zabbix_test_host'] == 'Integration test host 2'
 
-    - name: Assert Discovery is defined
+    - name: Assert that discovery is defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_hostDiscovery'] is defined
@@ -32,43 +32,43 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_discoveryRule'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_discoveryRule'] is defined
 
-    - name: Assert Graphs is defined
+    - name: Assert that graphs are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_graphs'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_graphs'] is defined
 
-    - name: Assert Groups is defined
+    - name: Assert that groups are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_groups'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_groups'] is defined
 
-    - name: Assert HTTP Tests is defined
+    - name: Assert that HTTP tests are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_httpTests'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_httpTests'] is defined
 
-    - name: Assert InheritedTags is defined
+    - name: Assert that inherited tags are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_inheritedTags'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_inheritedTags'] is defined
 
-    - name: Assert Interfaces is defined
+    - name: Assert that interfaces are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_interfaces'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_interfaces'] is defined
 
-    - name: Assert Inventory is defined
+    - name: Assert that inventory is defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_inventory'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_inventory'] is defined
 
-    - name: Assert Items is defined
+    - name: Assert that items are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_items'] is defined
@@ -76,13 +76,13 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_items'] | length == 3
           - vars.hostvars['Integration test host 2']['zabbix_test_items'] | length == 3
 
-    - name: Assert Macros is defined
+    - name: Assert that macros are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_macros'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_macros'] is defined
 
-    - name: Assert Templates is defined
+    - name: Assert that templates are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_parentTemplates'] is defined
@@ -90,7 +90,7 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_parentTemplates'] | length == 1
           - vars.hostvars['Integration test host 2']['zabbix_test_parentTemplates'] | length == 1
 
-    - name: Assert Tags is defined
+    - name: Assert that tags are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_tags'] is defined
@@ -98,7 +98,7 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_tags'] | length == 1
           - vars.hostvars['Integration test host 2']['zabbix_test_tags'] | length == 1
 
-    - name: Assert Triggers is defined
+    - name: Assert that triggers are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_triggers'] is defined
@@ -106,13 +106,13 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_triggers'] | length == 1
           - vars.hostvars['Integration test host 2']['zabbix_test_triggers'] | length == 1
 
-    - name: Assert Value Maps is defined
+    - name: Assert that value maps are defined
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1']['zabbix_test_valuemaps'] is defined
           - vars.hostvars['Integration test host 2']['zabbix_test_valuemaps'] is defined
 
-    # Change status for Integration test host 2
+    # Change status for Integration test host 2.
     - name: Change status for 'Integration test host 2'
       zabbix.zabbix.zabbix_host:
         state: present
@@ -128,7 +128,7 @@
           - vars.hostvars['Integration test host 1']['zabbix_test_status'] == '0'
           - vars.hostvars['Integration test host 2']['zabbix_test_status'] == '0'
 
-    # Change status for Integration test host 2 back
+    # Change status for Integration test host 2 back.
     - name: Change status for 'Integration test host 2'
       zabbix.zabbix.zabbix_host:
         state: present

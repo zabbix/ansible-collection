@@ -10,20 +10,20 @@ DOCUMENTATION = r'''
 name: zabbix_inventory
 author:
     - Zabbix Ltd (@zabbix)
-short_description: Zabbix Inventory Plugin
+short_description: Zabbix inventory plugin
 description:
     - This plugin is designed to work with Zabbix API.
-    - This Inventory Plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation.
+    - This inventory plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation.
     - Using the available filtering methods, the user can specify the search criteria for hosts in Zabbix, as well as limit the set of returned fields.
 options:
     zabbix_user:
         type: str
-        description: User name for login to Zabbix API.
+        description: User name for logging in to Zabbix API.
         env:
             - name: ZABBIX_USER
     zabbix_password:
         type: str
-        description: Password for login to Zabbix API.
+        description: Password for logging in to Zabbix API.
         env:
             - name: ZABBIX_PASSWORD
     zabbix_api_token:
@@ -67,7 +67,7 @@ options:
             - List of available fields depends on Zabbix version.
             - See also U(https://www.zabbix.com/documentation/6.0/en/manual/api/reference/host/object)
             - See also U(https://www.zabbix.com/documentation/current/en/manual/api/reference/host/object)
-            - Fields 'hostid' and 'host' always will be given from Zabbix.
+            - Fields 'hostid' and 'host' will always be given from Zabbix.
     query:
         type: dict
         default: {}
@@ -85,71 +85,71 @@ options:
         default: {}
         description:
             - The parameter is used to select hosts in Zabbix. Each parameter refines the search.
-            - Between themselves, the parameters work according to the logic AND.
-            - If you specify hostgroups and templates, this means that a host will be found that is a member of any of
-              the specified host groups and has any of the specified templates at the same time.
+            - For multiple parameters, 'AND' logic is applied.
+            - If you specify host groups and templates, this means a host that both is a member of any
+              of the specified host groups and has any of the specified templates will be found.
         suboptions:
             templates:
                 type: list
                 elements: str
                 description:
-                    - List of templates for search hosts in Zabbix.
-                    - Will be return hosts that are linked to the given templates.
-                    - Available wildcard search.
-                    - Case sensitive search.
+                    - List of templates for host search in Zabbix.
+                    - Will return hosts that are linked to the given templates.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
             hostgroups:
                 type: list
                 elements: str
                 description:
-                    - List of host groups for search hosts in Zabbix.
-                    - Will be return hosts that are linked to the given host groups.
-                    - Available wildcard search.
-                    - Case sensitive search.
+                    - List of host groups for host search in Zabbix.
+                    - Will return hosts that are linked to the given host groups.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
             proxy:
                 type: list
                 elements: str
                 description:
-                    - List of proxies for search hosts in Zabbix.
-                    - Will be return hosts that are linked to the given proxies.
-                    - Available wildcard search.
-                    - Case sensitive search.
+                    - List of proxies for host search in Zabbix.
+                    - Will return hosts that are linked to the given proxies.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
             name:
                 type: list
                 elements: str
                 description:
-                    - List of host names (visible name) for search hosts in Zabbix.
-                    - Will be return hosts that are match to he given visible host names.
-                    - Available wildcard search.
-                    - Case sensitive search.
+                    - List of host names (visible names) for host search in Zabbix.
+                    - Will return hosts that match the given visible host names.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
             host:
                 type: list
                 elements: str
                 description:
-                    - List of host names (technical name) for search hosts in Zabbix.
-                    - Will be return hosts that are match to he given technical host names.
-                    - Available wildcard search.
-                    - Case sensitive search.
+                    - List of host names (technical names) for host search in Zabbix.
+                    - Will return hosts that match the given technical host names.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
             status:
                 type: str
                 choices: [ enabled, disabled ]
                 description:
-                    - Desired host status for search hosts in Zabbix.
+                    - Desired host status for host search in Zabbix.
                     - Can be only 'enabled' or 'disabled'.
             tags:
                 type: list
                 elements: dict
                 description:
-                    - List of tags for search hosts in Zabbix.
-                    - The logic of work between different tags is regulated by another parameter 'tags_behavior'
+                    - List of tags for host search in Zabbix.
+                    - For multiple tags, the logic to be applied is determined by 'tags_behavior' parameter
                 suboptions:
                     tag:
                         type: str
-                        description: Tag name for search hosts in Zabbix.
+                        description: Tag name for host search in Zabbix.
                         required: true
                     value:
                         type: str
                         default: ''
-                        description: Tag value for search hosts in Zabbix.
+                        description: Tag value for host search in Zabbix.
                     operator:
                         type: str
                         description: Mode of searching by tags.
@@ -161,8 +161,8 @@ options:
                 choices: ['and/or', 'or']
                 description:
                     - Desired logic for searching by tags.
-                    - This parameter impacts to logic for searching by tags.
-                    - Specify logic of search between tags.
+                    - This parameter impacts the logic of searching by tags.
+                    - Specify the logic of searching by multiple tags.
 extends_documentation_fragment:
     - constructed
     - inventory_cache
@@ -170,9 +170,9 @@ extends_documentation_fragment:
 
 EXAMPLES = r'''
 # Minimal set of parameters for searching.
-# You need specify name of plugin, url and credentials (login and password or API token).
-# IMPORTANT: Keep in mind, that with this parameters will be given all hosts from Zabbix with all host parameters.
-# This can create an excessive load on the Zabbix server. For select host and fields use the filter and output options.
+# You need to specify the name of plugin, URL and credentials (login and password or API token).
+# IMPORTANT: Keep in mind that with these parameters all hosts with all host parameters will be returned from Zabbix.
+# This can create excessive load on Zabbix server. For selecting host and fields, use the filter and output options.
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
@@ -182,8 +182,8 @@ zabbix_password: zabbix
 
 # FILTER EXAMPLES
 
-# To select hosts by host groups name you can use the following example.
-# In this example will be given all hosts, that are linked to any host groups, which names starts from 'Linux'. (Linux, Linux servers, Linux Ubuntu and etc.)
+# To select hosts by host groups name, you can use the following example.
+# In this example, all hosts linked to any host groups the names of which start with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -191,8 +191,8 @@ zabbix_password: zabbix
 filter:
   hostgroups: 'Linux*'
 
-# To select hosts by certain host group name you can use the following example.
-# In this example will be given all hosts, that are linked only to host group 'Linux'.
+# To select hosts by certain host group name, you can use the following example.
+# In this example, all hosts linked only to host group 'Linux' will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -200,8 +200,8 @@ zabbix_password: zabbix
 filter:
   hostgroups: Linux
 
-# To select hosts from several host groups you can use the following example.
-# In this example will be given all hosts, that are linked to any host groups 'Linux', 'Linux Ubuntu' or all host group which names starts from 'Windows'.
+# To select hosts from several host groups, you can use the following example.
+# In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups the names of which start with 'Windows' will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -212,12 +212,12 @@ filter:
     - Linux Ubuntu
     - 'Windows*'
 
-# You can use all available filter options for search hosts in Zabbix.
-# You can use wildcard search for: hostgroups, templates, proxy, name (visible name), host (technical name).
-# Also you can use for filtering 'status' and search only enabled or disabled hosts.
-# Also you can use tags for searching by tag name or tag value.
-# In this example will be given all hosts, that are linked to the host groups 'Linux' and linked to any '*http*' or '*agent*' templates and
-# visible name contains 'sql' or 'SQL'.
+# You can use all available filter options to search for hosts in Zabbix.
+# You can use wildcard search for: host groups, templates, proxy, name (visible name), host (technical name).
+# Also, you can use 'status' for filtering and search only for enabled or disabled hosts.
+# Also, you can use tags for searching by tag name or tag value.
+# In this example, all hosts linked to the host group 'Linux' and to any of the '*http*' or '*agent*' templates as well as
+# containing 'sql' or 'SQL' in their visible names will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -230,8 +230,8 @@ filter:
 
 # OUTPUT EXAMPLES
 
-# To limit fields in output you can specified list of fields in output options.
-# In this example will be given only name and two mandatory fields (hostid and host).
+# To limit fields in output, you can specify the list of fields in output options.
+# In this example, only name and two mandatory fields (hostid and host) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -240,8 +240,8 @@ filter:
   hostgroups: Linux
 output: name
 
-# To give several output fields you need specify it in list format.
-# In this example will be given name, status and two mandatory fields (hostid and host).
+# To have several output fields, you need to specify those in the list format.
+# In this example, name, status and two mandatory fields (hostid and host) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -253,20 +253,20 @@ output:
   - status
 
 
-# POST PROCESSING EXAMPLES
+# POSTPROCESSING EXAMPLES
 
-# For post processing you can use:
+# For postprocessing, you can use:
 # - keyed_groups
 # - groups
 # - compose
 
 # To convert digit status to verbose, you can use 'compose' from next example.
-# To group by status (enabled, disabled) from output you can use 'groups' from next example.
-# To group by Zabbix host groups you can use 'keyed_groups' from next example.
-# IMPORTANT: Be sure, that necessary data will be present in output. For this example 'groups' must be present for
+# To group by status (enabled, disabled) from output, you can use 'groups' from next example.
+# To group by Zabbix host groups, you can use 'keyed_groups' from next example.
+# IMPORTANT: Make sure that necessary data will be present in output. For this example, 'groups' must be present for
 # grouping with 'keyed_groups'.
-# IMPORTANT: Keep in mind, that all parameters from Zabbix will with prefix (by default 'zabbix_').
-# And you need specify it in post processing. (zabbix_groups, zabbix_status and etc.)
+# IMPORTANT: Keep in mind that all parameters from Zabbix will have prefix (by default, 'zabbix_').
+# And you need to specify it in postprocessing (zabbix_groups, zabbix_status, etc.).
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -284,14 +284,14 @@ keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
 
-# For grouping by template names. Other parameters (credentials, url and etc.) were skipped in example.
+# For grouping by template names. Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectParentTemplates: ['name']
 keyed_groups:
   - key: zabbix_parentTemplates | map(attribute='name')
     separator: ""
 
-# For search by tag 'Location' and grouping by tag names. Other parameters (credentials, url and etc.) were skipped in example.
+# For searching by 'Location' tag and grouping by tag names. Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectTags: 'extend'
 filter:
@@ -301,9 +301,9 @@ keyed_groups:
   - key: zabbix_tags | map(attribute='tag')
     separator: ""
 
-# For search by tag 'Location' and grouping by tag values. Other parameters (credentials, url and etc.) were skipped in example.
-# In this example hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
-# than the following groups will be created: Ring, Berlin.
+# For searching by 'Location' tag and grouping by tag values. Other parameters (credentials, URL, etc.) were skipped in this example.
+# In this example, hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
+# then the following groups will be created: Riga, Berlin.
 query:
   selectTags: 'extend'
 filter:
@@ -313,14 +313,15 @@ keyed_groups:
   - key: dict(zabbix_tags | items2dict(key_name="tag"))['Location']
     separator: ""
 
-# For transform given host groups to list you can use 'compose' and following example. Other parameters (credentials, url and etc.) were skipped in example.
+# For transforming given host groups to the list, you can use 'compose' and the following example.
+# Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectGroups: ['name']
 compose:
   zabbix_groups_list: zabbix_groups | map(attribute='name')
 
-# For transform given interfaces to list of ip addresses you can use 'compose' and following example.
-# Other parameters (credentials, url and etc.) were skipped in example.
+# For transforming given interfaces to the list of IP addresses, you can use 'compose' and the following example.
+# Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectInterfaces: ['ip']
 compose:
@@ -330,9 +331,9 @@ compose:
 # CACHING EXAMPLES
 
 # You can use cache for inventory.
-# During load cached data plugin compare input parameters. If any parameters, that impacts to given data were changed,
-# (login, password, API token, url, output, filter, query) than cached data will be skipped and new data will be requested from Zabbix.
-# For use caching you can use following example:
+# During the loading of cached data, the plugin will compare the input parameters. If any parameters impacting the given data
+# (login, password, API token, URL, output, filter, query) have been changed, then cached data will be skipped and new data will be requested from Zabbix.
+# For caching, you can use the following example:
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -346,9 +347,9 @@ cache_connection: /tmp/zabbix_inventory
 
 # COMPLEX EXAMPLES
 
-# In this example you can use filter by host groups, templates, proxy, tags, names, status.
+# In this example, you can use filtering by host groups, templates, proxy, tags, names, status.
 # Grouping by Zabbix host groups.
-# Transform ip addresses to list of ip.
+# Transform IP addresses to the list of IP.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -381,8 +382,8 @@ keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
 
-# In this example you can filter by tag 'Location' with empty value and grouping by status (enabled, disabled).
-# In this example status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
+# In this example, you can apply filtering by 'Location' tag with empty value and grouping by status (enabled, disabled).
+# In this example, status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -438,10 +439,10 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         if url is None:
             url = 'localhost'
 
-        # parse URL to separate parts
+        # Parse URL to separate parts
         parsed_url = [u for u in url.split('/') if len(u) > 0]
 
-        # Check schema and api path
+        # Check schema and API path
         if parsed_url[0] not in ['http:', 'https:']:
             parsed_url.insert(0, DEFAULT_SCHEMA)
         if parsed_url[-1] != DEFAULT_API_PATH:
@@ -461,8 +462,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def login(self):
         """
-        Function for login in Zabbix.
-        If set option 'zabbix_api_token' use auth by token.
+        Function for logging in to Zabbix.
+        If 'zabbix_api_token'option is set, use auth by token.
 
         :rtype: str
         :return: string with Authorization information (token)
@@ -503,7 +504,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         :rtype: bool
         :returns:
             * status of logout, if login/password were used.
-            * True, it token was used.
+            * True, if token was used.
         """
 
         # If login and password were used
@@ -515,7 +516,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def api_request(self, method, params, reqid=str(uuid4())):
         """
-        A function to send a request to the Zabbix API.
+        Function to send a request to Zabbix API.
         If the input parameters contain data for basic HTTP authorization,
         then this data will be added to the request header.
 
@@ -544,17 +545,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         headers = {'Content-Type': 'application/json-rpc', 'Accept': 'application/json'}
         payload = {'jsonrpc': '2.0', 'method': method, 'id': reqid, 'params': params}
 
-        # Add Zabbix Auth
+        # Add Zabbix auth
         if hasattr(self, "auth"):
             payload['auth'] = self.auth
 
-        # Add Basic Auth
+        # Add basic auth
         if self.args['http_login'] is not None and self.args['http_password'] is not None:
             auth = base64.b64encode("{0}:{1}".format(
                 self.args['http_login'], self.args['http_password']).encode('ascii'))
             headers['Authorization'] = 'Basic {0}'.format(auth.decode('ascii'))
 
-        # prepare and run query
+        # Prepare and run query
         zabbix_request = Request(
             http_agent='Zabbix Inventory Plugin',
             headers=headers,
@@ -565,7 +566,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         except Exception as e:
             raise AnsibleConnectionFailure(to_text(e))
 
-        # parse response
+        # Parse response
         try:
             result = json.load(response)
         except ValueError as e:
@@ -588,7 +589,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         :raises:
             * AnsibleParserError:
-                - if query parameter not found in available queries.
+                - If query parameter not found in available queries
                 - Unknown status filter
                 - Unknown tags_behavior filter
                 - Not found tag name
@@ -598,7 +599,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # Check query parameters
         if self.args.get('query'):
             new_subquery = {}
-            # Check that query from available queries list
+            # Check the query from available queries list
             available_fields = dict((e.lower(), e) for e in host_subquery)
             unknown_parameters = list(set([e.lower() for e in self.args['query']]) - set(available_fields.keys()))
             if unknown_parameters:
@@ -661,7 +662,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     def parse_filter(self):
         """
         This function parses all filtering conditions and, depending on the situation,
-        will request element IDs in the Zabbix API or add parameters to the final host
+        will request element IDs in Zabbix API or add parameters to the final host
         request.
 
         :rtype: dict
@@ -670,7 +671,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         zabbix_filter = {}
         subquery_params = {"searchByAny": True, "searchWildcardsEnabled": True}
 
-        # Zabbix hostgroups
+        # Zabbix host groups
         if self.args['filter'].get('hostgroups') is not None:
             subquery_params['output'] = ["name", "groupid"]
             subquery_params['search'] = {"name": self.args['filter']['hostgroups']}
@@ -744,7 +745,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         :rtype: bool
         :returns:
-            * True - If all current input parameters match those in the cache
+            * True - If all current input parameters match those in the cache.
             * False - If any of the parameters affecting the data has been changed.
         """
 
@@ -791,7 +792,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         Both data from Zabbix API and cached data can be processed.
 
-        :param inventory: Object with inventory Data
+        :param inventory: Object with inventory data
         :type: object
         :param loader: Loader object
         :type: object
@@ -886,10 +887,10 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             # logout
             self.logout()
 
-        # Process data from Zabbix API / Cached data
+        # Process data from Zabbix API / cached data
         for host in zabbix_hosts:
 
-            # Add to inventory data about host
+            # Add data about host to inventory
             self.inventory.add_host(host['host'])
             for each in host:
                 self.inventory.set_variable(

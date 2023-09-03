@@ -6,7 +6,7 @@ zabbix_api_url: testhost
 zabbix_user: Admin
 zabbix_password: zabbix
 
-# Add additional queries with a lot of different ways
+# Add additional queries in a lot of different ways
 query:
   selecttags: ['TAG']
   selectGroups: groupid

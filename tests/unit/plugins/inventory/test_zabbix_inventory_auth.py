@@ -35,10 +35,10 @@ class TestLogin(unittest.TestCase):
 
         Test cases:
             1. Use only token
-            2. Use token and login/password at the same time. Expect, that token will use
+            2. Use token and login/password at the same time. Expect that token will be used.
             3. Use only login/password
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -63,15 +63,15 @@ class TestLogin(unittest.TestCase):
 
     def test_login_failed(self):
         """
-        This test checks login function. It this function we except, that all test cases will we failed.
+        This test checks login function. It this case, we expect that all test cases will be failed.
 
         Test cases:
-            1. Empty credentials
-            2. Only login without password
-            3. Only password without login
-            4. Invalid login/password (with help of mock response)
+            1. Empty credentials.
+            2. Only login without password.
+            3. Only password without login.
+            4. Invalid login/password (with help of mock response).
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -105,10 +105,10 @@ class TestLogout(unittest.TestCase):
         This test checks logout function.
 
         Test cases:
-            1. Empty token parameters. It means, that we used login and password.
-            2. Random value for token for attempt to logout.
+            1. Empty token parameters. It means that we used login and password.
+            2. Random token value for logout attempt.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -132,12 +132,12 @@ class TestLogout(unittest.TestCase):
 
     def test_logout_failed(self):
         """
-        This test checks logout function. In this test we except False value from API.
+        This test checks logout function. In this test, we expect False value from API.
 
         Test cases:
-            1. Empty token parameters. It means, that we used login and password.
+            1. Empty token parameters. It means that we used login and password.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request

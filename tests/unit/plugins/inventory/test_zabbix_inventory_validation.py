@@ -31,14 +31,14 @@ class TestValidation(unittest.TestCase):
         This test checks validation of query.
 
         Test cases:
-            1. Query wrote in lower case.
+            1. Query written in lower case.
             2. Query parameter in upper case.
-            3. Query parameters as string
-            4. Query parameters as list with 'name' and 'extend'
-            5. Query parameters as string with value 'extend'
-            6. Empty query parameters
+            3. Query parameters as string.
+            4. Query parameters as list with 'name' and 'extend'.
+            5. Query parameters as string with 'extend' value.
+            6. Empty query parameters.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': {'query': {'selectitems': ['name']}},
@@ -66,9 +66,9 @@ class TestValidation(unittest.TestCase):
         This test checks validation of query and only failed cases.
 
         Test cases:
-            1. Invalid query options
+            1. Invalid query options.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': {'query': {'select': ['name']}}, 'expected': 'Unknown query parameters'}]
@@ -86,11 +86,11 @@ class TestValidation(unittest.TestCase):
         This test checks output validation.
 
         Test cases:
-            1. Output as a list
-            2. Output as a list in upper case
-            3. Empty value
+            1. Output as a list.
+            2. Output as a list in upper case.
+            3. Empty value.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': {'output': ['name']}, 'expected': {'output': ['name']}},
@@ -109,22 +109,22 @@ class TestValidation(unittest.TestCase):
         This test checks filter validation.
 
         Test cases:
-            1. Filter option in upper case and value as a string
-            2. Filter option in upper case and value as a list
-            3. Filter option in upper case and value in upper case as a list
-            4. Filter option in upper case and two value as a list
-            5. Filter option 'status' with value 'enabled'
-            6. Filter option 'status' with value 'disabled'
-            7. Filter option 'status' with empty value
-            8. Filter option 'tags_behavior' with value 'and/or'
-            9. Filter option 'tags_behavior' with value 'or'
-            10. Filter option 'tags_behavior' with empty value
-            11. Filter option 'tags' with empty value
-            12. Filter option 'tags' with upper case and value in upper case
-            13. Filter option 'tags' with operator in lower case
-            14. Filter option 'tags' with operator in upper case
+            1. Filter option in upper case and value as a string.
+            2. Filter option in upper case and value as a list.
+            3. Filter option in upper case and value in upper case as a list.
+            4. Filter option in upper case and two values as a list.
+            5. Filter 'status' option with 'enabled' value.
+            6. Filter 'status' option with 'disabled' value.
+            7. Filter 'status' option with empty value.
+            8. Filter 'tags_behavior' option with 'and/or' value.
+            9. Filter 'tags_behavior' option with 'or' value.
+            10. Filter 'tags_behavior' option with empty value.
+            11. Filter 'tags' option with empty value.
+            12. Filter 'tags' option in upper case and with value in upper case.
+            13. Filter 'tags' option with operator in lower case.
+            14. Filter 'tags' option with operator in upper case.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': {'filter': {'TEMPLATES': 'test'}},
@@ -168,14 +168,14 @@ class TestValidation(unittest.TestCase):
         This test checks filter validation only with error cases.
 
         Test cases:
-            1. Filter option 'status' with not 'AnsibleUnicode' type
-            2. Filter option 'status' with invalid value
-            3. Filter option 'tags_behavior' with not 'AnsibleUnicode' type
-            4. Filter option 'tags_behavior' with invalid value
-            5. Filter option 'tags' without tag name
-            6. Filter option 'tags' with invalid 'operator' value
+            1. Filter 'status' option with not 'AnsibleUnicode' type.
+            2. Filter 'status' option with invalid value.
+            3. Filter 'tags_behavior' option with not 'AnsibleUnicode' type.
+            4. Filter 'tags_behavior' option with invalid value.
+            5. Filter 'tags' option without tag name.
+            6. Filter 'tags' option with invalid 'operator' value.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
         test_cases = [
             {'input': {'filter': {'status': 'enabled'}},

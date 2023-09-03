@@ -27,15 +27,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_hostgroups(self):
         """
-        This test checks filter host groups.
+        This test checks filtering by host groups.
 
         Test cases:
-            1. Filter by host groups with asterisk
-            2. Certain host group
-            3. Not-existing host group
-            4. Several condition in a list with asterisk
+            1. Filter by host groups with asterisk.
+            2. Certain host group.
+            3. Non-existing host group.
+            4. Several conditions in a list with asterisk.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -69,15 +69,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_templates(self):
         """
-        This test checks filter by templates
+        This test checks filtering by templates.
 
         Test cases:
-            1. Filter by templates with asterisk
-            2. Certain templates
-            3. Not-existing templates
-            4. Several condition in a list with asterisk
+            1. Filter by templates with asterisk.
+            2. Certain templates.
+            3. Non-existing templates.
+            4. Several conditions in a list with asterisk.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -111,15 +111,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_proxies(self):
         """
-        This test checks filter by proxy
+        This test checks filtering by proxy.
 
         Test cases:
-            1. Filter by proxy with asterisk
-            2. Certain proxy
-            3. Not-existing proxy
-            4. Several condition in a list with asterisk
+            1. Filter by proxy with asterisk.
+            2. Certain proxy.
+            3. Non-existing proxy.
+            4. Several conditions in a list with asterisk.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -153,15 +153,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_host(self):
         """
-        This test checks filter by technical name of hosts
+        This test checks filtering by technical name of hosts.
 
         Test cases:
-            1. Filter by technical name with asterisk
-            2. Certain host
-            3. Not-existing host
-            4. Several condition in a list with asterisk
+            1. Filter by technical name with asterisk.
+            2. Certain host.
+            3. Non-existing host.
+            4. Several conditions in a list with asterisk.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -195,15 +195,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_name(self):
         """
-        This test checks filter by visible name of hosts
+        This test checks filtering by visible name of hosts.
 
         Test cases:
-            1. Filter by visible name with asterisk
-            2. Certain host
-            3. Not-existing host
-            4. Several condition in a list with asterisk
+            1. Filter by visible name with asterisk.
+            2. Certain host.
+            3. Non-existing host.
+            4. Several conditions in a list with asterisk.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -237,19 +237,19 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_host_and_name(self):
         """
-        This test checks filter by visible name and technical name of hosts at the same time.
-        Mostly we need check how this parameters work with each other and we need to check it in different cases.
+        This test checks filtering by visible name and technical name of hosts at the same time.
+        Mostly we need to check how these parameters work together and we need to check it in different cases.
 
         Test cases:
-            1. The same value from visible and technical name
-            2. Visible name has empty founded hosts. As result 0 common hosts
-            3. Like in previous case, but only in this case technical hosts is empty
-            4. Visible name has 2 founded host and technical name has one host, common with visible name
-            5. Like in previous case, but reverse
-            6. Visible and technical name has no common hosts.
-            7. Like in previous case but reverse
+            1. The same value for visible and technical names.
+            2. Visible name is empty. As a result, there are 0 hosts found.
+            3. Same as previous case, but technical name is empty this time.
+            4. Two hosts found by visible name and one host by technical name, one host is common.
+            5. Same as previous case but reverse.
+            6. No common hosts for the given visible and technical names.
+            7. Same as previous case, but with values of visible and technical names reversed.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         # mock for api_request
@@ -300,15 +300,15 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_status(self):
         """
-        This test checks filter by status.
+        This test checks filtering by status.
 
         Test cases:
-            1. Status is 'enabled'
-            2. Status if 'disabled'
-            3. Status is 'enabled' in upper case
-            4. Status is 'disabled' in upper case
+            1. Status is 'enabled'.
+            2. Status is 'disabled'.
+            3. Status is 'enabled' in upper case.
+            4. Status is 'disabled' in upper case.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -326,16 +326,16 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_tags(self):
         """
-        This test checks filter by tags
+        This test checks filtering by tags.
 
         Test cases:
-            1. Only tag name without value and operator
-            2. Tag with empty value and 'equals' operator
-            3. Tag with name, value and operator
-            4. Tag with name, value and operator (usually unknown operator don't work on this level, because in
+            1. Only tag name without value and operator.
+            2. Tag with empty value and 'equals' operator.
+            3. Tag with name, value and operator.
+            4. Tag with name, value and operator (usually unknown operator doesn't work on this level, because in
             validation function this incorrect value will be raised as error.)
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
@@ -357,13 +357,13 @@ class TestParserFilters(unittest.TestCase):
 
     def test_filter_tags_behavior(self):
         """
-        This test checks filter parameter 'tags_behavior'
+        This test checks filtering by 'tags_behavior' parameter.
 
         Test cases:
-            1. Parameter with value 'and/or'
-            2. Parameter with value 'or'
+            1. Parameter with 'and/or' value.
+            2. Parameter with 'or' value.
 
-        Expected result: all cases run success
+        Expected result: all cases run successfully.
         """
 
         test_cases = [
