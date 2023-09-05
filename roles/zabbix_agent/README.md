@@ -176,17 +176,17 @@ This is a `list` type variable, and it defaults to the list of the following opt
 
 ### Local path variables table:
 
-Variables prefixed with `source_` should point to a file or folder located on Ansible controller. These files are about to be transferred to the target machines.
+Variables prefixed with `source_` should point to a file or folder located on Ansible execution environment. These files are about to be transferred to the target machines.
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
-| source_conf_dir | `string` || Path to the configuration folder on Ansible controller that needs to be transferred to the target machine and included in Zabbix agent configuration. For example, a folder with `Userparameters`.
-| source_scripts_dir | `string` || Path to the scripts folder on Ansible controller. Will be copied under the `service_user` home folder. Scripts can be utilized by `UserParameters`.
-| source_modules_dir | `string` || Path to Zabbix agentd modules folder on Ansible controller. Will be copied to default location for default user. For custom user modules, will be placed under the `service_user` home folder.
-| source_tlspskfile | `string` | `.PSK/{{ inventory_hostname }}.psk` | Path to the PSK key location on Ansible controller. The role will look for the files having the same names as `inventory_hostname` (hostname from inventory) and generate new if not found. This key will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
-| source_tlscafile | `string` || Path to the file on Ansible controller containing the top-level CA(s) certificates for peer certificate verification. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
-| source_tlscertfile | `string` || Path to the file on Ansible controller containing the agent certificate or certificate chain. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
-| source_tlscrlfile | `string` || Path to the file on Ansible controller containing revoked certificates. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
+| source_conf_dir | `string` || Path to the configuration folder on Ansible execution environment that needs to be transferred to the target machine and included in Zabbix agent configuration. For example, a folder with `Userparameters`.
+| source_scripts_dir | `string` || Path to the scripts folder on Ansible execution environment. Will be copied under the `service_user` home folder. Scripts can be utilized by `UserParameters`.
+| source_modules_dir | `string` || Path to Zabbix agentd modules folder on Ansible execution environment. Will be copied to default location for default user. For custom user modules, will be placed under the `service_user` home folder.
+| source_tlspskfile | `string` | `.PSK/{{ inventory_hostname }}.psk` | Path to the PSK key location on Ansible execution environment. The role will look for the files having the same names as `inventory_hostname` (hostname from inventory) and generate new if not found. This key will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
+| source_tlscafile | `string` || Path to the file on Ansible execution environment containing the top-level CA(s) certificates for peer certificate verification. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
+| source_tlscertfile | `string` || Path to the file on Ansible execution environment containing the agent certificate or certificate chain. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
+| source_tlscrlfile | `string` || Path to the file on Ansible execution environment containing revoked certificates. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 | source_tlskeyfile | `string` || Path to the file containing the agent private key. Will be placed under `service_user` home folder and added to Zabbix agent configuration automatically.
 
 ### SELinux settings:
@@ -331,7 +331,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 
 For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined, all 3 certificate files become mandatory!
-Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
+Parameter prefixes `source_` should point to the certificate files located on Ansible execution environment. The certificate files will be placed on the target machine and added to configuration automatically.
 
 You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
 Here is the dictionary skeleton for self-managed certificate files:
@@ -370,7 +370,7 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 
 For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined, all 3 certificate files become mandatory!
-Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
+Parameter prefixes `source_` should point to the certificate files located on Ansible execution environment. The certificate files will be placed on the target machine and added to configuration automatically.
 
 You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
 Here is the dictionary skeleton for self-managed certificate files:
@@ -391,7 +391,7 @@ Don't use both local path and final path to avoid unpredictable results!
 
 For these settings to take effect, the plugin should be listed in [`agent2_plugin_list`](#general-settings).
 To encrypt session, define `tlsconnect` key. After `tlsconnect` session key is defined, all 3 certificate files become mandatory!
-Parameter prefixes `source_` should point to the certificate files located on Ansible controller. The certificate files will be placed on the target machine and added to configuration automatically.
+Parameter prefixes `source_` should point to the certificate files located on Ansible execution environment. The certificate files will be placed on the target machine and added to configuration automatically.
 
 You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
 Here is the dictionary skeleton for self-managed certificate files:
@@ -435,7 +435,7 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
-| zabbix_api_host | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Controller will use it to initiate connection.
+| zabbix_api_host | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Execution environment will use it to initiate connection.
 | zabbix_api_url | `string` | `''` | Path to access Zabbix frontend (Zabbix API). Specify only if Zabbix frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<zabbix_api_host>/<zabbix_api_url>`.
 | zabbix_api_port | `int` | `80` | Port which Zabbix frontend listens on.
 | zabbix_api_token | `string` | | Zabbix API access token.
@@ -465,7 +465,7 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 | zabbix_host_tls_connect | `string` | `{{ param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) for **passive checks**.
 | zabbix_host_tls_psk_identity | `string` | `{{ param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
 | zabbix_host_tls_psk_value | `string` | `{{ zabbix_agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
-| zabbix_host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `source_tlscertfile`. Requires Openssl installation on Ansible Controller.
+| zabbix_host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `source_tlscertfile`. Requires Openssl installation on Ansible execution environment.
 | zabbix_host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
 | zabbix_host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.
 |--|
@@ -599,10 +599,10 @@ Playbook examples
           param_hostmetadata: '{{ group_names | join(",") }}'    # concatenate group list to the string;
           param_tlsconnect: cert                                 # restrict active checks to certificate only;
           param_tlsaccept: ["cert", "unencrypted"]               # allow encrypted and unencrypted passive checks;
-          source_tlscafile: certs/ca.crt                         # provide the path to CA certificate file on Ansible controller;
+          source_tlscafile: certs/ca.crt                         # provide the path to CA certificate file on Ansible execution environment;
           # source_tlscrlfile:                                   # certificate revocation list, can be omitted;
-          source_tlscertfile: certs/{{ inventory_hostname }}.crt # Zabbix agent certificate path on the controller;
-          source_tlskeyfile: certs/{{ inventory_hostname }}.key  # key file path on the controller;
+          source_tlscertfile: certs/{{ inventory_hostname }}.crt # Zabbix agent certificate path on the execution environment;
+          source_tlskeyfile: certs/{{ inventory_hostname }}.key  # key file path on the execution environment;
           param_tlsservercertissuer: CN=root-ca                  # certificate issuer restriction (optional);
           param_tlsservercertsubject: CN=server                   # certificate subject restriction (optional);
   ```
@@ -631,7 +631,7 @@ Playbook examples
               user: "someuser"
               password: "somepassword"
               tlsconnect: "required"
-              ## Location of the source certificate files on Ansible controller.
+              ## Location of the source certificate files on Ansible execution environment.
               source_tlscafile: "certs/ca.crt"
               source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
               source_tlskeyfile: "certs/{{ inventory_hostname }}.key"

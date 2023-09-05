@@ -27,7 +27,7 @@
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
-#           ## Source certificate files location on Ansible controller.
+#           ## Source certificate files location on Ansible execution environment.
 #           source_tlscafile: "files/certs/ca.crt"
 #           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
 #           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
@@ -36,7 +36,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           source_tlscafile: "certs/ca.crt"
           source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
           source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
@@ -45,7 +45,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"
@@ -55,7 +55,7 @@
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
-#           ## Source certificate files location on Ansible controller.
+#           ## Source certificate files location on Ansible execution environment.
 #           source_tlscafile: "files/certs/ca.crt"
 #           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
 #           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
@@ -64,7 +64,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           source_tlscafile: "certs/ca.crt"
           source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
           source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
@@ -73,7 +73,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"
@@ -83,7 +83,7 @@
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
-#           ## Source certificate files location on Ansible controller.
+#           ## Source certificate files location on Ansible execution environment.
 #           source_tlscafile: "files/certs/ca.crt"
 #           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
 #           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
@@ -92,7 +92,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           source_tlscafile: "certs/ca.crt"
           source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
           source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
@@ -101,7 +101,7 @@
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
-          ## Source certificate files location on Ansible controller.
+          ## Source certificate files location on Ansible execution environment.
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"

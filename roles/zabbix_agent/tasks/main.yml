@@ -298,7 +298,7 @@
   tags: [deploy, config]
 
 ## To consider: Extract subject and issuer from host certificates
-# requires openssl installation on controller
+# requires openssl installation on execution environment
 #  openssl x509 -in agent.crt -noout -subject -issuer
 #   when: >-
 #     "host" in ansible_run_tags

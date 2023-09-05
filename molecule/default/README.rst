@@ -17,7 +17,7 @@ test playbook with ansible-playbook
 -t all,test,host	# all - all tasks(excluding next 2, marked with never)
 
 project tags:
-	verify # zabbix_get from controller to target devices
+	verify # zabbix_get from execution environment to target devices
 	report # only with "verify" : records check status to file
 	host # add host to Zabbix
 	test # additional debug tasks
