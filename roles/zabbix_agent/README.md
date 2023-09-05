@@ -454,23 +454,23 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 | zabbix_host_description | `string` | `Managed by Ansible. Added with "zabbix_host" module.` | Describe instance.
 | zabbix_host_hostgroups | `list` | `{{ group_names }}` | List of hostgroup names assigned to the host. At least one hostgroup needed. By default, uses the list of groups assigned to the host in Ansible inventory.
 | zabbix_host_templates | `list` | `[]` | List of template names that should be linked to the host.
-| zabbix_host_interfaces | `list` | [↓](#zabbix-host-interfaces-default) | Holds a list of dictionaries. Each dictionary describes an [interface](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) set for the host. Only one interface of each type is supported. Look [below](#zabbix-host-interfaces-default) for default description.
+| zabbix_host_interfaces | `list` | [↓](#zabbix-host-interfaces-default) | Holds a list of dictionaries. Each dictionary describes an [interface](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) set for the host. Only one interface of each type is supported. Look [below](#zabbix-host-interfaces-default) for default description.
 | zabbix_host_tags | `list` | `[{"tag": "managed"}]` | Accepts host level tags in a list of dictionaries format.
 | zabbix_host_macros | `list` || Accepts macros in a list of dictionaries format.
-| zabbix_host_inventory_mode | `string` || Host [inventory population mode](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
-| zabbix_host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_inventory_mode | `string` || Host [inventory population mode](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
+| zabbix_host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | zabbix_host_status | `string` | `enabled` | The host status. Available values: `enabled` or `disabled`.
 | zabbix_host_proxy | `string` | `{{ group_names \| select("match", "^zabbix_proxy.*") \| first \| default(None) }}` | Assign proxy to the host. Default value filters groups of the host from Ansible inventory and checks for regex match. If group is matched, its name will be assigned as the host proxy. Note that proxy with the same name should exist in setup.
-| zabbix_host_tls_accept | `list` | `{{ param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) if needed.
-| zabbix_host_tls_connect | `string` | `{{ param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters) for **passive checks**.
+| zabbix_host_tls_accept | `list` | `{{ param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed.
+| zabbix_host_tls_connect | `string` | `{{ param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**.
 | zabbix_host_tls_psk_identity | `string` | `{{ param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
 | zabbix_host_tls_psk_value | `string` | `{{ zabbix_agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
 | zabbix_host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `source_tlscertfile`. Requires Openssl installation on Ansible execution environment.
 | zabbix_host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
 | zabbix_host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.
 |--|
-| zabbix_host_ipmi_authtype | `string` || Set IPMI [authentication type](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
-| zabbix_host_ipmi_privilege | `string` || Set IPMI [privilege level](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+| zabbix_host_ipmi_authtype | `string` || Set IPMI [authentication type](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
+| zabbix_host_ipmi_privilege | `string` || Set IPMI [privilege level](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | zabbix_host_ipmi_username | `string` || Set IPMI username.
 | zabbix_host_ipmi_password | `string` || Set IPMI password.
 
@@ -485,7 +485,7 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
         useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
         port: '{{ param_listenport }}'
 
-[More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/zabbix_api_plugins/plugins#host-module-parameters).
+[More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 
 Hints & Tags
 -----
