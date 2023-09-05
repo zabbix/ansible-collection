@@ -52,8 +52,8 @@ agent2_plugin_list:
   - smart
 
 ### Zabbix agent parameters of configuration file
-param_serveractive: 192.168.64.1:16051
-param_server: ::/0
+
+
 param_listenport: 10020
 param_heartbeatfrequency: 60        # added in 6.4
 # param_hostname: '{{ inventory_hostname }}'

@@ -1,0 +1,267 @@
+---
+- name: Check filtering in inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    # We need to be sure that we have only one host
+    - name: Assert that only 'Integration test host 1' was given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 1
+          - vars.hostvars['Integration test host 1'] is defined
+
+    # We check that some field will be defined if we set output='extend'
+    - name: Assert that only 'Integration test host 1' was given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_status'] == '0'
+          - vars.hostvars['Integration test host 1']['zabbix_name'] == 'Integration test host 1 (visible)'
+          - vars.hostvars['Integration test host 1']['zabbix_host'] == 'Integration test host 1'
+
+    # Change group for 'Integration test host 1' and try to get inventory again.
+    # Check that our host in not defined in the inventory.
+    # Then change the host group back and get inventory again.
+    - name: Change host groups for 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        hostgroups:
+          - Integration test group 2
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change host groups for 'Integration test host 1' back
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        hostgroups:
+          - Integration test group 1
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change template for 'Integration test host 1' and try to get inventory again.
+    # Check that our host in not defined in the inventory.
+    # Then change the template back and get inventory again.
+    - name: Change templates for 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        templates: []
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change templates for 'Integration test host 1' back
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        templates:
+          - Zabbix agent active
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change tags for 'Integration test host 1' and try to get inventory again.
+    # Check that our host in not defined in the inventory.
+    # Then change the tags back and get inventory again.
+    - name: Change tag for 'Integration test host 1' for test including
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: integration test
+            value: host 1 (includes)
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change tags for 'Integration test host 1' back to original value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: integration test
+            value: host 1
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change tag value to absolutely different value
+    - name: Change tag for 'Integration test host 1' to absolutely different value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: integration test
+            value: test value
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change tags for 'Integration test host 1' back to original value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: integration test
+            value: host 1
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change tag name
+    - name: Change tag name for 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: test tag
+            value: host 1
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change tags for 'Integration test host 1' back to original value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        tags:
+          - tag: integration test
+            value: host 1
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change visible name for 'Integration test host 1' and try to get inventory again.
+    # Check that our host in not defined in the inventory.
+    # Then change the visible name back and get inventory again.
+    - name: Change visible name for 'Integration test host 1' for test including
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        name: New visible name
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change visible name for 'Integration test host 1' back to original value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        name: Integration test host 1 (visible)
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1
+
+    # Change status for 'Integration test host 1' and try to get inventory again.
+    # Check that our host in not defined in the inventory.
+    # Then change the status back and get inventory again.
+    - name: Change status for 'Integration test host 1'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        status: disabled
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was not defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars | length == 0
+
+    - name: Change status for 'Integration test host 1' back to original value
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        status: enabled
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that 'Integration test host 1' was defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars | length == 1

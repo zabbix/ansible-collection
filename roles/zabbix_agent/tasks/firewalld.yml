@@ -5,7 +5,7 @@
   ansible.builtin.systemd:
     name: firewalld
   register: zabbix_agent_firewalld_service
-  tags: [firewall]
+  tags: [firewall, deploy]
 
 - name: 'DEBUG : Print service facts'
   when: apply_firewalld_rule is defined and apply_firewalld_rule in ["force", "auto"]
@@ -65,4 +65,4 @@
     state: enabled
   vars:
     zabbix_agent_ip_version: '{{ 6 if firewall_allow_from is defined and firewall_allow_from | ansible.utils.ipv6 else 4 }}'
-  tags: [firewall]
+  tags: [firewall, deploy]

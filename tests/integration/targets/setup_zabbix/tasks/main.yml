@@ -1,0 +1,7 @@
+---
+- name: Set credentials to access Zabbix Server API
+  ansible.builtin.set_fact:
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi

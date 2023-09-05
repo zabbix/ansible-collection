@@ -6,7 +6,7 @@
   become: true
   ansible.builtin.systemd:
     daemon_reload: true
-  tags: [restart]
+  tags: [restart, deploy, config]
 
 - name: 'Service restart'
   when: >-
@@ -18,7 +18,7 @@
   ansible.builtin.systemd:
     name: '{{ agent.service_name }}'
     state: restarted
-  tags: [restart]
+  tags: [restart, deploy, config]
 
 - name: 'Reload user parameters'
   when: >-
@@ -35,4 +35,4 @@
   failed_when: >-
     (reload_user_parameters.stdout + reload_user_parameters.stderr)
     | regex_search("reloaded|success") is none
-  tags: [userparam]
+  tags: [userparam, deploy, config]

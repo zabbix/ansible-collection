@@ -1,0 +1,952 @@
+---
+- name: Check inventory_mode parameter
+  block:
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    - name: Test - Change inventory_mode to automatic
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: automatic
+      register: zabbix_host_inventory_mode_auto
+
+    - name: Assert that inventory_mode was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_auto is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_auto.result"
+
+    - name: Test - Check automatic mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: automatic
+      register: zabbix_host_inventory_mode_auto_again
+
+    - name: Assert that inventory_mode was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_auto_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_mode_auto_again.result"
+
+    - name: Test - Change inventory_mode to manual
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+      register: zabbix_host_inventory_mode_manual
+
+    - name: Assert that tags were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_manual is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_manual.result"
+
+    - name: Test - Check manual mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+      register: zabbix_host_inventory_mode_manual_again
+
+    - name: Assert that inventory_mode was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_manual_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_mode_manual_again.result"
+
+- name: Check inventory_mode and inventory parameters
+  block:
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    # Check disable status and inventory parameters
+    - name: Test - Set inventory field with disabled status on host
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_mode_try_field
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_try_field is failed
+          - "'Inventory parameters not applicable. Inventory mode is set to disabled on the host' in zabbix_host_inventory_mode_try_field.msg"
+
+    # Check disable status and inventory parameters
+    - name: Test - Set inventory field with disabled status on host
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+        inventory:
+          type: test
+      register: zabbix_host_inventory_mode_try_mode_and_field
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_try_mode_and_field is failed
+          - "'Inventory parameters not applicable. Inventory mode is set to disabled in the task' in zabbix_host_inventory_mode_try_mode_and_field.msg"
+
+    # Try to update from disabled to auto and manual mode with one field
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    # Try to change inventory mode and update one field
+    - name: Test - Set inventory field with automatic status
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: automatic
+        inventory:
+          type: test
+      register: zabbix_host_inventory_mode_automatic_and_field
+
+    - name: Assert that inventory mode and field were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_automatic_and_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_automatic_and_field.result"
+
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    # Try to change inventory mode and update one field
+    - name: Test - Set inventory field with manual status
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+        inventory:
+          type: test
+      register: zabbix_host_inventory_mode_manual_and_field
+
+    - name: Assert that inventory mode and field were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_manual_and_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_manual_and_field.result"
+
+    # Try the same, but in different task for automatic mode
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    # Change inventory mode
+    - name: Test - Set inventory mode to automatic
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: automatic
+      register: zabbix_host_inventory_mode_automatic
+
+    - name: Assert that inventory mode was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_automatic is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_automatic.result"
+
+    - name: Test - Set inventory field without changing inventory mode in task
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_field
+
+    - name: Assert that inventory field was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_field.result"
+
+    - name: Test - Check inventory field with automatic status
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_field_again
+
+    - name: Assert that inventory field was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_field_again.result"
+
+    # Try the same, but in different task for manual mode
+    # Switch off inventory
+    - name: Switch off inventory
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    # Change inventory mode
+    - name: Test - Set inventory mode to manual
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+      register: zabbix_host_inventory_mode_manual
+
+    - name: Assert that inventory mode was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_mode_manual is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_mode_manual.result"
+
+    - name: Test - Set inventory field without changing inventory mode in task
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_field
+
+    - name: Assert that inventory field was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_field.result"
+
+    - name: Test - Check inventory field with manual status
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_field_again
+
+    - name: Assert that inventory field was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_field_again.result"
+
+- name: Check inventory parameters
+  block:
+    # Set manual inventory mode for checking inventory fields
+    - name: Set manual inventory mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+
+    - name: Test - Check all inventory fields
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test_type
+          type_full: test_type_full
+          name: test_name
+          alias: test_alias
+          os: test_os
+          os_full: test_os_full
+          os_short: test_os_short
+          serialno_a: test_serialno_a
+          serialno_b: test_serialno_b
+          tag: test_tag
+          asset_tag: test_asset_tag
+          macaddress_a: test_macaddress_a
+          macaddress_b: test_macaddress_b
+          hardware: test_hardware
+          hardware_full: test_hardware_full
+          software: test_software
+          software_full: test_software_full
+          software_app_a: test_software_app_a
+          software_app_b: test_software_app_b
+          software_app_c: test_software_app_c
+          software_app_d: test_software_app_d
+          software_app_e: test_software_app_e
+          contact: test_contact
+          location: test_location
+          location_lat: 37°25'19.07"С
+          location_lon: 122°05'06.24"З
+          notes: test_notes
+          chassis: test_chassis
+          model: test_model
+          hw_arch: test_hw_arch
+          vendor: test_vendor
+          contract_number: test_contract_number
+          installer_name: test_installer_name
+          deployment_status: test_deployment_status
+          url_a: test_url_a
+          url_b: test_url_b
+          url_c: test_url_c
+          host_networks: test_host_networks
+          host_netmask: test_host_netmask
+          host_router: test_host_router
+          oob_ip: test_oob_ip
+          oob_netmask: test_oob_netmask
+          oob_router: test_oob_router
+          date_hw_purchase: test_date_hw_purchase
+          date_hw_install: test_date_hw_install
+          date_hw_expiry: test_date_hw_expiry
+          date_hw_decomm: test_date_hw_decomm
+          site_address_a: test_site_address_a
+          site_address_b: test_site_address_b
+          site_address_c: test_site_address_c
+          site_city: test_site_city
+          site_state: test_site_state
+          site_country: test_site_country
+          site_zip: test_site_zip
+          site_rack: test_site_rack
+          site_notes: test_site_notes
+          poc_1_name: test_poc_1_name
+          poc_1_email: test_poc_1_email
+          poc_1_phone_a: test_poc_1_phone_a
+          poc_1_phone_b: test_poc_1_phone_b
+          poc_1_cell: test_poc_1_cell
+          poc_1_screen: test_poc_1_screen
+          poc_1_notes: test_poc_1_notes
+          poc_2_name: test_poc_2_name
+          poc_2_email: test_poc_2_email
+          poc_2_phone_a: test_poc_2_phone_a
+          poc_2_phone_b: test_poc_2_phone_b
+          poc_2_cell: test_poc_2_cell
+          poc_2_screen: test_poc_2_screen
+          poc_2_notes: test_poc_2_notes
+      register: zabbix_host_inventory_all_inventory_field
+
+    - name: Assert that inventory fields were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_all_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field.result"
+
+    - name: Test - Check all inventory fields again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test_type
+          type_full: test_type_full
+          name: test_name
+          alias: test_alias
+          os: test_os
+          os_full: test_os_full
+          os_short: test_os_short
+          serialno_a: test_serialno_a
+          serialno_b: test_serialno_b
+          tag: test_tag
+          asset_tag: test_asset_tag
+          macaddress_a: test_macaddress_a
+          macaddress_b: test_macaddress_b
+          hardware: test_hardware
+          hardware_full: test_hardware_full
+          software: test_software
+          software_full: test_software_full
+          software_app_a: test_software_app_a
+          software_app_b: test_software_app_b
+          software_app_c: test_software_app_c
+          software_app_d: test_software_app_d
+          software_app_e: test_software_app_e
+          contact: test_contact
+          location: test_location
+          location_lat: 37°25'19.07"С
+          location_lon: 122°05'06.24"З
+          notes: test_notes
+          chassis: test_chassis
+          model: test_model
+          hw_arch: test_hw_arch
+          vendor: test_vendor
+          contract_number: test_contract_number
+          installer_name: test_installer_name
+          deployment_status: test_deployment_status
+          url_a: test_url_a
+          url_b: test_url_b
+          url_c: test_url_c
+          host_networks: test_host_networks
+          host_netmask: test_host_netmask
+          host_router: test_host_router
+          oob_ip: test_oob_ip
+          oob_netmask: test_oob_netmask
+          oob_router: test_oob_router
+          date_hw_purchase: test_date_hw_purchase
+          date_hw_install: test_date_hw_install
+          date_hw_expiry: test_date_hw_expiry
+          date_hw_decomm: test_date_hw_decomm
+          site_address_a: test_site_address_a
+          site_address_b: test_site_address_b
+          site_address_c: test_site_address_c
+          site_city: test_site_city
+          site_state: test_site_state
+          site_country: test_site_country
+          site_zip: test_site_zip
+          site_rack: test_site_rack
+          site_notes: test_site_notes
+          poc_1_name: test_poc_1_name
+          poc_1_email: test_poc_1_email
+          poc_1_phone_a: test_poc_1_phone_a
+          poc_1_phone_b: test_poc_1_phone_b
+          poc_1_cell: test_poc_1_cell
+          poc_1_screen: test_poc_1_screen
+          poc_1_notes: test_poc_1_notes
+          poc_2_name: test_poc_2_name
+          poc_2_email: test_poc_2_email
+          poc_2_phone_a: test_poc_2_phone_a
+          poc_2_phone_b: test_poc_2_phone_b
+          poc_2_cell: test_poc_2_cell
+          poc_2_screen: test_poc_2_screen
+          poc_2_notes: test_poc_2_notes
+      register: zabbix_host_inventory_all_inventory_field_again
+
+    - name: Assert that inventory fields were not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_all_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field_again.result"
+
+    - name: Test - Clean all inventory fields
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: ""
+          type_full: ""
+          name: ""
+          alias: ""
+          os: ""
+          os_full: ""
+          os_short: ""
+          serialno_a: ""
+          serialno_b: ""
+          tag: ""
+          asset_tag: ""
+          macaddress_a: ""
+          macaddress_b: ""
+          hardware: ""
+          hardware_full: ""
+          software: ""
+          software_full: ""
+          software_app_a: ""
+          software_app_b: ""
+          software_app_c: ""
+          software_app_d: ""
+          software_app_e: ""
+          contact: ""
+          location: ""
+          location_lat: ""
+          location_lon: ""
+          notes: ""
+          chassis: ""
+          model: ""
+          hw_arch: ""
+          vendor: ""
+          contract_number: ""
+          installer_name: ""
+          deployment_status: ""
+          url_a: ""
+          url_b: ""
+          url_c: ""
+          host_networks: ""
+          host_netmask: ""
+          host_router: ""
+          oob_ip: ""
+          oob_netmask: ""
+          oob_router: ""
+          date_hw_purchase: ""
+          date_hw_install: ""
+          date_hw_expiry: ""
+          date_hw_decomm: ""
+          site_address_a: ""
+          site_address_b: ""
+          site_address_c: ""
+          site_city: ""
+          site_state: ""
+          site_country: ""
+          site_zip: ""
+          site_rack: ""
+          site_notes: ""
+          poc_1_name: ""
+          poc_1_email: ""
+          poc_1_phone_a: ""
+          poc_1_phone_b: ""
+          poc_1_cell: ""
+          poc_1_screen: ""
+          poc_1_notes: ""
+          poc_2_name: ""
+          poc_2_email: ""
+          poc_2_phone_a: ""
+          poc_2_phone_b: ""
+          poc_2_cell: ""
+          poc_2_screen: ""
+          poc_2_notes: ""
+      register: zabbix_host_inventory_clean_all_inventory_field
+
+    - name: Assert that inventory fields were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_clean_all_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field.result"
+
+    - name: Test - Clean all inventory fields again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: ""
+          type_full: ""
+          name: ""
+          alias: ""
+          os: ""
+          os_full: ""
+          os_short: ""
+          serialno_a: ""
+          serialno_b: ""
+          tag: ""
+          asset_tag: ""
+          macaddress_a: ""
+          macaddress_b: ""
+          hardware: ""
+          hardware_full: ""
+          software: ""
+          software_full: ""
+          software_app_a: ""
+          software_app_b: ""
+          software_app_c: ""
+          software_app_d: ""
+          software_app_e: ""
+          contact: ""
+          location: ""
+          location_lat: ""
+          location_lon: ""
+          notes: ""
+          chassis: ""
+          model: ""
+          hw_arch: ""
+          vendor: ""
+          contract_number: ""
+          installer_name: ""
+          deployment_status: ""
+          url_a: ""
+          url_b: ""
+          url_c: ""
+          host_networks: ""
+          host_netmask: ""
+          host_router: ""
+          oob_ip: ""
+          oob_netmask: ""
+          oob_router: ""
+          date_hw_purchase: ""
+          date_hw_install: ""
+          date_hw_expiry: ""
+          date_hw_decomm: ""
+          site_address_a: ""
+          site_address_b: ""
+          site_address_c: ""
+          site_city: ""
+          site_state: ""
+          site_country: ""
+          site_zip: ""
+          site_rack: ""
+          site_notes: ""
+          poc_1_name: ""
+          poc_1_email: ""
+          poc_1_phone_a: ""
+          poc_1_phone_b: ""
+          poc_1_cell: ""
+          poc_1_screen: ""
+          poc_1_notes: ""
+          poc_2_name: ""
+          poc_2_email: ""
+          poc_2_phone_a: ""
+          poc_2_phone_b: ""
+          poc_2_cell: ""
+          poc_2_screen: ""
+          poc_2_notes: ""
+      register: zabbix_host_inventory_clean_all_inventory_field_again
+
+    - name: Assert that inventory fields were not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_clean_all_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field_again.result"
+
+    # Set automatic inventory mode for checking inventory fields
+    - name: Set automatic inventory mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: automatic
+
+    - name: Test - Check all inventory fields
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test_type
+          type_full: test_type_full
+          name: test_name
+          alias: test_alias
+          os: test_os
+          os_full: test_os_full
+          os_short: test_os_short
+          serialno_a: test_serialno_a
+          serialno_b: test_serialno_b
+          tag: test_tag
+          asset_tag: test_asset_tag
+          macaddress_a: test_macaddress_a
+          macaddress_b: test_macaddress_b
+          hardware: test_hardware
+          hardware_full: test_hardware_full
+          software: test_software
+          software_full: test_software_full
+          software_app_a: test_software_app_a
+          software_app_b: test_software_app_b
+          software_app_c: test_software_app_c
+          software_app_d: test_software_app_d
+          software_app_e: test_software_app_e
+          contact: test_contact
+          location: test_location
+          location_lat: 37°25'19.07"С
+          location_lon: 122°05'06.24"З
+          notes: test_notes
+          chassis: test_chassis
+          model: test_model
+          hw_arch: test_hw_arch
+          vendor: test_vendor
+          contract_number: test_contract_number
+          installer_name: test_installer_name
+          deployment_status: test_deployment_status
+          url_a: test_url_a
+          url_b: test_url_b
+          url_c: test_url_c
+          host_networks: test_host_networks
+          host_netmask: test_host_netmask
+          host_router: test_host_router
+          oob_ip: test_oob_ip
+          oob_netmask: test_oob_netmask
+          oob_router: test_oob_router
+          date_hw_purchase: test_date_hw_purchase
+          date_hw_install: test_date_hw_install
+          date_hw_expiry: test_date_hw_expiry
+          date_hw_decomm: test_date_hw_decomm
+          site_address_a: test_site_address_a
+          site_address_b: test_site_address_b
+          site_address_c: test_site_address_c
+          site_city: test_site_city
+          site_state: test_site_state
+          site_country: test_site_country
+          site_zip: test_site_zip
+          site_rack: test_site_rack
+          site_notes: test_site_notes
+          poc_1_name: test_poc_1_name
+          poc_1_email: test_poc_1_email
+          poc_1_phone_a: test_poc_1_phone_a
+          poc_1_phone_b: test_poc_1_phone_b
+          poc_1_cell: test_poc_1_cell
+          poc_1_screen: test_poc_1_screen
+          poc_1_notes: test_poc_1_notes
+          poc_2_name: test_poc_2_name
+          poc_2_email: test_poc_2_email
+          poc_2_phone_a: test_poc_2_phone_a
+          poc_2_phone_b: test_poc_2_phone_b
+          poc_2_cell: test_poc_2_cell
+          poc_2_screen: test_poc_2_screen
+          poc_2_notes: test_poc_2_notes
+      register: zabbix_host_inventory_all_inventory_field
+
+    - name: Assert that inventory fields were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_all_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field.result"
+
+    - name: Test - Check all inventory fields again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test_type
+          type_full: test_type_full
+          name: test_name
+          alias: test_alias
+          os: test_os
+          os_full: test_os_full
+          os_short: test_os_short
+          serialno_a: test_serialno_a
+          serialno_b: test_serialno_b
+          tag: test_tag
+          asset_tag: test_asset_tag
+          macaddress_a: test_macaddress_a
+          macaddress_b: test_macaddress_b
+          hardware: test_hardware
+          hardware_full: test_hardware_full
+          software: test_software
+          software_full: test_software_full
+          software_app_a: test_software_app_a
+          software_app_b: test_software_app_b
+          software_app_c: test_software_app_c
+          software_app_d: test_software_app_d
+          software_app_e: test_software_app_e
+          contact: test_contact
+          location: test_location
+          location_lat: 37°25'19.07"С
+          location_lon: 122°05'06.24"З
+          notes: test_notes
+          chassis: test_chassis
+          model: test_model
+          hw_arch: test_hw_arch
+          vendor: test_vendor
+          contract_number: test_contract_number
+          installer_name: test_installer_name
+          deployment_status: test_deployment_status
+          url_a: test_url_a
+          url_b: test_url_b
+          url_c: test_url_c
+          host_networks: test_host_networks
+          host_netmask: test_host_netmask
+          host_router: test_host_router
+          oob_ip: test_oob_ip
+          oob_netmask: test_oob_netmask
+          oob_router: test_oob_router
+          date_hw_purchase: test_date_hw_purchase
+          date_hw_install: test_date_hw_install
+          date_hw_expiry: test_date_hw_expiry
+          date_hw_decomm: test_date_hw_decomm
+          site_address_a: test_site_address_a
+          site_address_b: test_site_address_b
+          site_address_c: test_site_address_c
+          site_city: test_site_city
+          site_state: test_site_state
+          site_country: test_site_country
+          site_zip: test_site_zip
+          site_rack: test_site_rack
+          site_notes: test_site_notes
+          poc_1_name: test_poc_1_name
+          poc_1_email: test_poc_1_email
+          poc_1_phone_a: test_poc_1_phone_a
+          poc_1_phone_b: test_poc_1_phone_b
+          poc_1_cell: test_poc_1_cell
+          poc_1_screen: test_poc_1_screen
+          poc_1_notes: test_poc_1_notes
+          poc_2_name: test_poc_2_name
+          poc_2_email: test_poc_2_email
+          poc_2_phone_a: test_poc_2_phone_a
+          poc_2_phone_b: test_poc_2_phone_b
+          poc_2_cell: test_poc_2_cell
+          poc_2_screen: test_poc_2_screen
+          poc_2_notes: test_poc_2_notes
+      register: zabbix_host_inventory_all_inventory_field_again
+
+    - name: Assert that inventory fields were not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_all_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_all_inventory_field_again.result"
+
+    - name: Test - Clean all inventory fields
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: ""
+          type_full: ""
+          name: ""
+          alias: ""
+          os: ""
+          os_full: ""
+          os_short: ""
+          serialno_a: ""
+          serialno_b: ""
+          tag: ""
+          asset_tag: ""
+          macaddress_a: ""
+          macaddress_b: ""
+          hardware: ""
+          hardware_full: ""
+          software: ""
+          software_full: ""
+          software_app_a: ""
+          software_app_b: ""
+          software_app_c: ""
+          software_app_d: ""
+          software_app_e: ""
+          contact: ""
+          location: ""
+          location_lat: ""
+          location_lon: ""
+          notes: ""
+          chassis: ""
+          model: ""
+          hw_arch: ""
+          vendor: ""
+          contract_number: ""
+          installer_name: ""
+          deployment_status: ""
+          url_a: ""
+          url_b: ""
+          url_c: ""
+          host_networks: ""
+          host_netmask: ""
+          host_router: ""
+          oob_ip: ""
+          oob_netmask: ""
+          oob_router: ""
+          date_hw_purchase: ""
+          date_hw_install: ""
+          date_hw_expiry: ""
+          date_hw_decomm: ""
+          site_address_a: ""
+          site_address_b: ""
+          site_address_c: ""
+          site_city: ""
+          site_state: ""
+          site_country: ""
+          site_zip: ""
+          site_rack: ""
+          site_notes: ""
+          poc_1_name: ""
+          poc_1_email: ""
+          poc_1_phone_a: ""
+          poc_1_phone_b: ""
+          poc_1_cell: ""
+          poc_1_screen: ""
+          poc_1_notes: ""
+          poc_2_name: ""
+          poc_2_email: ""
+          poc_2_phone_a: ""
+          poc_2_phone_b: ""
+          poc_2_cell: ""
+          poc_2_screen: ""
+          poc_2_notes: ""
+      register: zabbix_host_inventory_clean_all_inventory_field
+
+    - name: Assert that inventory fields were updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_clean_all_inventory_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field.result"
+
+    - name: Test - Clean all inventory fields again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: ""
+          type_full: ""
+          name: ""
+          alias: ""
+          os: ""
+          os_full: ""
+          os_short: ""
+          serialno_a: ""
+          serialno_b: ""
+          tag: ""
+          asset_tag: ""
+          macaddress_a: ""
+          macaddress_b: ""
+          hardware: ""
+          hardware_full: ""
+          software: ""
+          software_full: ""
+          software_app_a: ""
+          software_app_b: ""
+          software_app_c: ""
+          software_app_d: ""
+          software_app_e: ""
+          contact: ""
+          location: ""
+          location_lat: ""
+          location_lon: ""
+          notes: ""
+          chassis: ""
+          model: ""
+          hw_arch: ""
+          vendor: ""
+          contract_number: ""
+          installer_name: ""
+          deployment_status: ""
+          url_a: ""
+          url_b: ""
+          url_c: ""
+          host_networks: ""
+          host_netmask: ""
+          host_router: ""
+          oob_ip: ""
+          oob_netmask: ""
+          oob_router: ""
+          date_hw_purchase: ""
+          date_hw_install: ""
+          date_hw_expiry: ""
+          date_hw_decomm: ""
+          site_address_a: ""
+          site_address_b: ""
+          site_address_c: ""
+          site_city: ""
+          site_state: ""
+          site_country: ""
+          site_zip: ""
+          site_rack: ""
+          site_notes: ""
+          poc_1_name: ""
+          poc_1_email: ""
+          poc_1_phone_a: ""
+          poc_1_phone_b: ""
+          poc_1_cell: ""
+          poc_1_screen: ""
+          poc_1_notes: ""
+          poc_2_name: ""
+          poc_2_email: ""
+          poc_2_phone_a: ""
+          poc_2_phone_b: ""
+          poc_2_cell: ""
+          poc_2_screen: ""
+          poc_2_notes: ""
+      register: zabbix_host_inventory_clean_all_inventory_field_again
+
+    - name: Assert that inventory fields were not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_clean_all_inventory_field_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_clean_all_inventory_field_again.result"
+
+- name: Check clean inventory parameters
+  block:
+    - name: Test - Set one inventory field
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_set_field
+
+    - name: Assert that inventory field was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_field is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_set_field.result"
+
+    - name: Test - Check one inventory field
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: test
+      register: zabbix_host_inventory_set_field
+
+    - name: Assert that inventory field was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_field is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_set_field.result"
+
+    # Use disabled mode for cleaning up inventory field
+    - name: Set manual inventory mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: disabled
+
+    - name: Set manual inventory mode
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory_mode: manual
+
+    - name: Test - Check one inventory field after clean up
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        inventory:
+          type: ''
+      register: zabbix_host_inventory_set_field_clean
+
+    - name: Assert that inventory field was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_inventory_set_field_clean is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_set_field_clean.result"

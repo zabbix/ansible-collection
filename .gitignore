@@ -14,3 +14,5 @@ zabbix-zabbix*.tar.gz
 *.csr
 *.srl
 *.psk
+# Ignore plugin caches
+plugins/httpapi/__pycache__

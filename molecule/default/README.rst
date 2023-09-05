@@ -17,7 +17,7 @@ test playbook with ansible-playbook
 -t all,test,host	# all - all tasks(excluding next 2, marked with never)
 
 project tags:
-	verify # zabbix_get from controller to target devices
+	verify # zabbix_get from execution environment to target devices
 	report # only with "verify" : records check status to file
 	host # add host to Zabbix
 	test # additional debug tasks
@@ -65,3 +65,12 @@ Running roles through multiple test scenarios:
 molecule test --all
 molecule test -s agent2 -s agent2_cert -s agent2_psk
 
+-------------------------------------------------------------------------------
+Use different platforms preset
+-------------------------------------------------------------------------------
+molecue test -c ".config/molecule/config.full.yml"
+
+-------------------------------------------------------------------------------
+Converge example for host module checks
+-------------------------------------------------------------------------------
+molecule converge -s agent2_cert -- -t all,host -e "param_serveractive=host.containers.internal:17051 zabbix_api_host=192.168.13.90 zabbix_api_port=8070 zabbix_host_templates=[\"Linux by Zabbix agent active\"]"

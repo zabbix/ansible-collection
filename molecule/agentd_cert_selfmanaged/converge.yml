@@ -21,5 +21,14 @@
 
 - name: "Testing role zabbix_agent: {{ test_name }}"
   hosts: all
+  pre_tasks:
+    - name: Include all from vars folder
+      ansible.builtin.include_vars:
+        dir: vars
+        ignore_unknown_extensions: true
+        extensions:
+          - 'yaml'
+          - 'yml'
+      tags: [always]
   roles:
     - role: zabbix_agent

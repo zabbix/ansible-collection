@@ -1,0 +1,182 @@
+---
+- name: 'Variables: Generate PSK keys'
+  ansible.builtin.set_fact:
+    zabbix_psk_value: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=64") | lower }}'
+
+- name: 'Variables: Generate SNMP credentials'
+  ansible.builtin.set_fact:
+    zabbix_snmp_authpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+    zabbix_snmp_privpassphrase: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=18") | lower }}'
+
+- name: Create host with maximum parameters
+  zabbix.zabbix.zabbix_host:
+    state: present
+    host: Example host
+    hostgroups:
+      - Linux servers
+    templates:
+      - Zabbix agent active
+    status: enabled
+    description: 'Host example'
+    name: 'Example host'
+    tags:
+      - tag: scope
+        value: test
+    macros:
+      - macro: TEST_MACRO
+        value: example
+        description: Description of macro example
+        type: text
+    ipmi_authtype: default
+    ipmi_privilege: user
+    ipmi_username: admin
+    ipmi_password: your_password
+    tls_accept:
+      - unencrypted
+      - psk
+      - cert
+    tls_psk_identity: my_example_identity
+    tls_psk: '{{ zabbix_psk_value }}'
+    tls_issuer: Example Issuer
+    tls_subject: Example Subject
+    tls_connect: psk
+    inventory_mode: automatic
+    inventory:
+      type: ""  # To specify an empty value
+      serialno_b: example value
+      hardware_full: |
+        very very long
+        multiple string value
+    interfaces:
+      - type: agent # To specify an interface with default parameters (the IP will be 127.0.0.1)
+      - type: ipmi
+      - type: jmx
+        ip: 192.168.100.51
+        dns: test.com
+        useip: true
+        port: 12345
+      - type: snmp
+        ip: 192.168.100.50
+        dns: switch.local
+        port: 169   # To specify a non-standard value
+        details:
+          version: 3
+          bulk: true
+          contextname: my contextname name
+          securityname: my securityname name
+          securitylevel: authPriv
+          authprotocol: md5
+          authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+          privprotocol: des
+          privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+  register: zabbix_host_create
+  ignore_errors: true
+
+- name: Create host with maximum parameters (Zabbix 6.4)
+  zabbix.zabbix.zabbix_host:
+    state: present
+    host: Example host
+    hostgroups:
+      - Linux servers
+    templates:
+      - Zabbix agent active
+    status: enabled
+    description: 'Host example'
+    name: 'Example host'
+    tags:
+      - tag: scope
+        value: test
+    macros:
+      - macro: TEST_MACRO
+        value: example
+        description: Description of macro example
+        type: text
+    ipmi_authtype: default
+    ipmi_privilege: user
+    ipmi_username: admin
+    ipmi_password: your_password
+    tls_accept:
+      - unencrypted
+      - psk
+      - cert
+    tls_psk_identity: my_example_identity
+    tls_psk: '{{ zabbix_psk_value }}'
+    tls_issuer: Example Issuer
+    tls_subject: Example Subject
+    tls_connect: psk
+    inventory_mode: automatic
+    inventory:
+      type: ""  # To specify an empty value
+      serialno_b: example value
+      hardware_full: |
+        very very long
+        multiple string value
+    interfaces:
+      - type: agent # To specify an interface with default parameters (the IP will be 127.0.0.1)
+      - type: ipmi
+      - type: jmx
+        ip: 192.168.100.51
+        dns: test.com
+        useip: true
+        port: 12345
+      - type: snmp
+        ip: 192.168.100.50
+        dns: switch.local
+        port: 169   # To specify a non-standard value
+        details:
+          version: 3
+          bulk: true
+          contextname: my contextname name
+          securityname: my securityname name
+          max_repetitions: 10
+          securitylevel: authPriv
+          authprotocol: md5
+          authpassphrase: '{{ zabbix_snmp_authpassphrase }}'
+          privprotocol: des
+          privpassphrase: '{{ zabbix_snmp_privpassphrase }}'
+  register: zabbix_host_create_64
+  ignore_errors: true
+
+- name: Assert that host was created
+  ansible.builtin.assert:
+    that: zabbix_host_create or zabbix_host_create_64 is changed
+
+- name: Clean all parameters from host
+  zabbix.zabbix.zabbix_host:
+    state: present
+    host: Example host
+    hostgroups:    # Host group must be not empty
+      - Linux servers
+    templates: []
+    status: enabled
+    description: ''
+    name: '' # The technical name will be used
+    tags: []
+    macros: []
+    ipmi_authtype: default
+    ipmi_privilege: user
+    ipmi_username: ''
+    ipmi_password: ''
+    tls_accept:
+      - unencrypted
+    tls_issuer: ''
+    tls_subject: ''
+    tls_connect: unencrypted
+    proxy: ''
+    inventory_mode: disabled
+    interfaces: []
+  register: zabbix_host_update
+
+- name: Assert that host was updated
+  ansible.builtin.assert:
+    that: zabbix_host_update is changed
+
+- name: Delete host
+  zabbix.zabbix.zabbix_host:
+    state: absent
+    host: Example host
+  register: zabbix_host_delete
+
+- name: Assert that host was deleted
+  ansible.builtin.assert:
+    that: zabbix_host_delete is changed

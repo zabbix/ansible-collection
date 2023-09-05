@@ -1,3 +1,8 @@
 exclude_paths:
-  - molecule/default/inventory/tasty.inv.yml
+#  - molecule/default/inventory/tasty.inv.yml
+#  - molecule/default/
+#  - molecule/agentd_cert_selfmanaged/
+  - molecule
   - .github
+#  - tests
+profile: production

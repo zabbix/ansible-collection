@@ -9,6 +9,7 @@
     name: '{{ service_group }}'
     gid: '{{ service_gid | default(omit) }}'
     state: 'present'
+  tags: [deploy]
 
 - name: 'Custom user : Service user presence'
   become: true
@@ -22,6 +23,7 @@
     home: '{{ service_user_home }}'
     create_home: true
     state: 'present'
+  tags: [deploy]
 
 - name: 'Custom user : Separate Log folder & permissions'
   # Custom user requires custom folder ownership to manage logs(create/write/rotate)
@@ -39,6 +41,7 @@
     zabbix_agent_file_loop:
       - {folder: '{{ param_logfile | default(None) }}', setype: '{{ folder_log_setype | default(None) }}'}
       # - {folder: '{{ param_pidfile | default(None) }}', setype: '{{ folder_pid_setype | default(None) }}'}
+  tags: [deploy]
 
 - name: 'Custom user : Systemd : Custom user override in service file'
   # changing user requires to change permissions on pid file and folder.
@@ -68,8 +71,4 @@
     mode: '{{ agent.conf_folder.permissions.mode }}'
     owner: '{{ agent.conf_file.permissions.user }}'
     group: '{{ agent.conf_file.permissions.group }}'
-
-- name: 'Customer user : Selinux policy'
-  ansible.builtin.debug:
-    msg: 'Place for custom SE Policy installation'
-  tags: [never, debug]
+  tags: [deploy, config]

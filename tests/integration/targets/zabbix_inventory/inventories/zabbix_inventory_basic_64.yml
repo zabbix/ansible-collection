@@ -1,0 +1,44 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add additional queries in a lot of different ways
+query:
+  selecttags: ['TAG']
+  selectHostGroups: groupid
+  selectInterfaces: ip
+  selectInventory: Extend
+  selectItems: lastvalue
+  selectDiscoveries:
+    - extend
+  selectDiscoveryRule: 'extend'
+  selectGraphs: 'extend'
+  selectHostDiscovery: 'extend'
+  selectHttpTests: 'extend'
+  selectMacros: 'extend'
+  selectParentTemplates: 'extend'
+  selectDashboards: 'extend'
+  selectInheritedTags: 'extend'
+  selectTriggers: 'extend'
+  selectValueMaps: 'extend'
+
+# Filtering by host group names, templates, tags, visible and technical names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group*'
+  templates:
+    - 'Zabbix agent *'
+  TAGS:
+    - TAG: integration test
+  name: ['Integration test*']
+  host: 'Integration test*'
+
+# Add output fields
+output: status
+
+# Add prefix for all values from Zabbix API
+prefix: 'zabbix_test_'

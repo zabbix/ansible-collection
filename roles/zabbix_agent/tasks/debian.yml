@@ -25,6 +25,7 @@
   environment:
     http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
+  tags: [deploy]
 
 - name: 'APT : Zabbix packages presence'
   become: true
@@ -44,3 +45,4 @@
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+  tags: [deploy]
