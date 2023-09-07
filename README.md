@@ -33,15 +33,11 @@ Roles:
 
 Plugins:
   - [**HTTP API**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) - Zabbix API interface for Ansible.
+  - [**Inventory**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#inventory-plugin) - the tool to synchronize Zabbix monitoring instance hosts with Ansible inventory.
 
 Modules:
   - [**zabbix_hostgroup**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#hostgroup-module) - Ansible module for Zabbix host groups management (uses [**HTTP API**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
   - [**zabbix_host**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#host-module) - Ansible module for Zabbix hosts management (uses [**HTTP API**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
-
-## Under development
-
-  - `HTTP API plugin` - Zabbix API connector/wrapper. Used for managing hosts on Zabbix monitoring instance. Will extend [**zabbix_agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/zabbix_agent/README.md) role to add hosts without autoregistration.
-  - `Inventory plugin` - the tool to synchronize Zabbix monitoring instance hosts with Ansible inventory.
 
 ## Related content
 
