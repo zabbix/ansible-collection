@@ -71,7 +71,7 @@ The role contains firewalld application rule to allow agent listen port. Firewal
 
 Multiple tasks require `superuser` privileges (sudo).
 
-Ansible core >= 2.12
+Ansible core >= 2.13
 
 Zabbix agent role requires additional tools from two Ansible certified collections:
 - ansible.posix >= 2.8
@@ -84,12 +84,12 @@ ansible-galaxy collection install ansible.utils ansible.posix
 
 Note that the role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter, which depends on Python library [**netaddr**](https://pypi.org/project/netaddr).
 
-Zabbix agent role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heavily and requires version >= 2.10.1
+Zabbix agent role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heavily and requires version >= 3.1.2
 
 You can install required Python libraries on the control node as follows:
 
 ```bash
-python3 -m pip install netaddr>=0.8.0 Jinja2>=2.10.1
+python3 -m pip install netaddr>=0.8.0 Jinja2>=3.1.2
 ```
 
 Or using `requirements.txt` file in the role folder:

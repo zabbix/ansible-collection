@@ -6,7 +6,7 @@ It is mainly intended for scalable tasks, for example, Zabbix agent deployment a
 
 ## Ansible version compatibility
 
-Tested with the Ansible Core 2.12, 2.13, 2.14 and 2.15. Versions below 2.12 are not supported. For more details, navigate to the collection component description.
+Tested with the Ansible Core 2.13, 2.14 and 2.15. EOL Versions are not supported. For more details, navigate to the collection component description.
 
 
 ## Installing this collection
