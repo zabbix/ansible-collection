@@ -9,6 +9,11 @@
 - Plugins: Added httpapi plugin
 - Plugins: Added inventory plugin
 
+## Bug
+
+- Removed support of EOL ansible version
+- Set Jinja2 dependency to =>3.1.2
+
 # v1.0.6
 
 ## Feature

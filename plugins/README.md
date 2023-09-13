@@ -41,7 +41,7 @@ Requirements
 ------------
 Plugins and modules are supported under the following conditions:
 - Zabbix API >= 6.0
-- Ansible core >= 2.12
+- Ansible core >= 2.13
 - Python >= 2.6
 
 Zabbix HTTP API plugin requires additional tools from two Ansible certified collections:
@@ -977,7 +977,7 @@ filter:
 ### Example 5
 You can use all available filter options to search for hosts in Zabbix.
 You can use wildcard search for: host groups, templates, proxy, name (visible name), host (technical name).
-Also, you can use `status` for filtering and search only for enabled or disabled hosts. 
+Also, you can use `status` for filtering and search only for enabled or disabled hosts.
 Also, you can use tags for searching by tag name or tag value.
 In this example, all hosts linked to the host group `Linux` and to any of the `'*http*'` or `'*agent*'` templates as well as containing `sql` or `SQL` in their visible names will be returned.
 
@@ -1079,7 +1079,7 @@ query:
 compose:
   zabbix_verbose_status: zabbix_status.replace("1", "Disabled").replace("0", "Enabled")
 
-# Grouping by status. 
+# Grouping by status.
 # If status is '0', host will be added to group 'enabled'.
 # If status is '1', host will be added to group 'disabled'.
 groups:
