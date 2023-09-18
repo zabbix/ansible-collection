@@ -45,9 +45,8 @@
     "host" in ansible_run_tags
     or "remove" in ansible_run_tags
     or run_host_tasks is defined and run_host_tasks
-  delegate_to: localhost
+  delegate_to: '{{ zabbix_api_host }}'
   vars:
-    ansible_host: '{{ zabbix_api_host }}'
     ansible_connection: httpapi
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_httpapi_port: '{{ zabbix_api_port }}'
@@ -66,6 +65,7 @@
         name: '{{ full_hostgroup_list }}'
         state: present
     - name: 'Zabbix API : Host presence'
+      throttle: 1
       zabbix.zabbix.zabbix_host:
         state: '{{ zabbix_host_state }}'
         host_name: '{{ zabbix_host_host_name }}'
@@ -83,8 +83,14 @@
         ### tls
         tls_accept: '{{ zabbix_host_tls_accept }}'
         tls_connect: '{{ zabbix_host_tls_connect }}'
-        tls_psk_identity: '{{ zabbix_host_tls_psk_identity if zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept else omit }}'
-        tls_psk: '{{ zabbix_agent_psk_value if zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept else omit }}'
+        tls_psk_identity: '{{ zabbix_host_tls_psk_identity
+          if "remove" not in ansible_run_tags
+            and (zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
+          else omit }}'
+        tls_psk: '{{ zabbix_agent_psk_value
+          if "remove" not in ansible_run_tags
+            and (zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
+          else omit }}'
         tls_issuer: '{{ zabbix_host_tls_issuer | default(omit) }}'
         tls_subject: '{{ zabbix_host_tls_subject | default(omit) }}'
         ### ipmi
