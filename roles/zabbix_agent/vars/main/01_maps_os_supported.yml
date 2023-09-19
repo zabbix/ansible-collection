@@ -29,6 +29,7 @@ map_supported_os_version:
         '9': '.*'
         '10': '.*'
         '11': '.*'
+        '12': '.*'
   aarch64:
     Linux:
       Ubuntu:
