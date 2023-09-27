@@ -1,0 +1,62 @@
+---
+platforms:
+  - name: podman_debian12
+    image: ghcr.io/hifis-net/debian-systemd:12
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11250:10050/tcp"
+      - "11220:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - debian
+  - name: podman_debian11
+    image: ghcr.io/hifis-net/debian-systemd:11
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11150:10050/tcp"
+      - "11120:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - debian
+  - name: podman_debian10
+    image: ghcr.io/hifis-net/debian-systemd:10
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "11050:10050/tcp"
+      - "11020:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - debian

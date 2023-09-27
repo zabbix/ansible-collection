@@ -5,7 +5,9 @@ zabbix_repo:
           + ansible_distribution | lower
           + ("-arm64" if ansible_architecture == "aarch64" else "")
           + "/pool/main/z/zabbix-release/zabbix-release_latest"
-          + "%2B" + ansible_distribution | lower + ansible_distribution_version + "_all.deb" }}'
+          + "%2B" + ansible_distribution | lower + ansible_distribution_major_version 
+          + ( ".04" if ansible_distribution | lower == "ubuntu" else "")
+          + "_all.deb" }}'
   # uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
   #         + ansible_distribution | lower
   #         + ("-arm64" if ansible_architecture == "aarch64" else "")

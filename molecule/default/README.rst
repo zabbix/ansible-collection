@@ -68,7 +68,7 @@ molecule test -s agent2 -s agent2_cert -s agent2_psk
 -------------------------------------------------------------------------------
 Use different platforms preset
 -------------------------------------------------------------------------------
-molecue test -c ".config/molecule/config.full.yml"
+molecue -c ".config/molecule/config.full.yml" create/converge/test
 
 -------------------------------------------------------------------------------
 Converge example for host module checks

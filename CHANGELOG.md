@@ -1,3 +1,9 @@
+# v1.1.1
+
+## Feature
+
+- Zabbix agent role: added Debian 12 support
+
 # v1.1.0
 
 ## Feature
