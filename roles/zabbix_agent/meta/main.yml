@@ -32,6 +32,7 @@ galaxy_info:
         - bionic  # 18.04
     - name: Debian
       versions:
+        - bookworm  # 12
         - bullseye  # 11
         - buster  # 10
         - stretch  # 9

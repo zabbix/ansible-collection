@@ -9,6 +9,7 @@ Currently, the following OS of target machines are supported:
 - Rocky Linux 8, 9
 - CentOS Stream 8, 9
 - Ubuntu 18.04, 20.04, 22.04
+- Debian 10, 11, 12
 
 Supported distribution list to be extended.
 
