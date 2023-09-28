@@ -1,0 +1,23 @@
+---
+platforms:
+  - name: podman_ubuntu22
+    image: docker.io/jrei/systemd-ubuntu:22.04
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "12250:10050/tcp"
+      - "12220:10020/tcp"
+    command: "/lib/systemd/systemd"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - aarch
+      - ubuntu
