@@ -13,7 +13,7 @@
     msg: >
       ActiveState: {{ zabbix_agent_firewalld_service.status.ActiveState | default(False) }}
       MainPID: {{ zabbix_agent_firewalld_service.status.MainPID | default(False) }}
-      UnitState: {{ zabbix_agent_firewalld_service.status.UnitFileState | default(False) }}'
+      UnitState: {{ zabbix_agent_firewalld_service.status.UnitFileState | default(False) }}
   tags: [never, debug]
 
 - name: 'DEBUG : Print rich rule'
