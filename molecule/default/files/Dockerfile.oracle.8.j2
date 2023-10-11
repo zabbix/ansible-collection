@@ -1,0 +1,22 @@
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+### Disable excess services startup
+RUN rm -f /lib/systemd/system/multi-user.target.wants/*;\
+    rm -f /etc/systemd/system/*.wants/*;
+
+### Reinstall systemd & dbus
+RUN yum makecache \
+    && yum --assumeyes reinstall systemd dbus util-linux firewalld && yum clean all
+
+### Enable dbus on oracle 8
+## ls -la $(find /etc/systemd -name "*dbus*")
+RUN mkdir -p /etc/systemd/user/sockets.target.wants/  ;\
+    ln -s /usr/lib/systemd/system/dbus.service /etc/systemd/system/dbus.service ;\
+    ln -s /usr/lib/systemd/user/dbus.service /etc/systemd/user/dbus.service ;\
+    ln -s /usr/lib/systemd/user/dbus.socket /etc/systemd/user/sockets.target.wants/dbus.socket ;
+
+CMD ["/usr/sbin/init"]

@@ -1,27 +1,5 @@
 ---
 platforms:
-  - name: podman_ubuntu22
-    image: docker.io/jrei/systemd-ubuntu:22.04
-    pre_build_image: true
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
-    published_ports:
-      - "12250:10050/tcp"
-      - "12220:10020/tcp"
-    command: "/lib/systemd/systemd"
-    groups:
-      - molecule
-      - podman
-      - linux
-      - aarch
-      - ubuntu
-
   - name: podman_rhel9
     image: registry.access.redhat.com/ubi9/ubi-init
     pre_build_image: true
@@ -31,8 +9,8 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
+    # capabilities:
+    #   - SYS_ADMIN
     published_ports:
       # - "127.0.0.1:19050:10050/tcp"
       - "19050:10050/tcp"
@@ -45,7 +23,7 @@ platforms:
       - rhel
 
   - name: podman_cs9
-    dockerfile: ../default/files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile.rhel.j2
     image: quay.io/centos/centos:stream9
     pre_build_image: false
     # tmpfs:
@@ -69,7 +47,7 @@ platforms:
       - centos
 
   - name: podman_ora9
-    dockerfile: ../default/files/Dockerfile_rhel.j2
+    dockerfile: ../default/files/Dockerfile.rhel.j2
     image: docker.io/library/oraclelinux:9
     pre_build_image: false
     # tmpfs:
@@ -78,8 +56,8 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
+    # capabilities:
+    #   - SYS_ADMIN
     published_ports:
       - "19450:10050/tcp"
       - "19420:10020/tcp"
@@ -93,20 +71,21 @@ platforms:
       - oracle
 
   - name: podman_alma9
-    image: ghcr.io/hifis-net/almalinux-systemd:9
+    dockerfile: ../default/files/Dockerfile.rhel.j2
+    image: docker.io/library/almalinux:9
+    pre_build_image: false
     # tmpfs:
     #   - /run
     #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
+    # capabilities:
+    #   - SYS_ADMIN
     published_ports:
       - "19150:10050/tcp"
       - "19120:10020/tcp"
     command: "/usr/sbin/init"
-    pre_build_image: true
     groups:
       - molecule
       - podman
@@ -114,43 +93,23 @@ platforms:
       - alma
 
   - name: podman_rocky9
-    image: docker.io/geerlingguy/docker-rockylinux9-ansible:latest
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    #   - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
-    published_ports:
-      - "19250:10050/tcp"
-      - "19220:10020/tcp"
-    command: "/usr/sbin/init"
-    pre_build_image: true
-    groups:
-      - molecule
-      - podman
-      - linux
-      - rocky
-
-  - name: podman_debian10
-    image: ghcr.io/hifis-net/debian-systemd:10
-    pre_build_image: true
+    dockerfile: ../default/files/Dockerfile.rhel.j2
+    image: docker.io/library/rockylinux:9
+    pre_build_image: false
     # tmpfs:
     #   - /run
     #   - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/localtime:/etc/localtime:ro
-    capabilities:
-      - SYS_ADMIN
+    # capabilities:
+    #   - SYS_ADMIN
     published_ports:
-      - "11050:10050/tcp"
-      - "11020:10020/tcp"
-    command: "/lib/systemd/systemd"
+      - "19250:10050/tcp"
+      - "19220:10020/tcp"
+    command: "/usr/sbin/init"
     groups:
       - molecule
       - podman
       - linux
-      - debian
+      - rocky

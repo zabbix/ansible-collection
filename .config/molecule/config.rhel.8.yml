@@ -1,0 +1,114 @@
+---
+platforms:
+  - name: podman_rhel8
+    image: registry.access.redhat.com/ubi8/ubi-init
+    pre_build_image: true
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    # capabilities:
+    #   - SYS_ADMIN
+    published_ports:
+      - "18050:10050/tcp"
+      - "18020:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - rhel
+
+  - name: podman_cs8
+    dockerfile: ../default/files/Dockerfile.rhel.j2
+    image: quay.io/centos/centos:stream8
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    # capabilities:
+    #   - SYS_ADMIN
+    published_ports:
+      - "18350:10050/tcp"
+      - "18320:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - centos
+
+  - name: podman_ora8
+    dockerfile: ../default/files/Dockerfile.oracle.8.j2
+    image: docker.io/library/oraclelinux:8
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    # volumes:
+    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    #   - /etc/localtime:/etc/localtime:ro
+    # capabilities:
+    #   - SYS_ADMIN
+    published_ports:
+      - "18450:10050/tcp"
+      - "18420:10020/tcp"
+    # exposed_ports:
+    #   - "22018/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - oracle
+
+  - name: podman_alma8
+    dockerfile: ../default/files/Dockerfile.rhel.j2
+    image: docker.io/library/almalinux:8
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    # capabilities:
+    #   - SYS_ADMIN
+    published_ports:
+      - "18150:10050/tcp"
+      - "18120:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - alma
+
+  - name: podman_rocky8
+    dockerfile: ../default/files/Dockerfile.rhel.j2
+    image: docker.io/library/rockylinux:8
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    # capabilities:
+    #   - SYS_ADMIN
+    published_ports:
+      - "18250:10050/tcp"
+      - "18220:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - rocky
