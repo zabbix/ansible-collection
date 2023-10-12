@@ -15,8 +15,6 @@ Supported distribution list to be extended.
 
 **Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
-Soon this role will be extended with additional functionality to add deployed target devices to Zabbix monitoring system. Check collection's page for release plan.
-
 Table of contents
 -----------------
 <!--ts-->
