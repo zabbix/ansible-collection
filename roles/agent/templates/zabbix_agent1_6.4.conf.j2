@@ -10,9 +10,9 @@
 # Mandatory: no
 # Default:
 # PidFile=/tmp/zabbix_agentd.pid
-{% if param_pidfile is defined and param_pidfile %}
+{% if agent_param_pidfile is defined and agent_param_pidfile %}
 
-PidFile={{ param_pidfile }}
+PidFile={{ agent_param_pidfile }}
 {% endif %}
 
 ### Option: LogType
@@ -24,9 +24,9 @@ PidFile={{ param_pidfile }}
 # Mandatory: no
 # Default:
 # LogType=file
-{% if param_logtype is defined and param_logtype %}
+{% if agent_param_logtype is defined and agent_param_logtype %}
 
-LogType={{ param_logtype }}
+LogType={{ agent_param_logtype }}
 {% endif %}
 
 ### Option: LogFile
@@ -35,9 +35,9 @@ LogType={{ param_logtype }}
 # Mandatory: yes, if LogType is set to file, otherwise no
 # Default:
 # LogFile=
-{% if param_logfile is defined and param_logfile %}
+{% if agent_param_logfile is defined and agent_param_logfile %}
 
-LogFile={{ param_logfile }}
+LogFile={{ agent_param_logfile }}
 {% endif %}
 
 ### Option: LogFileSize
@@ -48,9 +48,9 @@ LogFile={{ param_logfile }}
 # Range: 0-1024
 # Default:
 # LogFileSize=1
-{% if param_logfilesize is defined and (param_logfilesize or param_logfilesize is number) %}
+{% if agent_param_logfilesize is defined and (agent_param_logfilesize or agent_param_logfilesize is number) %}
 
-LogFileSize={{ param_logfilesize }}
+LogFileSize={{ agent_param_logfilesize }}
 {% endif %}
 
 ### Option: DebugLevel
@@ -66,9 +66,9 @@ LogFileSize={{ param_logfilesize }}
 # Range: 0-5
 # Default:
 # DebugLevel=3
-{% if param_debuglevel is defined and (param_debuglevel or param_debuglevel is number) %}
+{% if agent_param_debuglevel is defined and (agent_param_debuglevel or agent_param_debuglevel is number) %}
 
-DebugLevel={{ param_debuglevel }}
+DebugLevel={{ agent_param_debuglevel }}
 {% endif %}
 
 ### Option: SourceIP
@@ -77,9 +77,9 @@ DebugLevel={{ param_debuglevel }}
 # Mandatory: no
 # Default:
 # SourceIP=
-{% if param_sourceip is defined and param_sourceip %}
+{% if agent_param_sourceip is defined and agent_param_sourceip %}
 
-SourceIP={{ param_sourceip }}
+SourceIP={{ agent_param_sourceip }}
 {% endif %}
 
 ### Option: AllowKey
@@ -90,14 +90,14 @@ SourceIP={{ param_sourceip }}
 #	If no AllowKey or DenyKey rules defined, all keys are allowed.
 #
 # Mandatory: no
-{% if param_allowkey is defined and param_allowkey is iterable and param_allowkey is not string and param_allowkey is not mapping %}
+{% if agent_param_allowkey is defined and agent_param_allowkey is iterable and agent_param_allowkey is not string and agent_param_allowkey is not mapping %}
 
-{% for unit in param_allowkey %}
+{% for unit in agent_param_allowkey %}
 AllowKey={{ unit }}
 {% endfor %}
-{% elif param_allowkey is defined and param_allowkey and param_allowkey is string %}
+{% elif agent_param_allowkey is defined and agent_param_allowkey and agent_param_allowkey is string %}
 
-AllowKey={{ param_allowkey }}
+AllowKey={{ agent_param_allowkey }}
 {% endif %}
 
 ### Option: DenyKey
@@ -111,14 +111,14 @@ AllowKey={{ param_allowkey }}
 # Mandatory: no
 # Default:
 # DenyKey=system.run[*]
-{% if param_denykey is defined and param_denykey is iterable and param_denykey is not string and param_denykey is not mapping %}
+{% if agent_param_denykey is defined and agent_param_denykey is iterable and agent_param_denykey is not string and agent_param_denykey is not mapping %}
 
-{% for unit in param_denykey %}
+{% for unit in agent_param_denykey %}
 DenyKey={{ unit }}
 {% endfor %}
-{% elif param_denykey is defined and param_denykey and param_denykey is string %}
+{% elif agent_param_denykey is defined and agent_param_denykey and agent_param_denykey is string %}
 
-DenyKey={{ param_denykey }}
+DenyKey={{ agent_param_denykey }}
 {% endif %}
 
 ### Option: EnableRemoteCommands - Deprecated, use AllowKey=system.run[*] or DenyKey=system.run[*] instead
@@ -140,9 +140,9 @@ EnableRemoteCommands={{ param_enableremotecommands }}
 # Mandatory: no
 # Default:
 # LogRemoteCommands=0
-{% if param_logremotecommands is defined and (param_logremotecommands or param_logremotecommands is number) %}
+{% if agent_param_logremotecommands is defined and (agent_param_logremotecommands or agent_param_logremotecommands is number) %}
 
-LogRemoteCommands={{ param_logremotecommands }}
+LogRemoteCommands={{ agent_param_logremotecommands }}
 {% endif %}
 
 ##### Passive checks related
@@ -158,12 +158,12 @@ LogRemoteCommands={{ param_logremotecommands }}
 # Mandatory: yes, if StartAgents is not explicitly set to 0
 # Default:
 # Server=
-{% if param_server is defined and param_server is iterable and param_server is not string and param_server is not mapping %}
+{% if agent_param_server is defined and agent_param_server is iterable and agent_param_server is not string and agent_param_server is not mapping %}
 
-Server={{ param_server | join(',') }}
-{% elif param_server is defined and param_server and param_server is string %}
+Server={{ agent_param_server | join(',') }}
+{% elif agent_param_server is defined and agent_param_server and agent_param_server is string %}
 
-Server={{ param_server }}
+Server={{ agent_param_server }}
 {% endif %}
 
 ### Option: ListenPort
@@ -173,9 +173,9 @@ Server={{ param_server }}
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
-{% if param_listenport is defined and (param_listenport or param_listenport is number) %}
+{% if agent_param_listenport is defined and (agent_param_listenport or agent_param_listenport is number) %}
 
-ListenPort={{ param_listenport }}
+ListenPort={{ agent_param_listenport }}
 {% endif %}
 
 ### Option: ListenIP
@@ -185,12 +185,12 @@ ListenPort={{ param_listenport }}
 # Mandatory: no
 # Default:
 # ListenIP=0.0.0.0
-{% if param_listenip is defined and param_listenip is iterable and param_listenip is not string and param_listenip is not mapping %}
+{% if agent_param_listenip is defined and agent_param_listenip is iterable and agent_param_listenip is not string and agent_param_listenip is not mapping %}
 
-ListenIP={{ param_listenip | join(',') }}
-{% elif param_listenip is defined and param_listenip and param_listenip is string %}
+ListenIP={{ agent_param_listenip | join(',') }}
+{% elif agent_param_listenip is defined and agent_param_listenip and agent_param_listenip is string %}
 
-ListenIP={{ param_listenip }}
+ListenIP={{ agent_param_listenip }}
 {% endif %}
 
 ### Option: StartAgents
@@ -201,9 +201,9 @@ ListenIP={{ param_listenip }}
 # Range: 0-100
 # Default:
 # StartAgents=3
-{% if param_startagents is defined and (param_startagents or param_startagents is number) %}
+{% if agent_param_startagents is defined and (agent_param_startagents or agent_param_startagents is number) %}
 
-StartAgents={{ param_startagents }}
+StartAgents={{ agent_param_startagents }}
 {% endif %}
 
 ##### Active checks related
@@ -232,12 +232,12 @@ StartAgents={{ param_startagents }}
 # Mandatory: no
 # Default:
 # ServerActive=
-{% if param_serveractive is defined and param_serveractive is iterable and param_serveractive is not string and param_serveractive is not mapping %}
+{% if agent_param_serveractive is defined and agent_param_serveractive is iterable and agent_param_serveractive is not string and agent_param_serveractive is not mapping %}
 
-ServerActive={{ param_serveractive | join(',') }}
-{% elif param_serveractive is defined and param_serveractive and param_serveractive is string %}
+ServerActive={{ agent_param_serveractive | join(',') }}
+{% elif agent_param_serveractive is defined and agent_param_serveractive and agent_param_serveractive is string %}
 
-ServerActive={{ param_serveractive }}
+ServerActive={{ agent_param_serveractive }}
 {% endif %}
 
 ### Option: Hostname
@@ -248,9 +248,9 @@ ServerActive={{ param_serveractive }}
 # Mandatory: no
 # Default:
 # Hostname=
-{% if param_hostname is defined and param_hostname %}
+{% if agent_param_hostname is defined and agent_param_hostname %}
 
-Hostname={{ param_hostname }}
+Hostname={{ agent_param_hostname }}
 {% endif %}
 
 ### Option: HostnameItem
@@ -260,9 +260,9 @@ Hostname={{ param_hostname }}
 # Mandatory: no
 # Default:
 # HostnameItem=system.hostname
-{% if param_hostnameitem is defined and param_hostnameitem %}
+{% if agent_param_hostnameitem is defined and agent_param_hostnameitem %}
 
-HostnameItem={{ param_hostnameitem }}
+HostnameItem={{ agent_param_hostnameitem }}
 {% endif %}
 
 ### Option: HostMetadata
@@ -275,13 +275,13 @@ HostnameItem={{ param_hostnameitem }}
 # Range: 0-255 characters
 # Default:
 # HostMetadata=
-{% if param_hostmetadata is defined and param_hostmetadata is iterable and param_hostmetadata is not string and param_hostmetadata is not mapping %}
+{% if agent_param_hostmetadata is defined and agent_param_hostmetadata is iterable and agent_param_hostmetadata is not string and agent_param_hostmetadata is not mapping %}
 
-HostMetadata={{ param_hostmetadata | join(',') }}
-{% elif param_hostmetadata is defined and param_hostmetadata and param_hostmetadata is string %}
+HostMetadata={{ agent_param_hostmetadata | join(',') }}
+{% elif agent_param_hostmetadata is defined and agent_param_hostmetadata and agent_param_hostmetadata is string %}
 
-HostMetadata={{ param_hostmetadata }}
-{% elif (param_hostmetadata is not defined or not param_hostmetadata) and group_names %}
+HostMetadata={{ agent_param_hostmetadata }}
+{% elif (agent_param_hostmetadata is not defined or not agent_param_hostmetadata) and group_names %}
 
 HostMetadata={{ group_names | join(';') }}
 {% endif %}
@@ -296,9 +296,9 @@ HostMetadata={{ group_names | join(';') }}
 # Mandatory: no
 # Default:
 # HostMetadataItem=
-{% if param_hostmetadataitem is defined and param_hostmetadataitem %}
+{% if agent_param_hostmetadataitem is defined and agent_param_hostmetadataitem %}
 
-HostMetadataItem={{ param_hostmetadataitem }}
+HostMetadataItem={{ agent_param_hostmetadataitem }}
 {% endif %}
 
 ### Option: HostInterface
@@ -311,9 +311,9 @@ HostMetadataItem={{ param_hostmetadataitem }}
 # Range: 0-255 characters
 # Default:
 # HostInterface=
-{% if param_hostinterface is defined and (param_hostinterface or param_hostinterface is number) %}
+{% if agent_param_hostinterface is defined and (agent_param_hostinterface or agent_param_hostinterface is number) %}
 
-HostInterface={{ param_hostinterface }}
+HostInterface={{ agent_param_hostinterface }}
 {% endif %}
 
 ### Option: HostInterfaceItem
@@ -326,9 +326,9 @@ HostInterface={{ param_hostinterface }}
 # Mandatory: no
 # Default:
 # HostInterfaceItem=
-{% if param_hostinterfaceitem is defined and param_hostinterfaceitem %}
+{% if agent_param_hostinterfaceitem is defined and agent_param_hostinterfaceitem %}
 
-HostInterfaceItem={{ param_hostinterfaceitem }}
+HostInterfaceItem={{ agent_param_hostinterfaceitem }}
 {% endif %}
 
 ### Option: RefreshActiveChecks
@@ -338,9 +338,9 @@ HostInterfaceItem={{ param_hostinterfaceitem }}
 # Range: 60-3600
 # Default:
 # RefreshActiveChecks=120
-{% if param_refreshactivechecks is defined and (param_refreshactivechecks or param_refreshactivechecks is number) %}
+{% if agent_param_refreshactivechecks is defined and (agent_param_refreshactivechecks or agent_param_refreshactivechecks is number) %}
 
-RefreshActiveChecks={{ param_refreshactivechecks }}
+RefreshActiveChecks={{ agent_param_refreshactivechecks }}
 {% endif %}
 
 ### Option: BufferSend
@@ -350,9 +350,9 @@ RefreshActiveChecks={{ param_refreshactivechecks }}
 # Range: 1-3600
 # Default:
 # BufferSend=5
-{% if param_buffersend is defined and (param_buffersend or param_buffersend is number) %}
+{% if agent_param_buffersend is defined and (agent_param_buffersend or agent_param_buffersend is number) %}
 
-BufferSend={{ param_buffersend }}
+BufferSend={{ agent_param_buffersend }}
 {% endif %}
 
 ### Option: BufferSize
@@ -363,9 +363,9 @@ BufferSend={{ param_buffersend }}
 # Range: 2-65535
 # Default:
 # BufferSize=100
-{% if param_buffersize is defined and (param_buffersize or param_buffersize is number) %}
+{% if agent_param_buffersize is defined and (agent_param_buffersize or agent_param_buffersize is number) %}
 
-BufferSize={{ param_buffersize }}
+BufferSize={{ agent_param_buffersize }}
 {% endif %}
 
 ### Option: MaxLinesPerSecond
@@ -378,9 +378,9 @@ BufferSize={{ param_buffersize }}
 # Range: 1-1000
 # Default:
 # MaxLinesPerSecond=20
-{% if param_maxlinespersecond is defined and (param_maxlinespersecond or param_maxlinespersecond is number) %}
+{% if agent_param_maxlinespersecond is defined and (agent_param_maxlinespersecond or agent_param_maxlinespersecond is number) %}
 
-MaxLinesPerSecond={{ param_maxlinespersecond }}
+MaxLinesPerSecond={{ agent_param_maxlinespersecond }}
 {% endif %}
 
 ### Option: HeartbeatFrequency
@@ -392,9 +392,9 @@ MaxLinesPerSecond={{ param_maxlinespersecond }}
 # Range: 0-3600
 # Default: 60
 # HeartbeatFrequency=
-{% if param_heartbeatfrequency is defined and (param_heartbeatfrequency or param_heartbeatfrequency is number) %}
+{% if agent_param_heartbeatfrequency is defined and (agent_param_heartbeatfrequency or agent_param_heartbeatfrequency is number) %}
 
-HeartbeatFrequency={{ param_heartbeatfrequency }}
+HeartbeatFrequency={{ agent_param_heartbeatfrequency }}
 {% endif %}
 
 ############ ADVANCED PARAMETERS #################
@@ -419,9 +419,9 @@ HeartbeatFrequency={{ param_heartbeatfrequency }}
 # Range: 1-30
 # Default:
 # Timeout=3
-{% if param_timeout is defined and (param_timeout or param_timeout is number) %}
+{% if agent_param_timeout is defined and (agent_param_timeout or agent_param_timeout is number) %}
 
-Timeout={{ param_timeout }}
+Timeout={{ agent_param_timeout }}
 {% endif %}
 
 ### Option: AllowRoot
@@ -434,9 +434,9 @@ Timeout={{ param_timeout }}
 # Mandatory: no
 # Default:
 # AllowRoot=0
-{% if param_allowroot is defined and (param_allowroot or param_allowroot is number) %}
+{% if agent_param_allowroot is defined and (agent_param_allowroot or agent_param_allowroot is number) %}
 
-AllowRoot={{ param_allowroot }}
+AllowRoot={{ agent_param_allowroot }}
 {% endif %}
 
 ### Option: User
@@ -447,9 +447,9 @@ AllowRoot={{ param_allowroot }}
 # Default:
 # User=zabbix
 # NOTE: This option is overriden by settings in systemd service file!
-{% if param_user is defined and param_user %}
+{% if agent_param_user is defined and agent_param_user %}
 
-User={{ param_user }}
+User={{ agent_param_user }}
 {% endif %}
 
 ### Option: Include
@@ -459,9 +459,9 @@ User={{ param_user }}
 # Mandatory: no
 # Default:
 # Include=
-{% if param_include is defined and param_include is iterable and param_include is not string and param_include is not mapping %}
+{% if agent_param_include is defined and agent_param_include is iterable and agent_param_include is not string and agent_param_include is not mapping %}
 
-{% for unit in param_include %}
+{% for unit in agent_param_include %}
 Include={{ unit }}
 {% endfor %}
 {% endif %}
@@ -484,9 +484,9 @@ Include={{ unit }}
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
-{% if param_unsafeuserparameters is defined and (param_unsafeuserparameters or param_unsafeuserparameters is number) %}
+{% if agent_param_unsafeuserparameters is defined and (agent_param_unsafeuserparameters or agent_param_unsafeuserparameters is number) %}
 
-UnsafeUserParameters={{ param_unsafeuserparameters }}
+UnsafeUserParameters={{ agent_param_unsafeuserparameters }}
 {% endif %}
 
 ### Option: UserParameter
@@ -507,9 +507,9 @@ UnsafeUserParameters={{ param_unsafeuserparameters }}
 # Mandatory: no
 # Default:
 # UserParameterDir=
-{% if param_userparameterdir is defined and param_userparameterdir %}
+{% if agent_param_userparameterdir is defined and agent_param_userparameterdir %}
 
-UserParameterDir={{ param_userparameterdir }}
+UserParameterDir={{ agent_param_userparameterdir }}
 {% endif %}
 
 ####### LOADABLE MODULES #######
@@ -522,9 +522,9 @@ UserParameterDir={{ param_userparameterdir }}
 # Mandatory: no
 # Default:
 # LoadModulePath=${libdir}/modules
-{% if param_loadmodulepath is defined and param_loadmodulepath %}
+{% if agent_param_loadmodulepath is defined and agent_param_loadmodulepath %}
 
-LoadModulePath={{ param_loadmodulepath }}
+LoadModulePath={{ agent_param_loadmodulepath }}
 {% endif %}
 
 ### Option: LoadModule
@@ -540,14 +540,14 @@ LoadModulePath={{ param_loadmodulepath }}
 # Mandatory: no
 # Default:
 # LoadModule=
-{% if param_loadmodule is defined and param_loadmodule is iterable and param_loadmodule is not string and param_loadmodule is not mapping %}
+{% if agent_param_loadmodule is defined and agent_param_loadmodule is iterable and agent_param_loadmodule is not string and agent_param_loadmodule is not mapping %}
 
-{% for unit in param_loadmodule %}
+{% for unit in agent_param_loadmodule %}
 LoadModule={{ unit }}
 {% endfor %}
-{% elif param_loadmodule is defined and param_loadmodule and param_loadmodule is string %}
+{% elif agent_param_loadmodule is defined and agent_param_loadmodule and agent_param_loadmodule is string %}
 
-LoadModule={{ param_loadmodule }}
+LoadModule={{ agent_param_loadmodule }}
 {% endif %}
 
 ####### TLS-RELATED PARAMETERS #######
@@ -562,9 +562,9 @@ LoadModule={{ param_loadmodule }}
 # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
 # Default:
 # TLSConnect=unencrypted
-{% if param_tlsconnect is defined and param_tlsconnect %}
+{% if agent_param_tlsconnect is defined and agent_param_tlsconnect %}
 
-TLSConnect={{ param_tlsconnect }}
+TLSConnect={{ agent_param_tlsconnect }}
 {% endif %}
 
 ### Option: TLSAccept
@@ -577,12 +577,12 @@ TLSConnect={{ param_tlsconnect }}
 # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
 # Default:
 # TLSAccept=unencrypted
-{% if param_tlsaccept is defined and param_tlsaccept is iterable and param_tlsaccept is not string and param_tlsaccept is not mapping %}
+{% if agent_param_tlsaccept is defined and agent_param_tlsaccept is iterable and agent_param_tlsaccept is not string and agent_param_tlsaccept is not mapping %}
 
-TLSAccept={{ param_tlsaccept | join(',') }}
-{% elif param_tlsaccept is defined and param_tlsaccept and param_tlsaccept is string %}
+TLSAccept={{ agent_param_tlsaccept | join(',') }}
+{% elif agent_param_tlsaccept is defined and agent_param_tlsaccept and agent_param_tlsaccept is string %}
 
-TLSAccept={{ param_tlsaccept }}
+TLSAccept={{ agent_param_tlsaccept }}
 {% endif %}
 
 ### Option: TLSCAFile
@@ -592,11 +592,11 @@ TLSAccept={{ param_tlsaccept }}
 # Mandatory: no
 # Default:
 # TLSCAFile=
-{% if param_tlscafile is defined and param_tlscafile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscafile is defined and agent_param_tlscafile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCAFile={{ param_tlscafile }}
+TLSCAFile={{ agent_param_tlscafile }}
 {% endif %}
 
 ### Option: TLSCRLFile
@@ -605,11 +605,11 @@ TLSCAFile={{ param_tlscafile }}
 # Mandatory: no
 # Default:
 # TLSCRLFile=
-{% if param_tlscrlfile is defined and param_tlscrlfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscrlfile is defined and agent_param_tlscrlfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCRLFile={{ param_tlscrlfile }}
+TLSCRLFile={{ agent_param_tlscrlfile }}
 {% endif %}
 
 ### Option: TLSServerCertIssuer
@@ -618,11 +618,11 @@ TLSCRLFile={{ param_tlscrlfile }}
 # Mandatory: no
 # Default:
 # TLSServerCertIssuer=
-{% if param_tlsservercertissuer is defined and param_tlsservercertissuer
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsservercertissuer is defined and agent_param_tlsservercertissuer
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSServerCertIssuer={{ param_tlsservercertissuer }}
+TLSServerCertIssuer={{ agent_param_tlsservercertissuer }}
 {% endif %}
 
 ### Option: TLSServerCertSubject
@@ -631,11 +631,11 @@ TLSServerCertIssuer={{ param_tlsservercertissuer }}
 # Mandatory: no
 # Default:
 # TLSServerCertSubject=
-{% if param_tlsservercertsubject is defined and param_tlsservercertsubject
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsservercertsubject is defined and agent_param_tlsservercertsubject
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSServerCertSubject={{ param_tlsservercertsubject }}
+TLSServerCertSubject={{ agent_param_tlsservercertsubject }}
 {% endif %}
 
 ### Option: TLSCertFile
@@ -644,11 +644,11 @@ TLSServerCertSubject={{ param_tlsservercertsubject }}
 # Mandatory: no
 # Default:
 # TLSCertFile=
-{% if param_tlscertfile is defined and param_tlscertfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscertfile is defined and agent_param_tlscertfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCertFile={{ param_tlscertfile }}
+TLSCertFile={{ agent_param_tlscertfile }}
 {% endif %}
 
 ### Option: TLSKeyFile
@@ -657,11 +657,11 @@ TLSCertFile={{ param_tlscertfile }}
 # Mandatory: no
 # Default:
 # TLSKeyFile=
-{% if param_tlskeyfile is defined and param_tlskeyfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlskeyfile is defined and agent_param_tlskeyfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSKeyFile={{ param_tlskeyfile }}
+TLSKeyFile={{ agent_param_tlskeyfile }}
 {% endif %}
 
 ### Option: TLSPSKIdentity
@@ -670,11 +670,11 @@ TLSKeyFile={{ param_tlskeyfile }}
 # Mandatory: no
 # Default:
 # TLSPSKIdentity=
-{% if param_tlspskidentity is defined and param_tlspskidentity
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlspskidentity is defined and agent_param_tlspskidentity
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSPSKIdentity={{ param_tlspskidentity }}
+TLSPSKIdentity={{ agent_param_tlspskidentity }}
 {% endif %}
 
 ### Option: TLSPSKFile
@@ -683,11 +683,11 @@ TLSPSKIdentity={{ param_tlspskidentity }}
 # Mandatory: no
 # Default:
 # TLSPSKFile=
-{% if param_tlspskfile is defined and param_tlspskfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlspskfile is defined and agent_param_tlspskfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSPSKFile={{ param_tlspskfile }}
+TLSPSKFile={{ agent_param_tlspskfile }}
 {% endif %}
 
 ####### For advanced users - TLS ciphersuite selection criteria #######
@@ -699,11 +699,11 @@ TLSPSKFile={{ param_tlspskfile }}
 # Mandatory: no
 # Default:
 # TLSCipherCert13=
-{% if param_tlsciphercert13 is defined and param_tlsciphercert13
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsciphercert13 is defined and agent_param_tlsciphercert13
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCipherCert13={{ param_tlsciphercert13 }}
+TLSCipherCert13={{ agent_param_tlsciphercert13 }}
 {% endif %}
 
 ### Option: TLSCipherCert
@@ -717,11 +717,11 @@ TLSCipherCert13={{ param_tlsciphercert13 }}
 # Mandatory: no
 # Default:
 # TLSCipherCert=
-{% if param_tlsciphercert is defined and param_tlsciphercert
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsciphercert is defined and agent_param_tlsciphercert
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCipherCert={{ param_tlsciphercert }}
+TLSCipherCert={{ agent_param_tlsciphercert }}
 {% endif %}
 
 ### Option: TLSCipherPSK13
@@ -733,11 +733,11 @@ TLSCipherCert={{ param_tlsciphercert }}
 # Mandatory: no
 # Default:
 # TLSCipherPSK13=
-{% if param_tlscipherpsk13 is defined and param_tlscipherpsk13
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlscipherpsk13 is defined and agent_param_tlscipherpsk13
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSCipherPSK13={{ param_tlscipherpsk13 }}
+TLSCipherPSK13={{ agent_param_tlscipherpsk13 }}
 {% endif %}
 
 ### Option: TLSCipherPSK
@@ -751,11 +751,11 @@ TLSCipherPSK13={{ param_tlscipherpsk13 }}
 # Mandatory: no
 # Default:
 # TLSCipherPSK=
-{% if param_tlscipherpsk is defined and param_tlscipherpsk
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlscipherpsk is defined and agent_param_tlscipherpsk
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSCipherPSK={{ param_tlscipherpsk }}
+TLSCipherPSK={{ agent_param_tlscipherpsk }}
 {% endif %}
 
 ### Option: TLSCipherAll13
@@ -767,11 +767,11 @@ TLSCipherPSK={{ param_tlscipherpsk }}
 # Mandatory: no
 # Default:
 # TLSCipherAll13=
-{% if param_tlscipherall13 is defined and param_tlscipherall13
-   and (param_tlsaccept is defined and (param_tlsaccept in ["psk", "cert"] or "psk" in param_tlsaccept or "cert" in param_tlsaccept)
-        or param_tlsconnect in ["psk", "cert"]) %}
+{% if agent_param_tlscipherall13 is defined and agent_param_tlscipherall13
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept in ["psk", "cert"] or "psk" in agent_param_tlsaccept or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect in ["psk", "cert"]) %}
 
-TLSCipherAll13={{ param_tlscipherall13 }}
+TLSCipherAll13={{ agent_param_tlscipherall13 }}
 {% endif %}
 
 ### Option: TLSCipherAll
@@ -785,11 +785,11 @@ TLSCipherAll13={{ param_tlscipherall13 }}
 # Mandatory: no
 # Default:
 # TLSCipherAll=
-{% if param_tlscipherall is defined and param_tlscipherall
-   and (param_tlsaccept is defined and (param_tlsaccept in ["psk", "cert"] or "psk" in param_tlsaccept or "cert" in param_tlsaccept)
-        or param_tlsconnect in ["psk", "cert"]) %}
+{% if agent_param_tlscipherall is defined and agent_param_tlscipherall
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept in ["psk", "cert"] or "psk" in agent_param_tlsaccept or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect in ["psk", "cert"]) %}
 
-TLSCipherAll={{ param_tlscipherall }}
+TLSCipherAll={{ agent_param_tlscipherall }}
 {% endif %}
 
 ####### For advanced users - TCP-related fine-tuning parameters #######
@@ -802,7 +802,7 @@ TLSCipherAll={{ param_tlscipherall }}
 # Range: 0 - INT_MAX (depends on system, too large values may be silently truncated to implementation-specified maximum)
 # Default: SOMAXCONN (hard-coded constant, depends on system)
 # ListenBacklog=
-{% if param_listenbacklog is defined and (param_listenbacklog or param_listenbacklog is number) %}
+{% if agent_param_listenbacklog is defined and (agent_param_listenbacklog or agent_param_listenbacklog is number) %}
 
-ListenBacklog={{ param_listenbacklog }}
+ListenBacklog={{ agent_param_listenbacklog }}
 {% endif %}

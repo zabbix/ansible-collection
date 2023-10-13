@@ -11,28 +11,22 @@ zabbix_host_description: 'Managed by Ansible. Added with "zabbix_host" module.'
 # zabbix_host_templates:
 
 ## Linked to agent parameter to accept active checks. Add more options if needed.
-zabbix_host_tls_accept: '{{ param_tlsconnect | default(["unencrypted"]) }}'
+zabbix_host_tls_accept: '{{ agent_param_tlsconnect | default(["unencrypted"]) }}'
 ## Mirrors agent outgoing connection behavior. Override, if you need different encryption for passive checks.
-zabbix_host_tls_connect: '{{ param_tlsconnect | default("unencrypted") }}'
+zabbix_host_tls_connect: '{{ agent_param_tlsconnect | default("unencrypted") }}'
 zabbix_host_get_cert_info: false
 zabbix_host_tls_issuer: ""
 zabbix_host_tls_subject: ""
 
 ## Linked to agent parameter
-zabbix_host_tls_psk_identity: '{{ param_tlspskidentity | default("") }}'
+zabbix_host_tls_psk_identity: '{{ agent_param_tlspskidentity | default("") }}'
 
-# zabbix_host_interfaces:
-#   - type: agent
-#     ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
-#     dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
-#     useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
-#     port: '{{ param_listenport | default(10050) }}'
 zabbix_host_interfaces:
   - type: agent
     ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
     dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
     useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
-    port: '10050'
+    port: '{{ param_listenport | default(10050) }}'
 ## IPMI settings undefined
 # zabbix_host_ipmi_authtype:
 # zabbix_host_ipmi_privilege:

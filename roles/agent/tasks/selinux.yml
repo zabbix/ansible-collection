@@ -1,12 +1,12 @@
 ---
 - name: 'SELinux: Add port to "zabbix_agent_port_t" type'
   when: >-
-    apply_seport is defined and apply_seport
+    agent_apply_seport is defined and agent_apply_seport
     and
-    param_listenport is defined and param_listenport | int != 10050
+    agent_param_listenport is defined and agent_param_listenport | int != 10050
   become: true
   ansible.builtin.command: >-
-    semanage port -a -t zabbix_agent_port_t -p tcp {{ param_listenport }}
+    semanage port -a -t zabbix_agent_port_t -p tcp {{ agent_param_listenport }}
   register: zabbix_agent_semanage_result
   changed_when: >-
     zabbix_agent_semanage_result.rc | int == 0 and
@@ -18,7 +18,7 @@
   tags: [selinux, deploy]
 
 - name: 'SELinux module block'
-  when: apply_semodule is defined and apply_semodule
+  when: agent_apply_semodule is defined and agent_apply_semodule
   become: true
   notify: 'Service restart'
   vars:
@@ -34,16 +34,16 @@
     - name: 'SELinux module : Upload'
       ansible.builtin.template:
         src: '{{ zabbix_agent_semodule }}.cil.j2'
-        dest: '{{ semodules_path }}/{{ zabbix_agent_semodule }}.cil'
-        mode: '{{ agent.conf_file.permissions.mode }}'
-        owner: '{{ agent.conf_file.permissions.user }}'
-        group: '{{ agent.conf_file.permissions.group }}'
+        dest: '{{ agent_semodules_path }}/{{ zabbix_agent_semodule }}.cil'
+        mode: '{{ agent_conf_file.permissions.mode }}'
+        owner: '{{ agent_conf_file.permissions.user }}'
+        group: '{{ agent_conf_file.permissions.group }}'
     - name: 'SELinux module : Install/Rewrite'
       ansible.builtin.command: 'semodule -vi {{ zabbix_agent_semodule }}.cil'
       ### if policy changes it needs rewriting... no idempotency for now. anyway its impossible with single command output.
       changed_when: true
       args:
-        chdir: '{{ semodules_path }}'
+        chdir: '{{ agent_semodules_path }}'
       register: zabbix_agent_semodule_result
     - name: 'SELinux module : Enable module'
       when: (zabbix_agent_semodule_result.stdout + zabbix_agent_semodule_result.stderr) | regex_search("disabled", igonrecase=True) is not none
@@ -59,7 +59,7 @@
 ### modify seboolean if set, skip if not set.
 - name: 'Seboolean: zabbix_run_sudo'
   when:
-    - seboolean_zabbix_run_sudo is defined and seboolean_zabbix_run_sudo in ["on", "off"]
+    - agent_seboolean_zabbix_run_sudo is defined and agent_seboolean_zabbix_run_sudo in ["on", "off"]
   become: true
   ansible.posix.seboolean:
     name: zabbix_run_sudo
@@ -68,5 +68,5 @@
     state: '{{ zabbix_agent_zabbix_run_sudo_state }}'
   vars:
     zabbix_agent_sebool_state_table: {"on": true, "off": false}
-    zabbix_agent_zabbix_run_sudo_state: '{{ zabbix_agent_sebool_state_table[seboolean_zabbix_run_sudo] }}'
+    zabbix_agent_zabbix_run_sudo_state: '{{ zabbix_agent_sebool_state_table[agent_seboolean_zabbix_run_sudo] }}'
   tags: [selinux, deploy]

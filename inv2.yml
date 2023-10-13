@@ -1,0 +1,10 @@
+test:
+  vars:
+    # zabbix_host_state: absent
+    agent_param_tlsaccept: ["psk"]
+    agent_param_tlsconnect: "psk"
+    zabbix_host_templates: ["Linux by Zabbix agent"]
+  hosts:
+    int:
+      ansible_host: 192.168.13.90
+      ansible_user: atocko

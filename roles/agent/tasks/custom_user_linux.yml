@@ -6,7 +6,7 @@
   become: true
   notify: 'Service restart'
   ansible.builtin.group:
-    name: '{{ service_group }}'
+    name: '{{ agent_service_group }}'
     gid: '{{ service_gid | default(omit) }}'
     state: 'present'
   tags: [deploy]
@@ -15,12 +15,12 @@
   become: true
   notify: 'Service restart'
   ansible.builtin.user:
-    name: '{{ service_user }}'
-    group: '{{ service_group }}'
+    name: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
     uid: '{{ service_uid | default(omit) }}'
     system: true
     shell: /usr/sbin/nologin
-    home: '{{ service_user_home }}'
+    home: '{{ agent_service_user_home }}'
     create_home: true
     state: 'present'
   tags: [deploy]
@@ -32,15 +32,15 @@
   ansible.builtin.file:
     path: '{{ item.folder | dirname }}'
     state: directory
-    owner: '{{ service_user }}'
-    group: '{{ service_group }}'
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
     setype: '{{ item.setype }}'
     recurse: true
   loop: '{{ zabbix_agent_file_loop | select }}'
   vars:
     zabbix_agent_file_loop:
-      - {folder: '{{ param_logfile | default(None) }}', setype: '{{ folder_log_setype | default(None) }}'}
-      # - {folder: '{{ param_pidfile | default(None) }}', setype: '{{ folder_pid_setype | default(None) }}'}
+      - {folder: '{{ agent_param_logfile | default(None) }}', setype: '{{ agent_folder_log_setype | default(None) }}'}
+      # - {folder: '{{ agent_param_pidfile | default(None) }}', setype: '{{ agent_folder_pid_setype | default(None) }}'}
   tags: [deploy]
 
 - name: 'Custom user : Systemd : Custom user override in service file'
@@ -62,13 +62,13 @@
     marker: '###<!-- {mark} ansible managed block -->##'
     block: |
       [Service]
-      User={{ service_user }}
-      Group={{ service_group }}
-      RuntimeDirectory={{ agent.file_name }}
-      PIDFile={{ param_pidfile }}
+      User={{ agent_service_user }}
+      Group={{ agent_service_group }}
+      RuntimeDirectory={{ agent_binary_name }}
+      PIDFile={{ agent_param_pidfile }}
     state: present
     create: true
-    mode: '{{ agent.conf_folder.permissions.mode }}'
-    owner: '{{ agent.conf_file.permissions.user }}'
-    group: '{{ agent.conf_file.permissions.group }}'
+    mode: '{{ agent_conf_file.folder_permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
   tags: [deploy, config]

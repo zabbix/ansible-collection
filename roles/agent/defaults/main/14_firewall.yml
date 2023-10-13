@@ -1,3 +1,5 @@
 ---
-apply_firewalld_rule: auto
-apply_iptables_rule: false
+# agent_firewall_allow_from:
+agent_apply_firewalld_rule: auto
+# agent_firewalld_zone:
+agent_apply_iptables_rule: false

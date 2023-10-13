@@ -10,9 +10,9 @@
 # Mandatory: no
 # Default:
 # PidFile=/tmp/zabbix_agent2.pid
-{% if param_pidfile is defined and param_pidfile %}
+{% if agent_param_pidfile is defined and agent_param_pidfile %}
 
-PidFile={{ param_pidfile }}
+PidFile={{ agent_param_pidfile }}
 {% endif %}
 
 ### Option: LogType
@@ -24,9 +24,9 @@ PidFile={{ param_pidfile }}
 # Mandatory: no
 # Default:
 # LogType=file
-{% if param_logtype is defined and param_logtype %}
+{% if agent_param_logtype is defined and agent_param_logtype %}
 
-LogType={{ param_logtype }}
+LogType={{ agent_param_logtype }}
 {% endif %}
 
 ### Option: LogFile
@@ -35,9 +35,9 @@ LogType={{ param_logtype }}
 # Mandatory: yes, if LogType is set to file, otherwise no
 # Default:
 # LogFile=/tmp/zabbix_agent2.log
-{% if param_logfile is defined and param_logfile %}
+{% if agent_param_logfile is defined and agent_param_logfile %}
 
-LogFile={{ param_logfile }}
+LogFile={{ agent_param_logfile }}
 {% endif %}
 
 ### Option: LogFileSize
@@ -48,9 +48,9 @@ LogFile={{ param_logfile }}
 # Range: 0-1024
 # Default:
 # LogFileSize=1
-{% if param_logfilesize is defined and (param_logfilesize or param_logfilesize is number) %}
+{% if agent_param_logfilesize is defined and (agent_param_logfilesize or agent_param_logfilesize is number) %}
 
-LogFileSize={{ param_logfilesize }}
+LogFileSize={{ agent_param_logfilesize }}
 {% endif %}
 
 ### Option: DebugLevel
@@ -66,9 +66,9 @@ LogFileSize={{ param_logfilesize }}
 # Range: 0-5
 # Default:
 # DebugLevel=3
-{% if param_debuglevel is defined and (param_debuglevel or param_debuglevel is number) %}
+{% if agent_param_debuglevel is defined and (agent_param_debuglevel or agent_param_debuglevel is number) %}
 
-DebugLevel={{ param_debuglevel }}
+DebugLevel={{ agent_param_debuglevel }}
 {% endif %}
 
 ### Option: SourceIP
@@ -77,9 +77,9 @@ DebugLevel={{ param_debuglevel }}
 # Mandatory: no
 # Default:
 # SourceIP=
-{% if param_sourceip is defined and param_sourceip %}
+{% if agent_param_sourceip is defined and agent_param_sourceip %}
 
-SourceIP={{ param_sourceip }}
+SourceIP={{ agent_param_sourceip }}
 {% endif %}
 
 ##### Passive checks related
@@ -95,12 +95,12 @@ SourceIP={{ param_sourceip }}
 # Mandatory: yes, if StartAgents is not explicitly set to 0
 # Default:
 # Server=
-{% if param_server is defined and param_server is iterable and param_server is not string and param_server is not mapping %}
+{% if agent_param_server is defined and agent_param_server is iterable and agent_param_server is not string and agent_param_server is not mapping %}
 
-Server={{ param_server | join(',') }}
-{% elif param_server is defined and param_server and param_server is string %}
+Server={{ agent_param_server | join(',') }}
+{% elif agent_param_server is defined and agent_param_server and agent_param_server is string %}
 
-Server={{ param_server }}
+Server={{ agent_param_server }}
 {% endif %}
 
 ### Option: ListenPort
@@ -110,9 +110,9 @@ Server={{ param_server }}
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
-{% if param_listenport is defined and (param_listenport or param_listenport is number) %}
+{% if agent_param_listenport is defined and (agent_param_listenport or agent_param_listenport is number) %}
 
-ListenPort={{ param_listenport }}
+ListenPort={{ agent_param_listenport }}
 {% endif %}
 
 ### Option: ListenIP
@@ -122,12 +122,12 @@ ListenPort={{ param_listenport }}
 # Mandatory: no
 # Default:
 # ListenIP=0.0.0.0
-{% if param_listenip is defined and param_listenip is iterable and param_listenip is not string and param_listenip is not mapping %}
+{% if agent_param_listenip is defined and agent_param_listenip is iterable and agent_param_listenip is not string and agent_param_listenip is not mapping %}
 
-ListenIP={{ param_listenip | join(',') }}
-{% elif param_listenip is defined and param_listenip and param_listenip is string %}
+ListenIP={{ agent_param_listenip | join(',') }}
+{% elif agent_param_listenip is defined and agent_param_listenip and agent_param_listenip is string %}
 
-ListenIP={{ param_listenip }}
+ListenIP={{ agent_param_listenip }}
 {% endif %}
 
 ### Option: StatusPort
@@ -137,9 +137,9 @@ ListenIP={{ param_listenip }}
 # Range: 1024-32767
 # Default:
 # StatusPort=
-{% if param_statusport is defined and (param_statusport or param_statusport is number) %}
+{% if agent_param_statusport is defined and (agent_param_statusport or agent_param_statusport is number) %}
 
-StatusPort={{ param_statusport }}
+StatusPort={{ agent_param_statusport }}
 {% endif %}
 
 ##### Active checks related
@@ -168,12 +168,12 @@ StatusPort={{ param_statusport }}
 # Mandatory: no
 # Default:
 # ServerActive=
-{% if param_serveractive is defined and param_serveractive is iterable and param_serveractive is not string and param_serveractive is not mapping %}
+{% if agent_param_serveractive is defined and agent_param_serveractive is iterable and agent_param_serveractive is not string and agent_param_serveractive is not mapping %}
 
-ServerActive={{ param_serveractive | join(',') }}
-{% elif param_serveractive is defined and param_serveractive and param_serveractive is string %}
+ServerActive={{ agent_param_serveractive | join(',') }}
+{% elif agent_param_serveractive is defined and agent_param_serveractive and agent_param_serveractive is string %}
 
-ServerActive={{ param_serveractive }}
+ServerActive={{ agent_param_serveractive }}
 {% endif %}
 
 ### Option: Hostname
@@ -184,9 +184,9 @@ ServerActive={{ param_serveractive }}
 # Mandatory: no
 # Default:
 # Hostname=
-{% if param_hostname is defined and param_hostname %}
+{% if agent_param_hostname is defined and agent_param_hostname %}
 
-Hostname={{ param_hostname }}
+Hostname={{ agent_param_hostname }}
 {% endif %}
 
 ### Option: HostnameItem
@@ -196,9 +196,9 @@ Hostname={{ param_hostname }}
 # Mandatory: no
 # Default:
 # HostnameItem=system.hostname
-{% if param_hostnameitem is defined and param_hostnameitem %}
+{% if agent_param_hostnameitem is defined and agent_param_hostnameitem %}
 
-HostnameItem={{ param_hostnameitem }}
+HostnameItem={{ agent_param_hostnameitem }}
 {% endif %}
 
 ### Option: HostMetadata
@@ -211,13 +211,13 @@ HostnameItem={{ param_hostnameitem }}
 # Range: 0-2034 bytes
 # Default:
 # HostMetadata=
-{% if param_hostmetadata is defined and param_hostmetadata is iterable and param_hostmetadata is not string and param_hostmetadata is not mapping %}
+{% if agent_param_hostmetadata is defined and agent_param_hostmetadata is iterable and agent_param_hostmetadata is not string and agent_param_hostmetadata is not mapping %}
 
-HostMetadata={{ param_hostmetadata | join(',') }}
-{% elif param_hostmetadata is defined and param_hostmetadata and param_hostmetadata is string %}
+HostMetadata={{ agent_param_hostmetadata | join(',') }}
+{% elif agent_param_hostmetadata is defined and agent_param_hostmetadata and agent_param_hostmetadata is string %}
 
-HostMetadata={{ param_hostmetadata }}
-{% elif (param_hostmetadata is not defined or not param_hostmetadata) and group_names %}
+HostMetadata={{ agent_param_hostmetadata }}
+{% elif (agent_param_hostmetadata is not defined or not agent_param_hostmetadata) and group_names %}
 
 HostMetadata={{ group_names | join(';') }}
 {% endif %}
@@ -232,9 +232,9 @@ HostMetadata={{ group_names | join(';') }}
 # Mandatory: no
 # Default:
 # HostMetadataItem=
-{% if param_hostmetadataitem is defined and param_hostmetadataitem %}
+{% if agent_param_hostmetadataitem is defined and agent_param_hostmetadataitem %}
 
-HostMetadataItem={{ param_hostmetadataitem }}
+HostMetadataItem={{ agent_param_hostmetadataitem }}
 {% endif %}
 
 ### Option: HostInterface
@@ -247,9 +247,9 @@ HostMetadataItem={{ param_hostmetadataitem }}
 # Range: 0-255 characters
 # Default:
 # HostInterface=
-{% if param_hostinterface is defined and (param_hostinterface or param_hostinterface is number) %}
+{% if agent_param_hostinterface is defined and (agent_param_hostinterface or agent_param_hostinterface is number) %}
 
-HostInterface={{ param_hostinterface }}
+HostInterface={{ agent_param_hostinterface }}
 {% endif %}
 
 ### Option: HostInterfaceItem
@@ -262,9 +262,9 @@ HostInterface={{ param_hostinterface }}
 # Mandatory: no
 # Default:
 # HostInterfaceItem=
-{% if param_hostinterfaceitem is defined and param_hostinterfaceitem %}
+{% if agent_param_hostinterfaceitem is defined and agent_param_hostinterfaceitem %}
 
-HostInterfaceItem={{ param_hostinterfaceitem }}
+HostInterfaceItem={{ agent_param_hostinterfaceitem }}
 {% endif %}
 
 ### Option: RefreshActiveChecks
@@ -274,9 +274,9 @@ HostInterfaceItem={{ param_hostinterfaceitem }}
 # Range: 1-86400
 # Default:
 # RefreshActiveChecks=5
-{% if param_refreshactivechecks is defined and (param_refreshactivechecks or param_refreshactivechecks is number) %}
+{% if agent_param_refreshactivechecks is defined and (agent_param_refreshactivechecks or agent_param_refreshactivechecks is number) %}
 
-RefreshActiveChecks={{ param_refreshactivechecks }}
+RefreshActiveChecks={{ agent_param_refreshactivechecks }}
 {% endif %}
 
 ### Option: BufferSend
@@ -286,9 +286,9 @@ RefreshActiveChecks={{ param_refreshactivechecks }}
 # Range: 1-3600
 # Default:
 # BufferSend=5
-{% if param_buffersend is defined and (param_buffersend or param_buffersend is number) %}
+{% if agent_param_buffersend is defined and (agent_param_buffersend or agent_param_buffersend is number) %}
 
-BufferSend={{ param_buffersend }}
+BufferSend={{ agent_param_buffersend }}
 {% endif %}
 
 ### Option: BufferSize
@@ -300,9 +300,9 @@ BufferSend={{ param_buffersend }}
 # Range: 2-65535
 # Default:
 # BufferSize=100
-{% if param_buffersize is defined and (param_buffersize or param_buffersize is number) %}
+{% if agent_param_buffersize is defined and (agent_param_buffersize or agent_param_buffersize is number) %}
 
-BufferSize={{ param_buffersize }}
+BufferSize={{ agent_param_buffersize }}
 {% endif %}
 
 ### Option: EnablePersistentBuffer
@@ -312,9 +312,9 @@ BufferSize={{ param_buffersize }}
 # Range: 0-1
 # Default:
 # EnablePersistentBuffer=0
-{% if param_enablepersistentbuffer is defined and (param_enablepersistentbuffer or param_enablepersistentbuffer is number) %}
+{% if agent_param_enablepersistentbuffer is defined and (agent_param_enablepersistentbuffer or agent_param_enablepersistentbuffer is number) %}
 
-EnablePersistentBuffer={{ param_enablepersistentbuffer }}
+EnablePersistentBuffer={{ agent_param_enablepersistentbuffer }}
 {% endif %}
 
 ### Option: PersistentBufferPeriod
@@ -326,9 +326,9 @@ EnablePersistentBuffer={{ param_enablepersistentbuffer }}
 # Range: 1m-365d
 # Default:
 # PersistentBufferPeriod=1h
-{% if param_persistentbufferperiod is defined and (param_persistentbufferperiod or param_persistentbufferperiod is number) %}
+{% if agent_param_persistentbufferperiod is defined and (agent_param_persistentbufferperiod or agent_param_persistentbufferperiod is number) %}
 
-PersistentBufferPeriod={{ param_persistentbufferperiod }}
+PersistentBufferPeriod={{ agent_param_persistentbufferperiod }}
 {% endif %}
 
 ### Option: PersistentBufferFile
@@ -338,9 +338,9 @@ PersistentBufferPeriod={{ param_persistentbufferperiod }}
 # Mandatory: no
 # Default:
 # PersistentBufferFile=
-{% if param_persistentbufferfile is defined and param_persistentbufferfile %}
+{% if agent_param_persistentbufferfile is defined and agent_param_persistentbufferfile %}
 
-PersistentBufferFile={{ param_persistentbufferfile }}
+PersistentBufferFile={{ agent_param_persistentbufferfile }}
 {% endif %}
 
 ### Option: HeartbeatFrequency
@@ -352,9 +352,9 @@ PersistentBufferFile={{ param_persistentbufferfile }}
 # Range: 0-3600
 # Default: 60
 # HeartbeatFrequency=
-{% if param_heartbeatfrequency is defined and (param_heartbeatfrequency or param_heartbeatfrequency is number) %}
+{% if agent_param_heartbeatfrequency is defined and (agent_param_heartbeatfrequency or agent_param_heartbeatfrequency is number) %}
 
-HeartbeatFrequency={{ param_heartbeatfrequency }}
+HeartbeatFrequency={{ agent_param_heartbeatfrequency }}
 {% endif %}
 
 ############ ADVANCED PARAMETERS #################
@@ -379,9 +379,9 @@ HeartbeatFrequency={{ param_heartbeatfrequency }}
 # Range: 1-30
 # Default:
 # Timeout=3
-{% if param_timeout is defined and (param_timeout or param_timeout is number) %}
+{% if agent_param_timeout is defined and (agent_param_timeout or agent_param_timeout is number) %}
 
-Timeout={{ param_timeout }}
+Timeout={{ agent_param_timeout }}
 {% endif %}
 
 ### Option: Include
@@ -391,14 +391,14 @@ Timeout={{ param_timeout }}
 # Mandatory: no
 # Default:
 # Include=
-{% if param_include is defined and param_include is iterable and param_include is not string and param_include is not mapping %}
+{% if agent_param_include is defined and agent_param_include is iterable and agent_param_include is not string and agent_param_include is not mapping %}
 
-{% for unit in param_include %}
+{% for unit in agent_param_include %}
 Include={{ unit }}
 {% endfor %}
-{% elif param_include is defined and param_include and param_include is string %}
+{% elif agent_param_include is defined and agent_param_include and agent_param_include is string %}
 
-Include={{ param_include }}
+Include={{ agent_param_include }}
 {% endif %}
 
 # Include=/usr/local/etc/zabbix_agent2.userparams.conf
@@ -412,9 +412,9 @@ Include={{ param_include }}
 # Range: 1-30
 # Default: <Global timeout>
 # PluginTimeout=
-{% if param_plugintimeout is defined and (param_plugintimeout or param_plugintimeout is number) %}
+{% if agent_param_plugintimeout is defined and (agent_param_plugintimeout or agent_param_plugintimeout is number) %}
 
-PluginTimeout={{ param_plugintimeout }}
+PluginTimeout={{ agent_param_plugintimeout }}
 {% endif %}
 
 ### Option:PluginSocket
@@ -423,9 +423,9 @@ PluginTimeout={{ param_plugintimeout }}
 # Mandatory: no
 # Default:/tmp/agent.plugin.sock
 # PluginSocket=
-{% if param_pluginsocket is defined and param_pluginsocket %}
+{% if agent_param_pluginsocket is defined and agent_param_pluginsocket %}
 
-PluginSocket={{ param_pluginsocket }}
+PluginSocket={{ agent_param_pluginsocket }}
 {% endif %}
 
 ####### USER-DEFINED MONITORED PARAMETERS #######
@@ -442,9 +442,9 @@ PluginSocket={{ param_pluginsocket }}
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
-{% if param_unsafeuserparameters is defined and (param_unsafeuserparameters or param_unsafeuserparameters is number) %}
+{% if agent_param_unsafeuserparameters is defined and (agent_param_unsafeuserparameters or agent_param_unsafeuserparameters is number) %}
 
-UnsafeUserParameters={{ param_unsafeuserparameters }}
+UnsafeUserParameters={{ agent_param_unsafeuserparameters }}
 {% endif %}
 
 ### Option: UserParameter
@@ -465,9 +465,9 @@ UnsafeUserParameters={{ param_unsafeuserparameters }}
 # Mandatory: no
 # Default:
 # UserParameterDir=
-{% if param_userparameterdir is defined and param_userparameterdir %}
+{% if agent_param_userparameterdir is defined and agent_param_userparameterdir %}
 
-UserParameterDir={{ param_userparameterdir }}
+UserParameterDir={{ agent_param_userparameterdir }}
 {% endif %}
 
 ### Option: ControlSocket
@@ -476,9 +476,9 @@ UserParameterDir={{ param_userparameterdir }}
 # Mandatory: no
 # Default:
 # ControlSocket=
-{% if param_controlsocket is defined and param_controlsocket %}
+{% if agent_param_controlsocket is defined and agent_param_controlsocket %}
 
-ControlSocket={{ param_controlsocket }}
+ControlSocket={{ agent_param_controlsocket }}
 {% endif %}
 
 ####### TLS-RELATED PARAMETERS #######
@@ -493,9 +493,9 @@ ControlSocket={{ param_controlsocket }}
 # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
 # Default:
 # TLSConnect=unencrypted
-{% if param_tlsconnect is defined and param_tlsconnect %}
+{% if agent_param_tlsconnect is defined and agent_param_tlsconnect %}
 
-TLSConnect={{ param_tlsconnect }}
+TLSConnect={{ agent_param_tlsconnect }}
 {% endif %}
 
 ### Option: TLSAccept
@@ -508,12 +508,12 @@ TLSConnect={{ param_tlsconnect }}
 # Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
 # Default:
 # TLSAccept=unencrypted
-{% if param_tlsaccept is defined and param_tlsaccept is iterable and param_tlsaccept is not string and param_tlsaccept is not mapping %}
+{% if agent_param_tlsaccept is defined and agent_param_tlsaccept is iterable and agent_param_tlsaccept is not string and agent_param_tlsaccept is not mapping %}
 
-TLSAccept={{ param_tlsaccept | join(',') }}
-{% elif param_tlsaccept is defined and param_tlsaccept and param_tlsaccept is string %}
+TLSAccept={{ agent_param_tlsaccept | join(',') }}
+{% elif agent_param_tlsaccept is defined and agent_param_tlsaccept and agent_param_tlsaccept is string %}
 
-TLSAccept={{ param_tlsaccept }}
+TLSAccept={{ agent_param_tlsaccept }}
 {% endif %}
 
 ### Option: TLSCAFile
@@ -523,11 +523,11 @@ TLSAccept={{ param_tlsaccept }}
 # Mandatory: no
 # Default:
 # TLSCAFile=
-{% if param_tlscafile is defined and param_tlscafile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscafile is defined and agent_param_tlscafile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCAFile={{ param_tlscafile }}
+TLSCAFile={{ agent_param_tlscafile }}
 {% endif %}
 
 ### Option: TLSCRLFile
@@ -536,11 +536,11 @@ TLSCAFile={{ param_tlscafile }}
 # Mandatory: no
 # Default:
 # TLSCRLFile=
-{% if param_tlscrlfile is defined and param_tlscrlfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscrlfile is defined and agent_param_tlscrlfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCRLFile={{ param_tlscrlfile }}
+TLSCRLFile={{ agent_param_tlscrlfile }}
 {% endif %}
 
 ### Option: TLSServerCertIssuer
@@ -549,11 +549,11 @@ TLSCRLFile={{ param_tlscrlfile }}
 # Mandatory: no
 # Default:
 # TLSServerCertIssuer=
-{% if param_tlsservercertissuer is defined and param_tlsservercertissuer
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsservercertissuer is defined and agent_param_tlsservercertissuer
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSServerCertIssuer={{ param_tlsservercertissuer }}
+TLSServerCertIssuer={{ agent_param_tlsservercertissuer }}
 {% endif %}
 
 ### Option: TLSServerCertSubject
@@ -562,11 +562,11 @@ TLSServerCertIssuer={{ param_tlsservercertissuer }}
 # Mandatory: no
 # Default:
 # TLSServerCertSubject=
-{% if param_tlsservercertsubject is defined and param_tlsservercertsubject
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlsservercertsubject is defined and agent_param_tlsservercertsubject
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSServerCertSubject={{ param_tlsservercertsubject }}
+TLSServerCertSubject={{ agent_param_tlsservercertsubject }}
 {% endif %}
 
 ### Option: TLSCertFile
@@ -575,11 +575,11 @@ TLSServerCertSubject={{ param_tlsservercertsubject }}
 # Mandatory: no
 # Default:
 # TLSCertFile=
-{% if param_tlscertfile is defined and param_tlscertfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "cert" or "cert" in param_tlsaccept)
-        or param_tlsconnect == "cert") %}
+{% if agent_param_tlscertfile is defined and agent_param_tlscertfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "cert" or "cert" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "cert") %}
 
-TLSCertFile={{ param_tlscertfile }}
+TLSCertFile={{ agent_param_tlscertfile }}
 {% endif %}
 
 ### Option: TLSKeyFile
@@ -588,9 +588,9 @@ TLSCertFile={{ param_tlscertfile }}
 # Mandatory: no
 # Default:
 # TLSKeyFile=
-{% if param_tlskeyfile is defined and param_tlskeyfile %}
+{% if agent_param_tlskeyfile is defined and agent_param_tlskeyfile %}
 
-TLSKeyFile={{ param_tlskeyfile }}
+TLSKeyFile={{ agent_param_tlskeyfile }}
 {% endif %}
 
 ### Option: TLSPSKIdentity
@@ -599,11 +599,11 @@ TLSKeyFile={{ param_tlskeyfile }}
 # Mandatory: no
 # Default:
 # TLSPSKIdentity=
-{% if param_tlspskidentity is defined and param_tlspskidentity
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlspskidentity is defined and agent_param_tlspskidentity
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSPSKIdentity={{ param_tlspskidentity }}
+TLSPSKIdentity={{ agent_param_tlspskidentity }}
 {% endif %}
 
 ### Option: TLSPSKFile
@@ -612,11 +612,11 @@ TLSPSKIdentity={{ param_tlspskidentity }}
 # Mandatory: no
 # Default:
 # TLSPSKFile=
-{% if param_tlspskfile is defined and param_tlspskfile
-   and (param_tlsaccept is defined and (param_tlsaccept == "psk" or "psk" in param_tlsaccept)
-        or param_tlsconnect == "psk") %}
+{% if agent_param_tlspskfile is defined and agent_param_tlspskfile
+   and (agent_param_tlsaccept is defined and (agent_param_tlsaccept == "psk" or "psk" in agent_param_tlsaccept)
+        or agent_param_tlsconnect == "psk") %}
 
-TLSPSKFile={{ param_tlspskfile }}
+TLSPSKFile={{ agent_param_tlspskfile }}
 {% endif %}
 
 ####### PLUGIN-SPECIFIC PARAMETERS #######
@@ -640,9 +640,9 @@ TLSPSKFile={{ param_tlspskfile }}
 # Range: 1-1000
 # Default:
 # Plugins.Log.MaxLinesPerSecond=20
-{% if param_plugins_log_maxlinespersecond is defined and (param_plugins_log_maxlinespersecond or param_plugins_log_maxlinespersecond is number) %}
+{% if agent_param_plugins_log_maxlinespersecond is defined and (agent_param_plugins_log_maxlinespersecond or agent_param_plugins_log_maxlinespersecond is number) %}
 
-Plugins.Log.MaxLinesPerSecond={{ param_plugins_log_maxlinespersecond }}
+Plugins.Log.MaxLinesPerSecond={{ agent_param_plugins_log_maxlinespersecond }}
 {% endif %}
 
 ### Option: AllowKey
@@ -653,14 +653,14 @@ Plugins.Log.MaxLinesPerSecond={{ param_plugins_log_maxlinespersecond }}
 #	If no AllowKey or DenyKey rules defined, all keys are allowed.
 #
 # Mandatory: no
-{% if param_allowkey is defined and param_allowkey is iterable and param_allowkey is not string and param_allowkey is not mapping %}
+{% if agent_param_allowkey is defined and agent_param_allowkey is iterable and agent_param_allowkey is not string and agent_param_allowkey is not mapping %}
 
-{% for unit in param_allowkey %}
+{% for unit in agent_param_allowkey %}
 AllowKey={{ unit }}
 {% endfor %}
-{% elif param_allowkey is defined and param_allowkey and param_allowkey is string %}
+{% elif agent_param_allowkey is defined and agent_param_allowkey and agent_param_allowkey is string %}
 
-AllowKey={{ param_allowkey }}
+AllowKey={{ agent_param_allowkey }}
 {% endif %}
 
 ### Option: DenyKey
@@ -674,14 +674,14 @@ AllowKey={{ param_allowkey }}
 # Mandatory: no
 # Default:
 # DenyKey=system.run[*]
-{% if param_denykey is defined and param_denykey is iterable and param_denykey is not string and param_denykey is not mapping %}
+{% if agent_param_denykey is defined and agent_param_denykey is iterable and agent_param_denykey is not string and agent_param_denykey is not mapping %}
 
-{% for unit in param_denykey %}
+{% for unit in agent_param_denykey %}
 DenyKey={{ unit }}
 {% endfor %}
-{% elif param_denykey is defined and param_denykey and param_denykey is string %}
+{% elif agent_param_denykey is defined and agent_param_denykey and agent_param_denykey is string %}
 
-DenyKey={{ param_denykey }}
+DenyKey={{ agent_param_denykey }}
 {% endif %}
 
 ### Option: Plugins.SystemRun.LogRemoteCommands
@@ -692,9 +692,9 @@ DenyKey={{ param_denykey }}
 # Mandatory: no
 # Default:
 # Plugins.SystemRun.LogRemoteCommands=0
-{% if param_plugins_systemrun_logremotecommands is defined and (param_plugins_systemrun_logremotecommands or param_plugins_systemrun_logremotecommands is number) %}
+{% if agent_param_plugins_systemrun_logremotecommands is defined and (agent_param_plugins_systemrun_logremotecommands or agent_param_plugins_systemrun_logremotecommands is number) %}
 
-Plugins.SystemRun.LogRemoteCommands={{ param_plugins_systemrun_logremotecommands }}
+Plugins.SystemRun.LogRemoteCommands={{ agent_param_plugins_systemrun_logremotecommands }}
 {% endif %}
 
 ### Option: ForceActiveChecksOnStart
@@ -705,18 +705,18 @@ Plugins.SystemRun.LogRemoteCommands={{ param_plugins_systemrun_logremotecommands
 # Range: 0-1
 # Default:
 # ForceActiveChecksOnStart=0
-{% if param_forceactivechecksonstart is defined and (param_forceactivechecksonstart or param_forceactivechecksonstart is number) %}
+{% if agent_param_forceactivechecksonstart is defined and (agent_param_forceactivechecksonstart or agent_param_forceactivechecksonstart is number) %}
 
-ForceActiveChecksOnStart={{ param_forceactivechecksonstart }}
+ForceActiveChecksOnStart={{ agent_param_forceactivechecksonstart }}
 {% endif %}
 
 # Include configuration files for plugins
-{% if param_includeplugins is defined and param_includeplugins is iterable and param_includeplugins is not string and param_includeplugins is not mapping %}
+{% if agent_param_includeplugins is defined and agent_param_includeplugins is iterable and agent_param_includeplugins is not string and agent_param_includeplugins is not mapping %}
 
-{% for unit in param_includeplugins %}
+{% for unit in agent_param_includeplugins %}
 Include={{ unit }}
 {% endfor %}
-{% elif param_includeplugins is defined and param_includeplugins and param_includeplugins is string %}
+{% elif agent_param_includeplugins is defined and agent_param_includeplugins and agent_param_includeplugins is string %}
 
-Include={{ param_includeplugins }}
+Include={{ agent_param_includeplugins }}
 {% endif %}

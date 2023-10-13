@@ -2,10 +2,10 @@
 agent_major_version: '6.0'
 agent_variant: '1'  # 1 - agentd, 2 - agent2
 
-package_state: present  # present or latest
+agent_package_state: present  # present or latest
 
 ### agent2 plugin version change for Zabbix agent2 versions prior to 6.0.13 (before version naming change)
-agent2_plugin_version: '{{ "1.2.0" if (agent_variant | string == "2"
+agent_2_plugin_version: '{{ "1.2.0" if (agent_variant | string == "2"
                               and agent_minor_version is defined
                               and agent_minor_version
                               and agent_minor_version | int < 13)

@@ -6,7 +6,7 @@
 ##    1: Zabbix agentd, 2: Zabbix agent2
 ##    '6.0','6.4' : zabbix major version
 
-map_agent2_plugin_list:
+agent_2_map_plugin_list:
   '6.0':  # By default in version 6.0 loadable plugins are installed as dependencies.
     - ceph
     - docker
@@ -19,7 +19,7 @@ map_agent2_plugin_list:
     - postgresql
     - redis
     - smart
-  '6.4':  # Starting with 6.4 loadable plugin dependency removed. Manage from inventory, using "agent2_plugin_list" variable.
+  '6.4':  # Starting with 6.4 loadable plugin dependency removed. Manage from inventory, using "agent_2_plugin_list" variable.
     - ceph
     - docker
     - memcached
@@ -33,40 +33,40 @@ map_agent2_plugin_list:
     # - postgresql
 
 ### User and Group to run Zabbix agent under.
-map_service_user:
+agent_map_service_user:
   Linux: zabbix
-map_service_user_home:
+agent_map_service_user_home:
   Debian: /var/lib/zabbix/
   RedHat: /usr/lib/zabbix/
-map_default_home_folder:
+agent_map_default_home_folder:
   Linux: /home/
-map_service_group:
+agent_map_service_group:
   Linux: zabbix
 
 ### File to place systemd unit override settings.
-map_agent_systemd_override_path:
+agent_map_systemd_override_path:
   '1': '/etc/systemd/system/zabbix-agent.service.d/custom_user_managed_by_ansible.conf'
   '2': '/etc/systemd/system/zabbix-agent2.service.d/custom_user_managed_by_ansible.conf'
 
 ### Location of logrotate settings.
-map_agent_logrotate_path:
+agent_map_logrotate_path:
   '1': '/etc/logrotate.d/zabbix-agent'
   '2': '/etc/logrotate.d/zabbix-agent2'
 
-map_agent_service_settings:
+agent_map_service_name:
+  Linux: '{{ "zabbix-agent2" if agent_variant | string == "2" else "zabbix-agent" }}'
+agent_map_binary_name:
+  Linux: '{{ "zabbix_agent2" if agent_variant | string == "2" else "zabbix_agentd" }}'
+agent_map_conf_file:
   Linux:
-    service_name: '{{ "zabbix-agent2" if agent_variant | string == "2" else "zabbix-agent" }}'
-    file_name: '{{ "zabbix_agent2" if agent_variant | string == "2" else "zabbix_agentd" }}'
-    conf_file:
-      path: '/etc/zabbix/{{ "zabbix_agent2" if agent_variant | string == "2" else "zabbix_agentd" }}.conf'
-      permissions:
-        user: 'root'
-        group: 'root'
-        mode: u=rw,g=r,o=r
-        # mode: '0644'
-    conf_folder:
-      permissions:
-        user: 'root'
-        group: 'root'
-        mode: u=rwx,g=rx,o=rx
-        # mode: '0755
+    path: '/etc/zabbix/{{ "zabbix_agent2" if agent_variant | string == "2" else "zabbix_agentd" }}.conf'
+    permissions:
+      user: 'root'
+      group: 'root'
+      mode: u=rw,g=r,o=r
+      # mode: '0644'
+    folder_permissions:
+      user: 'root'
+      group: 'root'
+      mode: u=rwx,g=rx,o=rx
+      # mode: '0755

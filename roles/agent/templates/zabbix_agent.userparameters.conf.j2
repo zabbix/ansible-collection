@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
 
 # UserParameters:
-{% if param_userparameter is defined and param_userparameter is iterable and param_userparameter is not string and param_userparameter is not mapping %}
+{% if agent_param_userparameter is defined and agent_param_userparameter is iterable and agent_param_userparameter is not string and agent_param_userparameter is not mapping %}
 
-{% for unit in param_userparameter %}
+{% for unit in agent_param_userparameter %}
 UserParameter={{ unit }}
 {% endfor %}
-{% elif param_userparameter is defined and param_userparameter and param_userparameter is string %}
+{% elif agent_param_userparameter is defined and agent_param_userparameter and agent_param_userparameter is string %}
 
-UserParameter={{ param_userparameter }}
+UserParameter={{ agent_param_userparameter }}
 {% endif %}

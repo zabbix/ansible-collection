@@ -4,9 +4,9 @@
 # Mandatory: yes
 # Default:
 Plugins.PostgreSQL.System.Path=/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
-{% if param_plugins_postgresql_system_path  is defined and param_plugins_postgresql_system_path %}
+{% if agent_param_plugins_postgresql_system_path  is defined and agent_param_plugins_postgresql_system_path %}
 
-Plugins.PostgreSQL.System.Path={{ param_plugins_postgresql_system_path }}
+Plugins.PostgreSQL.System.Path={{ agent_param_plugins_postgresql_system_path }}
 {% endif %}
 
 ### Option: Plugins.PostgreSQL.CallTimeout

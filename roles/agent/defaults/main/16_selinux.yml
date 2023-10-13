@@ -1,5 +1,6 @@
 ---
-apply_selinux: true
+agent_apply_seport: true
+agent_apply_semodule: false
+agent_semodules_path: "/usr/share/selinux/packages/zabbix/"
 ### old SE boolean... somewhat softens policy restrictions
-seboolean_zabbix_run_sudo: false
-semodules_path: "/usr/share/selinux/packages/zabbix/"
+# agent_seboolean_zabbix_run_sudo: false

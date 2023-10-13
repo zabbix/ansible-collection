@@ -7,5 +7,5 @@ exclude_paths:
 #  - tests
 profile: production
 
-skip_list:
-  - var-naming[no-role-prefix]
+# skip_list:
+#  - var-naming[no-role-prefix]

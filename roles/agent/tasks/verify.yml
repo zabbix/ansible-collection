@@ -8,7 +8,7 @@
 - name: 'Verify : Gather agent status'
   become: true
   ansible.builtin.systemd:
-    name: '{{ agent.service_name }}'
+    name: '{{ agent_service_name }}'
   register: zabbix_agent_service_status
   tags: [verify]
 
@@ -16,15 +16,15 @@
   when: >-
     zabbix_agent_verification is defined and zabbix_agent_verification
     and
-    (param_tlsconnect == "cert" or "cert" in param_tlsaccept)
+    (agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept)
     and
-    (source_tlscertfile is defined
-     and source_tlskeyfile is defined
-     and source_tlscafile is defined)
+    (agent_source_tlscertfile is defined
+     and agent_source_tlskeyfile is defined
+     and agent_source_tlscafile is defined)
   ansible.builtin.include_vars: tls_cert_parameters.yml
 
 - name: 'Import vars: Custom user overrrides'
-  when: zabbix_agent_verification is defined and zabbix_agent_verification and service_user != "zabbix"
+  when: zabbix_agent_verification is defined and zabbix_agent_verification and agent_service_user != "zabbix"
   ansible.builtin.include_vars: custom_user_overrides.yml
 
 - name: 'Verify : Zabbix_get : Local : Agent variant'
@@ -36,13 +36,13 @@
       -k agent.variant
       -s {{ ansible_host }}
       -t 5
-      {{ "-p " + param_listenport | string if param_listenport is defined else "" }}
-      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert", "psk"] else "" }}
-      {{ "--tls-ca-file " + param_tlscafile if param_tlscafile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-cert-file " + param_tlscertfile if param_tlscertfile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-key-file " + param_tlskeyfile if param_tlskeyfile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-psk-identity " + param_tlspskidentity if param_tlspskidentity is defined and param_tlsaccept[0] == "psk" else "" }}
-      {{ "--tls-psk-file " + param_tlspskfile if param_tlspskfile is defined and param_tlsaccept[0] == "psk" else "" }}
+      {{ "-p " + agent_param_listenport | string if agent_param_listenport is defined else "" }}
+      {{ "--tls-connect " + agent_param_tlsaccept[0] if agent_param_tlsaccept[0] is defined and agent_param_tlsaccept[0] in ["cert", "psk"] else "" }}
+      {{ "--tls-ca-file " + agent_param_tlscafile if agent_param_tlscafile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-cert-file " + agent_param_tlscertfile if agent_param_tlscertfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-key-file " + agent_param_tlskeyfile if agent_param_tlskeyfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-psk-identity " + agent_param_tlspskidentity if agent_param_tlspskidentity is defined and agent_param_tlsaccept[0] == "psk" else "" }}
+      {{ "--tls-psk-file " + agent_param_tlspskfile if agent_param_tlspskfile is defined and agent_param_tlsaccept[0] == "psk" else "" }}
   changed_when: false
   ignore_errors: true
   tags: [verify]
@@ -57,15 +57,15 @@
       -t 5
       {% if driver is defined and driver in ["podman", "docker"] %}
       -p {{ ext_agent_port2 if agent_variant | string == "2" else ext_agent_port }}
-      {% elif param_listenport is defined and param_listenport %}
-      -p {{ param_listenport }}
+      {% elif agent_param_listenport is defined and agent_param_listenport %}
+      -p {{ agent_param_listenport }}
       {% endif %}
-      {{ "--tls-connect " + param_tlsaccept[0] if param_tlsaccept[0] is defined and param_tlsaccept[0] in ["cert", "psk"] else "" }}
-      {{ "--tls-ca-file " + source_tlscafile if source_tlscafile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-cert-file " + source_tlscertfile if source_tlscertfile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-key-file " + source_tlskeyfile if source_tlskeyfile is defined and param_tlsaccept[0] == "cert" else "" }}
-      {{ "--tls-psk-identity " + param_tlspskidentity if param_tlspskidentity is defined and param_tlsaccept[0] == "psk" else "" }}
-      {{ "--tls-psk-file " + source_tlspskfile if param_tlsaccept[0] == "psk" else "" }}
+      {{ "--tls-connect " + agent_param_tlsaccept[0] if agent_param_tlsaccept[0] is defined and agent_param_tlsaccept[0] in ["cert", "psk"] else "" }}
+      {{ "--tls-ca-file " + agent_source_tlscafile if agent_source_tlscafile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-cert-file " + agent_source_tlscertfile if agent_source_tlscertfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-key-file " + agent_source_tlskeyfile if agent_source_tlskeyfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-psk-identity " + agent_param_tlspskidentity if agent_param_tlspskidentity is defined and agent_param_tlsaccept[0] == "psk" else "" }}
+      {{ "--tls-psk-file " + agent_source_tlspskfile if agent_param_tlsaccept[0] == "psk" else "" }}
   changed_when: false
   ignore_errors: true
   # vars:
@@ -82,12 +82,12 @@
       - zabbix_agent_service_status.status.UnitFileState | lower == "enabled"
   tags: [never, assert]
 
-- name: 'Report : {{ report_path }}'
+- name: 'Report : {{ agent_verify_report_path }}'
   delegate_to: localhost
   throttle: 1
   ansible.builtin.lineinfile:
     create: true
-    path: '{{ report_path }}'
+    path: '{{ agent_verify_report_path }}'
     line: >-
       {{ ansible_date_time.date }}T{{ ansible_date_time.time }}
       {{ test_name | default("-", true) }}:

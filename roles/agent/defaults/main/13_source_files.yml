@@ -1,3 +1,10 @@
 ---
+# agent_source_conf_dir:
+# agent_source_scripts_dir:
+# agent_source_modules_dir:
 ### Folder for psk key files. If psk key is not found, it will be generated and placed in to the folder.
-source_tlspskfile: '.PSK/{{ inventory_hostname }}.psk'
+agent_source_tlspskfile: '.PSK/{{ inventory_hostname }}.psk'
+# agent_source_tlscafile:
+# agent_source_tlscertfile:
+# agent_source_tlscrlfile:
+# agent_source_tlskeyfile:

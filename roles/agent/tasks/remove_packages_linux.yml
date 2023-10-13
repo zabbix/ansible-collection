@@ -2,7 +2,7 @@
 - name: 'Remove packages : Service down'
   become: true
   ansible.builtin.systemd:
-    name: '{{ agent.service_name }}'
+    name: '{{ agent_service_name }}'
     state: stopped
   failed_when: false
   tags: [remove]
@@ -10,7 +10,7 @@
 - name: 'Remove packages : Package absence'
   become: true
   ansible.builtin.package:
-    name: '{{ zabbix_agent_package_list + ["zabbix-release"] }}'
+    name: '{{ agent_package_list + ["zabbix-release"] }}'
     state: absent
   tags: [remove]
 
@@ -40,7 +40,7 @@
   block:
     - name: 'SELinux module : CIL removed'
       ansible.builtin.file:
-        path: '{{ semodules_path }}/{{ zabbix_agent_semodule }}.cil'
+        path: '{{ agent_semodules_path }}/{{ zabbix_agent_semodule }}.cil'
         state: absent
     - name: 'SELinux module : Module removed'
       ansible.builtin.command: 'semodule -vr {{ zabbix_agent_semodule }}'
@@ -50,7 +50,7 @@
         (zabbix_agent_semodule_remove_result.stdout + zabbix_agent_semodule_remove_result.stderr)
         | regex_search("No such file or directory", ignorecase=True) is none
       args:
-        chdir: '{{ semodules_path }}'
+        chdir: '{{ agent_semodules_path }}'
       register: zabbix_agent_semodule_remove_result
     - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
       become: true

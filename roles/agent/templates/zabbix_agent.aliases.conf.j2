@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
 
 # Aliases:
-{% if param_alias is defined and param_alias is iterable and param_alias is not string and param_alias is not mapping %}
+{% if agent_param_alias is defined and agent_param_alias is iterable and agent_param_alias is not string and agent_param_alias is not mapping %}
 
-{% for unit in param_alias %}
+{% for unit in agent_param_alias %}
 Alias={{ unit }}
 {% endfor %}
-{% elif param_alias is defined and param_alias and param_alias is string %}
+{% elif agent_param_alias is defined and agent_param_alias and agent_param_alias is string %}
 
-Alias={{ param_alias }}
+Alias={{ agent_param_alias }}
 {% endif %}

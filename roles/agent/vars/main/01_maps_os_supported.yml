@@ -2,7 +2,7 @@
 ### Supported OS version map
 ##
 ## minor versions compared using regex: '.*' - any minor
-map_supported_os_version:
+agent_map_supported_os_version:
   x86_64:
     Linux:
       RedHat:

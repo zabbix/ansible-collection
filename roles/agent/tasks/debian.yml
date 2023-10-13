@@ -9,7 +9,7 @@
 
 - name: 'DEBUG : show repo uri'
   ansible.builtin.debug:
-    msg: '{{ zabbix_repo.uri }}'
+    msg: '{{ agent_repository.uri }}'
   tags: [never, debug]
 
 - name: 'APT : Zabbix-release repository presence'
@@ -20,8 +20,8 @@
   register: zabbix_agent_repository_presence
   ansible.builtin.apt:
     # deb module requires xz-utils to be installed on target machine????
-    deb: '{{ zabbix_repo.uri }}'
-  when: package_state != "absent"
+    deb: '{{ agent_repository.uri }}'
+  when: agent_package_state != "absent"
   environment:
     http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
@@ -35,8 +35,8 @@
   delay: 3
   register: zabbix_agent_packages_presence
   ansible.builtin.apt:
-    name: '{{ zabbix_agent_package_list }}'
-    state: '{{ package_state }}'
+    name: '{{ agent_package_list }}'
+    state: '{{ agent_package_state }}'
     # do not trigger service start
     policy_rc_d: 101
     # update cache before installing

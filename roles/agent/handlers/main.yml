@@ -16,7 +16,7 @@
   become: true
   register: service_restarted
   ansible.builtin.systemd:
-    name: '{{ agent.service_name }}'
+    name: '{{ agent_service_name }}'
     state: restarted
   tags: [restart, deploy, config]
 
@@ -29,7 +29,7 @@
   register: reload_user_parameters
   # Reload user parameters without restarting agent
   ansible.builtin.command: >-
-      /usr/sbin/{{ agent.file_name }}
+      /usr/sbin/{{ agent_binary_name }}
       -R userparameter_reload
   changed_when: true
   failed_when: >-

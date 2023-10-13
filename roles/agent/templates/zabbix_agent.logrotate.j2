@@ -1,5 +1,5 @@
-{{ param_logfile }} {
-{% for unit in logrotate_options %}
+{{ agent_param_logfile }} {
+{% for unit in agent_logrotate_options %}
     {{ unit }}
 {% endfor %}
 }

@@ -4,9 +4,9 @@
 # Mandatory: yes
 # Default:
 # Plugins.MongoDB.System.Path=
-{% if param_plugins_mongodb_system_path  is defined and param_plugins_mongodb_system_path %}
+{% if agent_param_plugins_mongodb_system_path  is defined and agent_param_plugins_mongodb_system_path %}
 
-Plugins.MongoDB.System.Path={{ param_plugins_mongodb_system_path }}
+Plugins.MongoDB.System.Path={{ agent_param_plugins_mongodb_system_path }}
 {% endif %}
 
 ### Option: Plugins.MongoDB.Timeout
