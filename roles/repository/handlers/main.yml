@@ -1,0 +1,45 @@
+---
+- name: 'YUM : yum clean all'
+  when: ansible_os_family == "RedHat"
+  become: true
+  ansible.builtin.command: yum clean all
+  # register: yum_clean_all
+  tags: [skip_ansible_lint]
+
+# - name: 'Reload systemd daemon'
+#   # Gives OK even if changed...
+#   when: >-
+#     "remove" not in ansible_run_tags
+#   become: true
+#   ansible.builtin.systemd:
+#     daemon_reload: true
+#   tags: [restart, deploy, config]
+
+# - name: 'Service restart'
+#   when: >-
+#     "remove" not in ansible_run_tags
+#     and
+#     "userparam" not in ansible_run_tags
+#   become: true
+#   register: service_restarted
+#   ansible.builtin.systemd:
+#     name: '{{ agent.service_name }}'
+#     state: restarted
+#   tags: [restart, deploy, config]
+
+# - name: 'Reload user parameters'
+#   when: >-
+#     "remove" not in ansible_run_tags
+#     and
+#     service_restarted is not defined
+#   become: true
+#   register: reload_user_parameters
+#   # Reload user parameters without restarting agent
+#   ansible.builtin.command: >-
+#       /usr/sbin/{{ agent.file_name }}
+#       -R userparameter_reload
+#   changed_when: true
+#   failed_when: >-
+#     (reload_user_parameters.stdout + reload_user_parameters.stderr)
+#     | regex_search("reloaded|success") is none
+#   tags: [userparam, deploy, config]

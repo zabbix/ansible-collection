@@ -1,0 +1,26 @@
+---
+zabbix_repo:
+# adding base distro through package.
+# if version transition(fedora, amazon etc) is not available it will use default ansible_distribution_major_version mappings.
+  name: 'zabbix'  # for enable/disable repo during package installation
+  key: '{{ map_gpg_key[map_os_transition[ansible_distribution][ansible_distribution_major_version]]
+           if map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+             else map_gpg_key[ansible_distribution_major_version] }}'
+  uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/rhel/"
+          + (map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+            if map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+              else ansible_distribution_major_version | string)
+          + "/" + ansible_architecture + "/zabbix-release-latest.el"
+          + (map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+            if map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+              else ansible_distribution_major_version | string)
+          + ".noarch.rpm" }}'
+
+zabbix_agent_package_list:
+  - zabbix-sender
+  - zabbix-get
+  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'
+  - zabbix-selinux-policy
+  # - zabbix-agent-6.0.10-release1.el9
+  # - zabbix-get-6.0.10-release1.el9
+  # - zabbix-sender-6.0.10-release1.el9

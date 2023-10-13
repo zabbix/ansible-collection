@@ -1,0 +1,8 @@
+---
+repository_major_version: 6.4
+repository_state: present
+### Override repositrory URL for self hosted mirrors.
+repository_mirror: "https://repo.zabbix.com/"
+### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)
+### integer: 1-99
+repository_priority: false

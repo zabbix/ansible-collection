@@ -1,0 +1,189 @@
+### Option:Plugins.PostgreSQL.System.Path
+#	Path to external plugin executable.
+#
+# Mandatory: yes
+# Default:
+Plugins.PostgreSQL.System.Path=/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+{% if param_plugins_postgresql_system_path  is defined and param_plugins_postgresql_system_path %}
+
+Plugins.PostgreSQL.System.Path={{ param_plugins_postgresql_system_path }}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.CallTimeout
+#	The maximum time in seconds for waiting when a request has to be done.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.PostgreSQL.CallTimeout=<Global timeout>
+{% if param_plugins_postgresql_calltimeout  is defined and param_plugins_postgresql_calltimeout %}
+
+Plugins.PostgreSQL.CallTimeout={{ param_plugins_postgresql_calltimeout }}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Timeout
+#	The maximum time in seconds for waiting when a connection has to be established.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.PostgreSQL.Timeout=<Global timeout>
+{% if param_plugins_postgresql_timeout  is defined and param_plugins_postgresql_timeout %}
+
+Plugins.PostgreSQL.Timeout={{ param_plugins_postgresql_timeout }}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.KeepAlive
+#   Time in seconds for waiting before unused connections will be closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.PostgreSQL.KeepAlive=300
+{% if param_plugins_postgresql_keepalive  is defined and param_plugins_postgresql_keepalive %}
+
+Plugins.PostgreSQL.KeepAlive={{ param_plugins_postgresql_keepalive }}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.CustomQueriesPath
+#	Full pathname of a directory containing *.sql* files with custom queries.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.CustomQueriesPath=
+{% if param_plugins_postgresql_customqueriespath  is defined and param_plugins_postgresql_customqueriespath %}
+
+Plugins.PostgreSQL.CustomQueriesPath={{ param_plugins_postgresql_customqueriespath }}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.Uri
+#	Uri to connect. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range:
+#   Must match the URI format.
+#   Supported schemas: "tcp" and "unix".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.PostgreSQL.Sessions.*.Uri=
+{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+
+{% for session in param_plugins_postgresql_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.User
+#	Username for session connection. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range: Must match the PostgreSQL user name.
+# Default:
+# Plugins.PostgreSQL.Sessions.*.User=
+{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+
+{% for session in param_plugins_postgresql_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.PostgreSQL.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.Password
+#	Password for session connection. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range: Must match the Password format.
+# Default:
+# Plugins.PostgreSQL.Sessions.*.Password=
+{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+
+{% for session in param_plugins_postgresql_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.Database
+#	Database for session connection. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.Sessions.*.Database=
+{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+
+{% for session in param_plugins_postgresql_sessions %}
+{% if session["database"] is defined and session["database"] %}
+Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Database={{ session["database"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.TLSConnect
+#	Encryption type for PostgreSQL connection. "*" should be replaced with a session name.
+#		required    - connect using TLS as transport mode without identity checks;
+#		verify_ca   - connect using TLS and verify certificate;
+#		verify_full - connect using TLS, verify certificate and verify that database identity (CN) specified by
+#				DBHost matches its certificate;
+#	Undefined encryption type means unencrypted connection.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.Sessions.*.TLSConnect=
+{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+
+{% for session in param_plugins_postgresql_sessions %}
+{% if session["tlsconnect"] is defined and session["tlsconnect"] %}
+Plugins.PostgreSQL.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificate
+#	peer certificate verification.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.Sessions.*.TLSCAFile=
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.TLSCertFile
+#	Full pathname of a file containing the PostgreSQL certificate or certificate chain.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.Sessions.*.TLSCertFile=
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.PostgreSQL.Sessions.*.TLSKeyFile
+#	Full pathname of a file containing the PostgreSQL private key.
+#
+# Mandatory: no
+# Default:
+# Plugins.PostgreSQL.Sessions.*.TLSKeyFile=
+{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+
+{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}

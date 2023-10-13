@@ -1,0 +1,11 @@
+test:
+  vars:
+    # zabbix_host_state: absent
+  hosts:
+    one1.test.lv:
+      ansible_host: '{{ inventory_hostname }}'
+    one1.test.lv:
+    two2.test.lv:
+      ansible_host: 10.10.10.10 
+    three3.test.lv:
+      ansible_host: '192.168.12.13'

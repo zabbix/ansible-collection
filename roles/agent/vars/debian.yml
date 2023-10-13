@@ -1,0 +1,28 @@
+---
+zabbix_repo:
+  name: 'zabbix-release'
+  uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
+          + ansible_distribution | lower
+          + ("-arm64" if ansible_architecture == "aarch64" else "")
+          + "/pool/main/z/zabbix-release/zabbix-release_latest"
+          + "%2B" + ansible_distribution | lower + ansible_distribution_major_version
+          + (".04" if ansible_distribution | lower == "ubuntu" else "")
+          + "_all.deb" }}'
+  # uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
+  #         + ansible_distribution | lower
+  #         + ("-arm64" if ansible_architecture == "aarch64" else "")
+  #         + "/pool/main/z/zabbix-release/zabbix-release_"
+  #         + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string
+  #         + "%2B" + ansible_distribution | lower + ansible_distribution_version + "_all.deb" }}'
+  # uri: '{{ repository_mirror + "/zabbix/" + agent_major_version | string + "/"
+  #         + ("ubuntu-arm64" if ansible_architecture == "aarch64" else "ubuntu")
+  #         + "/pool/main/z/zabbix-release/zabbix-release_"
+  #         + agent_major_version | string + "-" + release_version[agent_major_version | string][ansible_architecture][ansible_distribution | lower] | string
+  #         + "%2B" + ansible_distribution | lower + ansible_distribution_version + "_all.deb" }}'
+  # https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4+debian10_all.deb
+  # https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
+
+zabbix_agent_package_list:
+  - zabbix-sender
+  - zabbix-get
+  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'

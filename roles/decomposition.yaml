@@ -1,0 +1,78 @@
+assert:
+    agent
+    server
+    proxy
+    gateway
+repository:
+    agent_nix
+    server
+    proxy
+    gateway
+host:
+    agent
+
+
+
+
+
+zabbix.zabbix:
+    repository:
+      repo_version: 6.4
+      repo_state: present
+      ### Override repositrory URL for self hosted mirrors.
+      repo_mirror: "https://repo.zabbix.com/"
+      ### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)
+      ### integer: 1-99
+      repo_priority: false
+    agent:
+      agent_variant: 1
+      agent_package_state: latest
+      ### Disable repository during package installation
+      agent_disable_repo: "*epel*"
+      agent_minor_version:
+      agent_remove_previous_packages: false
+      agent_2_plugin_list:
+      
+    host:  
+      host_state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
+      ## Using inventory name of the host
+      host_name: '{{ inventory_hostname }}'
+      # host_visible_name:
+      ## Using group names from inventory
+      host_hostgroups: '{{ group_names }}'
+      host_description: 'Managed by Ansible. Added with "host" module.'
+      # host_templates:
+
+      ## Linked to agent parameter to accept active checks. Add more options if needed.
+      host_tls_accept: '{{ param_tlsconnect | default("Unenc")}}'
+      ## Mirrors agent outgoing connection behavior. Override, if you need different encryption for passive checks.
+      host_tls_connect: '{{ param_tlsconnect }}'
+      host_get_cert_info: false
+      host_tls_issuer: ""
+      host_tls_subject: ""
+
+      ## Linked to agent parameter
+      host_tls_psk_identity: '{{ param_tlspskidentity }}'
+
+      host_interfaces:
+        - type: agent
+          ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
+          dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
+          useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
+          port: '{{ param_listenport }}'
+      ## IPMI settings undefined
+      # host_ipmi_authtype:
+      # host_ipmi_privilege:
+      # host_ipmi_username:
+      # host_ipmi_password:
+
+      ## Marking host managed by ansible
+      host_tags:
+        - tag: managed
+      # host_macros:
+      # host_inventory_mode:
+      # host_inventory:
+      host_status: enabled
+
+      ### assign inventory group name containing regex as host proxy (takes first match)
+      host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(None) }}'

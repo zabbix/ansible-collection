@@ -1,0 +1,48 @@
+---
+- name: 'DEBUG : var types'
+  ansible.builtin.debug:
+    msg: >
+      agent_major_version: {{ agent_major_version | string | type_debug }}
+      ansible_distribution_version: {{ ansible_distribution_version | type_debug }}
+      ansible_distribution_major_version: {{ ansible_distribution_major_version | type_debug }}
+  tags: [never, debug]
+
+- name: 'DEBUG : show repo uri'
+  ansible.builtin.debug:
+    msg: '{{ zabbix_repo.uri }}'
+  tags: [never, debug]
+
+- name: 'APT : Zabbix-release repository presence'
+  become: true
+  until: zabbix_agent_repository_presence is not failed
+  retries: 3
+  delay: 3
+  register: zabbix_agent_repository_presence
+  ansible.builtin.apt:
+    # deb module requires xz-utils to be installed on target machine????
+    deb: '{{ zabbix_repo.uri }}'
+  when: package_state != "absent"
+  environment:
+    http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
+  tags: [deploy]
+
+- name: 'APT : Zabbix packages presence'
+  become: true
+  notify: 'Service restart'
+  until: zabbix_agent_packages_presence is not failed
+  retries: 3
+  delay: 3
+  register: zabbix_agent_packages_presence
+  ansible.builtin.apt:
+    name: '{{ zabbix_agent_package_list }}'
+    state: '{{ package_state }}'
+    # do not trigger service start
+    policy_rc_d: 101
+    # update cache before installing
+    cache_valid_time: 0
+    update_cache: true
+  environment:
+    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+  tags: [deploy]

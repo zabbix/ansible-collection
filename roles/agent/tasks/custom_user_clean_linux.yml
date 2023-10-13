@@ -1,0 +1,19 @@
+---
+# Assure systemd override of custom user is absent
+- name: 'Clean custom user : Systemd : Remove overrides'
+  become: true
+  notify:
+    - 'Reload systemd daemon'
+    - 'Service restart'
+  ansible.builtin.file:
+    path: '{{ item_path }}'
+    state: absent
+  loop: '{{ zabbix_agent_clean_path_list }}'
+  loop_control:
+    loop_var: item_path
+  # register: zabbix_agent_overrides
+  vars:
+    zabbix_agent_clean_path_list:
+      - '{{ agent_systemd_override_path }}'
+      # - '{{ agent_logrotate_path[agent_variant | string] }}'
+  tags: [deploy, config]

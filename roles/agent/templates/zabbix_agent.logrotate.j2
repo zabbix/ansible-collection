@@ -1,0 +1,5 @@
+{{ param_logfile }} {
+{% for unit in logrotate_options %}
+    {{ unit }}
+{% endfor %}
+}

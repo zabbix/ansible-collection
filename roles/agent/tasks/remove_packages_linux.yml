@@ -1,0 +1,59 @@
+---
+- name: 'Remove packages : Service down'
+  become: true
+  ansible.builtin.systemd:
+    name: '{{ agent.service_name }}'
+    state: stopped
+  failed_when: false
+  tags: [remove]
+
+- name: 'Remove packages : Package absence'
+  become: true
+  ansible.builtin.package:
+    name: '{{ zabbix_agent_package_list + ["zabbix-release"] }}'
+    state: absent
+  tags: [remove]
+
+# consider purging for apt
+- name: 'Remove packages : Systemd Overrides and Logrotate cleared'
+  become: true
+  ansible.builtin.file:
+    path: '{{ item_path }}'
+    state: absent
+  loop: '{{ zabbix_agent_clean_path_list }}'
+  loop_control:
+    loop_var: item_path
+  # register: zabbix_agent_overrides
+  vars:
+    zabbix_agent_clean_path_list:
+      - '{{ agent_systemd_override_path }}'
+      - '{{ agent_logrotate_path }}'
+  tags: [remove]
+
+- name: 'SELinux module block'
+  when: >-
+    ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  become: true
+  vars:
+    zabbix_agent_semodule: 'zabbix_agent_extend'
+  tags: [remove]
+  block:
+    - name: 'SELinux module : CIL removed'
+      ansible.builtin.file:
+        path: '{{ semodules_path }}/{{ zabbix_agent_semodule }}.cil'
+        state: absent
+    - name: 'SELinux module : Module removed'
+      ansible.builtin.command: 'semodule -vr {{ zabbix_agent_semodule }}'
+      changed_when: zabbix_agent_semodule_remove_result.stdout | regex_search("removing", ignorecase=True) is not none
+      failed_when: >-
+        zabbix_agent_semodule_remove_result.rc | int == 1 and
+        (zabbix_agent_semodule_remove_result.stdout + zabbix_agent_semodule_remove_result.stderr)
+        | regex_search("No such file or directory", ignorecase=True) is none
+      args:
+        chdir: '{{ semodules_path }}'
+      register: zabbix_agent_semodule_remove_result
+    - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
+      become: true
+      ansible.builtin.command: >-
+        semanage port -t zabbix_agent_port_t -D
+      changed_when: true

@@ -1,0 +1,5 @@
+---
+apply_selinux: true
+### old SE boolean... somewhat softens policy restrictions
+seboolean_zabbix_run_sudo: false
+semodules_path: "/usr/share/selinux/packages/zabbix/"
