@@ -1,45 +1,48 @@
 ---
 ### Default values to use when adding host to zabbix with "zabbix.zabbix.zabbix_host" module
 #
-zabbix_host_state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
+host_state: '{{ "absent" if "remove" in ansible_run_tags else "present" }}'
 ## Using inventory name of the host
-zabbix_host_host_name: '{{ inventory_hostname }}'
-# zabbix_host_visible_name:
+host_name: '{{ inventory_hostname }}'
+# host_visible_name:
 ## Using group names from inventory
-zabbix_host_hostgroups: '{{ group_names }}'
-zabbix_host_description: 'Managed by Ansible. Added with "zabbix_host" module.'
-# zabbix_host_templates:
+host_hostgroups: '{{ group_names }}'
+host_description: 'Managed by Ansible. Added with "zabbix_host" module.'
+# host_templates:
 
 ## Linked to agent parameter to accept active checks. Add more options if needed.
-zabbix_host_tls_accept: '{{ agent_param_tlsconnect | default(["unencrypted"]) }}'
+host_tls_accept: '{{ agent_param_tlsconnect | default(["unencrypted"]) }}'
 ## Mirrors agent outgoing connection behavior. Override, if you need different encryption for passive checks.
-zabbix_host_tls_connect: '{{ agent_param_tlsconnect | default("unencrypted") }}'
-zabbix_host_get_cert_info: false
-zabbix_host_tls_issuer: ""
-zabbix_host_tls_subject: ""
+host_tls_connect: '{{ agent_param_tlsconnect | default("unencrypted") }}'
+host_get_cert_info: false
+## Path to certificate location. Linked to agent parameter 
+host_source_tls_certfile: '{{ agent_source_tlscertfile | default(None) }}'
+host_tls_issuer: ""
+host_tls_subject: ""
 
 ## Linked to agent parameter
-zabbix_host_tls_psk_identity: '{{ agent_param_tlspskidentity | default("") }}'
+host_tls_psk_identity: '{{ agent_param_tlspskidentity | default(None) }}'
+host_tls_psk_value: '{{ agent_psk_value | default(None) }}'
 
-zabbix_host_interfaces:
+host_interfaces:
   - type: agent
     ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
     dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
     useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
     port: '{{ param_listenport | default(10050) }}'
 ## IPMI settings undefined
-# zabbix_host_ipmi_authtype:
-# zabbix_host_ipmi_privilege:
-# zabbix_host_ipmi_username:
-# zabbix_host_ipmi_password:
+# host_ipmi_authtype:
+# host_ipmi_privilege:
+# host_ipmi_username:
+# host_ipmi_password:
 
 ## Marking host managed by ansible
-zabbix_host_tags:
+host_tags:
   - tag: managed
-# zabbix_host_macros:
-# zabbix_host_inventory_mode:
-# zabbix_host_inventory:
-zabbix_host_status: enabled
+# host_macros:
+# host_inventory_mode:
+# host_inventory:
+host_status: enabled
 
 ### assign inventory group name containing regex as host proxy (takes first match)
-zabbix_host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(None) }}'
+host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(None) }}'
