@@ -108,7 +108,7 @@ Role variables
 | host_tls_accept | `list` | `{{ agent_param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed.
 | host_tls_connect | `string` | `{{ agent_param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**.
 | host_tls_psk_identity | `string` | `{{ agent_param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
-| zabbix_host_tls_psk_value | `string` | `{{ agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
+| zabbix_host_tls_psk_value | `string` | `{{ agent_tls_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
 | host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `agent_source_tlscertfile`. Requires Openssl installation on Ansible execution environment.
 | host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
 | host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.

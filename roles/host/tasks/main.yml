@@ -14,6 +14,18 @@
         host_tls_issuer: '{{ host_register_agent_cert_data.stdout | regex_search("issuer=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
         host_tls_subject: '{{ host_register_agent_cert_data.stdout | regex_search("subject=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
 
+### Get or generate PSK keys
+- name: 'SET FACT: Get/Generate PSK keys'
+  when: >-
+    (host_tls_connect == "psk" or "psk" in host_tls_accept)
+     and not host_tls_psk_value
+  tags: [host]
+  ansible.builtin.set_fact:
+    # value of hexadecimal within range 32 to 128 chars | choosing 128
+    # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
+    host_tls_psk_value: '{{ lookup("password",
+                  host_source_tls_psk_file + " chars=hexdigits length=128") | lower }}'
+
 ### Compone list of unique hostgroup names from all hosts, that reached this taks without failures.
 - name: 'Prepare hostgroups block'
   delegate_to: 'localhost'

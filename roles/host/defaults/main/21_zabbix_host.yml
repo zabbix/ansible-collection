@@ -22,7 +22,9 @@ host_tls_subject: ""
 
 ## Linked to agent parameter
 host_tls_psk_identity: '{{ agent_param_tlspskidentity | default(None) }}'
-host_tls_psk_value: '{{ agent_psk_value | default(None) }}'
+host_tls_psk_value: '{{ agent_tls_psk_value | default(None) }}'
+## Path to file with PSK key on controller/EE
+host_source_tls_psk_file: '{{ agent_source_tlspskfile | default(None) }}'
 
 host_interfaces:
   - type: agent
