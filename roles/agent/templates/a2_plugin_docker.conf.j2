@@ -5,9 +5,9 @@
 # Mandatory: no
 # Default: unix:///var/run/docker.sock
 # Plugins.Docker.Endpoint=unix:///var/run/docker.sock
-{% if param_plugins_docker_endpoint is defined and param_plugins_docker_endpoint %}
+{% if agent_param_plugins_docker_endpoint is defined and agent_param_plugins_docker_endpoint %}
 
-Plugins.Docker.Endpoint={{ param_plugins_docker_endpoint }}
+Plugins.Docker.Endpoint={{ agent_param_plugins_docker_endpoint }}
 {% endif %}
 
 ### Option: Plugins.Docker.Timeout
@@ -17,7 +17,7 @@ Plugins.Docker.Endpoint={{ param_plugins_docker_endpoint }}
 # Range: 1-30
 # Default:
 # Plugins.Docker.Timeout=<Global timeout>
-{% if param_plugins_docker_timeout is defined and param_plugins_docker_timeout %}
+{% if agent_param_plugins_docker_timeout is defined and agent_param_plugins_docker_timeout %}
 
-Plugins.Docker.Timeout={{ param_plugins_docker_timeout }}
+Plugins.Docker.Timeout={{ agent_param_plugins_docker_timeout }}
 {% endif %}

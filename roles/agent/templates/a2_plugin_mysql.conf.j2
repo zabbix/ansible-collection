@@ -5,9 +5,9 @@
 # Range: 1-30
 # Default:
 # Plugins.Mysql.CallTimeout=<Global timeout>
-{% if param_plugins_mysql_calltimeout  is defined and param_plugins_mysql_calltimeout %}
+{% if agent_param_plugins_mysql_calltimeout  is defined and agent_param_plugins_mysql_calltimeout %}
 
-Plugins.Mysql.CallTimeout={{ param_plugins_mysql_calltimeout }}
+Plugins.Mysql.CallTimeout={{ agent_param_plugins_mysql_calltimeout }}
 {% endif %}
 
 ### Option: Plugins.Mysql.Timeout
@@ -16,9 +16,9 @@ Plugins.Mysql.CallTimeout={{ param_plugins_mysql_calltimeout }}
 # Mandatory: no
 # Range: 1-30
 # Default: global timeout
-{% if param_plugins_mysql_timeout  is defined and param_plugins_mysql_timeout %}
+{% if agent_param_plugins_mysql_timeout  is defined and agent_param_plugins_mysql_timeout %}
 
-Plugins.Mysql.Timeout={{ param_plugins_mysql_timeout }}
+Plugins.Mysql.Timeout={{ agent_param_plugins_mysql_timeout }}
 {% endif %}
 
 ### Option: Plugins.Mysql.KeepAlive
@@ -28,9 +28,9 @@ Plugins.Mysql.Timeout={{ param_plugins_mysql_timeout }}
 # Range: 60-900
 # Default:
 # Plugins.Mysql.KeepAlive=300
-{% if param_plugins_mysql_keepalive  is defined and param_plugins_mysql_keepalive %}
+{% if agent_param_plugins_mysql_keepalive  is defined and agent_param_plugins_mysql_keepalive %}
 
-Plugins.Mysql.KeepAlive={{ param_plugins_mysql_keepalive }}
+Plugins.Mysql.KeepAlive={{ agent_param_plugins_mysql_keepalive }}
 {% endif %}
 
 ### Option: Plugins.Mysql.Sessions.*.Uri

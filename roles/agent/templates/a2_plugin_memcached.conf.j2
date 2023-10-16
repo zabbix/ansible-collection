@@ -5,9 +5,9 @@
 # Range: 1-30
 # Default:
 # Plugins.Memcached.Timeout=<Global timeout>
-{% if param_plugins_memcached_timeout is defined and param_plugins_memcached_timeout %}
+{% if agent_param_plugins_memcached_timeout is defined and agent_param_plugins_memcached_timeout %}
 
-Plugins.Memcached.Timeout={{ param_plugins_memcached_timeout }}
+Plugins.Memcached.Timeout={{ agent_param_plugins_memcached_timeout }}
 {% endif %}
 
 ### Option: Plugins.Memcached.KeepAlive
@@ -17,9 +17,9 @@ Plugins.Memcached.Timeout={{ param_plugins_memcached_timeout }}
 # Range: 60-900
 # Default:
 # Plugins.Memcached.KeepAlive=300
-{% if param_plugins_memcached_keepalive is defined and param_plugins_memcached_keepalive %}
+{% if agent_param_plugins_memcached_keepalive is defined and agent_param_plugins_memcached_keepalive %}
 
-Plugins.Memcached.KeepAlive={{ param_plugins_memcached_keepalive }}
+Plugins.Memcached.KeepAlive={{ agent_param_plugins_memcached_keepalive }}
 {% endif %}
 
 ### Option: Plugins.Memcached.Sessions.*.Uri
@@ -32,9 +32,9 @@ Plugins.Memcached.KeepAlive={{ param_plugins_memcached_keepalive }}
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.Memcached.Sessions.*.Uri=
-{% if param_plugins_memcached_sessions is defined and param_plugins_memcached_sessions is iterable and param_plugins_memcached_sessions is not string and param_plugins_memcached_sessions is not mapping %}
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
 
-{% for session in param_plugins_memcached_sessions %}
+{% for session in agent_param_plugins_memcached_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.Memcached.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}
@@ -47,9 +47,9 @@ Plugins.Memcached.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Mandatory: no
 # Default:
 # Plugins.Memcached.Sessions.*.User=
-{% if param_plugins_memcached_sessions is defined and param_plugins_memcached_sessions is iterable and param_plugins_memcached_sessions is not string and param_plugins_memcached_sessions is not mapping %}
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
 
-{% for session in param_plugins_memcached_sessions %}
+{% for session in agent_param_plugins_memcached_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.Memcached.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -62,9 +62,9 @@ Plugins.Memcached.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 # Mandatory: no
 # Default:
 # Plugins.Memcached.Sessions.*.Password=
-{% if param_plugins_memcached_sessions is defined and param_plugins_memcached_sessions is iterable and param_plugins_memcached_sessions is not string and param_plugins_memcached_sessions is not mapping %}
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
 
-{% for session in param_plugins_memcached_sessions %}
+{% for session in agent_param_plugins_memcached_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.Memcached.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}

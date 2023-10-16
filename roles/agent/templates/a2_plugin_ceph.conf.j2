@@ -9,9 +9,9 @@
 # Range: false | true
 # Default:
 # Plugins.Ceph.InsecureSkipVerify=false
-{% if param_plugins_ceph_insecureskipverify is defined and param_plugins_ceph_insecureskipverify %}
+{% if agent_param_plugins_ceph_insecureskipverify is defined and agent_param_plugins_ceph_insecureskipverify %}
 
-Plugins.Ceph.InsecureSkipVerify={{ param_plugins_ceph_insecureskipverify }}
+Plugins.Ceph.InsecureSkipVerify={{ agent_param_plugins_ceph_insecureskipverify }}
 {% endif %}
 
 ### Option: Plugins.Ceph.KeepAlive
@@ -21,9 +21,9 @@ Plugins.Ceph.InsecureSkipVerify={{ param_plugins_ceph_insecureskipverify }}
 # Range: 60-900
 # Default:
 # Plugins.Ceph.KeepAlive=300
-{% if param_plugins_ceph_keepalive is defined and param_plugins_ceph_keepalive %}
+{% if agent_param_plugins_ceph_keepalive is defined and agent_param_plugins_ceph_keepalive %}
 
-Plugins.Ceph.KeepAlive={{ param_plugins_ceph_keepalive }}
+Plugins.Ceph.KeepAlive={{ agent_param_plugins_ceph_keepalive }}
 {% endif %}
 
 ### Option: Plugins.Ceph.Timeout
@@ -34,9 +34,9 @@ Plugins.Ceph.KeepAlive={{ param_plugins_ceph_keepalive }}
 # Range: 1-30
 # Default:
 # Plugins.Ceph.Timeout=<Global timeout>
-{% if param_plugins_ceph_timeout is defined and param_plugins_ceph_timeout %}
+{% if agent_param_plugins_ceph_timeout is defined and agent_param_plugins_ceph_timeout %}
 
-Plugins.Ceph.Timeout={{ param_plugins_ceph_timeout }}
+Plugins.Ceph.Timeout={{ agent_param_plugins_ceph_timeout }}
 {% endif %}
 
 ### Option: Plugins.Ceph.Sessions.*.ApiKey
@@ -45,9 +45,9 @@ Plugins.Ceph.Timeout={{ param_plugins_ceph_timeout }}
 # Mandatory: no
 # Default:
 # Plugins.Ceph.Sessions.*.ApiKey=
-{% if param_plugins_ceph_sessions is defined and param_plugins_ceph_sessions is iterable and param_plugins_ceph_sessions is not string and param_plugins_ceph_sessions is not mapping %}
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
 
-{% for session in param_plugins_ceph_sessions %}
+{% for session in agent_param_plugins_ceph_sessions %}
 {% if session["apikey"] is defined and session["apikey"] %}
 Plugins.Ceph.Sessions.{{ session["name"] }}.ApiKey={{ session["apikey"] }}
 {% endif %}
@@ -60,9 +60,9 @@ Plugins.Ceph.Sessions.{{ session["name"] }}.ApiKey={{ session["apikey"] }}
 # Mandatory: no
 # Default:
 # Plugins.Ceph.Sessions.*.User=
-{% if param_plugins_ceph_sessions is defined and param_plugins_ceph_sessions is iterable and param_plugins_ceph_sessions is not string and param_plugins_ceph_sessions is not mapping %}
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
 
-{% for session in param_plugins_ceph_sessions %}
+{% for session in agent_param_plugins_ceph_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.Ceph.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -79,9 +79,9 @@ Plugins.Ceph.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.Ceph.Sessions.*.Uri=
-{% if param_plugins_ceph_sessions is defined and param_plugins_ceph_sessions is iterable and param_plugins_ceph_sessions is not string and param_plugins_ceph_sessions is not mapping %}
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
 
-{% for session in param_plugins_ceph_sessions %}
+{% for session in agent_param_plugins_ceph_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.Ceph.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}

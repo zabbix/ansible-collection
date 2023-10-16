@@ -5,9 +5,9 @@
 # Range: 1-30
 # Default:
 # Plugins.Oracle.CallTimeout=<Global timeout>
-{% if param_plugins_oracle_calltimeout  is defined and param_plugins_oracle_calltimeout %}
+{% if agent_param_plugins_oracle_calltimeout  is defined and agent_param_plugins_oracle_calltimeout %}
 
-Plugins.Oracle.CallTimeout={{ param_plugins_oracle_calltimeout }}
+Plugins.Oracle.CallTimeout={{ agent_param_plugins_oracle_calltimeout }}
 {% endif %}
 
 ### Option: Plugins.Oracle.ConnectTimeout
@@ -17,9 +17,9 @@ Plugins.Oracle.CallTimeout={{ param_plugins_oracle_calltimeout }}
 # Range: 1-30
 # Default:
 # Plugins.Oracle.ConnectTimeout=<Global timeout>
-{% if param_plugins_oracle_connecttimeout  is defined and param_plugins_oracle_connecttimeout %}
+{% if agent_param_plugins_oracle_connecttimeout  is defined and agent_param_plugins_oracle_connecttimeout %}
 
-Plugins.Oracle.ConnectTimeout={{ param_plugins_oracle_connecttimeout }}
+Plugins.Oracle.ConnectTimeout={{ agent_param_plugins_oracle_connecttimeout }}
 {% endif %}
 
 ### Option: Plugins.Oracle.CustomQueriesPath
@@ -28,9 +28,9 @@ Plugins.Oracle.ConnectTimeout={{ param_plugins_oracle_connecttimeout }}
 # Mandatory: no
 # Default:
 # Plugins.Oracle.CustomQueriesPath=
-{% if param_plugins_oracle_customqueriespath  is defined and param_plugins_oracle_customqueriespath %}
+{% if agent_param_plugins_oracle_customqueriespath  is defined and agent_param_plugins_oracle_customqueriespath %}
 
-Plugins.Oracle.CustomQueriesPath={{ param_plugins_oracle_customqueriespath }}
+Plugins.Oracle.CustomQueriesPath={{ agent_param_plugins_oracle_customqueriespath }}
 {% endif %}
 
 ### Option: Plugins.Oracle.KeepAlive
@@ -40,9 +40,9 @@ Plugins.Oracle.CustomQueriesPath={{ param_plugins_oracle_customqueriespath }}
 # Range: 60-900
 # Default:
 # Plugins.Oracle.KeepAlive=300
-{% if param_plugins_oracle_keepalive  is defined and param_plugins_oracle_keepalive %}
+{% if agent_param_plugins_oracle_keepalive  is defined and agent_param_plugins_oracle_keepalive %}
 
-Plugins.Oracle.KeepAlive={{ param_plugins_oracle_keepalive }}
+Plugins.Oracle.KeepAlive={{ agent_param_plugins_oracle_keepalive }}
 {% endif %}
 
 ### Option: Plugins.Oracle.Sessions.*.Uri
@@ -55,9 +55,9 @@ Plugins.Oracle.KeepAlive={{ param_plugins_oracle_keepalive }}
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.Oracle.Sessions.*.Uri=
-{% if param_plugins_oracle_sessions is defined and param_plugins_oracle_sessions is iterable and param_plugins_oracle_sessions is not string and param_plugins_oracle_sessions is not mapping %}
+{% if agent_param_plugins_oracle_sessions is defined and agent_param_plugins_oracle_sessions is iterable and agent_param_plugins_oracle_sessions is not string and agent_param_plugins_oracle_sessions is not mapping %}
 
-{% for session in param_plugins_oracle_sessions %}
+{% for session in agent_param_plugins_oracle_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.Oracle.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}
@@ -71,9 +71,9 @@ Plugins.Oracle.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Range: SID is not supported.
 # Default:
 # Plugins.Oracle.Sessions.*.Service=
-{% if param_plugins_oracle_sessions is defined and param_plugins_oracle_sessions is iterable and param_plugins_oracle_sessions is not string and param_plugins_oracle_sessions is not mapping %}
+{% if agent_param_plugins_oracle_sessions is defined and agent_param_plugins_oracle_sessions is iterable and agent_param_plugins_oracle_sessions is not string and agent_param_plugins_oracle_sessions is not mapping %}
 
-{% for session in param_plugins_oracle_sessions %}
+{% for session in agent_param_plugins_oracle_sessions %}
 {% if session["service"] is defined and session["service"] %}
 Plugins.Oracle.Sessions.{{ session["name"] }}.Service={{ session["service"] }}
 {% endif %}
@@ -86,9 +86,9 @@ Plugins.Oracle.Sessions.{{ session["name"] }}.Service={{ session["service"] }}
 # Mandatory: no
 # Default:
 # Plugins.Oracle.Sessions.*.User=
-{% if param_plugins_oracle_sessions is defined and param_plugins_oracle_sessions is iterable and param_plugins_oracle_sessions is not string and param_plugins_oracle_sessions is not mapping %}
+{% if agent_param_plugins_oracle_sessions is defined and agent_param_plugins_oracle_sessions is iterable and agent_param_plugins_oracle_sessions is not string and agent_param_plugins_oracle_sessions is not mapping %}
 
-{% for session in param_plugins_oracle_sessions %}
+{% for session in agent_param_plugins_oracle_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.Oracle.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -101,9 +101,9 @@ Plugins.Oracle.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 # Mandatory: no
 # Default:
 # Plugins.Oracle.Sessions.*.Password=
-{% if param_plugins_oracle_sessions is defined and param_plugins_oracle_sessions is iterable and param_plugins_oracle_sessions is not string and param_plugins_oracle_sessions is not mapping %}
+{% if agent_param_plugins_oracle_sessions is defined and agent_param_plugins_oracle_sessions is iterable and agent_param_plugins_oracle_sessions is not string and agent_param_plugins_oracle_sessions is not mapping %}
 
-{% for session in param_plugins_oracle_sessions %}
+{% for session in agent_param_plugins_oracle_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.Oracle.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}

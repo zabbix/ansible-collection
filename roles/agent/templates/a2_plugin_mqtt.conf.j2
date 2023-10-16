@@ -4,7 +4,7 @@
 # Mandatory: no
 # Range: 1-30
 # Default: global timeout
-{% if param_plugins_mqtt_timeout  is defined and param_plugins_mqtt_timeout %}
+{% if agent_param_plugins_mqtt_timeout  is defined and agent_param_plugins_mqtt_timeout %}
 
-Plugins.MQTT.Timeout={{ param_plugins_mqtt_timeout }}
+Plugins.MQTT.Timeout={{ agent_param_plugins_mqtt_timeout }}
 {% endif %}

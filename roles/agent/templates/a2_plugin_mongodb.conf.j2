@@ -17,9 +17,9 @@ Plugins.MongoDB.System.Path={{ agent_param_plugins_mongodb_system_path }}
 # Range: 1-30
 # Default:
 # Plugins.MongoDB.Timeout=<Global timeout>
-{% if param_plugins_mongodb_timeout  is defined and param_plugins_mongodb_timeout %}
+{% if agent_param_plugins_mongodb_timeout  is defined and agent_param_plugins_mongodb_timeout %}
 
-Plugins.MongoDB.Timeout={{ param_plugins_mongodb_timeout }}
+Plugins.MongoDB.Timeout={{ agent_param_plugins_mongodb_timeout }}
 {% endif %}
 
 ### Option: Plugins.MongoDB.KeepAlive
@@ -29,9 +29,9 @@ Plugins.MongoDB.Timeout={{ param_plugins_mongodb_timeout }}
 # Range: 60-900
 # Default:
 # Plugins.MongoDB.KeepAlive=300
-{% if param_plugins_mongodb_keepalive  is defined and param_plugins_mongodb_keepalive %}
+{% if agent_param_plugins_mongodb_keepalive  is defined and agent_param_plugins_mongodb_keepalive %}
 
-Plugins.MongoDB.KeepAlive={{ param_plugins_mongodb_keepalive }}
+Plugins.MongoDB.KeepAlive={{ agent_param_plugins_mongodb_keepalive }}
 {% endif %}
 
 ### Option: Plugins.MongoDB.Sessions.*.Uri

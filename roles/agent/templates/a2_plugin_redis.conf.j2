@@ -5,9 +5,9 @@
 # Range: 1-30
 # Default:
 # Plugins.Redis.Timeout=<Global timeout>
-{% if param_plugins_redis_timeout  is defined and param_plugins_redis_timeout %}
+{% if agent_param_plugins_redis_timeout  is defined and agent_param_plugins_redis_timeout %}
 
-Plugins.Redis.Timeout={{ param_plugins_redis_timeout }}
+Plugins.Redis.Timeout={{ agent_param_plugins_redis_timeout }}
 {% endif %}
 
 ### Option: Plugins.Redis.KeepAlive
@@ -17,9 +17,9 @@ Plugins.Redis.Timeout={{ param_plugins_redis_timeout }}
 # Range: 60-900
 # Default:
 # Plugins.Redis.KeepAlive=300
-{% if param_plugins_redis_keepalive  is defined and param_plugins_redis_keepalive %}
+{% if agent_param_plugins_redis_keepalive  is defined and agent_param_plugins_redis_keepalive %}
 
-Plugins.Redis.KeepAlive={{ param_plugins_redis_keepalive }}
+Plugins.Redis.KeepAlive={{ agent_param_plugins_redis_keepalive }}
 {% endif %}
 
 ### Option: Plugins.Redis.Sessions.*.Uri
@@ -32,9 +32,9 @@ Plugins.Redis.KeepAlive={{ param_plugins_redis_keepalive }}
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.Redis.Sessions.*.Uri=
-{% if param_plugins_redis_sessions is defined and param_plugins_redis_sessions is iterable and param_plugins_redis_sessions is not string and param_plugins_redis_sessions is not mapping %}
+{% if agent_param_plugins_redis_sessions is defined and agent_param_plugins_redis_sessions is iterable and agent_param_plugins_redis_sessions is not string and agent_param_plugins_redis_sessions is not mapping %}
 
-{% for session in param_plugins_redis_sessions %}
+{% for session in agent_param_plugins_redis_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.Redis.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}
@@ -47,9 +47,9 @@ Plugins.Redis.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Mandatory: no
 # Default:
 # Plugins.Redis.Sessions.*.Password=
-{% if param_plugins_redis_sessions is defined and param_plugins_redis_sessions is iterable and param_plugins_redis_sessions is not string and param_plugins_redis_sessions is not mapping %}
+{% if agent_param_plugins_redis_sessions is defined and agent_param_plugins_redis_sessions is iterable and agent_param_plugins_redis_sessions is not string and agent_param_plugins_redis_sessions is not mapping %}
 
-{% for session in param_plugins_redis_sessions %}
+{% for session in agent_param_plugins_redis_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.Redis.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}

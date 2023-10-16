@@ -127,9 +127,9 @@ DenyKey={{ agent_param_denykey }}
 #	1 - AllowKey=system.run[*]
 #
 # Mandatory: no
-{% if param_enableremotecommands is defined and (param_enableremotecommands or param_enableremotecommands is number) %}
+{% if agent_param_enableremotecommands is defined and (agent_param_enableremotecommands or agent_param_enableremotecommands is number) %}
 
-EnableRemoteCommands={{ param_enableremotecommands }}
+EnableRemoteCommands={{ agent_param_enableremotecommands }}
 {% endif %}
 
 ### Option: LogRemoteCommands

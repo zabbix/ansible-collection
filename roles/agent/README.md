@@ -256,7 +256,7 @@ These parameters are common for both agent variants
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
 | agent_param_allowroot | `int` || [**AllowRoot**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowroot)	| Allow the agent to run as 'root'.
-| param_enableremotecommands | `int` || [**EnableRemoteCommands**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#enableremotecommands) |	Whether remote commands from Zabbix server are allowed.
+| agent_param_enableremotecommands | `int` || [**EnableRemoteCommands**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#enableremotecommands) |	Whether remote commands from Zabbix server are allowed.
 | agent_param_listenbacklog | `int` || [**ListenBacklog**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#listenbacklog) | Maximum number of pending connections in the TCP queue.
 | agent_param_loadmodule | `list` || [**LoadModule**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#loadmodule) | Module to load at agent startup.
 | agent_param_loadmodulepath | `string` | /usr/lib64/zabbix/modules | [**LoadModulePath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#loadmodulepath) | Full path to the location of agent modules.
@@ -293,10 +293,10 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_ceph_insecureskipverify | `string` | [**Plugins.Ceph.InsecureSkipVerify**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Determines whether the HTTP client should verify the server's certificate chain and host name. If true, TLS accepts any certificate presented by the server and any host name in that certificate. In this mode, TLS is susceptible to man-in-the-middle attacks (should be used only for testing).
-| param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
+| agent_param_plugins_ceph_insecureskipverify | `string` | [**Plugins.Ceph.InsecureSkipVerify**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Determines whether the HTTP client should verify the server's certificate chain and host name. If true, TLS accepts any certificate presented by the server and any host name in that certificate. In this mode, TLS is susceptible to man-in-the-middle attacks (should be used only for testing).
+| agent_param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
+| agent_param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Docker plugin** parameters:
 
@@ -304,8 +304,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_docker_endpoint | `string` | [**Plugins.Docker.Endpoint**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/d_plugin) |	Docker daemon unix-socket location. Must contain a scheme (only `unix://` is supported).
-| param_plugins_docker_timeout | `int` | [**Plugins.Docker.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/d_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_docker_endpoint | `string` | [**Plugins.Docker.Endpoint**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/d_plugin) |	Docker daemon unix-socket location. Must contain a scheme (only `unix://` is supported).
+| agent_param_plugins_docker_timeout | `int` | [**Plugins.Docker.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/d_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 
 ### Zabbix **agent 2 Memcached plugin** parameters:
 
@@ -313,9 +313,9 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
+| agent_param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
+| agent_param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -323,8 +323,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| param_plugins_modbus_sessions | `list of dictionaries` | [**Plugins.Modbus.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", endpoint: "", slaveid: "", timeout: ""}`
+| agent_param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_modbus_sessions | `list of dictionaries` | [**Plugins.Modbus.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", endpoint: "", slaveid: "", timeout: ""}`
 
 ### Zabbix **agent 2 MongoDB plugin** parameters:
 
@@ -340,8 +340,8 @@ Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
-| param_plugins_mongodb_keepalive | `int` || [**Plugins.MongoDB.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_mongodb_keepalive | `int` || [**Plugins.MongoDB.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
+| agent_param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_mongodb_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb | [**Plugins.MongoDB.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Path to external plugin executable. Supported since Zabbix 6.0.6.
 | agent_param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
@@ -351,7 +351,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 
@@ -359,11 +359,11 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_oracle_calltimeout | `int` | [**Plugins.Oracle.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a request to be done.
-| param_plugins_oracle_connecttimeout | `int` | [**Plugins.Oracle.ConnectTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
-| param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
-| param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
+| agent_param_plugins_oracle_calltimeout | `int` | [**Plugins.Oracle.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a request to be done.
+| agent_param_plugins_oracle_connecttimeout | `int` | [**Plugins.Oracle.ConnectTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
+| agent_param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
+| agent_param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
+| agent_param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
 
 ### Zabbix **agent 2 PostgreSQL plugin** parameters:
 
@@ -379,10 +379,10 @@ Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Default | Parameter | Description |
 |--|--|--|--|--|
-| param_plugins_postgresql_calltimeout | `int` || [**Plugins.Postgresql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
-| param_plugins_postgresql_customqueriespath | `string` || [**Plugins.Postgresql.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/postgresql/sql
-| param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Time of waiting (in seconds) for unused connections to be closed.
-| param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
+| agent_param_plugins_postgresql_calltimeout | `int` || [**Plugins.Postgresql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
+| agent_param_plugins_postgresql_customqueriespath | `string` || [**Plugins.Postgresql.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/postgresql/sql
+| agent_param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Time of waiting (in seconds) for unused connections to be closed.
+| agent_param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | agent_param_plugins_postgresql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql | [**Plugins.Postgresql.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Path to the external plugin executable. Supported since Zabbix 6.0.6.
 | agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
@@ -400,9 +400,9 @@ Don't use both local path and final path to avoid unpredictable results!
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
-| param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Time of waiting (in seconds) before unused connections are closed.
-| param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
+| agent_param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
+| agent_param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Time of waiting (in seconds) before unused connections are closed.
+| agent_param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | agent_param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 Redis plugin** parameters:
@@ -411,9 +411,9 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
-| param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "" }`
+| agent_param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
+| agent_param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "" }`
 
 ### Zabbix **agent 2 Smart plugin** parameters:
 
@@ -421,8 +421,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
-| param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
+| agent_param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 
 
 Zabbix host via Zabbix API
@@ -500,7 +500,7 @@ Hints & Tags
 
       ansible-playbook -i inventory play.yml -t remove
 
-- If `param_userparam` is modified and registered as the only change during role run, it will trigger Zabbix agent[2] runtime command to reload user parameters without agent restart.
+- If `agent_param_userparameter` is modified and registered as the only change during role run, it will trigger Zabbix agent[2] runtime command to reload user parameters without agent restart.
 
 - To run only tasks that modify user parameters, pass `userparam` tag. Task sequence will be limited to:
   - Copying include folder.
@@ -534,7 +534,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_startagents: 0            # do not spawn passive check processes that listen for connections;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -551,7 +551,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_variant: 2
           agent_major_version: 6.4
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
@@ -574,7 +574,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -592,7 +592,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_server: 127.0.0.1                                # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1                          # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'    # concatenate group list to the string;
@@ -617,7 +617,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_variant: 2
           agent_major_version: 6.4
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
@@ -645,7 +645,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_major_version: "6.0"
           agent_remove_previous_packages: true  # removes previously installed package of Zabbix agent (according to current settings);
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
@@ -660,7 +660,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -678,7 +678,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -693,7 +693,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -709,7 +709,7 @@ Playbook examples
   ```yaml
     - hosts: all
       roles:
-        - role: zabbix.zabbix.zabbix_agent
+        - role: zabbix.zabbix.agent
           run_host_tasks: True                             # enable Zabbix API host tasks;
           ### Zabbix API properties
           zabbix_api_host: zabbix.frontend.loc             # Zabbix frontend server;

@@ -16,9 +16,9 @@ Plugins.PostgreSQL.System.Path={{ agent_param_plugins_postgresql_system_path }}
 # Range: 1-30
 # Default:
 # Plugins.PostgreSQL.CallTimeout=<Global timeout>
-{% if param_plugins_postgresql_calltimeout  is defined and param_plugins_postgresql_calltimeout %}
+{% if agent_param_plugins_postgresql_calltimeout  is defined and agent_param_plugins_postgresql_calltimeout %}
 
-Plugins.PostgreSQL.CallTimeout={{ param_plugins_postgresql_calltimeout }}
+Plugins.PostgreSQL.CallTimeout={{ agent_param_plugins_postgresql_calltimeout }}
 {% endif %}
 
 ### Option: Plugins.PostgreSQL.Timeout
@@ -28,9 +28,9 @@ Plugins.PostgreSQL.CallTimeout={{ param_plugins_postgresql_calltimeout }}
 # Range: 1-30
 # Default:
 # Plugins.PostgreSQL.Timeout=<Global timeout>
-{% if param_plugins_postgresql_timeout  is defined and param_plugins_postgresql_timeout %}
+{% if agent_param_plugins_postgresql_timeout  is defined and agent_param_plugins_postgresql_timeout %}
 
-Plugins.PostgreSQL.Timeout={{ param_plugins_postgresql_timeout }}
+Plugins.PostgreSQL.Timeout={{ agent_param_plugins_postgresql_timeout }}
 {% endif %}
 
 ### Option: Plugins.PostgreSQL.KeepAlive
@@ -40,9 +40,9 @@ Plugins.PostgreSQL.Timeout={{ param_plugins_postgresql_timeout }}
 # Range: 60-900
 # Default:
 # Plugins.PostgreSQL.KeepAlive=300
-{% if param_plugins_postgresql_keepalive  is defined and param_plugins_postgresql_keepalive %}
+{% if agent_param_plugins_postgresql_keepalive  is defined and agent_param_plugins_postgresql_keepalive %}
 
-Plugins.PostgreSQL.KeepAlive={{ param_plugins_postgresql_keepalive }}
+Plugins.PostgreSQL.KeepAlive={{ agent_param_plugins_postgresql_keepalive }}
 {% endif %}
 
 ### Option: Plugins.PostgreSQL.CustomQueriesPath
@@ -51,9 +51,9 @@ Plugins.PostgreSQL.KeepAlive={{ param_plugins_postgresql_keepalive }}
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.CustomQueriesPath=
-{% if param_plugins_postgresql_customqueriespath  is defined and param_plugins_postgresql_customqueriespath %}
+{% if agent_param_plugins_postgresql_customqueriespath  is defined and agent_param_plugins_postgresql_customqueriespath %}
 
-Plugins.PostgreSQL.CustomQueriesPath={{ param_plugins_postgresql_customqueriespath }}
+Plugins.PostgreSQL.CustomQueriesPath={{ agent_param_plugins_postgresql_customqueriespath }}
 {% endif %}
 
 ### Option: Plugins.PostgreSQL.Sessions.*.Uri
