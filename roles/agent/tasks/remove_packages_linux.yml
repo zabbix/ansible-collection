@@ -20,12 +20,12 @@
   ansible.builtin.file:
     path: '{{ item_path }}'
     state: absent
-  loop: '{{ zabbix_agent_clean_path_list }}'
+  loop: '{{ agent_internal_clean_path_list }}'
   loop_control:
     loop_var: item_path
   # register: zabbix_agent_overrides
   vars:
-    zabbix_agent_clean_path_list:
+    agent_internal_clean_path_list:
       - '{{ agent_systemd_override_path }}'
       - '{{ agent_logrotate_path }}'
   tags: [remove]
@@ -35,23 +35,23 @@
     ansible_selinux.status is defined and ansible_selinux.status == "enabled"
   become: true
   vars:
-    zabbix_agent_semodule: 'zabbix_agent_extend'
+    agent_internal_semodule: 'zabbix_agent_extend'
   tags: [remove]
   block:
     - name: 'SELinux module : CIL removed'
       ansible.builtin.file:
-        path: '{{ agent_semodules_path }}/{{ zabbix_agent_semodule }}.cil'
+        path: '{{ agent_semodules_path }}/{{ agent_internal_semodule }}.cil'
         state: absent
     - name: 'SELinux module : Module removed'
-      ansible.builtin.command: 'semodule -vr {{ zabbix_agent_semodule }}'
-      changed_when: zabbix_agent_semodule_remove_result.stdout | regex_search("removing", ignorecase=True) is not none
+      ansible.builtin.command: 'semodule -vr {{ agent_internal_semodule }}'
+      changed_when: agent_register_semodule_remove_state.stdout | regex_search("removing", ignorecase=True) is not none
       failed_when: >-
-        zabbix_agent_semodule_remove_result.rc | int == 1 and
-        (zabbix_agent_semodule_remove_result.stdout + zabbix_agent_semodule_remove_result.stderr)
+        agent_register_semodule_remove_state.rc | int == 1 and
+        (agent_register_semodule_remove_state.stdout + agent_register_semodule_remove_state.stderr)
         | regex_search("No such file or directory", ignorecase=True) is none
       args:
         chdir: '{{ agent_semodules_path }}'
-      register: zabbix_agent_semodule_remove_result
+      register: agent_register_semodule_remove_state
     - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
       become: true
       ansible.builtin.command: >-

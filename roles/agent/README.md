@@ -117,7 +117,7 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_major_version | `string` | 6.0 | The major version of Zabbix agent. Defaults to the latest LTS.
 | agent_minor_version | `string` || Zabbix agent minor version customization is available for **RedHat-based OS only**.
 | agent_package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in the installed **zabbix-release** repository.
-| remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of the new ones. Mandatory to deploy earlier version than the one currently installed.
+| agent_remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of the new ones. Mandatory to deploy earlier version than the one currently installed.
 | agent_2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent 2 plugins to configure and deploy (if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent 2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent 2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 | http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | https_proxy | `string` || Defines HTTPS proxy address for the packager.
@@ -133,8 +133,8 @@ The role allows creating a custom user for Zabbix agent. User customization task
 |--|--|--|--|
 | agent_service_user | `string` | zabbix | The user to run Zabbix agent.
 | agent_service_group | `string` | zabbix | User group for the custom user.
-| service_uid | `string` || User ID for the custom user.
-| service_gid | `string` || User group ID for the custom user group.
+| agent_service_uid | `string` || User ID for the custom user.
+| agent_service_gid | `string` || User group ID for the custom user group.
 
 Adds next task sequence:
 - Creates group.
@@ -343,7 +343,7 @@ Don't use both local path and final path to avoid unpredictable results!
 | param_plugins_mongodb_keepalive | `int` || [**Plugins.MongoDB.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_mongodb_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb | [**Plugins.MongoDB.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Path to external plugin executable. Supported since Zabbix 6.0.6.
-| param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", agent_source_tlscafile: "", agent_source_tlscertfile: "", agent_source_tlskeyfile: ""}`
+| agent_param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 MQTT plugin** parameters:
 
@@ -384,7 +384,7 @@ Don't use both local path and final path to avoid unpredictable results!
 | param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Time of waiting (in seconds) for unused connections to be closed.
 | param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | agent_param_plugins_postgresql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql | [**Plugins.Postgresql.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Path to the external plugin executable. Supported since Zabbix 6.0.6.
-| param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", agent_source_tlscafile: "", agent_source_tlscertfile: "", agent_source_tlskeyfile: ""}`
+| agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 MySQL plugin** parameters:
 
@@ -403,7 +403,7 @@ Don't use both local path and final path to avoid unpredictable results!
 | param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
 | param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Time of waiting (in seconds) before unused connections are closed.
 | param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
-| param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", agent_source_tlscafile: "", agent_source_tlscertfile: "", agent_source_tlskeyfile: ""}`
+| agent_param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 Redis plugin** parameters:
 
@@ -463,7 +463,7 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 | zabbix_host_tls_accept | `list` | `{{ agent_param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed.
 | zabbix_host_tls_connect | `string` | `{{ agent_param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**.
 | zabbix_host_tls_psk_identity | `string` | `{{ agent_param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
-| zabbix_host_tls_psk_value | `string` | `{{ zabbix_agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
+| zabbix_host_tls_psk_value | `string` | `{{ agent_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
 | zabbix_host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `agent_source_tlscertfile`. Requires Openssl installation on Ansible execution environment.
 | zabbix_host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
 | zabbix_host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.
@@ -624,16 +624,16 @@ Playbook examples
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           agent_2_plugin_list: [ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart, mongodb]
-          param_plugins_mongodb_sessions:
+          agent_param_plugins_mongodb_sessions:
             - name: "sessionname"
               uri: "someuri"
               user: "someuser"
               password: "somepassword"
               tlsconnect: "required"
               ## Location of the source certificate files on Ansible execution environment.
-              agent_source_tlscafile: "certs/ca.crt"
-              agent_source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
-              agent_source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
+              source_tlscafile: "certs/ca.crt"
+              source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+              source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
   ```
 
 - ### Playbook 6:
@@ -647,7 +647,7 @@ Playbook examples
       roles:
         - role: zabbix.zabbix.zabbix_agent
           agent_major_version: "6.0"
-          remove_previous_packages: true  # removes previously installed package of Zabbix agent (according to current settings);
+          agent_remove_previous_packages: true  # removes previously installed package of Zabbix agent (according to current settings);
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
@@ -666,8 +666,8 @@ Playbook examples
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
           agent_service_user: dor               # if agent_service_user is not "zabbix", multiple changes are applied
           agent_service_group: blue
-          service_uid: 1115
-          service_gid: 1115
+          agent_service_uid: 1115
+          agent_service_gid: 1115
   ```
 
 - ### Playbook 8:

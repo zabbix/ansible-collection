@@ -14,12 +14,12 @@
 - name: Supported OS and agent version control
   ansible.builtin.assert:
     that:
-      - zabbix_agent_supported_os is true
+      - agent_internal_supported_os is true
       - agent_major_version | string in ['6.0', '6.4']
       - agent_package_state in ["present", "latest"]
     quiet: true
   vars:
-    zabbix_agent_supported_os: '{{
+    agent_internal_supported_os: '{{
         agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution] is defined
         and agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version] is defined
         and ansible_distribution_version
@@ -29,11 +29,11 @@
 
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
-  loop: '{{ zabbix_agent_var_list | select }}'
+  loop: '{{ agent_internal_var_list | select }}'
   loop_control:
     loop_var: var_item
   vars:
-    zabbix_agent_var_list:
+    agent_internal_var_list:
       # - '{{ ansible_system | lower }}'
       - '{{ ansible_os_family | lower }}'
       # - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
@@ -51,13 +51,13 @@
   tags: [vars, verify, remove, deploy, config]
 
 - name: 'Variables: Get/Generate PSK keys'
+    #  or zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
   when: >-
-    (agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept
-     or zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
+    agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept
   ansible.builtin.set_fact:
     # value of hexadecimal within range 32 to 128 chars | choosing 128
     # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
-    zabbix_agent_psk_value: '{{ lookup("password",
+    agent_psk_value: '{{ lookup("password",
                   agent_source_tlspskfile + " chars=hexdigits length=128") | lower }}'
   tags: [vars, verify, deploy, config]
 
@@ -88,7 +88,7 @@
 
 - name: Include package clearing tasks
   when: >-
-    remove_previous_packages is defined and remove_previous_packages
+    agent_remove_previous_packages is defined and agent_remove_previous_packages
     or "remove" in ansible_run_tags
   ansible.builtin.include_tasks: 'remove_packages_{{ ansible_system | lower }}.yml'
   tags: [remove, deploy]
@@ -115,11 +115,11 @@
 
 - name: Firewall task list include
   ansible.builtin.include_tasks: '{{ firewall_task_item }}.yml'
-  loop: '{{ zabbix_agent_task_list | select }}'
+  loop: '{{ agent_internal_task_list | select }}'
   loop_control:
     loop_var: firewall_task_item
   vars:
-    zabbix_agent_task_list:
+    agent_internal_task_list:
       - '{{ "firewalld" if (agent_apply_firewalld_rule is defined and agent_apply_firewalld_rule in ["force", "auto"]) else None }}'
       - '{{ "iptables" if (agent_apply_iptables_rule is defined and agent_apply_iptables_rule) else None }}'
   tags: [firewall, deploy]
@@ -176,13 +176,13 @@
   notify: 'Service restart'
   ansible.builtin.template:
     backup: false
-    src: 'a2_plugin_{{ plugin_name }}.conf.j2'
-    dest: '{{ agent_param_includeplugins[0] | dirname }}/{{ plugin_name }}.conf'
+    src: 'a2_plugin_{{ plugin_name_item }}.conf.j2'
+    dest: '{{ agent_param_includeplugins[0] | dirname }}/{{ plugin_name_item }}.conf'
     mode: '{{ agent_conf_file.permissions.mode }}'
     owner: '{{ agent_conf_file.permissions.user }}'
     group: '{{ agent_conf_file.permissions.group }}'
   loop_control:
-    loop_var: plugin_name
+    loop_var: plugin_name_item
   loop: '{{ agent_2_plugin_list | select | list }}'
   tags: [deploy, config]
 
@@ -192,14 +192,14 @@
   become: true
   notify: 'Service restart'
   ansible.builtin.file:
-    path: '{{ agent_param_includeplugins[0] | dirname }}/{{ excess_plugin_name }}.conf'
+    path: '{{ agent_param_includeplugins[0] | dirname }}/{{ excess_plugin_name_item }}.conf'
     state: absent
     ### MAYBE FORCE defaults instead of current settings???
     mode: '{{ agentd_conf_file_stat.stat.mode | default(agent_conf_file.permissions.mode) }}'
     owner: '{{ agentd_conf_file_stat.stat.pw_name | default(agent_conf_file.permissions.user) }}'
     group: '{{ agentd_conf_file_stat.stat.gr_name | default(agent_conf_file.permissions.group) }}'
   loop_control:
-    loop_var: excess_plugin_name
+    loop_var: excess_plugin_name_item
   # loop over a list of plugins not used in current setup
   loop: '{{ agent_2_full_plugin_list | difference(agent_2_plugin_list) }}'
   tags: [deploy, config]
@@ -249,9 +249,9 @@
     mode: '{{ agent_conf_file.permissions.mode }}'
     owner: '{{ agent_conf_file.permissions.user }}'
     group: '{{ agent_conf_file.permissions.group }}'
-  loop: '{{ zabbix_agent_template_list | select }}'
+  loop: '{{ agent_internal_template_list | select }}'
   vars:
-    zabbix_agent_template_list:
+    agent_internal_template_list:
       - userparameters.conf
   tags: [userparam, deploy, config]
 
@@ -267,9 +267,9 @@
     mode: '{{ agent_conf_file.permissions.mode }}'
     owner: '{{ agent_conf_file.permissions.user }}'
     group: '{{ agent_conf_file.permissions.group }}'
-  loop: '{{ zabbix_agent_template_list | select }}'
+  loop: '{{ agent_internal_template_list | select }}'
   vars:
-    zabbix_agent_template_list:
+    agent_internal_template_list:
       - aliases.conf
   tags: [deploy, config]
 
@@ -285,9 +285,9 @@
     group: '{{ agent_service_group }}'
   loop_control:
     loop_var: folder_item
-  loop: '{{ zabbix_agent_maintenance_folders | select | list }}'
+  loop: '{{ agent_internal_maintenance_folders | select | list }}'
   vars:
-    zabbix_agent_maintenance_folders:
+    agent_internal_maintenance_folders:
       - '{{ agent_binary_name | upper + "/.CERT/" if agent_source_tlscafile is defined else None }}'
       - '{{ agent_binary_name | upper + "/.PSK/" if "psk" in agent_param_tlsaccept or agent_param_tlsconnect == "psk" else None }}'
       - '{{ agent_binary_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
@@ -305,18 +305,18 @@
   become: true
   notify: 'Service restart'
   ansible.builtin.copy:
-    src: '{{ tls_file.source }}'
-    dest: '{{ tls_file.target }}'
+    src: '{{ tls_file_item.source }}'
+    dest: '{{ tls_file_item.target }}'
     mode: 'u=rwx,g=,o='
     directory_mode: 'u=rwx,g=,o='
     owner: '{{ agent_service_user }}'
     group: '{{ agent_service_group }}'
     # recursive: true
   loop_control:
-    loop_var: tls_file
-  loop: '{{ zabbix_agent_tls_file_list | select }}'
+    loop_var: tls_file_item
+  loop: '{{ agent_internal_tls_file_list | select }}'
   vars:
-    zabbix_agent_tls_file_list:
+    agent_internal_tls_file_list:
       - {source: "{{ agent_source_tlscafile }}", target: "{{ agent_param_tlscafile }}"}
       - '{{ {"source": agent_source_tlscrlfile, "target": agent_param_tlscrlfile} if agent_source_tlscrlfile is defined else None }}'
       - {source: "{{ agent_source_tlscertfile }}", target: "{{ agent_param_tlscertfile }}"}
@@ -339,23 +339,23 @@
 - name: 'Upload : Zabbix agent2 : TLS certificates for plugins'
   when: >-
     agent_variant | string == '2'
-    and plugin_tls_file.source is defined and plugin_tls_file.source
+    and plugin_tls_file_item.source is defined and plugin_tls_file_item.source
   become: true
   notify: 'Service restart'
   ansible.builtin.copy:
-    src: '{{ plugin_tls_file.source }}'
-    dest: '{{ plugin_tls_file.target }}'
+    src: '{{ plugin_tls_file_item.source }}'
+    dest: '{{ plugin_tls_file_item.target }}'
     mode: 'u=rwx,g=,o='
     directory_mode: 'u=rwx,g=,o='
     owner: '{{ agent_service_user }}'
     group: '{{ agent_service_group }}'
     # recursive: true
   loop_control:
-    loop_var: plugin_tls_file
-    label: '{{ plugin_tls_file.source | default(None), plugin_tls_file.target }}'
-  loop: '{{ zabbix_agent_plugins_mysql_tls_file_list | default([])
-          + zabbix_agent_plugins_postgresql_tls_file_list | default([])
-          + zabbix_agent_plugins_mongodb_tls_file_list | default([])
+    loop_var: plugin_tls_file_item
+    label: '{{ plugin_tls_file_item.source | default(None), plugin_tls_file_item.target }}'
+  loop: '{{ agent_internal_plugins_mysql_tls_file_list | default([])
+          + agent_internal_plugins_postgresql_tls_file_list | default([])
+          + agent_internal_plugins_mongodb_tls_file_list | default([])
           }}'
   tags: [deploy, config]
 

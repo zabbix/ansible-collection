@@ -40,9 +40,9 @@ Plugins.Mysql.KeepAlive={{ param_plugins_mysql_keepalive }}
 # Range: Must matches the URI format.
 # Default:
 # Plugins.Mysql.Sessions.*.Uri=
-{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+{% if agent_param_plugins_mysql_sessions is defined and agent_param_plugins_mysql_sessions is iterable and agent_param_plugins_mysql_sessions is not string and agent_param_plugins_mysql_sessions is not mapping %}
 
-{% for session in param_plugins_mysql_sessions %}
+{% for session in agent_param_plugins_mysql_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.Mysql.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}
@@ -55,9 +55,9 @@ Plugins.Mysql.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.User=
-{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+{% if agent_param_plugins_mysql_sessions is defined and agent_param_plugins_mysql_sessions is iterable and agent_param_plugins_mysql_sessions is not string and agent_param_plugins_mysql_sessions is not mapping %}
 
-{% for session in param_plugins_mysql_sessions %}
+{% for session in agent_param_plugins_mysql_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.Mysql.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -70,9 +70,9 @@ Plugins.Mysql.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.Password=
-{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+{% if agent_param_plugins_mysql_sessions is defined and agent_param_plugins_mysql_sessions is iterable and agent_param_plugins_mysql_sessions is not string and agent_param_plugins_mysql_sessions is not mapping %}
 
-{% for session in param_plugins_mysql_sessions %}
+{% for session in agent_param_plugins_mysql_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.Mysql.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}
@@ -88,9 +88,9 @@ Plugins.Mysql.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.TLSConnect=
-{% if param_plugins_mysql_sessions is defined and param_plugins_mysql_sessions is iterable and param_plugins_mysql_sessions is not string and param_plugins_mysql_sessions is not mapping %}
+{% if agent_param_plugins_mysql_sessions is defined and agent_param_plugins_mysql_sessions is iterable and agent_param_plugins_mysql_sessions is not string and agent_param_plugins_mysql_sessions is not mapping %}
 
-{% for session in param_plugins_mysql_sessions %}
+{% for session in agent_param_plugins_mysql_sessions %}
 {% if session["tlsconnect"] is defined and session["tlsconnect"] %}
 Plugins.Mysql.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"] }}
 {% endif %}
@@ -104,9 +104,9 @@ Plugins.Mysql.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"]
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.TLSCAFile=
-{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mysql_tls_file_list is defined and agent_internal_plugins_mysql_tls_file_list is iterable and agent_internal_plugins_mysql_tls_file_list is not string and agent_internal_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "ca" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
 {% endif %}
@@ -119,9 +119,9 @@ Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["tar
 # Mandatory: no
 # Default:
 # Plugins.Mysql.Sessions.*.TLSCertFile=
-{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mysql_tls_file_list is defined and agent_internal_plugins_mysql_tls_file_list is iterable and agent_internal_plugins_mysql_tls_file_list is not string and agent_internal_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "cert" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
 {% endif %}
@@ -132,9 +132,9 @@ Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["t
 #	Full pathname of a file containing the mysql private key.
 #
 # Mandatory: no
-{% if zabbix_agent_plugins_mysql_tls_file_list is defined and zabbix_agent_plugins_mysql_tls_file_list is iterable and zabbix_agent_plugins_mysql_tls_file_list is not string and zabbix_agent_plugins_mysql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mysql_tls_file_list is defined and agent_internal_plugins_mysql_tls_file_list is iterable and agent_internal_plugins_mysql_tls_file_list is not string and agent_internal_plugins_mysql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mysql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mysql_tls_file_list %}
 {% if tls_file["type"] == "key" %}
 Plugins.Mysql.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}

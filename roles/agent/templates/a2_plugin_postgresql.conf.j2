@@ -66,9 +66,9 @@ Plugins.PostgreSQL.CustomQueriesPath={{ param_plugins_postgresql_customqueriespa
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.PostgreSQL.Sessions.*.Uri=
-{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+{% if agent_param_plugins_postgresql_sessions is defined and agent_param_plugins_postgresql_sessions is iterable and agent_param_plugins_postgresql_sessions is not string and agent_param_plugins_postgresql_sessions is not mapping %}
 
-{% for session in param_plugins_postgresql_sessions %}
+{% for session in agent_param_plugins_postgresql_sessions %}
 {% if session["uri"] is defined and session["uri"] %}
 Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 {% endif %}
@@ -82,9 +82,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Range: Must match the PostgreSQL user name.
 # Default:
 # Plugins.PostgreSQL.Sessions.*.User=
-{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+{% if agent_param_plugins_postgresql_sessions is defined and agent_param_plugins_postgresql_sessions is iterable and agent_param_plugins_postgresql_sessions is not string and agent_param_plugins_postgresql_sessions is not mapping %}
 
-{% for session in param_plugins_postgresql_sessions %}
+{% for session in agent_param_plugins_postgresql_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.PostgreSQL.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -98,9 +98,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 # Range: Must match the Password format.
 # Default:
 # Plugins.PostgreSQL.Sessions.*.Password=
-{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+{% if agent_param_plugins_postgresql_sessions is defined and agent_param_plugins_postgresql_sessions is iterable and agent_param_plugins_postgresql_sessions is not string and agent_param_plugins_postgresql_sessions is not mapping %}
 
-{% for session in param_plugins_postgresql_sessions %}
+{% for session in agent_param_plugins_postgresql_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}
@@ -113,9 +113,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Password={{ session["password"
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.Database=
-{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+{% if agent_param_plugins_postgresql_sessions is defined and agent_param_plugins_postgresql_sessions is iterable and agent_param_plugins_postgresql_sessions is not string and agent_param_plugins_postgresql_sessions is not mapping %}
 
-{% for session in param_plugins_postgresql_sessions %}
+{% for session in agent_param_plugins_postgresql_sessions %}
 {% if session["database"] is defined and session["database"] %}
 Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Database={{ session["database"] }}
 {% endif %}
@@ -133,9 +133,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Database={{ session["database"
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSConnect=
-{% if param_plugins_postgresql_sessions is defined and param_plugins_postgresql_sessions is iterable and param_plugins_postgresql_sessions is not string and param_plugins_postgresql_sessions is not mapping %}
+{% if agent_param_plugins_postgresql_sessions is defined and agent_param_plugins_postgresql_sessions is iterable and agent_param_plugins_postgresql_sessions is not string and agent_param_plugins_postgresql_sessions is not mapping %}
 
-{% for session in param_plugins_postgresql_sessions %}
+{% for session in agent_param_plugins_postgresql_sessions %}
 {% if session["tlsconnect"] is defined and session["tlsconnect"] %}
 Plugins.PostgreSQL.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconnect"] }}
 {% endif %}
@@ -149,9 +149,9 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.TLSConnect={{ session["tlsconn
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSCAFile=
-{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_postgresql_tls_file_list is defined and agent_internal_plugins_postgresql_tls_file_list is iterable and agent_internal_plugins_postgresql_tls_file_list is not string and agent_internal_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "ca" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
 {% endif %}
@@ -164,9 +164,9 @@ Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSCertFile=
-{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_postgresql_tls_file_list is defined and agent_internal_plugins_postgresql_tls_file_list is iterable and agent_internal_plugins_postgresql_tls_file_list is not string and agent_internal_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "cert" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
 {% endif %}
@@ -179,9 +179,9 @@ Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_fi
 # Mandatory: no
 # Default:
 # Plugins.PostgreSQL.Sessions.*.TLSKeyFile=
-{% if zabbix_agent_plugins_postgresql_tls_file_list is defined and zabbix_agent_plugins_postgresql_tls_file_list is iterable and zabbix_agent_plugins_postgresql_tls_file_list is not string and zabbix_agent_plugins_postgresql_tls_file_list is not mapping %}
+{% if agent_internal_plugins_postgresql_tls_file_list is defined and agent_internal_plugins_postgresql_tls_file_list is iterable and agent_internal_plugins_postgresql_tls_file_list is not string and agent_internal_plugins_postgresql_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_postgresql_tls_file_list %}
+{% for tls_file in agent_internal_plugins_postgresql_tls_file_list %}
 {% if tls_file["type"] == "key" %}
 Plugins.PostgreSQL.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}

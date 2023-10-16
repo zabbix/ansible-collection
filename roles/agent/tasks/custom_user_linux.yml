@@ -7,7 +7,7 @@
   notify: 'Service restart'
   ansible.builtin.group:
     name: '{{ agent_service_group }}'
-    gid: '{{ service_gid | default(omit) }}'
+    gid: '{{ agent_service_gid | default(omit) }}'
     state: 'present'
   tags: [deploy]
 
@@ -17,7 +17,7 @@
   ansible.builtin.user:
     name: '{{ agent_service_user }}'
     group: '{{ agent_service_group }}'
-    uid: '{{ service_uid | default(omit) }}'
+    uid: '{{ agent_service_uid | default(omit) }}'
     system: true
     shell: /usr/sbin/nologin
     home: '{{ agent_service_user_home }}'
@@ -36,9 +36,9 @@
     group: '{{ agent_service_group }}'
     setype: '{{ item.setype }}'
     recurse: true
-  loop: '{{ zabbix_agent_file_loop | select }}'
+  loop: '{{ agent_internal_file_loop | select }}'
   vars:
-    zabbix_agent_file_loop:
+    agent_internal_file_loop:
       - {folder: '{{ agent_param_logfile | default(None) }}', setype: '{{ agent_folder_log_setype | default(None) }}'}
       # - {folder: '{{ agent_param_pidfile | default(None) }}', setype: '{{ agent_folder_pid_setype | default(None) }}'}
   tags: [deploy]

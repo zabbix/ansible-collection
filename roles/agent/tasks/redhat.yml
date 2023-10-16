@@ -2,10 +2,10 @@
 - name: 'YUM : GPG key presence'
   become: true
   ansible.builtin.rpm_key:
-    state: '{{ zabbix_agent_key_state }}'
+    state: '{{ agent_register_key_state }}'
     key: '{{ agent_repository.key }}'
   vars:
-    zabbix_agent_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
+    agent_register_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
@@ -18,13 +18,13 @@
 
 - name: 'YUM : Zabbix-release repository presence'
   become: true
-  until: zabbix_agent_repository is not failed
+  until: agent_register_repository_state is not failed
   retries: 3
   delay: 3
   ansible.builtin.yum:
     name: '{{ agent_repository.uri }}'
   when: agent_package_state != "absent"
-  register: zabbix_agent_repository
+  register: agent_register_repository_state
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
@@ -48,17 +48,17 @@
     and agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
     and agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
   become: true
-  until: zabbix_agent_yum_plugin_presence is not failed
+  until: agent_register_yum_plugin_state is not failed
   retries: 3
   delay: 3
-  register: zabbix_agent_yum_plugin_presence
+  register: agent_register_yum_plugin_state
   ansible.builtin.yum:
     name: 'yum-plugin-priorities'
     state: '{{ agent_package_state }}'
   tags: [deploy]
 
 - name: 'YUM : yum clean all'
-  when: zabbix_agent_repository.changed
+  when: agent_register_repository_state.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
@@ -67,29 +67,29 @@
 - name: 'YUM : Zabbix packages presence'
   become: true
   notify: 'Service restart'
-  until: zabbix_agent_packages_presence is not failed
+  until: agent_register_packages_state is not failed
   retries: 3
   delay: 3
-  register: zabbix_agent_packages_presence
+  register: agent_register_packages_state
   ansible.builtin.yum:
-    name: '{{ zabbix_agent_install_package_list }}'
+    name: '{{ agent_internal_install_package_list }}'
     state: '{{ agent_package_state }}'
     disablerepo: '{{ agent_repository_disable }}'  # disable epel repos | should contain epel word in repo name
     enablerepo: '{{ agent_repository.name }}'
     install_weak_deps: true
     # enable_plugin: priorities ### cant find the plugin by its name... seems bugged
   vars:
-    ### if "agent_minor_version" is defined calculate "zabbix_agent_full_version".
-    zabbix_agent_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
+    ### if "agent_minor_version" is defined calculate "agent_internal_full_version".
+    agent_internal_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
       else agent_major_version | string + "." + agent_minor_version | string }}'
     ### change minor version of zabbix components (excluding agent2 plugins). Use single quotes for regex expression!!!
-    zabbix_agent_component_package_list: "{{ agent_package_list if not zabbix_agent_full_version
-      else agent_package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % zabbix_agent_full_version) | list }}"
+    agent_internal_component_package_list: "{{ agent_package_list if not agent_internal_full_version
+      else agent_package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % agent_internal_full_version) | list }}"
     ### change version of agent2 plugins. Use single quotes for regex expression!!!
-    zabbix_agent_install_package_list: "{{
-      zabbix_agent_component_package_list if (agent_2_plugin_version is not defined
+    agent_internal_install_package_list: "{{
+      agent_internal_component_package_list if (agent_2_plugin_version is not defined
                                  or not agent_2_plugin_version or agent_variant | string != '2')
-      else zabbix_agent_component_package_list | map('regex_replace',
+      else agent_internal_component_package_list | map('regex_replace',
                   '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent_2_plugin_version) | list }}"
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'

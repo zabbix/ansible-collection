@@ -14,10 +14,10 @@
 
 - name: 'APT : Zabbix-release repository presence'
   become: true
-  until: zabbix_agent_repository_presence is not failed
+  until: agent_register_repository_state is not failed
   retries: 3
   delay: 3
-  register: zabbix_agent_repository_presence
+  register: agent_register_repository_state
   ansible.builtin.apt:
     # deb module requires xz-utils to be installed on target machine????
     deb: '{{ agent_repository.uri }}'
@@ -30,10 +30,10 @@
 - name: 'APT : Zabbix packages presence'
   become: true
   notify: 'Service restart'
-  until: zabbix_agent_packages_presence is not failed
+  until: agent_register_packages_state is not failed
   retries: 3
   delay: 3
-  register: zabbix_agent_packages_presence
+  register: agent_register_packages_state
   ansible.builtin.apt:
     name: '{{ agent_package_list }}'
     state: '{{ agent_package_state }}'
