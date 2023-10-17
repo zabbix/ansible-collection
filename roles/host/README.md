@@ -3,7 +3,7 @@ Zabbix host role
 
 This role represents the state of target device on monitoring instance. You can use it to add/remove/modify hosts of Zabbix monitoring instance using Ansible. It is made on top of our modules over Zabbix API communication.
 
-This role is compatible with `[**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md)` role. To inherit variables from `[**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md)` role, place it in the same play. It is shown in the [first example](#playbook-1)
+This role is compatible with [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role. To inherit variables from [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role, place it in the same play. It is shown in the [first example](#playbook-1)
 
 Since hostgroups are mandatory for any host, this role ensures, that hostgroups are created on monitoring instance.
 
