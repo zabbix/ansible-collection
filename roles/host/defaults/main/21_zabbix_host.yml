@@ -15,7 +15,7 @@ host_tls_accept: '{{ agent_param_tlsconnect | default(["unencrypted"]) }}'
 ## Mirrors agent outgoing connection behavior. Override, if you need different encryption for passive checks.
 host_tls_connect: '{{ agent_param_tlsconnect | default("unencrypted") }}'
 host_get_cert_info: false
-## Path to certificate location. Linked to agent parameter 
+## Path to certificate location. Linked to agent parameter
 host_source_tls_certfile: '{{ agent_source_tlscertfile | default(None) }}'
 host_tls_issuer: ""
 host_tls_subject: ""

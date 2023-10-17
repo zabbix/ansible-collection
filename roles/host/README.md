@@ -1,17 +1,11 @@
 Zabbix host role
 =================
 
-You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
-Currently, the following OS of target machines are supported:
-- Redhat 7, 8, 9
-- Oracle Linux 8, 9
-- Alma Linux 8, 9
-- Rocky Linux 8, 9
-- CentOS Stream 8, 9
-- Ubuntu 18.04, 20.04, 22.04
-- Debian 10, 11, 12
+This role represents the state of target device on monitoring instance. You can use it to add/remove/modify hosts of Zabbix monitoring instance using Ansible. It is made on top of our modules over Zabbix API communication.
 
-Supported distribution list to be extended.
+This role is compatible with `[**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md)` role. To inherit variables from `[**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md)` role, place it in the same play. It is shown in the [first example](#playbook-1)
+
+Since hostgroups are mandatory for any host, this role ensures, that hostgroups are created on monitoring instance.
 
 **Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
@@ -23,9 +17,9 @@ Table of contents
     * [Zabbix host via Zabbix API](#zabbix-host-via-zabbix-api)
       * [API connection parameters](#api-connection-parameters)
       * [Zabbix host configuration parameters](#zabbix-host-configuration-parameters)
-  * [Hints & Tags](#hints--tags)
+  * [Role Tags](#hints--tags)
   * [Playbook examples](#playbook-examples)
-    * [Playbook 10: Deploy Zabbix agent with passive checks only and add hosts to Zabbix](#playbook-10)
+    * [Playbook 1: Deploy Zabbix agent with passive checks only and add hosts to Zabbix](#playbook-1)
   * [License](#license)
 
 <!--te-->
@@ -42,7 +36,7 @@ Zabbix agent role requires additional tools from two Ansible certified collectio
 
 You can install required collections easily:
 ```bash
-ansible-galaxy collection install ansible.utils ansible.posix
+ansible-galaxy collection install ansible.utils ansible.posix ansible.netcommon
 ```
 
 Note that the role uses [**ansible.utils.ipaddr**](https://docs.ansible.com/ansible/latest/collections/ansible/utils/docsite/filters_ipaddr.html) filter, which depends on Python library [**netaddr**](https://pypi.org/project/netaddr).
@@ -69,11 +63,13 @@ Role variables
 
 You can modify variables listed in this section. Variables are not validated by the role itself. You should experiment with variable definition on a test instance before going for a full-scale deployment.
 
-The default settings are aimed at the ease of installation. You can override those to according to a use case.
+The default settings are aimed at the ease of installation. You can override those, according to a use case.
 
 
 Role variables
 --------------
+
+This set of variables explains Ansible how to connect to Zabbix API.
 
 ### API connection parameters
 
@@ -90,6 +86,8 @@ Role variables
 
 ### Zabbix host configuration parameters
 
+This group of variables is used to represent the state of target device in Zabbix. Defaults are adopted to use together with [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role. Override those for different use cases.
+
 | Variable | Type | Default | Description |
 |--|--|--|--|
 | host_state | `string` | `present` | Default value ensures presence of the host in Zabbix.
@@ -105,13 +103,14 @@ Role variables
 | host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_status | `string` | `enabled` | The host status. Available values: `enabled` or `disabled`.
 | host_proxy | `string` | `{{ group_names \| select("match", "^zabbix_proxy.*") \| first \| default(None) }}` | Assign proxy to the host. Default value filters groups of the host from Ansible inventory and checks for regex match. If group is matched, its name will be assigned as the host proxy. Note that proxy with the same name should exist in setup.
-| host_tls_accept | `list` | `{{ agent_param_tlsconnect }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed.
-| host_tls_connect | `string` | `{{ agent_param_tlsconnect }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**.
-| host_tls_psk_identity | `string` | `{{ agent_param_tlspskidentity }}` | By default, PSK key identity is linked to agent parameter.
-| zabbix_host_tls_psk_value | `string` | `{{ agent_tls_psk_value }}` | By default, sets the same key that was used in Zabbix agent deployment.
+| host_tls_accept | `list` | `{{ agent_param_tlsconnect \| default(["unencrypted"]) }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
+| host_tls_connect | `string` | `{{ agent_param_tlsconnect \| default("unencrypted") }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
+| host_tls_psk_identity | `string` | `{{ agent_param_tlspskidentity \| default(None) }}` | By default, PSK key identity is linked to agent parameter. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
+| host_tls_psk_value | `string` | `{{ agent_tls_psk_value \| default(None) }}` | By default, sets the same key that was used in Zabbix agent deployment. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
 | host_get_cert_info | `boolean` | `False` | Extract issuer and subject info from certificates, defined in `agent_source_tlscertfile`. Requires Openssl installation on Ansible execution environment.
-| host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection.
-| host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection.
+| host_source_tls_certfile | `string` | `{{ agent_source_tlscertfile \| default(None) }}` | Certificate location on Ansible controller or EE. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
+| host_tls_issuer | `string` | `None` | Set issuer of Zabbix agent certificate for TLS connection. Will be filled automatically if `host_get_cert_info` is `true`.
+| host_tls_subject | `string` | `None` | Set subject of Zabbix agent certificate for TLS connection. Will be filled automatically if `host_get_cert_info` is `true`.
 |--|
 | host_ipmi_authtype | `string` || Set IPMI [authentication type](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_ipmi_privilege | `string` || Set IPMI [privilege level](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
@@ -135,7 +134,7 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
 Playbook examples
 -----------------
 
-- ### Playbook 10:
+- ### Playbook 1:
   **Deploy Zabbix agent with passive checks only and add hosts to Zabbix.**
   1. Fill Zabbix agent configuration. Here we will allow Zabbix server to communicate with agent and apply firewall rule to accept connection only from Zabbix server.
   2. Active agent autoregistration does not work with passive checks. So we need to use Zabbix API to add new host with passive checks only. Add [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) role to the same Ansible `play` to inherit variables from the first role.
