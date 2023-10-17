@@ -446,15 +446,6 @@ Hints & Tags
 
         ansible-playbook -i inventory play.yml -t userparam
 
-- By default, host module (Zabbix hosts management via API) is turned off. To enable it, set `run_host_tasks` variable to `True` or pass additional tag to playbook execution. Check example of [playbook 10](#playbook-10). Useful tags combinations are the following:
-  - To deploy Zabbix agent and add hosts to Zabbix, use:
-
-        ansible-playbook -i inventory play.yml -t all,host
-
-  - To remove hosts from Zabbix and uninstall Zabbix agents, use tags `remove` and `host`:
-
-        ansible-playbook -i inventory play.yml -t remove,host
-
 
 Playbook examples
 -----------------
