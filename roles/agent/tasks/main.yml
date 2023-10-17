@@ -27,6 +27,20 @@
       }}'
   tags: [assert, deploy, config]
 
+# - name: Assert TLS files or settings
+#   when: >-
+#     agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept
+#   ansible.builtin.assert:
+#     that:
+#       - agent_source_tlscertfile is defined and agent_source_tlscertfile
+#           or agent_param_tlscertfile is defined and agent_param_tlscertfile
+#       - agent_source_tlskeyfile is defined and agent_source_tlskeyfile
+#           or agent_param_tlskeyfile is defined and agent_param_tlskeyfile
+#       - agent_source_tlscafile is defined and agent_source_tlscafile
+#           or agent_param_tlscafile is defined and agent_param_tlscafile
+#     quiet: true
+#   tags: [assert, deploy, config]
+
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ var_item }}.yml'
   loop: '{{ agent_internal_var_list | select }}'
@@ -41,12 +55,12 @@
   tags: [vars, verify, remove, deploy, config]
 
 - name: 'Variables : Custom user : Overrides'
-  when: >
+  when: >-
     agent_service_user is defined
     and agent_service_user
     and agent_service_user != "zabbix"
-    and agent_service_group != "zabbix"
-  # variable change required for custome user
+  # and agent_service_group != "zabbix"
+  ## variable change required for custom user
   ansible.builtin.include_vars: custom_user_overrides.yml
   tags: [vars, verify, remove, deploy, config]
 
@@ -297,6 +311,8 @@
       - '{{ agent_binary_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
+## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!
+## use assert instead
 - name: 'Upload : TLS Certificates'
   when: >-
     (agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept)
