@@ -130,6 +130,12 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
 
 [More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 
+Role tags
+-----
+
+- When used together with [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) role, `remove` tag affects this role and remove host from monitoring instance.
+
+      ansible-playbook -i inventory playbook.yml -t remove
 
 Playbook examples
 -----------------
