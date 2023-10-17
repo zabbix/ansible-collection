@@ -1,9 +1,0 @@
----
-- name: test host
-  hosts: all
-  #gather_facts: false
-  roles:
-    - role: agent
-    - role: host
-      zabbix_api_host: 192.168.13.90
-      zabbix_api_port: 8070
