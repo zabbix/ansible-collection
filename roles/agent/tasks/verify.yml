@@ -75,7 +75,8 @@
 - name: Zabbix agent variant, major version and status checks
   ansible.builtin.assert:
     that:
-      - agent_register_verify_execution_environment_get_agent_version.stdout | regex_search("\d+\.\d+") is version(agent_major_version | string, "=", strict=false)
+      - agent_register_verify_execution_environment_get_agent_version.stdout | regex_search("\d+\.\d+")
+        is version(agent_major_version | string, "=", strict=false)
       - agent_register_verify_get_variant.stdout | string == agent_variant | string
       - agent_register_verify_service_status.status.ActiveState | lower in ["running", "active"]
       - agent_register_verify_service_status.status.MainPID | int >= 0
@@ -89,13 +90,20 @@
     create: true
     path: '{{ agent_verify_report_path }}'
     line: >-
-      {{ ansible_date_time.date }}T{{ ansible_date_time.time }}
-      {{ test_name | default("-", true) }}:
-      {{ ansible_hostname }}
-      ({{ agent_register_verify_get_variant.stdout | default("-", true) }}:{{ agent_register_verify_execution_environment_get_agent_version.stdout | default("-", true) }})
-      [{{ agent_register_verify_service_status.status.ActiveState | default("-", true) }}:{{ agent_register_verify_service_status.status.UnitFileState | default("-", true) }}]
-      {{ "LocalGetErr: " + agent_register_verify_get_variant.stderr if agent_register_verify_get_variant is failed }}
-      {{ "RemoteGetErr: " + agent_register_verify_execution_environment_get_agent_version.stderr if agent_register_verify_execution_environment_get_agent_version is failed }}
+      {{
+        ansible_date_time.date + "T" + ansible_date_time.time + " " +
+        test_name | default("default", true) + ":" +
+        ansible_hostname + "(" +
+        agent_register_verify_get_variant.stdout | default("-", true) + ":" +
+        agent_register_verify_execution_environment_get_agent_version.stdout | default("-", true) + ")" +
+        "[" + agent_register_verify_service_status.status.ActiveState | default("-", true) + ":" +
+        agent_register_verify_service_status.status.UnitFileState | default("-", true) + "]" +
+        ("LocalGetErr: " + agent_register_verify_get_variant.stderr if agent_register_verify_get_variant is failed
+          else "") +
+        ("RemoteGetErr: " + agent_register_verify_execution_environment_get_agent_version.stderr
+          if agent_register_verify_execution_environment_get_agent_version is failed
+          else "")
+      }}
     insertafter: EOF
     mode: "0644"
   tags: [verify]
