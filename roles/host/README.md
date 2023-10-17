@@ -14,10 +14,9 @@ Table of contents
 <!--ts-->
   * [Requirements](#requirements)
   * [Role variables](#role-variables)
-    * [Zabbix host via Zabbix API](#zabbix-host-via-zabbix-api)
-      * [API connection parameters](#api-connection-parameters)
-      * [Zabbix host configuration parameters](#zabbix-host-configuration-parameters)
-  * [Role Tags](#hints--tags)
+    * [API connection parameters](#api-connection-parameters)
+    * [Zabbix host configuration parameters](#zabbix-host-configuration-parameters)
+  * [Role Tags](#role-tags)
   * [Playbook examples](#playbook-examples)
     * [Playbook 1: Deploy Zabbix agent with passive checks only and add hosts to Zabbix](#playbook-1)
   * [License](#license)
@@ -133,9 +132,12 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
 Role tags
 -----
 
-- When used together with [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) role, `remove` tag affects this role and remove host from monitoring instance.
+-  Use `remove` tag to remove host from monitoring instance.
+Usefull together with [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) role in the same playbook.
 
       ansible-playbook -i inventory playbook.yml -t remove
+
+- All tasks from this role are marked with `host` tag. Helps when multiple roles are used in the same playbook.
 
 Playbook examples
 -----------------
