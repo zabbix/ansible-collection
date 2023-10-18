@@ -8,38 +8,38 @@
 - name: Example5_agent2_Session_tls_key
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
-      # remove_previous_packages: true
-      report_path: '/tmp/examples_verify_zabbix_agent.report'
-      test_name: '{{ ansible_play_name }}'
+      # agent_remove_previous_packages: true
+      agent_verify_report_path: '/tmp/examples_verify_zabbix_agent.report'
+      agent_test_name: '{{ ansible_play_name }}'
       #######################################
       agent_variant: 2
-      param_listenport: 10020
+      agent_param_listenport: 10020
       agent_major_version: 6.4
-      param_server: ::/0              # address of Zabbix server to accept connections from;
-      param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
-      param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
-      agent2_plugin_list: [mysql, mongodb, postgresql]
-      param_plugins_mongodb_sessions:
+      agent_param_server: ::/0              # address of Zabbix server to accept connections from;
+      agent_param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
+      agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
+      agent_2_plugin_list: [mysql, mongodb, postgresql]
+      agent_param_plugins_mongodb_sessions:
         - name: "s1"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
 #           ## Source certificate files location on Ansible execution environment.
-#           source_tlscafile: "files/certs/ca.crt"
-#           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
-#           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+#           agent_source_tlscafile: "files/certs/ca.crt"
+#           agent_source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
+#           agent_source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
         - name: "s2"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
           ## Source certificate files location on Ansible execution environment.
-          source_tlscafile: "certs/ca.crt"
-          source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
-          source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
+          agent_source_tlscafile: "certs/ca.crt"
+          agent_source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+          agent_source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
         - name: "s3"
           uri: "someuri"
           user: "someuser"
@@ -49,25 +49,25 @@
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"
-      param_plugins_mysql_sessions:
+      agent_param_plugins_mysql_sessions:
         - name: "s1"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
 #           ## Source certificate files location on Ansible execution environment.
-#           source_tlscafile: "files/certs/ca.crt"
-#           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
-#           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+#           agent_source_tlscafile: "files/certs/ca.crt"
+#           agent_source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
+#           agent_source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
         - name: "s2"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
           ## Source certificate files location on Ansible execution environment.
-          source_tlscafile: "certs/ca.crt"
-          source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
-          source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
+          agent_source_tlscafile: "certs/ca.crt"
+          agent_source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+          agent_source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
         - name: "s3"
           uri: "someuri"
           user: "someuser"
@@ -77,25 +77,25 @@
           tlscafile: "/tmp/certs/ca.crt"
           tlscertfile: "/tmp/certs/{{ inventory_hostname }}.crt"
           tlskeyfile: "/tmp/certs/{{ inventory_hostname }}.key"
-      param_plugins_postgresql_sessions:
+      agent_param_plugins_postgresql_sessions:
         - name: "s1"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
 #           tlsconnect: "required"
 #           ## Source certificate files location on Ansible execution environment.
-#           source_tlscafile: "files/certs/ca.crt"
-#           source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
-#           source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
+#           agent_source_tlscafile: "files/certs/ca.crt"
+#           agent_source_tlscertfile: "files/certs/{{ inventory_hostname }}.crt"
+#           agent_source_tlskeyfile: "files/certs/{{ inventory_hostname }}.key"
         - name: "s2"
           uri: "someuri"
           user: "someuser"
           password: "somepassword"
           tlsconnect: "required"
           ## Source certificate files location on Ansible execution environment.
-          source_tlscafile: "certs/ca.crt"
-          source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
-          source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
+          agent_source_tlscafile: "certs/ca.crt"
+          agent_source_tlscertfile: "certs/{{ inventory_hostname }}.crt"
+          agent_source_tlskeyfile: "certs/{{ inventory_hostname }}.key"
         - name: "s3"
           uri: "someuri"
           user: "someuser"

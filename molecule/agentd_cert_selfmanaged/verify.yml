@@ -7,12 +7,12 @@
       when: >-
         "remove" not in ansible_run_tags
       ansible.builtin.include_role:
-        name: zabbix_agent
+        name: agent
         tasks_from: verify
         # public: true
       vars:
-        zabbix_agent_verification: false
-        source_tlscafile: "../default/files/certs/ca.crt"
-        source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-        source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+        agent_verification: false
+        agent_source_tlscafile: "../default/files/certs/ca.crt"
+        agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+        agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
       tags: [skip_ansible_lint]

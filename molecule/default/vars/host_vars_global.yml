@@ -1,12 +1,11 @@
 ---
-run_host_tasks: false
 ############################################################################################################################################
-# zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
-zabbix_host_templates: ["Linux by Zabbix agent"]
-# zabbix_host_templates: ["Linux by Zabbix agent active"]
-zabbix_host_host_name: '{{ inventory_hostname }}'
-zabbix_host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'
-zabbix_host_interfaces:
+# host_hostgroups '{{ group_names + ["SUper GROUP"] }}'
+host_templates: ["Linux by Zabbix agent"]
+# host_templates: ["Linux by Zabbix agent active"]
+host_name: '{{ inventory_hostname }}'
+host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag" "managed"}] }}'
+host_interfaces:
   - type: agent
     dns: host.containers.internal
     useip: false

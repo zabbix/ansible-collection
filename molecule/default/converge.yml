@@ -11,4 +11,4 @@
           - 'yml'
       tags: [always]
   roles:
-    - role: zabbix_agent
+    - role: agent

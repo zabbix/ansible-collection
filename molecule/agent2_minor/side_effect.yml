@@ -4,11 +4,11 @@
   tasks:
     - name: Import defaults and vars from zabbix_agent role
       ansible.builtin.include_role:
-        name: zabbix_agent
+        name: agent
         tasks_from: init
         public: true
       vars:
-        zabbix_agent_verification: true
+        agent_verification: true
     - name: 'Variables : Include system and disrtibution specific'
       ansible.builtin.include_vars: '../../roles/zabbix_agent/vars/{{ var_item }}.yml'
       loop: '{{ zabbix_agent_var_list | select }}'
