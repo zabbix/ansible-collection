@@ -4,7 +4,7 @@
 host_templates: ["Linux by Zabbix agent"]
 # host_templates: ["Linux by Zabbix agent active"]
 host_name: '{{ inventory_hostname }}'
-host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag" "managed"}] }}'
+host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'
 host_interfaces:
   - type: agent
     dns: host.containers.internal

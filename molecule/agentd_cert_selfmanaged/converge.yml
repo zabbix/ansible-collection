@@ -12,9 +12,9 @@
         # recursive: true
       loop_control:
         loop_var: tls_file
-      loop: '{{ zabbix_agent_tls_file_list | select }}'
+      loop: '{{ agent_tls_file_list | select }}'
       vars:
-        zabbix_agent_tls_file_list:
+        agent_tls_file_list:
           - {source: "../default/files/certs/ca.crt", target: "{{ param_tlscafile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.crt", target: "{{ param_tlscertfile }}"}
           - {source: "../default/files/certs/{{ inventory_hostname }}.key", target: "{{ param_tlskeyfile }}"}
@@ -32,3 +32,6 @@
       tags: [always]
   roles:
     - role: zabbix_agent
+    - role: host
+      tags: [never, host]
+      zabbix_api_port: 8070
