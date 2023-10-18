@@ -1,11 +1,15 @@
 ---
 - name: 'YUM : GPG key presence'
   become: true
+  until: agent_register_gpg_key_state is not failed
+  retries: 3
+  delay: 3
   ansible.builtin.rpm_key:
-    state: '{{ agent_register_key_state }}'
+    state: '{{ agent_repository_key_state }}'
     key: '{{ agent_repository.key }}'
+  register: agent_register_gpg_key_state
   vars:
-    agent_register_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
+    agent_repository_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
   environment:
     http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
