@@ -116,8 +116,8 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in the installed **zabbix-release** repository.
 | agent_remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of the new ones. Mandatory to deploy earlier version than the one currently installed.
 | agent_2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent 2 plugins to configure and deploy (if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent 2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent 2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
-| http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
-| https_proxy | `string` || Defines HTTPS proxy address for the packager.
+| agent_http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
+| agent_https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | agent_repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
 | agent_repository_priority | `int` || **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
 | agent_repository_disable | `string` | "\*epel\*" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
@@ -616,7 +616,7 @@ Playbook examples
   **Deploy Zabbix agent without direct internet access from target machine, by using HTTP proxy.**
   1. Same metadata as described in the [first example](#playbook-1).
   2. When passive checks are enabled, the role attempts to apply **firewalld** rule to allow listening on Zabbix agent port (which defaults to `agent_param_listenport = 10050`). Firewalld should be installed on the target machine or this step will be skipped.
-  3. Supply HTTP proxy address to the `http_proxy` variable.
+  3. Supply HTTP proxy address to the `agent_http_proxy` variable.
   ```yaml
     - hosts: all
       roles:
@@ -624,7 +624,7 @@ Playbook examples
           agent_param_server: 127.0.0.1         # address of Zabbix server to accept connections from;
           agent_param_serveractive: 127.0.0.1   # address of Zabbix server to connect using active checks;
           agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
-          http_proxy: http://host.containers.internal:8123  # HTTP proxy address.
+          agent_http_proxy: http://host.containers.internal:8123  # HTTP proxy address.
   ```
 
 - ### Playbook 10:

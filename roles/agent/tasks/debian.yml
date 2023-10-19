@@ -23,8 +23,8 @@
     deb: '{{ agent_repository.uri }}'
   when: agent_package_state != "absent"
   environment:
-    http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ agent_http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ agent_https_proxy | default(None) | default(omit) }}"
   tags: [deploy]
 
 - name: 'APT : Zabbix packages presence'
@@ -43,6 +43,6 @@
     cache_valid_time: 0
     update_cache: true
   environment:
-    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
   tags: [deploy]

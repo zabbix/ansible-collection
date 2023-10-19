@@ -11,8 +11,8 @@
   vars:
     agent_repository_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
   environment:
-    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
   tags: [deploy]
 
 - name: DEBUG
@@ -30,8 +30,8 @@
   when: agent_package_state != "absent"
   register: agent_register_repository_state
   environment:
-    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
   tags: [deploy]
 
 ### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
@@ -96,6 +96,6 @@
       else agent_internal_component_package_list | map('regex_replace',
                   '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent_2_plugin_version) | list }}"
   environment:
-    http_proxy: '{{ http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
   tags: [deploy]
