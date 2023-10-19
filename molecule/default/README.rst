@@ -73,4 +73,4 @@ molecue -c ".config/molecule/config.full.yml" create/converge/test
 -------------------------------------------------------------------------------
 Converge example for host module checks
 -------------------------------------------------------------------------------
-molecule converge -s agent2_cert -- -t all,host -e "agent_param_serveractive=host.containers.internal:17051 zabbix_api_host=192.168.13.90 zabbix_api_port=8070 zabbix_host_templates=[\"Linux by Zabbix agent active\"]"
+molecule converge -s agent2_cert -- -t all,host -e "agent_param_serveractive=host.containers.internal:17051 host_zabbix_api_server=192.168.13.90 host_zabbix_api_port=8070 zabbix_host_templates=[\"Linux by Zabbix agent active\"]"

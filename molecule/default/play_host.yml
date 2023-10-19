@@ -12,11 +12,11 @@
       agent_minor_version: 10
     - role: host
 ##########################################################################################################################################
-      zabbix_api_host: 192.168.13.90
-      zabbix_api_port: 8000
-      zabbix_api_user: Admin
-      zabbix_api_password: password
-      # zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
+      host_zabbix_api_server: 192.168.13.90
+      host_zabbix_api_port: 8000
+      host_zabbix_api_user: Admin
+      host_zabbix_api_password: password
+      # host_zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
 ##########################################################################################################################################
       # host_hostgroups '{{ group_names + ["SUper GROUP"] }}'
       host_templates: ["Linux by Zabbix agent active"]

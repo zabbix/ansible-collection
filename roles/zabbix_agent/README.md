@@ -434,14 +434,14 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
-| zabbix_api_host | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Execution environment will use it to initiate connection.
-| zabbix_api_url | `string` | `''` | Path to access Zabbix frontend (Zabbix API). Specify only if Zabbix frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<zabbix_api_host>/<zabbix_api_url>`.
-| zabbix_api_port | `int` | `80` | Port which Zabbix frontend listens on.
-| zabbix_api_token | `string` | | Zabbix API access token.
-| zabbix_api_user | `string` | `Admin` | Zabbix API username. Ignored if token is provided instead.
-| zabbix_api_password | `string` | `zabbix` | Zabbix API user password. Ignored if token is provided instead.
-| zabbix_api_use_ssl | `boolean` | `False` | Set to `True` for secure connection.
-| zabbix_api_validate_certs | `boolean` | `False` | Set to `True` to validate certifacates during SSL handshake.
+| host_zabbix_api_server | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Execution environment will use it to initiate connection.
+| host_zabbix_api_url | `string` | `''` | Path to access Zabbix frontend (Zabbix API). Specify only if Zabbix frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<host_zabbix_api_server>/<host_zabbix_api_url>`.
+| host_zabbix_api_port | `int` | `80` | Port which Zabbix frontend listens on.
+| host_zabbix_api_token | `string` | | Zabbix API access token.
+| host_zabbix_api_user | `string` | `Admin` | Zabbix API username. Ignored if token is provided instead.
+| host_zabbix_api_password | `string` | `zabbix` | Zabbix API user password. Ignored if token is provided instead.
+| host_zabbix_api_use_ssl | `boolean` | `False` | Set to `True` for secure connection.
+| host_zabbix_api_validate_certs | `boolean` | `False` | Set to `True` to validate certifacates during SSL handshake.
 
 ### Zabbix host configuration parameters
 
@@ -712,11 +712,11 @@ Playbook examples
         - role: zabbix.zabbix.zabbix_agent
           run_host_tasks: True                             # enable Zabbix API host tasks;
           ### Zabbix API properties
-          zabbix_api_host: zabbix.frontend.loc             # Zabbix frontend server;
-          zabbix_api_port: 443                             # Zabbix fronted connection port;
-          zabbix_api_user: Admin                           # Zabbix user name for API connection;
-          zabbix_api_password: zabbix                      # Zabbix user password for API connection;
-          zabbix_api_use_ssl: True                         # Use secure connection;
+          host_zabbix_api_server: zabbix.frontend.loc             # Zabbix frontend server;
+          host_zabbix_api_port: 443                             # Zabbix fronted connection port;
+          host_zabbix_api_user: Admin                           # Zabbix user name for API connection;
+          host_zabbix_api_password: zabbix                      # Zabbix user password for API connection;
+          host_zabbix_api_use_ssl: True                         # Use secure connection;
           ### Zabbix host configuration
           zabbix_host_templates: ["Linux by Zabbix agent"]  # Assign list of templates to the host;
           ### Zabbix agent configuration

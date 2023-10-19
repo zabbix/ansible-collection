@@ -642,11 +642,11 @@ Playbook examples
           agent_firewall_allow_from: 256.256.256.256              # address of Zabbix server to allow connections from monitoring instance using firewalld;
         - role: zabbix.zabbix.host
           ### Zabbix API properties
-          zabbix_api_host: zabbix.frontend.loc             # Zabbix frontend server;
-          zabbix_api_port: 443                             # Zabbix fronted connection port;
-          zabbix_api_user: Admin                           # Zabbix user name for API connection;
-          zabbix_api_password: zabbix                      # Zabbix user password for API connection;
-          zabbix_api_use_ssl: True                         # Use secure connection;
+          host_zabbix_api_server: zabbix.frontend.loc             # Zabbix frontend server;
+          host_zabbix_api_port: 443                             # Zabbix fronted connection port;
+          host_zabbix_api_user: Admin                           # Zabbix user name for API connection;
+          host_zabbix_api_password: zabbix                      # Zabbix user password for API connection;
+          host_zabbix_api_use_ssl: True                         # Use secure connection;
           ### Zabbix host configuration
           host_templates: ["Linux by Zabbix agent"]  # Assign list of templates to the host;
   ```

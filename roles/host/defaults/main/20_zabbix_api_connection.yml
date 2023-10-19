@@ -1,13 +1,13 @@
 ---
 ### default values for zabbix api connection
-zabbix_api_host: localhost
-zabbix_api_port: 80
-zabbix_api_url: ''
-zabbix_api_user: Admin
-zabbix_api_password: zabbix
-# zabbix_api_token:
-zabbix_api_user_ssl: false
-zabbix_api_validate_certs: false
+host_zabbix_api_server: localhost
+host_zabbix_api_port: 80
+host_zabbix_api_url: ''
+host_zabbix_api_user: Admin
+host_zabbix_api_password: zabbix
+# host_zabbix_api_token:
+host_zabbix_api_use_ssl: false
+host_zabbix_api_validate_certs: false
 
 ## Use http_* options only for additional permission check on webserver level (HTTP Basic auth)
 # http_login:

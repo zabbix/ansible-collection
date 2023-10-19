@@ -15,4 +15,4 @@
       tags: [agent]
     - role: host
       tags: [never, host]
-      zabbix_api_port: 8070
+      host_zabbix_api_port: 8070
