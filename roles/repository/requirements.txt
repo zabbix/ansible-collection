@@ -1,2 +1,0 @@
-# Python library "netaddr" used in "zabbix.zabbix.zabbix_agent" role and requires installation on execution environment.
-Jinja2>=3.1.2
