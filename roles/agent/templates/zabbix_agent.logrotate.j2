@@ -1,0 +1,5 @@
+{{ agent_param_logfile }} {
+{% for unit in agent_logrotate_options %}
+    {{ unit }}
+{% endfor %}
+}

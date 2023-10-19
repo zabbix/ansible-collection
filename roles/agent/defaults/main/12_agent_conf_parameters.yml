@@ -1,0 +1,86 @@
+---
+### === Zabbix Agent default parameters ===
+##   Prefix "map_" used for mappings,
+##   which will be defined accordingly to OS System,
+##   and Zabbix agent variant in tasks/main.yml
+
+##  Mapping definitions:
+##    1: Zabbix agentd
+##    2: Zabbix agent2
+
+## ABSOLUTE PATH MANDATORY!!!
+agent_param_pidfile: '{{ agent_map_param_pidfile[ansible_system][agent_variant | string] }}'
+## ABSOLUTE PATH MANDATORY!!!
+agent_param_logfile: '{{ agent_map_param_logfile[ansible_system][agent_variant | string] }}'
+agent_param_logfilesize: 0
+agent_param_logtype: file
+# agent_param_debuglevel: 3
+# agent_param_sourceip:
+# agent_param_allowkey: system.run[*]
+# agent_param_denykey: system.run[*]
+# agent_param_logremotecommands: 0
+agent_param_server: ::/0
+agent_param_listenport: 10050
+# agent_param_listenip: 0.0.0.0
+agent_param_serveractive: 127.0.0.1
+agent_param_hostname: '{{ inventory_hostname }}'
+# agent_param_hostnameitem: system.hostname
+# agent_param_hostmetadata:
+# agent_param_hostmetadataitem:
+# agent_param_hostinterface:
+# agent_param_hostinterfaceitem:
+# agent_param_refreshactivechecks: 120
+# agent_param_buffersend: 5
+# agent_param_buffersize: 100
+# agent_param_maxlinespersecond: 20
+# agent_param_heartbeatfrequency:
+# agent_param_alias: zabbix.userid:vfs.file.regexp[/etc/passwd,"^zabbix:.:([0-9]+)",,,,\1]
+# agent_param_timeout: 3
+# agent_param_allowroot: 0
+# agent_param_user: zabbix
+agent_param_include: '{{ agent_map_param_include[ansible_system][agent_variant | string] }}'
+# agent_param_unsafeuserparameters: 0
+# agent_param_userparameter:
+# agent_param_userparameterdir:
+agent_param_tlsconnect: unencrypted
+agent_param_tlsaccept:
+  - unencrypted
+# agent_param_tlscafile:
+# agent_param_tlscrlfile:
+# agent_param_tlsservercertissuer:
+# agent_param_tlsservercertsubject:
+# agent_param_tlscertfile:
+# agent_param_tlskeyfile:
+agent_param_tlspskidentity: 'PSK_ID_{{ inventory_hostname }}'  # length <= 128 char
+agent_param_tlspskfile: '{{ agent_service_user_home }}/{{ agent_binary_name | upper }}/.PSK/psk_value'
+# agent_param_heartbeatfrequency:         # added in 6.4
+
+### Zabbix agentd unique parameters:
+agent_param_loadmodulepath: '{{ agent_map_param_loadmodulepath[ansible_system] }}'
+# agent_param_loadmodule:
+# agent_param_startagents: 3
+# agent_param_tlsciphercert13:
+# agent_param_tlsciphercert:
+# agent_param_tlscipherpsk13:
+# agent_param_tlscipherpsk:
+# agent_param_tlscipherall13:
+# agent_param_tlscipherall:
+# agent_param_listenbacklog:
+
+### Zabbix agent2 unique parameters:
+agent_param_controlsocket: '{{ agent_map_param_controlsocket[ansible_system] }}'
+agent_param_pluginsocket: '{{ agent_map_param_pluginsocket[ansible_system] }}'
+# agent_param_statusport:
+# agent_param_enablepersistentbuffer: 0
+# agent_param_plugintimeout:
+# agent_param_persistentbufferperiod: 1h
+# agent_param_persistentbufferfile:
+# agent_param_forceactivechecksonstart:
+agent_param_includeplugins: '{{ agent_map_param_includeplugins[ansible_system] }}'
+
+### agent2 Plugins:
+agent_param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
+## agent2 Plugins.PostgreSQL:
+agent_param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+agent_param_plugins_log_maxlinespersecond: '{{ agent_param_maxlinespersecond | default(None) | default(omit) }}'
+agent_param_plugins_systemrun_logremotecommands: '{{ agent_param_logremotecommands | default(None) | default(omit) }}'

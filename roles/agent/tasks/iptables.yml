@@ -1,0 +1,11 @@
+---
+- name: 'Iptables : Apply rule'
+  become: true
+  ansible.builtin.iptables:
+    chain: INPUT
+    destination_port: '{{ agent_param_listenport | string }}'
+    source: '{{ agent_firewall_allow_from | default(omit) }}'
+    protocol: tcp
+    jump: ACCEPT
+    action: insert
+  tags: [firewall, deploy]

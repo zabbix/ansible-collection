@@ -1,4 +1,10 @@
 ---
+- name: 'Warning : DEPRECATED'
+  ansible.builtin.debug:
+    msg: >-
+      This roles is deprecated and will be removed soon. Transition to zabbix.zabbix.agent and zabbix.zabbix.host roles.
+  tags: [always]
+
 - name: 'DEBUG : Base info'
   ansible.builtin.debug:
     msg: >
@@ -435,3 +441,9 @@
     "host" in ansible_run_tags
     or run_host_tasks is defined and run_host_tasks
   tags: [host, remove]
+
+- name: 'Warning : DEPRECATED'
+  ansible.builtin.debug:
+    msg: >-
+      This roles is deprecated and will be removed soon. Transition to zabbix.zabbix.agent and zabbix.zabbix.host roles.
+  tags: [always]

@@ -1,0 +1,23 @@
+### Option: Plugins.Smart.Timeout
+#	The maximum time in seconds for waiting before smartctl execution is terminated.
+#	The timeout is for a single smartctl command line execution.
+#
+# Mandatory: no
+# Range: 1-30
+# Default: <Global timeout>
+# Plugins.Smart.Timeout=
+{% if agent_param_plugins_smart_timeout  is defined and agent_param_plugins_smart_timeout %}
+
+Plugins.Smart.Timeout={{ agent_param_plugins_smart_timeout }}
+{% endif %}
+
+### Option: Plugins.Smart.Path
+#	Path to smartctl executable.
+#
+# Mandatory: no
+# Default: smartctl
+# Plugins.Smart.Path=
+{% if agent_param_plugins_smart_path  is defined and agent_param_plugins_smart_path %}
+
+Plugins.Smart.Path={{ agent_param_plugins_smart_path }}
+{% endif %}

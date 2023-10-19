@@ -1,0 +1,118 @@
+---
+### These tasks are meant for role testing
+- name: 'Verify : Pause for 5 seconds'
+  ansible.builtin.pause:
+    seconds: 5
+  tags: [verify]
+
+- name: 'Verify : Gather agent status'
+  become: true
+  ansible.builtin.systemd:
+    name: '{{ agent_service_name }}'
+  register: agent_register_verify_service_status
+  tags: [verify]
+
+- name: 'Import vars: TLS Certificate variables'
+  when: >-
+    agent_verification is defined and agent_verification
+    and
+    (agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept)
+    and
+    (agent_source_tlscertfile is defined
+     and agent_source_tlskeyfile is defined
+     and agent_source_tlscafile is defined)
+  ansible.builtin.include_vars: tls_cert_parameters.yml
+
+- name: 'Import vars: Custom user overrrides'
+  when: agent_verification is defined and agent_verification and agent_service_user != "zabbix"
+  ansible.builtin.include_vars: custom_user_overrides.yml
+
+- name: 'Verify : Zabbix_get : Local : Agent variant'
+  become: true
+  register: agent_register_verify_get_variant
+  # first tlsaccept value taken for connection settings
+  ansible.builtin.command: >-
+      /usr/bin/zabbix_get
+      -k agent.variant
+      -s {{ ansible_host }}
+      -t 5
+      {{ "-p " + agent_param_listenport | string if agent_param_listenport is defined else "" }}
+      {{ "--tls-connect " + agent_param_tlsaccept[0] if agent_param_tlsaccept[0] is defined and agent_param_tlsaccept[0] in ["cert", "psk"] else "" }}
+      {{ "--tls-ca-file " + agent_param_tlscafile if agent_param_tlscafile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-cert-file " + agent_param_tlscertfile if agent_param_tlscertfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-key-file " + agent_param_tlskeyfile if agent_param_tlskeyfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-psk-identity " + agent_param_tlspskidentity if agent_param_tlspskidentity is defined and agent_param_tlsaccept[0] == "psk" else "" }}
+      {{ "--tls-psk-file " + agent_param_tlspskfile if agent_param_tlspskfile is defined and agent_param_tlsaccept[0] == "psk" else "" }}
+  changed_when: false
+  ignore_errors: true
+  tags: [verify]
+
+- name: 'Verify : Zabbix_get : EE : Agent version'
+  delegate_to: localhost
+  register: agent_register_verify_execution_environment_get_agent_version
+  # first tlsaccept value taken for connection settings
+  ansible.builtin.command: >-
+      zabbix_get -k agent.version
+      -s {{ ansible_host }}
+      -t 5
+      {% if driver is defined and driver in ["podman", "docker"] %}
+      -p {{ ext_agent_port2 if agent_variant | string == "2" else ext_agent_port }}
+      {% elif agent_param_listenport is defined and agent_param_listenport %}
+      -p {{ agent_param_listenport }}
+      {% endif %}
+      {{ "--tls-connect " + agent_param_tlsaccept[0] if agent_param_tlsaccept[0] is defined and agent_param_tlsaccept[0] in ["cert", "psk"] else "" }}
+      {{ "--tls-ca-file " + agent_source_tlscafile if agent_source_tlscafile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-cert-file " + agent_source_tlscertfile if agent_source_tlscertfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-key-file " + agent_source_tlskeyfile if agent_source_tlskeyfile is defined and agent_param_tlsaccept[0] == "cert" else "" }}
+      {{ "--tls-psk-identity " + agent_param_tlspskidentity if agent_param_tlspskidentity is defined and agent_param_tlsaccept[0] == "psk" else "" }}
+      {{ "--tls-psk-file " + agent_source_tlspskfile if agent_param_tlsaccept[0] == "psk" else "" }}
+  changed_when: false
+  ignore_errors: true
+  # vars:
+  #   zabbix_agent_molecule_path: '{{ "files/" if driver is defined and driver in ["podman", "docker"] else "" }}'
+  tags: [verify]
+
+- name: Zabbix agent variant, major version and status checks
+  ansible.builtin.assert:
+    that:
+      - agent_register_verify_execution_environment_get_agent_version.stdout | regex_search("\d+\.\d+")
+        is version(agent_major_version | string, "=", strict=false)
+      - agent_register_verify_get_variant.stdout | string == agent_variant | string
+      - agent_register_verify_service_status.status.ActiveState | lower in ["running", "active"]
+      - agent_register_verify_service_status.status.MainPID | int >= 0
+      - agent_register_verify_service_status.status.UnitFileState | lower == "enabled"
+  tags: [never, assert]
+
+- name: 'Report : {{ agent_verify_report_path }}'
+  delegate_to: localhost
+  throttle: 1
+  ansible.builtin.lineinfile:
+    create: true
+    path: '{{ agent_verify_report_path }}'
+    line: >-
+      {{
+        ansible_date_time.date + "T" + ansible_date_time.time + " " +
+        test_name | default("default", true) + ":" +
+        ansible_hostname + "(" +
+        agent_register_verify_get_variant.stdout | default("-", true) + ":" +
+        agent_register_verify_execution_environment_get_agent_version.stdout | default("-", true) + ")" +
+        "[" + agent_register_verify_service_status.status.ActiveState | default("-", true) + ":" +
+        agent_register_verify_service_status.status.UnitFileState | default("-", true) + "]" +
+        ("LocalGetErr: " + agent_register_verify_get_variant.stderr if agent_register_verify_get_variant is failed
+          else "") +
+        ("RemoteGetErr: " + agent_register_verify_execution_environment_get_agent_version.stderr
+          if agent_register_verify_execution_environment_get_agent_version is failed
+          else "")
+      }}
+    insertafter: EOF
+    mode: "0644"
+  tags: [verify]
+
+- name: 'Verify : Pause to get some input...'
+  when: >-
+    agent_register_verify_get_variant is failed
+    or agent_register_verify_execution_environment_get_agent_version is failed
+  ansible.builtin.pause:
+    prompt: "Waiting for input"
+    echo: false
+  tags: [never, pause]

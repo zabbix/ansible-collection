@@ -1,28 +1,28 @@
-  - hosts: all
-    roles:
-      - role: zabbix_agent
-        remove_previous_packages: true
-        package_state: latest
-        agent_variant: 2
-        param_hostname: '{{ inventory_hostname }}'
-        param_listenport: 10020
-        param_serveractive: 192.168.13.90:51000
-        agent_major_version: 6.0
-        agent_minor_version: 10
-############################################################################################################################################
-        run_host_tasks: true
-############################################################################################################################################
-        zabbix_api_host: 192.168.13.90
-        zabbix_api_port: 8000
-        zabbix_api_user: Admin
-        zabbix_api_password: password
-        # zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
-############################################################################################################################################
-        # zabbix_host_hostgroups: '{{ group_names + ["SUper GROUP"] }}'
-        zabbix_host_templates: ["Linux by Zabbix agent active"]
-        zabbix_host_host_name: '{{ inventory_hostname }}'
-        zabbix_host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag": "managed"}] }}'
-#        zabbix_host_interfaces:
+- name: Play
+  hosts: all
+  roles:
+    - role: agent
+      agent_remove_previous_packages: true
+      agent_package_state: latest
+      agent_variant: 2
+      agent_param_hostname: '{{ inventory_hostname }}'
+      agent_param_listenport: 10020
+      agent_param_serveractive: 192.168.13.90:51000
+      agent_major_version: 6.0
+      agent_minor_version: 10
+    - role: host
+##########################################################################################################################################
+      host_zabbix_api_server: 192.168.13.90
+      host_zabbix_api_port: 8000
+      host_zabbix_api_user: Admin
+      host_zabbix_api_password: password
+      # host_zabbix_api_token: 05f6b2784a62034171f322c3938428b0dc465a2c43b4529e30eb8e0352b4f5d7
+##########################################################################################################################################
+      # host_hostgroups '{{ group_names + ["SUper GROUP"] }}'
+      host_templates: ["Linux by Zabbix agent active"]
+      host_name: '{{ inventory_hostname }}'
+      host_tags: '{{ [{"tag": "variant", "value": agent_variant},{"tag" "managed"}] }}'
+#        host_interfaces
 #          - type: agent
 #            ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
 #            dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'

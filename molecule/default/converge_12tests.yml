@@ -2,7 +2,7 @@
 - name: Converge 1
   hosts: all
   vars:
-    remove_previous_packages: true
+    agent_remove_previous_packages: true
     test_name: agentd
     agent_variant: 1
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
@@ -16,11 +16,11 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2
     agent_variant: 2
-    param_listenport: 10020
-    param_userparameter: []
+    agent_param_listenport: 10020
+    agent_param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -35,13 +35,13 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agentd_psk
     agent_variant: 1
-    param_tlsconnect: unencrypted
-    param_tlsaccept:
+    agent_param_tlsconnect: unencrypted
+    agent_param_tlsaccept:
       - psk
-    source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
+    agent_source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -56,15 +56,15 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2_psk
     agent_variant: 2
-    param_listenport: 10020
-    param_tlsconnect: unencrypted
-    param_tlsaccept:
+    agent_param_listenport: 10020
+    agent_param_tlsconnect: unencrypted
+    agent_param_tlsaccept:
       - psk
-    param_userparameter: []
-    source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
+    agent_param_userparameter: []
+    agent_source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -79,17 +79,17 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agentd_cert
     agent_variant: 1
-    param_tlsconnect: cert
-    param_tlsaccept:
+    agent_param_tlsconnect: cert
+    agent_param_tlsaccept:
       - cert
-    source_tlscafile: files/certs/ca.crt
-    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
-    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
-    # param_tlsservercertissuer: CN=root-ca
-    # param_tlsservercertsubject: CN=server
+    agent_source_tlscafile: files/certs/ca.crt
+    agent_source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    agent_source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # agent_param_tlsservercertissuer: CN=root-ca
+    # agent_param_tlsservercertsubject: CN=server
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -104,19 +104,19 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2_cert
     agent_variant: 2
-    param_listenport: 10020
-    param_tlsconnect: cert
-    param_tlsaccept:
+    agent_param_listenport: 10020
+    agent_param_tlsconnect: cert
+    agent_param_tlsaccept:
       - cert
-    source_tlscafile: files/certs/ca.crt
-    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
-    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
-    # param_tlsservercertissuer: CN=root-ca
-    # param_tlsservercertsubject: CN=server
-    param_userparameter: []
+    agent_source_tlscafile: files/certs/ca.crt
+    agent_source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    agent_source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # agent_param_tlsservercertissuer: CN=root-ca
+    # agent_param_tlsservercertsubject: CN=server
+    agent_param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -130,13 +130,13 @@
 - name: Converge 7
   hosts: all
   vars:
-    remove_previous_packages: true
+    agent_remove_previous_packages: true
     test_name: agentd_custom
     agent_variant: 1
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -151,15 +151,15 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2_custom
     agent_variant: 2
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
-    param_listenport: 10020
-    param_userparameter: []
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
+    agent_param_listenport: 10020
+    agent_param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -174,17 +174,17 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agentd_psk_custom
     agent_variant: 1
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
-    param_tlsconnect: unencrypted
-    param_tlsaccept:
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
+    agent_param_tlsconnect: unencrypted
+    agent_param_tlsaccept:
       - psk
-    source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
+    agent_source_tlspskfile: 'files/.PSK/ZABBIX_AGENTD/{{ inventory_hostname }}'
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -199,19 +199,19 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2_psk_custom
     agent_variant: 2
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
-    param_listenport: 10020
-    param_tlsconnect: unencrypted
-    param_tlsaccept:
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
+    agent_param_listenport: 10020
+    agent_param_tlsconnect: unencrypted
+    agent_param_tlsaccept:
       - psk
-    param_userparameter: []
-    source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
+    agent_param_userparameter: []
+    agent_source_tlspskfile: 'files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}'
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -226,21 +226,21 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agentd_cert_custom
     agent_variant: 1
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
-    param_tlsconnect: cert
-    param_tlsaccept:
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
+    agent_param_tlsconnect: cert
+    agent_param_tlsaccept:
       - cert
-    source_tlscafile: files/certs/ca.crt
-    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
-    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
-    # param_tlsservercertissuer: CN=root-ca
-    # param_tlsservercertsubject: CN=server
+    agent_source_tlscafile: files/certs/ca.crt
+    agent_source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    agent_source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # agent_param_tlsservercertissuer: CN=root-ca
+    # agent_param_tlsservercertsubject: CN=server
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors
@@ -255,23 +255,23 @@
   hosts: all
   gather_facts: false
   vars:
-    # remove_previous_packages: true
+    # agent_remove_previous_packages: true
     test_name: agent2_cert_custom
     agent_variant: 2
-    service_user: bobr
-    service_group: kobra
-    service_uid: 1115
-    service_gid: 1115
-    param_listenport: 10020
-    param_tlsconnect: cert
-    param_tlsaccept:
+    agent_service_$1 bobr
+    agent_service_$1 kobra
+    agent_service_$1 1115
+    agent_service_$1 1115
+    agent_param_listenport: 10020
+    agent_param_tlsconnect: cert
+    agent_param_tlsaccept:
       - cert
-    source_tlscafile: files/certs/ca.crt
-    source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
-    source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
-    # param_tlsservercertissuer: CN=root-ca
-    # param_tlsservercertsubject: CN=server
-    param_userparameter: []
+    agent_source_tlscafile: files/certs/ca.crt
+    agent_source_tlscertfile: files/certs/{{ inventory_hostname }}.crt
+    agent_source_tlskeyfile: files/certs/{{ inventory_hostname }}.key
+    # agent_param_tlsservercertissuer: CN=root-ca
+    # agent_param_tlsservercertsubject: CN=server
+    agent_param_userparameter: []
     report_path: '/tmp/playbook_verify_zabbix_agent.report'
   tasks:
     - name: Clear host errors

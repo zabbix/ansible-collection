@@ -1,0 +1,439 @@
+---
+- name: 'DEBUG : Base info'
+  ansible.builtin.debug:
+    msg: >
+      variant: {{ agent_variant | string }}
+      distr: {{ ansible_distribution }}
+      major: {{ ansible_distribution_major_version }}
+      become_method: {{ ansible_become_method }}
+      agent_logrotate_path: {{ agent_logrotate_path }}
+      agent_param_include: {{ agent_param_include }}
+      agent_map_os_transition: {{ agent_map_os_transition }}
+  tags: [never, debug]
+
+- name: Supported OS and agent version control
+  ansible.builtin.assert:
+    that:
+      - agent_internal_supported_os is true
+      - agent_major_version | string in ['6.0', '6.4']
+      - agent_package_state in ["present", "latest"]
+    quiet: true
+  vars:
+    agent_internal_supported_os: '{{
+        agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution] is defined
+        and agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version] is defined
+        and ansible_distribution_version
+          is regex(agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version])
+      }}'
+  tags: [assert, deploy, config]
+
+# - name: Assert TLS files or settings
+#   when: >-
+#     agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept
+#   ansible.builtin.assert:
+#     that:
+#       - agent_source_tlscertfile is defined and agent_source_tlscertfile
+#           or agent_param_tlscertfile is defined and agent_param_tlscertfile
+#       - agent_source_tlskeyfile is defined and agent_source_tlskeyfile
+#           or agent_param_tlskeyfile is defined and agent_param_tlskeyfile
+#       - agent_source_tlscafile is defined and agent_source_tlscafile
+#           or agent_param_tlscafile is defined and agent_param_tlscafile
+#     quiet: true
+#   tags: [assert, deploy, config]
+
+- name: 'Variables : Include system and distribution specific'
+  ansible.builtin.include_vars: '{{ var_item }}.yml'
+  loop: '{{ agent_internal_var_list | select }}'
+  loop_control:
+    loop_var: var_item
+  vars:
+    agent_internal_var_list:
+      # - '{{ ansible_system | lower }}'
+      - '{{ ansible_os_family | lower }}'
+      # - '{{ "debian" if ansible_distribution in ["Debian", "Ubuntu"] else None }}'
+      # - '{{ "redhat" if ansible_distribution in ["RedHat", "AlmaLinux", "Rocky", "CentOS", "OracleLinux", "Amazon", "Fedora"] else None }}'
+  tags: [vars, verify, remove, deploy, config]
+
+- name: 'Variables : Custom user : Overrides'
+  when: >-
+    agent_service_user is defined
+    and agent_service_user
+    and agent_service_user != "zabbix"
+  # and agent_service_group != "zabbix"
+  ## variable change required for custom user
+  ansible.builtin.include_vars: custom_user_overrides.yml
+  tags: [vars, verify, remove, deploy, config]
+
+- name: 'Variables: Get/Generate PSK keys'
+    #  or zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
+  when: >-
+    agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept
+    and agent_tls_psk_value is not defined
+    and not agent_tls_psk_value
+  ansible.builtin.set_fact:
+    # value of hexadecimal within range 32 to 128 chars | choosing 128
+    # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
+    agent_tls_psk_value: '{{ lookup("password",
+                  agent_source_tlspskfile + " chars=hexdigits length=128") | lower }}'
+  tags: [vars, verify, deploy, config]
+
+- name: 'Variables: TLS Certificate parameters'
+  when: >-
+    (agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept)
+    and
+    (agent_source_tlscertfile is defined
+     and agent_source_tlskeyfile is defined
+     and agent_source_tlscafile is defined)
+  ansible.builtin.include_vars: tls_cert_parameters.yml
+  tags: [vars, verify, deploy, config]
+
+- name: 'Variables: Agent2 plugin settings'
+  when: agent_variant | string == '2'
+  ansible.builtin.include_tasks: agent2_plugin_settings.yml
+  tags: [vars, verify, remove, deploy, config]
+
+- name: 'DEBUG : Package info'
+  ansible.builtin.debug:
+    msg: 'list: {{ agent_package_list }}'
+  tags: [never, debug]
+
+- name: 'DEBUG : Zabbix agent variant'
+  ansible.builtin.debug:
+    msg: 'Variant: {{ agent_variant | string }} | groups: {{ group_names | join(", ") }}'
+  tags: [never, debug]
+
+- name: Include package clearing tasks
+  when: >-
+    agent_remove_previous_packages is defined and agent_remove_previous_packages
+    or "remove" in ansible_run_tags
+  ansible.builtin.include_tasks: 'remove_packages_{{ ansible_system | lower }}.yml'
+  tags: [remove, deploy]
+
+- name: Include OS packager(yum/apt) specific tasks
+  ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'
+
+# remove custom user overrides if left from previous deployment
+- name: Include custom user cleaning tasks
+  when: >
+    agent_service_user is not defined
+    or not agent_service_user
+    or agent_service_user == "zabbix"
+  ansible.builtin.include_tasks: 'custom_user_clean_{{ ansible_system | lower }}.yml'
+  tags: [deploy]
+
+- name: Include custom user tasks
+  when: >
+    agent_service_user is defined
+    and agent_service_user
+    and agent_service_user != "zabbix"
+  ansible.builtin.include_tasks: 'custom_user_{{ ansible_system | lower }}.yml'
+  tags: [deploy]
+
+- name: Firewall task list include
+  ansible.builtin.include_tasks: '{{ firewall_task_item }}.yml'
+  loop: '{{ agent_internal_task_list | select }}'
+  loop_control:
+    loop_var: firewall_task_item
+  vars:
+    agent_internal_task_list:
+      - '{{ "firewalld" if (agent_apply_firewalld_rule is defined and agent_apply_firewalld_rule in ["force", "auto"]) else None }}'
+      - '{{ "iptables" if (agent_apply_iptables_rule is defined and agent_apply_iptables_rule) else None }}'
+  tags: [firewall, deploy]
+
+# changing only main conf file. Free to use customization in includes(unless no includes specified or include path changed)
+- name: Configuration file maintenance
+  when: agent_package_state != 'absent'
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.template:
+    backup: true
+    src: zabbix_agent{{ agent_variant | string }}_{{ agent_major_version | string }}.conf.j2
+    dest: '{{ agent_conf_file.path }}'
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+  tags: [deploy, config]
+
+- name: 'Upload : Included configuration dir (to the 1st include path)'
+  when: agent_source_conf_dir is defined and agent_source_conf_dir
+  become: true
+  notify:
+    - 'Service restart'
+    - 'Reload user parameters'
+  # ansible.posix.synchronize:
+  ansible.builtin.copy:
+    src: '{{ agent_source_conf_dir }}/'
+    dest: '{{ agent_param_include[0] | dirname }}'
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    directory_mode: '{{ agent_conf_file.folder_permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+    # recursive: true
+    # delete: true
+  tags: [userparam, deploy, config]
+
+- name: 'Zabbix agent configuration "Include folders" maintenance'
+  # create path & apply permissions
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.file:
+    path: '{{ item | dirname }}'
+    state: directory
+    mode: '{{ agent_conf_file.folder_permissions.mode }}'
+    owner: '{{ agent_conf_file.folder_permissions.user }}'
+    group: '{{ agent_conf_file.folder_permissions.group }}'
+    # recurse: true
+  loop: '{{ agent_param_include + agent_param_includeplugins | select | list if agent_variant | string == "2" else agent_param_include }}'
+  tags: [deploy, config]
+
+- name: 'Zabbix agent2 plugin configuration maintenance : Deploy configuration files'
+  when: agent_package_state != 'absent' and agent_variant | string == '2'
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.template:
+    backup: false
+    src: 'a2_plugin_{{ plugin_name_item }}.conf.j2'
+    dest: '{{ agent_param_includeplugins[0] | dirname }}/{{ plugin_name_item }}.conf'
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+  loop_control:
+    loop_var: plugin_name_item
+  loop: '{{ agent_2_plugin_list | select | list }}'
+  tags: [deploy, config]
+
+- name: 'Zabbix agent2 plugin configuration maintenance : Clear previous excess plugin configuration files'
+  # remove plugin configuration files from previous installation if needed
+  when: agent_package_state != 'absent' and agent_variant | string == '2'
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.file:
+    path: '{{ agent_param_includeplugins[0] | dirname }}/{{ excess_plugin_name_item }}.conf'
+    state: absent
+    ### MAYBE FORCE defaults instead of current settings???
+    mode: '{{ agentd_conf_file_stat.stat.mode | default(agent_conf_file.permissions.mode) }}'
+    owner: '{{ agentd_conf_file_stat.stat.pw_name | default(agent_conf_file.permissions.user) }}'
+    group: '{{ agentd_conf_file_stat.stat.gr_name | default(agent_conf_file.permissions.group) }}'
+  loop_control:
+    loop_var: excess_plugin_name_item
+  # loop over a list of plugins not used in current setup
+  loop: '{{ agent_2_full_plugin_list | difference(agent_2_plugin_list) }}'
+  tags: [deploy, config]
+
+- name: 'Upload : "scripts" folder'
+  when: agent_source_scripts_dir is defined and agent_source_scripts_dir
+  become: true
+  # ansible.posix.synchronize:
+  ansible.builtin.copy:
+    src: '{{ agent_source_scripts_dir }}/'
+    dest: '{{ agent_service_user_home }}/{{ agent_binary_name | upper }}/scripts/'
+    mode: 'u=rwx,g=rx,o=r'
+    directory_mode: 'u=rwx,g=rx,o=rx'
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+    # recursive: true
+    ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
+    # delete: false
+  tags: [userparam, deploy, config]
+
+- name: 'Upload : "modules" folder'
+  when: agent_source_modules_dir is defined and agent_source_modules_dir and agent_variant | string != '2'
+  become: true
+  notify: 'Service restart'
+  # ansible.posix.synchronize:
+  ansible.builtin.copy:
+    src: '{{ agent_source_modules_dir }}/'
+    dest: '{{ agent_param_loadmodulepath }}/'
+    mode: 'u=rwx,g=rx,o=r'
+    directory_mode: 'u=rwx,g=rx,o=rx'
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+    # recursive: true
+    ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
+    # delete: false
+  tags: [deploy]
+
+# Add userparams to first include folder
+- name: 'Fill configuration with custom UserParameters'
+  become: true
+  notify:
+    - 'Reload user parameters'
+  ansible.builtin.template:
+    backup: false
+    src: 'zabbix_agent.{{ item }}.j2'
+    dest: '{{ agent_param_include[0] | dirname }}/{{ item }}'
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+  loop: '{{ agent_internal_template_list | select }}'
+  vars:
+    agent_internal_template_list:
+      - userparameters.conf
+  tags: [userparam, deploy, config]
+
+# Add aliases to first include folder
+- name: 'Fill configuration with custom Aliases'
+  become: true
+  notify:
+    - 'Service restart'
+  ansible.builtin.template:
+    backup: false
+    src: 'zabbix_agent.{{ item }}.j2'
+    dest: '{{ agent_param_include[0] | dirname }}/{{ item }}'
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+  loop: '{{ agent_internal_template_list | select }}'
+  vars:
+    agent_internal_template_list:
+      - aliases.conf
+  tags: [deploy, config]
+
+# Creates TLS folder path and applies permissions
+- name: 'Folder maintenance : TLS folders'
+  when: agent_package_state != 'absent'
+  become: true
+  ansible.builtin.file:
+    path: '{{ agent_service_user_home + "/" + folder_item }}'
+    state: directory
+    mode: 'u=rwx,g=,o='
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+  loop_control:
+    loop_var: folder_item
+  loop: '{{ agent_internal_maintenance_folders | select | list }}'
+  vars:
+    agent_internal_maintenance_folders:
+      - '{{ agent_binary_name | upper + "/.CERT/" if agent_source_tlscafile is defined else None }}'
+      - '{{ agent_binary_name | upper + "/.PSK/" if "psk" in agent_param_tlsaccept or agent_param_tlsconnect == "psk" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
+  tags: [deploy, config]
+
+## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!
+## use assert instead
+- name: 'Upload : TLS Certificates'
+  when: >-
+    (agent_param_tlsconnect == "cert" or "cert" in agent_param_tlsaccept)
+    and
+    (agent_source_tlscertfile is defined
+     and agent_source_tlskeyfile is defined
+     and agent_source_tlscafile is defined)
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.copy:
+    src: '{{ tls_file_item.source }}'
+    dest: '{{ tls_file_item.target }}'
+    mode: 'u=rwx,g=,o='
+    directory_mode: 'u=rwx,g=,o='
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+    # recursive: true
+  loop_control:
+    loop_var: tls_file_item
+  loop: '{{ agent_internal_tls_file_list | select }}'
+  vars:
+    agent_internal_tls_file_list:
+      - {source: "{{ agent_source_tlscafile }}", target: "{{ agent_param_tlscafile }}"}
+      - '{{ {"source": agent_source_tlscrlfile, "target": agent_param_tlscrlfile} if agent_source_tlscrlfile is defined else None }}'
+      - {source: "{{ agent_source_tlscertfile }}", target: "{{ agent_param_tlscertfile }}"}
+      - {source: "{{ agent_source_tlskeyfile }}", target: "{{ agent_param_tlskeyfile }}"}
+  tags: [deploy, config]
+
+- name: 'Placing PSK key file'
+  when: agent_package_state != 'absent' and (agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept )
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.template:
+    backup: false
+    src: psk_value.j2
+    dest: '{{ agent_param_tlspskfile }}'
+    mode: 'u=rw,g=,o='
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+  tags: [deploy, config]
+
+- name: 'Upload : Zabbix agent2 : TLS certificates for plugins'
+  when: >-
+    agent_variant | string == '2'
+    and plugin_tls_file_item.source is defined and plugin_tls_file_item.source
+  become: true
+  notify: 'Service restart'
+  ansible.builtin.copy:
+    src: '{{ plugin_tls_file_item.source }}'
+    dest: '{{ plugin_tls_file_item.target }}'
+    mode: 'u=rwx,g=,o='
+    directory_mode: 'u=rwx,g=,o='
+    owner: '{{ agent_service_user }}'
+    group: '{{ agent_service_group }}'
+    # recursive: true
+  loop_control:
+    loop_var: plugin_tls_file_item
+    label: '{{ plugin_tls_file_item.source | default(None), plugin_tls_file_item.target }}'
+  loop: '{{ agent_internal_plugins_mysql_tls_file_list | default([])
+          + agent_internal_plugins_postgresql_tls_file_list | default([])
+          + agent_internal_plugins_mongodb_tls_file_list | default([])
+          }}'
+  tags: [deploy, config]
+
+- name: 'Logrotate file maintenance'
+  become: true
+  ansible.builtin.template:
+    backup: false
+    src: 'zabbix_agent.logrotate.j2'
+    dest: '{{ agent_logrotate_path }}'
+    # !!! Add defaults for logrotate conf file
+    mode: '{{ agent_conf_file.permissions.mode }}'
+    owner: '{{ agent_conf_file.permissions.user }}'
+    group: '{{ agent_conf_file.permissions.group }}'
+  tags: [deploy]
+
+### including SE tasks when ansible_facts testifies that SELinux is enabled
+- name: 'Include : Selinux tasks'
+  when: ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  ansible.builtin.include_tasks: 'selinux.yml'
+  tags: [selinux, deploy]
+
+- name: 'Systemctl : Service enabled'
+  become: true
+  when: agent_package_state != 'absent'
+  ansible.builtin.systemd:
+    name: '{{ agent_service_name }}'
+    enabled: true
+  tags: [deploy]
+
+- name: Forcing service restart
+  ansible.builtin.debug:
+    msg: Forced
+  changed_when: true
+  notify:
+    - Reload systemd daemon
+    - Service restart
+  tags: [never, restart]
+
+- name: Forcing userparameter reload
+  ansible.builtin.debug:
+    msg: Forced
+  changed_when: true
+  notify:
+    - 'Reload user parameters'
+  tags: [never, userparam]
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers  # trigger handler execution now (if notified)
+  tags: [restart, deploy, config]
+
+# consider running check in default run
+# - name: 'Service started'
+#   become: true
+#   when: agent_package_state != 'absent'
+#   ansible.builtin.systemd:
+#     name: '{{ agent_service_name }}'
+#     state: started
+
+- name: 'Include : verify steps'
+  ansible.builtin.include_tasks: 'verify.yml'
+  when: >-
+    "remove" not in ansible_run_tags
+  tags: [never, verify]

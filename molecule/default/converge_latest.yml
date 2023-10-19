@@ -4,7 +4,7 @@
   tasks:
     - name: Import defaults, vars from zabbix_agent role
       ansible.builtin.include_role:
-        name: zabbix_agent
+        name: agent
         tasks_from: init
         public: true
 
@@ -47,21 +47,21 @@
 - name: Present
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
-      remove_previous_packages: false
-      report_path: '/tmp/latest_verify_zabbix_agent.report'
-      test_name: '{{ ansible_play_name }}'
+      agent_remove_previous_packages: false
+      agent_verify_report_path: '/tmp/latest_verify_zabbix_agent.report'
+      agent_test_name: '{{ ansible_play_name }}'
       #######################################
-      package_state: present
+      agent_package_state: present
 
 - name: Latest
   hosts: all
   roles:
     - role: zabbix_agent
       #######################################
-      remove_previous_packages: false
-      report_path: '/tmp/latest_verify_zabbix_agent.report'
-      test_name: '{{ ansible_play_name }}'
+      agent_remove_previous_packages: false
+      agent_verify_report_path: '/tmp/latest_verify_zabbix_agent.report'
+      agent_test_name: '{{ ansible_play_name }}'
       #######################################
-      package_state: latest
+      agent_package_state: latest

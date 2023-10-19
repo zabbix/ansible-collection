@@ -11,4 +11,8 @@
           - 'yml'
       tags: [always]
   roles:
-    - role: zabbix_agent
+    - role: agent
+      tags: [agent]
+    - role: host
+      tags: [never, host]
+      host_zabbix_api_port: 8070

@@ -1,0 +1,15 @@
+---
+agent_service_user_home: '{{ agent_map_default_home_folder[ansible_system] }}/{{ agent_service_user }}/'
+# Pid file path will be constructed(from service name)
+agent_param_pidfile: '{{ "/run/" + agent_binary_name + "/" + agent_binary_name + ".pid" }}'
+# Log file path will be constructed(from service name)
+agent_param_logfile: '{{ "/var/log/" + agent_binary_name + "/" + agent_binary_name + ".log" }}'
+# modules will be placed to home folder ~/ZABBIX_AGENT[D|2]/modules/
+agent_param_loadmodulepath: '{{ agent_map_default_home_folder[ansible_system] + "/"
+                        + agent_service_user + "/" + agent_binary_name | upper
+                        + "/modules/"
+                        if (agent_source_modules_dir is defined and agent_source_modules_dir and agent_variant | string == "1") else None }}'
+# Socket path points to folder maintained by systemd override
+agent_param_controlsocket: '{{ "/run/" + agent_binary_name + "/agent.sock" }}'
+agent_param_pluginsocket: '{{ "/run/" + agent_binary_name + "/agent.plugin.sock" }}'
+# need to apply se file context to working folders of agent with custom user(which still uses same domain)

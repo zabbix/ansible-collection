@@ -1,0 +1,102 @@
+### Extract cert data for host: requires openssl installation on
+- name: 'Prepare certificate data'
+  when: >-
+    host_get_cert_info is defined and host_get_cert_info
+  tags: [host]
+  block:
+    - name: Get certificate info
+      delegate_to: localhost
+      ansible.builtin.command: 'openssl x509 -in {{ host_source_tls_certfile }} -noout --subject --issuer'
+      changed_when: false
+      register: host_register_agent_cert_data
+    - name: 'SET FACT : Certificate issuer and subject'
+      ansible.builtin.set_fact:
+        host_tls_issuer: '{{ host_register_agent_cert_data.stdout | regex_search("issuer=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
+        host_tls_subject: '{{ host_register_agent_cert_data.stdout | regex_search("subject=(.*)$", "\1", multiline=True) | first | replace(" ", "") }}'
+
+### Get or generate PSK keys
+- name: 'SET FACT: Get/Generate PSK keys'
+  when: >-
+    (host_tls_connect == "psk" or "psk" in host_tls_accept)
+     and not host_tls_psk_value
+  tags: [host]
+  ansible.builtin.set_fact:
+    # value of hexadecimal within range 32 to 128 chars | choosing 128
+    # password lookup module generates upper and lower case symbols, which is lowered by filter. local temporary files will be left unmodified
+    host_tls_psk_value: '{{ lookup("password",
+                  host_source_tls_psk_file + " chars=hexdigits length=128") | lower }}'
+
+### Compone list of unique hostgroup names from all hosts, that reached this taks without failures.
+- name: 'Prepare hostgroups block'
+  delegate_to: 'localhost'
+  tags: [host]
+  block:
+    - name: 'SET FACT : Populate "hostvars" magic variable with host_hostgroups'
+      ansible.builtin.set_fact:
+        host_hostgroups: '{{ host_hostgroups }}'
+    - name: 'SET FACT : prepare list of hostgroups'
+      when: >-
+        "remove" not in ansible_run_tags
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.set_fact:
+        host_internal_full_hostgroup_list: '{{
+            ((host_internal_full_hostgroup_list | default([])) + hostvars[item]["host_hostgroups"]) | unique
+          }}'
+      loop: '{{ ansible_play_hosts }}'
+
+### Add hostgroups and manage hosts using Zabbix API
+- name: 'Zabbix API block'
+  delegate_to: '{{ host_zabbix_api_server }}'
+  vars:
+    ansible_connection: httpapi
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_httpapi_port: '{{ host_zabbix_api_port }}'
+    ansible_user: '{{ host_zabbix_api_user if host_zabbix_api_token is not defined else omit }}'
+    ansible_httpapi_pass: '{{ host_zabbix_api_password if host_zabbix_api_token is not defined else omit }}'
+    ansible_httpapi_use_ssl: '{{ host_zabbix_api_use_ssl | default("False") }}'
+    ansible_httpapi_validate_certs: '{{ host_zabbix_api_validate_certs | default("False") }}'
+  tags: [host, remove]
+  block:
+    - name: 'Zabbix API : Hostgroup presence'
+      when: >-
+        "remove" not in ansible_run_tags
+        and host_state == "present"
+      run_once: true
+      zabbix.zabbix.zabbix_hostgroup:
+        name: '{{ host_internal_full_hostgroup_list }}'
+        state: present
+    - name: 'Zabbix API : Host presence'
+      throttle: 1
+      zabbix.zabbix.zabbix_host:
+        state: '{{ host_state }}'
+        host_name: '{{ host_name }}'
+        visible_name: '{{ host_visible_name | default(omit) }}'
+        description: '{{ host_description | default(omit) }}'
+        hostgroups: '{{ host_hostgroups }}'
+        templates: '{{ host_templates | default(omit) }}'
+        interfaces: '{{ host_interfaces | default(omit) }}'
+        tags: '{{ host_tags | default(omit) }}'
+        macros: '{{ host_macros | default(omit) }}'
+        inventory_mode: '{{ host_inventory_mode | default(omit) }}'
+        inventory: '{{ host_inventory | default(omit) }}'
+        status: '{{ host_status | default(omit) }}'
+        proxy: '{{ host_proxy | default(None) }}'
+        ### tls
+        tls_accept: '{{ host_tls_accept }}'
+        tls_connect: '{{ host_tls_connect }}'
+        tls_psk_identity: '{{ host_tls_psk_identity
+          if "remove" not in ansible_run_tags
+            and (host_tls_connect == "psk" or "psk" in host_tls_accept)
+          else omit }}'
+        tls_psk: '{{ host_tls_psk_value
+          if "remove" not in ansible_run_tags
+            and (host_tls_connect == "psk" or "psk" in host_tls_accept)
+          else omit }}'
+        tls_issuer: '{{ host_tls_issuer | default(omit) }}'
+        tls_subject: '{{ host_tls_subject | default(omit) }}'
+        ### ipmi
+        ipmi_authtype: '{{ host_ipmi_authtype | default(omit) }}'
+        ipmi_privilege: '{{ host_ipmi_privilege | default(omit) }}'
+        ipmi_username: '{{ host_ipmi_username | default(omit) }}'
+        ipmi_password: '{{ host_ipmi_password | default(omit) }}'

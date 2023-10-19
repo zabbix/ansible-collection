@@ -1,0 +1,59 @@
+---
+- name: 'Remove packages : Service down'
+  become: true
+  ansible.builtin.systemd:
+    name: '{{ agent_service_name }}'
+    state: stopped
+  failed_when: false
+  tags: [remove]
+
+- name: 'Remove packages : Package absence'
+  become: true
+  ansible.builtin.package:
+    name: '{{ agent_package_list + ["zabbix-release"] }}'
+    state: absent
+  tags: [remove]
+
+# consider purging for apt
+- name: 'Remove packages : Systemd Overrides and Logrotate cleared'
+  become: true
+  ansible.builtin.file:
+    path: '{{ item_path }}'
+    state: absent
+  loop: '{{ agent_internal_clean_path_list }}'
+  loop_control:
+    loop_var: item_path
+  # register: zabbix_agent_overrides
+  vars:
+    agent_internal_clean_path_list:
+      - '{{ agent_systemd_override_path }}'
+      - '{{ agent_logrotate_path }}'
+  tags: [remove]
+
+- name: 'SELinux module block'
+  when: >-
+    ansible_selinux.status is defined and ansible_selinux.status == "enabled"
+  become: true
+  vars:
+    agent_internal_semodule: 'zabbix_agent_extend'
+  tags: [remove]
+  block:
+    - name: 'SELinux module : CIL removed'
+      ansible.builtin.file:
+        path: '{{ agent_semodules_path }}/{{ agent_internal_semodule }}.cil'
+        state: absent
+    - name: 'SELinux module : Module removed'
+      ansible.builtin.command: 'semodule -vr {{ agent_internal_semodule }}'
+      changed_when: agent_register_semodule_remove_state.stdout | regex_search("removing", ignorecase=True) is not none
+      failed_when: >-
+        agent_register_semodule_remove_state.rc | int == 1 and
+        (agent_register_semodule_remove_state.stdout + agent_register_semodule_remove_state.stderr)
+        | regex_search("No such file or directory", ignorecase=True) is none
+      args:
+        chdir: '{{ agent_semodules_path }}'
+      register: agent_register_semodule_remove_state
+    - name: 'SELinux: Custom listen port absence in "zabbix_agent_port_t" type'
+      become: true
+      ansible.builtin.command: >-
+        semanage port -t zabbix_agent_port_t -D
+      changed_when: true

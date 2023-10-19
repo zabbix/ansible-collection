@@ -1,3 +1,15 @@
+# v1.2.0
+
+## Feature
+
+- Decomposed `zabbix_agent` role to `agent` and `host` roles
+- Renamed all role variables to fit **var_naming\[role_prefix\]** requirement
+- Deprecated `zabbix_agent` role
+
+## Bug
+
+- agent role: fixed custom user sequence to trigger path change when  `agent_service_group` stays unmodified.
+
 # v1.1.1
 
 ## Feature

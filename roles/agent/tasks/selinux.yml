@@ -1,0 +1,72 @@
+---
+- name: 'SELinux: Add port to "zabbix_agent_port_t" type'
+  when: >-
+    agent_apply_seport is defined and agent_apply_seport
+    and
+    agent_param_listenport is defined and agent_param_listenport | int != 10050
+  become: true
+  ansible.builtin.command: >-
+    semanage port -a -t zabbix_agent_port_t -p tcp {{ agent_param_listenport }}
+  register: agent_register_semanage_state
+  changed_when: >-
+    agent_register_semanage_state.rc | int == 0 and
+    (agent_register_semanage_state.stdout + agent_register_semanage_state.stderr) == ""
+  failed_when: >-
+    agent_register_semanage_state.rc | int == 1 and
+    (agent_register_semanage_state.stdout + agent_register_semanage_state.stderr)
+    | regex_search("already defined") is none
+  tags: [selinux, deploy]
+
+- name: 'SELinux module block'
+  when: agent_apply_semodule is defined and agent_apply_semodule
+  become: true
+  notify: 'Service restart'
+  vars:
+    agent_internal_semodule: 'zabbix_agent_extend'
+  tags: [selinux, deploy]
+  block:
+    # - name: 'SELinux module : Get status'
+    #   ansible.builtin.command: 'semodule -lfull | grep zabbix_agent_extend'
+    #   register: semodule_status
+    # - name: 'Debug'
+    #   ansible.builtin.debug:
+    #     var: semodule_status
+    - name: 'SELinux module : Upload'
+      ansible.builtin.template:
+        src: '{{ agent_internal_semodule }}.cil.j2'
+        dest: '{{ agent_semodules_path }}/{{ agent_internal_semodule }}.cil'
+        mode: '{{ agent_conf_file.permissions.mode }}'
+        owner: '{{ agent_conf_file.permissions.user }}'
+        group: '{{ agent_conf_file.permissions.group }}'
+    - name: 'SELinux module : Install/Rewrite'
+      ansible.builtin.command: 'semodule -vi {{ agent_internal_semodule }}.cil'
+      ### if policy changes it needs rewriting... no idempotency for now. anyway its impossible with single command output.
+      changed_when: true
+      args:
+        chdir: '{{ agent_semodules_path }}'
+      register: zabbix_agent_semodule_result
+    - name: 'SELinux module : Enable module'
+      when: (zabbix_agent_semodule_result.stdout + zabbix_agent_semodule_result.stderr) | regex_search("disabled", igonrecase=True) is not none
+      ansible.builtin.command: 'semodule -e {{ agent_internal_semodule }}'
+      changed_when: true
+    - name: 'SELinux module: Restore file context'
+      when: >-
+        agent_variant | string == "2"
+      ansible.builtin.command: restorecon -v /usr/sbin/zabbix_agent2
+      register: agent_internal_restorecon_result
+      changed_when: (agent_internal_restorecon_result.stderr + agent_internal_restorecon_result.stdout) | regex_search("relabeled", ignorecase=True) is not none
+
+### modify seboolean if set, skip if not set.
+- name: 'Seboolean: zabbix_run_sudo'
+  when:
+    - agent_seboolean_zabbix_run_sudo is defined and agent_seboolean_zabbix_run_sudo in ["on", "off"]
+  become: true
+  ansible.posix.seboolean:
+    name: zabbix_run_sudo
+    ignore_selinux_state: false
+    persistent: true
+    state: '{{ agent_internal_zabbix_run_sudo_state }}'
+  vars:
+    agent_internal_sebool_state_map: {"on": true, "off": false}
+    agent_internal_zabbix_run_sudo_state: '{{ agent_internal_sebool_state_map[agent_seboolean_zabbix_run_sudo] }}'
+  tags: [selinux, deploy]

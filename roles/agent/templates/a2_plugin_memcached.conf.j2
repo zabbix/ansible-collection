@@ -1,0 +1,72 @@
+### Option: Plugins.Memcached.Timeout
+#	The maximum time (in seconds) for waiting when a request has to be done.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.Memcached.Timeout=<Global timeout>
+{% if agent_param_plugins_memcached_timeout is defined and agent_param_plugins_memcached_timeout %}
+
+Plugins.Memcached.Timeout={{ agent_param_plugins_memcached_timeout }}
+{% endif %}
+
+### Option: Plugins.Memcached.KeepAlive
+#	Time in seconds for waiting before unused connections will be closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.Memcached.KeepAlive=300
+{% if agent_param_plugins_memcached_keepalive is defined and agent_param_plugins_memcached_keepalive %}
+
+Plugins.Memcached.KeepAlive={{ agent_param_plugins_memcached_keepalive }}
+{% endif %}
+
+### Option: Plugins.Memcached.Sessions.*.Uri
+#	Uri to connect. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   Supported schemas: "tcp" and "unix".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.Memcached.Sessions.*.Uri=
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
+
+{% for session in agent_param_plugins_memcached_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.Memcached.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Memcached.Sessions.*.User
+#	Username to send to protected Memcached server. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Sessions.*.User=
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
+
+{% for session in agent_param_plugins_memcached_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.Memcached.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Memcached.Sessions.*.Password
+#	Password to send to protected Memcached server. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Sessions.*.Password=
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
+
+{% for session in agent_param_plugins_memcached_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.Memcached.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}

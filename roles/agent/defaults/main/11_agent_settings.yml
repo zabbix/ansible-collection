@@ -1,0 +1,51 @@
+---
+### === Zabbix agent defaults ===
+
+### User and Group to run Zabbix agent under.
+agent_service_user: '{{ agent_map_service_user[ansible_system] }}'
+agent_service_user_home: '{{ agent_map_service_user_home[ansible_os_family] }}'
+agent_custom_service_user_home: '{{ agent_map_default_home_folder[ansible_system] }}'
+agent_service_group: '{{ agent_map_service_group[ansible_system] }}'
+
+agent_folder_log_setype: 'zabbix_log_t'
+agent_folder_log_seuser: 'system_u'
+agent_folder_pid_setype: 'zabbix_var_run_pid_t'
+
+### Dictionary with service related settings
+agent_service_name: '{{ agent_map_service_name[ansible_system] }}'
+agent_binary_name: '{{ agent_map_binary_name[ansible_system] }}'
+agent_conf_file: '{{ agent_map_conf_file[ansible_system] }}'
+
+### File to place systemd unit override settings.
+agent_systemd_override_path: '{{ agent_map_systemd_override_path[agent_variant | string] }}'
+
+### Location of logrotate settings.
+agent_logrotate_path: '{{ agent_map_logrotate_path[agent_variant | string] }}'
+
+### Option list for log rotation, using logrotate
+agent_logrotate_options:
+  - weekly
+  - maxsize 5M
+  - rotate 12
+  - compress
+  - delaycompress
+  - missingok
+  - notifempty
+  - create 0640 {{ agent_service_user }} {{ agent_service_group }}
+
+### Default plugin list for Zabbix agent2
+agent_2_plugin_list: '{{ agent_2_map_plugin_list[agent_major_version | string] }}'
+
+### Used to calculate difference and clear plugin configuration of previous installation
+agent_2_full_plugin_list:
+  - ceph
+  - docker
+  - memcached
+  - modbus
+  - mongodb
+  - mqtt
+  - mysql
+  - oracle
+  - postgresql
+  - redis
+  - smart

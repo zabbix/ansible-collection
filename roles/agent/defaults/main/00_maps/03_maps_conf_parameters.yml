@@ -1,0 +1,37 @@
+---
+##   Prefix "map_" used for mappings,
+##   which will be defined accordingly to OS System,
+##   and Zabbix agent variant in tasks/main.yml
+
+##  Mapping definitions:
+##    1: Zabbix agentd
+##    2: Zabbix agent2
+## ABSOLUTE PATH MANDATORY!!!
+agent_map_param_pidfile:
+  Linux:
+    '1': /run/zabbix/zabbix_agentd.pid
+    '2': /run/zabbix/zabbix_agent2.pid
+## ABSOLUTE PATH MANDATORY!!!
+agent_map_param_logfile:
+  Linux:
+    '1': /var/log/zabbix/zabbix_agentd.log
+    '2': /var/log/zabbix/zabbix_agent2.log
+agent_map_param_include:
+  ## list of paths is expected
+  ## folder path must end with "/", like :"/etc/zabbix/basename/" (or basename will be cut off)
+  Linux:
+    '1': ["/etc/zabbix/zabbix_agentd.d/*.conf"]
+    '2': ["/etc/zabbix/zabbix_agent2.d/*.conf"]
+
+agent_map_param_loadmodulepath:
+  Linux: /usr/lib64/zabbix/modules
+
+agent_map_param_controlsocket:
+  Linux: /run/zabbix/agent.sock
+agent_map_param_pluginsocket:
+  Linux: /run/zabbix/agent.plugin.sock
+
+agent_map_param_includeplugins:
+  ## parameter expects list
+  ## folder path must end with "/", like :"/etc/zabbix/basename/" (or basename will be cut off)
+  Linux: ["/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf"]

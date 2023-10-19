@@ -1,0 +1,6 @@
+---
+agent_param_tlscertfile: '{{ agent_service_user_home }}/{{ agent_binary_name | upper }}/.CERT/{{ agent_source_tlscertfile | basename }}'
+agent_param_tlskeyfile: '{{ agent_service_user_home }}/{{ agent_binary_name | upper }}/.CERT/{{ agent_source_tlskeyfile | basename }}'
+agent_param_tlscafile: '{{ agent_service_user_home }}/{{ agent_binary_name | upper }}/.CERT/{{ agent_source_tlscafile | basename }}'
+agent_param_tlscrlfile: '{{ agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/"
+                   + agent_source_tlscrlfile | basename if agent_source_tlscrlfile is defined else None }}'

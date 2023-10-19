@@ -1,8 +1,13 @@
 Zabbix agent role
 =================
 
-You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
-Currently, the following OS of target machines are supported:
+**This role is DEPRECATED**
+It wont receive updates anymore.
+Transition to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) and [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) roles.
+
+
+It was used to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
+Following OS of target machines are supported:
 - Redhat 7, 8, 9
 - Oracle Linux 8, 9
 - Alma Linux 8, 9
@@ -10,10 +15,6 @@ Currently, the following OS of target machines are supported:
 - CentOS Stream 8, 9
 - Ubuntu 18.04, 20.04, 22.04
 - Debian 10, 11, 12
-
-Supported distribution list to be extended.
-
-**Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
 Table of contents
 -----------------

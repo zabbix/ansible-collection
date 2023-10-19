@@ -1,0 +1,89 @@
+{{ ansible_managed | comment }}
+### Option: Plugins.Ceph.InsecureSkipVerify
+#	InsecureSkipVerify controls whether an HTTP client verifies the	server's certificate chain and host name.
+#	If InsecureSkipVerify is true, TLS accepts any certificate presented by the server and any host name
+#	in that certificate. In this mode, TLS is susceptible to man-in-the-middle attacks.
+#	This should be used only for testing.
+#
+# Mandatory: no
+# Range: false | true
+# Default:
+# Plugins.Ceph.InsecureSkipVerify=false
+{% if agent_param_plugins_ceph_insecureskipverify is defined and agent_param_plugins_ceph_insecureskipverify %}
+
+Plugins.Ceph.InsecureSkipVerify={{ agent_param_plugins_ceph_insecureskipverify }}
+{% endif %}
+
+### Option: Plugins.Ceph.KeepAlive
+#	The amount of time a connection can remain idle before it is closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.Ceph.KeepAlive=300
+{% if agent_param_plugins_ceph_keepalive is defined and agent_param_plugins_ceph_keepalive %}
+
+Plugins.Ceph.KeepAlive={{ agent_param_plugins_ceph_keepalive }}
+{% endif %}
+
+### Option: Plugins.Ceph.Timeout
+#	The maximum amount of time in seconds to wait for a request to be done.
+#	The timeout includes connection time, any redirects, and reading the response body.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.Ceph.Timeout=<Global timeout>
+{% if agent_param_plugins_ceph_timeout is defined and agent_param_plugins_ceph_timeout %}
+
+Plugins.Ceph.Timeout={{ agent_param_plugins_ceph_timeout }}
+{% endif %}
+
+### Option: Plugins.Ceph.Sessions.*.ApiKey
+#	ApiKey to be used for connection. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Ceph.Sessions.*.ApiKey=
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
+
+{% for session in agent_param_plugins_ceph_sessions %}
+{% if session["apikey"] is defined and session["apikey"] %}
+Plugins.Ceph.Sessions.{{ session["name"] }}.ApiKey={{ session["apikey"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Ceph.Sessions.*.User
+#	Username to be used for connection. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.Ceph.Sessions.*.User=
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
+
+{% for session in agent_param_plugins_ceph_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.Ceph.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.Ceph.Sessions.*.Uri
+#	Uri to connect. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   The only supported schema is "https".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.Ceph.Sessions.*.Uri=
+{% if agent_param_plugins_ceph_sessions is defined and agent_param_plugins_ceph_sessions is iterable and agent_param_plugins_ceph_sessions is not string and agent_param_plugins_ceph_sessions is not mapping %}
+
+{% for session in agent_param_plugins_ceph_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.Ceph.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}

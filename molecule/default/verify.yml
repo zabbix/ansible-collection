@@ -8,8 +8,8 @@
       when: >-
         "remove" not in ansible_run_tags
       ansible.builtin.include_role:
-        name: zabbix_agent
+        name: agent
         tasks_from: verify
         # public: true
       vars:
-        zabbix_agent_verification: true
+        agent_verification: true
