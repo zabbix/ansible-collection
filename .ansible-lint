@@ -4,6 +4,7 @@ exclude_paths:
 #  - molecule/agentd_cert_selfmanaged/
   - molecule
   - .github
+  - roles/zabbix_agent
 #  - tests
 profile: production
 
