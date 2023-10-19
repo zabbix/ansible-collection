@@ -1,6 +1,6 @@
 galaxy_info:
   author: Zabbix Ltd
-  description: Zabbix agent maintenance
+  description: Zabbix agent maintenance (DEPRECATED)
   company: Zabbix Ltd
 
   issue_tracker_url: https://github.com/zabbix/ansible-collection/issues
