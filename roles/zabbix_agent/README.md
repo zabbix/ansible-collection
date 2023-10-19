@@ -1,8 +1,13 @@
 Zabbix agent role
 =================
 
-You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
-Currently, the following OS of target machines are supported:
+**This role is DEPRECATED**
+It wont receive updates anymore.
+Transition to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) and [**zabbix.zabbix.host**](https://github.com/zabbix/ansible-collection/blob/main/roles/host/README.md) roles.
+
+
+It was used to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
+Following OS of target machines are supported:
 - Redhat 7, 8, 9
 - Oracle Linux 8, 9
 - Alma Linux 8, 9
@@ -10,10 +15,6 @@ Currently, the following OS of target machines are supported:
 - CentOS Stream 8, 9
 - Ubuntu 18.04, 20.04, 22.04
 - Debian 10, 11, 12
-
-Supported distribution list to be extended.
-
-**Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
 Table of contents
 -----------------
@@ -434,14 +435,14 @@ To make it work, just set `run_host_tasks` to `True` or fill Zabbix API connecti
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
-| host_zabbix_api_server | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Execution environment will use it to initiate connection.
-| host_zabbix_api_url | `string` | `''` | Path to access Zabbix frontend (Zabbix API). Specify only if Zabbix frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<host_zabbix_api_server>/<host_zabbix_api_url>`.
-| host_zabbix_api_port | `int` | `80` | Port which Zabbix frontend listens on.
-| host_zabbix_api_token | `string` | | Zabbix API access token.
-| host_zabbix_api_user | `string` | `Admin` | Zabbix API username. Ignored if token is provided instead.
-| host_zabbix_api_password | `string` | `zabbix` | Zabbix API user password. Ignored if token is provided instead.
-| host_zabbix_api_use_ssl | `boolean` | `False` | Set to `True` for secure connection.
-| host_zabbix_api_validate_certs | `boolean` | `False` | Set to `True` to validate certifacates during SSL handshake.
+| zabbix_api_host | `string` | `localhost` | Hostname or IP address of Zabbix frontend (Zabbix API). Execution environment will use it to initiate connection.
+| zabbix_api_url | `string` | `''` | Path to access Zabbix frontend (Zabbix API). Specify only if Zabbix frontend runs on non-default path. Empty string by default. Alternative explanation: `http[s]://<zabbix_api_host>/<zabbix_api_url>`.
+| zabbix_api_port | `int` | `80` | Port which Zabbix frontend listens on.
+| zabbix_api_token | `string` | | Zabbix API access token.
+| zabbix_api_user | `string` | `Admin` | Zabbix API username. Ignored if token is provided instead.
+| zabbix_api_password | `string` | `zabbix` | Zabbix API user password. Ignored if token is provided instead.
+| zabbix_api_use_ssl | `boolean` | `False` | Set to `True` for secure connection.
+| zabbix_api_validate_certs | `boolean` | `False` | Set to `True` to validate certifacates during SSL handshake.
 
 ### Zabbix host configuration parameters
 
@@ -712,11 +713,11 @@ Playbook examples
         - role: zabbix.zabbix.zabbix_agent
           run_host_tasks: True                             # enable Zabbix API host tasks;
           ### Zabbix API properties
-          host_zabbix_api_server: zabbix.frontend.loc             # Zabbix frontend server;
-          host_zabbix_api_port: 443                             # Zabbix fronted connection port;
-          host_zabbix_api_user: Admin                           # Zabbix user name for API connection;
-          host_zabbix_api_password: zabbix                      # Zabbix user password for API connection;
-          host_zabbix_api_use_ssl: True                         # Use secure connection;
+          zabbix_api_host: zabbix.frontend.loc             # Zabbix frontend server;
+          zabbix_api_port: 443                             # Zabbix fronted connection port;
+          zabbix_api_user: Admin                           # Zabbix user name for API connection;
+          zabbix_api_password: zabbix                      # Zabbix user password for API connection;
+          zabbix_api_use_ssl: True                         # Use secure connection;
           ### Zabbix host configuration
           zabbix_host_templates: ["Linux by Zabbix agent"]  # Assign list of templates to the host;
           ### Zabbix agent configuration
