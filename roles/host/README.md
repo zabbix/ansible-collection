@@ -125,7 +125,7 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
         ip: '{{ ansible_host if ansible_host | ansible.utils.ipaddr else omit }}'
         dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
         useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
-        port: '{{ param_listenport | default(10050) }}'
+        port: '{{ agent_param_listenport | default(10050) }}'
 
 [More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 
