@@ -1,3 +1,9 @@
+# v1.2.1
+
+## Bug
+
+- `host` role: fixed port inheritance from `agent` role 
+
 # v1.2.0
 
 ## Feature
