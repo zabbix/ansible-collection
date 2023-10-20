@@ -1,3 +1,9 @@
+# v1.2.2
+
+## Feature
+
+- `agent` role: `agent_apply_firewalld_rule` defaults set to `false`
+
 # v1.2.1
 
 ## Bug
