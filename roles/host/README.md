@@ -45,7 +45,7 @@ Zabbix `host` role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heav
 You can install required Python libraries on the control node as follows:
 
 ```bash
-python3 -m pip install netaddr>=0.8.0 Jinja2>=3.1.2
+python3 -m pip install "netaddr>=0.8.0" "Jinja2>=3.1.2"
 ```
 
 Or using `requirements.txt` file in the role folder:
