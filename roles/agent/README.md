@@ -148,10 +148,10 @@ Firewalld is a recommended way of applying firewall rule as it works with both i
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
-| agent_apply_firewalld_rule | `string` | auto | Defines application of firewalld rule. Possible options: ["auto", "force"]. Undefined or any other string will skip the rule application.
+| agent_apply_firewalld_rule | `string` | `false` | Defines application of firewalld rule. Possible options: ["auto", "force"]. Undefined or any other string will skip the rule application.
 | agent_apply_iptables_rule | `boolean` | `false` | Defines application of iptables rule. Possible options: [true, false].
 | agent_firewalld_zone | `string` | default | Firewalld zone for the rule application.
-| agent_firewall_allow_from | `string` || Limits source address of passive check using the firewall rule. For firewalld, this setting will change the rule from simple to rich rule.
+| agent_firewall_allow_from | `string` || Only IP addresses allowed. Limits source address of passive check using the firewall rule. For firewalld, this setting will change the rule from simple to rich rule.
 
 ***You can notice Python module "firewall" sometimes failing to import during these tasks. Most common issue is that Ansible chooses wrong Python interpreter from multiple versions available on host. A solution to this is to provide `ansible_python_interpreter` with a correct path to legit Python installation on target hosts for specific operating systems. Normally it is defined on inventory level.***
 
