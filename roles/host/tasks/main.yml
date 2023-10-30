@@ -52,8 +52,9 @@
     ansible_connection: httpapi
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_httpapi_port: '{{ host_zabbix_api_port }}'
-    ansible_user: '{{ host_zabbix_api_user if host_zabbix_api_token is not defined else omit }}'
-    ansible_httpapi_pass: '{{ host_zabbix_api_password if host_zabbix_api_token is not defined else omit }}'
+    zabbix_api_token: '{{ host_zabbix_api_token if host_zabbix_api_token is defined else None }}'
+    ansible_user: '{{ host_zabbix_api_user if host_zabbix_api_token is not defined else None }}'
+    ansible_httpapi_pass: '{{ host_zabbix_api_password if host_zabbix_api_token is not defined else None }}'
     ansible_httpapi_use_ssl: '{{ host_zabbix_api_use_ssl | default("False") }}'
     ansible_httpapi_validate_certs: '{{ host_zabbix_api_validate_certs | default("False") }}'
   tags: [host, remove]
