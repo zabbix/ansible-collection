@@ -1,3 +1,9 @@
+# v1.2.3
+
+## Bug
+
+- `host` role: fixed token auth for api tasks
+
 # v1.2.2
 
 ## Feature
@@ -8,7 +14,7 @@
 
 ## Bug
 
-- `host` role: fixed port inheritance from `agent` role 
+- `host` role: fixed port inheritance from `agent` role
 
 # v1.2.0
 
