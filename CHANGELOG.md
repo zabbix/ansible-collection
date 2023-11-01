@@ -1,3 +1,9 @@
+# v1.2.4
+
+## Bug
+
+- `host` role: fixed defaults of psk variables for independent role runs
+
 # v1.2.3
 
 ## Bug
