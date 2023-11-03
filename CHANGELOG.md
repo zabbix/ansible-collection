@@ -1,3 +1,9 @@
+# v1.2.5
+
+## Bug
+
+- `host` role: fixed psk generation skip
+
 # v1.2.4
 
 ## Bug

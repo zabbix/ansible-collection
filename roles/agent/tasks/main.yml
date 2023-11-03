@@ -67,7 +67,7 @@
 - name: 'Variables: Get/Generate PSK keys'
     #  or zabbix_host_tls_connect == "psk" or "psk" in zabbix_host_tls_accept)
   when: >-
-    agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept
+    (agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept)
     and agent_tls_psk_value is not defined
     and not agent_tls_psk_value
   ansible.builtin.set_fact:
