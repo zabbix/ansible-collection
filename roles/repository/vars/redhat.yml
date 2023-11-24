@@ -1,23 +1,18 @@
 ---
-agent_repository:
-# adding base distro through package.
 # if version transition(fedora, amazon etc) is not available it will use default ansible_distribution_major_version mappings.
-  name: 'zabbix'  # for enable/disable repo during package installation
-  key: '{{ agent_map_gpg_key[agent_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
-           if agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-             else agent_map_gpg_key[ansible_distribution_major_version] }}'
-  uri: '{{ agent_repository_mirror + "/zabbix/" + agent_major_version | string + "/rhel/"
-          + (agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
-            if agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+repository_name: 'zabbix-managed'  # for enable/disable repo during package installation
+repository_key: '{{  repository_url + "/" +
+              (
+                repository_map_gpg_key[repository_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
+                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                else repository_map_gpg_key[ansible_distribution_major_version]
+              ) }}'
+repository_uri: '{{ repository_url + "/zabbix/" + repository_major_version | string + "/rhel/"
+          + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+            if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
               else ansible_distribution_major_version | string)
           + "/" + ansible_architecture + "/zabbix-release-latest.el"
-          + (agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
-            if agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+          + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+            if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
               else ansible_distribution_major_version | string)
           + ".noarch.rpm" }}'
-
-agent_package_list:
-  - zabbix-sender
-  - zabbix-get
-  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'
-  - zabbix-selinux-policy

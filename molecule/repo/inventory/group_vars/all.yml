@@ -1,0 +1,266 @@
+---
+level: group_all
+test_name: agent2
+### variant of agent to deploy: 1 - agentd, 2 - agent2
+agent_variant: 2
+# agent_major_version: '6.4'
+
+### remove previous versions of packages and release packages
+### needed to install older version
+# agent_remove_previous_packages: true
+
+### http proxy for package manager installation tasks
+# http_proxy:
+# https_proxy:
+
+### Zabbix agent service user settings:
+# agent_service_user: robin
+# agent_service_group: bobin
+# agent_service_uid: 1114
+# agent_service_gid: 1114
+
+### local path of configuration folder, which should be transferred to host and included to configuration(relative or absolute)
+agent_source_conf_dir: ../default/files/conf.d/
+### local path of scripts folder to transfer on target host under service user home directory
+agent_source_scripts_dir: ../default/files/scripts/
+### local path of modules folder to transfer on target host under service user home directory
+# agent_source_modules_dir: modules/
+
+### Simple firewall rule to allow incoming connection to target host from any source. Or rich rule if source is set.
+## Previous rules are left intact. More complex firewall logic should be maintained out of the Zabbix agent role!
+# agent_apply_firewalld_rule: auto # [force, auto] auto - detect if firewalld is running or enabled and apply rule
+# agent_firewalld_zone: default
+# agent_firewall_allow_from: 192.168.64.0/24 # if defined - rich rule creation (family ipv4/6 determined from ip, using netaddr)
+# agent_apply_iptables_rule: false
+
+### Zabbix agent2 plugin list.
+### Used to create configuration files
+### Also defines installation of loadable plugins: [mongodb, postgresql]
+### Note that package of Zabbix agent2 version 6.0 depends on loadable plugins.
+### But starting with 6.4 loadable plugins are optional and not installed by default.
+agent_2_plugin_list:
+  - ceph
+  - docker
+  - memcached
+  - modbus
+  - mongodb
+  - mqtt
+  - mysql
+  - oracle
+  - postgresql
+  - redis
+  - smart
+
+### Zabbix agent parameters of configuration file
+# 
+
+
+agent_param_listenport: 10020
+# agent_param_heartbeatfrequency: 60        # added in 6.4
+# agent_param_hostname: '{{ inventory_hostname }}'
+# agent_param_hostnameitem: system.hostname
+# agent_param_hostmetadata:
+# agent_param_hostmetadataitem:
+# agent_param_hostinterface:
+# agent_param_hostinterfaceitem:
+agent_param_refreshactivechecks: 120
+agent_param_buffersend: 5
+agent_param_buffersize: 100
+agent_param_maxlinespersecond: 20
+# agent_param_heartbeatfrequency: # 6.4
+agent_param_timeout: 3
+
+agent_param_include: # List of include paths. Folder path must end with "/", like :"/etc/zabbix/basename/" (or basename will be cut off)
+  - "/etc/zabbix/zabbix_agent2.d/*.conf"
+  - "/etc/zabbix/zabbix_agent2.d/subfolder/*.conf"
+
+agent_param_logfilesize: 0
+agent_param_logtype: file
+agent_param_debuglevel: 3
+# agent_param_sourceip:
+# agent_param_logremotecommands: 0
+
+agent_param_alias: # Key aliases. (list)
+  - zabbix.userid:vfs.file.regexp[/etc/passwd,"^zabbix:.:([0-9]+)",,,,\1]
+
+agent_param_allowkey: # System run execution white list
+  - system.run[echo me]
+  - system.run[echo you]
+
+agent_param_denykey: # System run execution black list
+  - system.run[*]
+
+agent_param_unsafeuserparameters: 0
+# agent_param_userparameterdir:
+
+# agent_param_userparameter: # List of user parameters to be added to Zabbix agent configuration
+#   - pgsql.bgwriter[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.bgwriter.sql"
+#   - pgsql.connections.sum[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.connections.sum.sql"
+#   - pgsql.connections[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.connections.sql"
+#   - pgsql.connections.prepared[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.connections.prepared.sql"
+#   - pgsql.dbstat.sum[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.dbstat.sum.sql"
+#   - pgsql.dbstat[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.dbstat.sql"
+#   - pgsql.transactions[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.transactions.sql"
+#   - pgsql.config.hash[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.config.hash.sql"
+#   - pgsql.wal.stat[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.wal.stat.sql"
+#   - pgsql.locks[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.locks.sql"
+#   - pgsql.queries[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -v tmax=$6 -f "~/scripts/postgresql/pgsql.query.time.sql"
+#   - pgsql.uptime[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.uptime.sql"
+#   - pgsql.cache.hit[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.cache.hit.sql"
+#   - pgsql.scans[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.scans.sql"
+#   - pgsql.frozenxid[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.frozenxid.sql"
+#   - pgsql.discovery.db[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.discovery.db.sql"
+#   - pgsql.db.size[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -c "SELECT pg_database_size('$6')"
+#   - pgsql.ping[*], pg_isready -h "$1" -p "$2"
+#   - pgsql.ping.time[*], LANG=C.UTF-8 psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.ping.time.sql"
+#   - pgsql.version[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -c "SELECT version();"
+#   - pgsql.replication.count[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -c "SELECT count(*) FROM pg_stat_replication"
+#   - pgsql.replication.recovery_role[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.replication.recovery_role.sql"
+#   - pgsql.replication.lag.sec[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.replication.lag.sql"
+#   - pgsql.replication.status[*], psql -qtAX postgresql://"$3":"$4"@"$1":"$2"/"$5" -f "~/scripts/postgresql/pgsql.replication.status.sql"
+
+### TLS Setting: Connection from server/proxy to agent. Encryption methods: unencrypted, psk, cert. (string)
+agent_param_tlsconnect: unencrypted
+
+agent_param_tlsaccept: # List. TLS Setting: Accept connection from agent. Encryption methods: unencrypted, psk, cert (list) - unencrypted
+  - unencrypted
+  # - psk
+  # - cert
+
+### TLS cert will transfer "source" certificate files
+# agent_source_tlscafile: ../default/files/certs/ca.crt
+# agent_source_tlscrlfile:
+# agent_source_tlscertfile: ../default/files/certs/{{ inventory_hostname }}.crt
+# agent_source_tlskeyfile: ../default/files/certs/{{ inventory_hostname }}.key
+
+# agent_param_tlsservercertissuer: CN=root-ca
+# agent_param_tlsservercertsubject: CN=server
+
+# agent_param_tlscafile: # generated automatically
+# agent_param_tlscrlfile: # generated automatically
+# agent_param_tlscertfile: # generated automatically
+# agent_param_tlskeyfile: # generated automatically
+# agent_param_tlskeyfile: # generated automatically
+# agent_param_tlspskfile: # generated automatically
+
+### Zabbix agentd unique parameters:
+# agent_param_allowroot: 0
+# agent_param_user: zabbix
+# agent_param_loadmodulepath: /usr/lib64/zabbix/modules
+
+# agent_param_loadmodule: # List of modules with absolute or relative(to LodModulePath) path
+#   - module1.so
+#   - module2.so
+
+# agent_param_startagents: 3
+# agent_param_tlsciphercert13:
+# agent_param_tlsciphercert:
+# agent_param_tlscipherpsk13:
+# agent_param_tlscipherpsk:
+# agent_param_tlscipherall13:
+# agent_param_tlscipherall:
+# agent_param_listenbacklog:
+
+### Zabbix agent2 unique parameters:
+agent_param_controlsocket: /run/zabbix/agent.sock
+agent_param_pluginsocket: /run/zabbix/agent.plugin.sock
+# agent_param_statusport:
+agent_param_enablepersistentbuffer: 0
+# agent_param_plugintimeout:
+agent_param_persistentbufferperiod: 1h
+# agent_param_persistentbufferfile:
+agent_param_forceactivechecksonstart: 1
+
+# agent_param_includeplugins: # List of paths. Folder path must end with "/", like :"/etc/zabbix/basename/" (or basename will be cut off)
+#   - "/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf"
+
+## agent2 Plugins.Ceph:
+agent_param_plugins_ceph_insecureskipverify: "false" # "true" or "false" - should be string (not boolean)
+agent_param_plugins_ceph_keepalive: 300 # limit: 60-900 seconds
+agent_param_plugins_ceph_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_ceph_sessions:  # list of dictionaries: fill values
+  - { name: "sessionname", apikey: "sessionapikey", user: "sessionuser", uri: "sessionuri" }
+## agent2 Plugins.Docker:
+agent_param_plugins_docker_endpoint: unix:///var/run/docker.sock
+agent_param_plugins_docker_timeout: 3 # limit: 1-30 seconds
+## agent2 Plugins.Memcached:
+agent_param_plugins_memcached_keepalive: 300 # limit: 60-900 seconds
+agent_param_plugins_memcached_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_memcached_sessions:  # list of dictionaries: fill values
+  - { name: "sessionname", password: "sessionpassword", user: "sessionuser", uri: "sessionuri" }
+## agent2 Plugins.Modbus:
+agent_param_plugins_modbus_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_modbus_sessions:  # list of dictionaries: fill values
+  - { name: "sessiontest", endpoint: "rtu://com1:9600:8n1", slaveid: "11" }
+  - { name: "sessionname", endpoint: "tcp://127.0.0.1:502", slaveid: "12", timeout: "3" }
+## agent2 Plugins.MongoDB:
+agent_param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
+agent_param_plugins_mongodb_timeout: 3 # limit: 1-30 seconds
+agent_param_plugins_mongodb_keepalive: 300
+agent_param_plugins_mongodb_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    # agent_source_tlscafile: "../default/files/certs/ca.crt"
+    # agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+  - name: "sessionname2"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    # agent_source_tlscafile: "../default/files/certs/ca.crt"
+    # agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+## agent2 Plugins.MQTT:
+agent_param_plugins_mqtt_timeout: 3
+## agent2 Plugins.Oracle:
+agent_param_plugins_oracle_calltimeout: 3
+agent_param_plugins_oracle_connecttimeout: 3
+agent_param_plugins_oracle_customqueriespath: /some/path
+agent_param_plugins_oracle_keepalive: 300
+agent_param_plugins_oracle_sessions:
+  - { name: "sessionname", uri: "someuri", service: "servicename", user: "someuser", password: "somepassword" }
+## agent2 Plugins.PostgreSQL configuration parameters:
+agent_param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+agent_param_plugins_postgresql_calltimeout: 3
+agent_param_plugins_postgresql_timeout: 3
+agent_param_plugins_postgresql_customqueriespath: /some/path
+agent_param_plugins_postgresql_keepalive: 300
+agent_param_plugins_postgresql_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    database: "somedatabase"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
+    # agent_source_tlscafile: "../default/files/certs/ca.crt"
+    # agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+## agent2 Plugins.Mysql:
+agent_param_plugins_mysql_calltimeout: 3
+agent_param_plugins_mysql_timeout: 3
+agent_param_plugins_mysql_keepalive: 300
+agent_param_plugins_mysql_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    # tlsconnect: "required"
+    # ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
+    # agent_source_tlscafile: "../default/files/certs/ca.crt"
+    # agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    # agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+## agent2 Plugins.Redis:
+agent_param_plugins_redis_timeout: 3
+agent_param_plugins_redis_keepalive: 300
+agent_param_plugins_redis_sessions:
+  - { name: "sessionname", uri: "someuri", user: "someuser", password: "somepassword" }
+## agent2 Plugins.Smart:
+agent_param_plugins_smart_path: /usr/sbin/smartctl
+agent_param_plugins_smart_timeout: 3

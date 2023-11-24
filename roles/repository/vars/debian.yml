@@ -1,15 +1,11 @@
 ---
-agent_repository:
-  name: 'zabbix-release'
-  uri: '{{ agent_repository_mirror + "/zabbix/" + agent_major_version | string + "/"
-          + ansible_distribution | lower
-          + ("-arm64" if ansible_architecture == "aarch64" else "")
-          + "/pool/main/z/zabbix-release/zabbix-release_latest"
-          + "%2B" + ansible_distribution | lower + ansible_distribution_major_version
-          + (".04" if ansible_distribution | lower == "ubuntu" else "")
-          + "_all.deb" }}'
-
-agent_package_list:
-  - zabbix-sender
-  - zabbix-get
-  - 'zabbix-agent{{ "2" if agent_variant | string == "2" else "" }}'
+### 
+repository_name: 'zabbix-managed'
+repository_key: '{{ repository_url + "/zabbix-official-repo.key" }}'
+repository_uri: '{{ repository_url + "/zabbix/"
+                    + repository_major_version | string + "/"
+                    + ansible_distribution | lower
+                    + ("-arm64" if ansible_architecture == "aarch64" else "") }}'
+# repository_url_old_agent2_plugins: '{{ repository_url + "/zabbixa_agent2_plugins/1/"
+#           + ansible_distribution | lower
+#           + ("-arm64" if ansible_architecture == "aarch64" else "") }}'

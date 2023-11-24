@@ -1,0 +1,62 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+    # name: delegated
+
+provisioner:
+  name: ansible
+  # config_options:
+  #   defaults:
+  #     vault_password_file: ${HOME}/.ansible/.vault
+  env:
+    # ANSIBLE_VERBOSITY: 3
+    ANSIBLE_ROLES_PATH: "../../roles"
+    #   env:
+    #     ANSIBLE_CONFIG: ../../ansible.cfg
+  inventory:
+    links:
+      group_vars: inventory/group_vars
+      host_vars: ../default/inventory/host_vars
+  playbooks:
+    create: ../default/create.yml
+    prepare: ../default/prepare.yml
+    converge: ../default/converge.yml
+    verify: ../default/verify.yml
+scenario:
+  check_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - create
+    - prepare
+    - side_effect
+    - converge
+    - verify
+    - destroy
+  converge_sequence:
+    - side_effect
+    - converge
+    - verify
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - side_effect
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - destroy
+verifier:
+  name: ansible
+# lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml
+lint: ansible-lint -p roles
+    # lint: |
+    #   set -e
+    #   yamllint roles/zabbix_agent/tasks/main.yml
+    #   ansible-lint roles/zabbix_agent/tasks/main.yml

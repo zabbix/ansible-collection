@@ -1,5 +1,5 @@
 ---
-agent_map_os_transition:
+repository_map_os_transition:
   RedHat:
     '6': '6'
     '7': '7'
@@ -47,7 +47,7 @@ agent_map_os_transition:
     '38': '9'
     '39': '9'
 
-agent_map_gpg_key:
-  '7': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
-  '8': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591'
-  '9': 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-08EFA7DD'
+repository_map_gpg_key:
+  '7': 'RPM-GPG-KEY-ZABBIX-A14FE591'
+  '8': 'RPM-GPG-KEY-ZABBIX-A14FE591'
+  '9': 'RPM-GPG-KEY-ZABBIX-08EFA7DD'
