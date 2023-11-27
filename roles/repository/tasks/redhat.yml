@@ -10,8 +10,8 @@
     repository_state == "present"
     and repository_priority and repository_priority is number
     and repository_map_os_transition[ansible_distribution] is defined
-      and repository_map_os_transition[ansible_distribution][ansible_distribution_version] is defined
-      and repository_map_os_transition[ansible_distribution][ansible_distribution_version] | int <= 7
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
   become: true
   until: repository_register_yum_plugin_state is not failed
   retries: 3

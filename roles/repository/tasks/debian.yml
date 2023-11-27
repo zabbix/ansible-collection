@@ -22,7 +22,7 @@
   delay: 3
   register: repository_register_state
   deb822_repository:
-    state: '{{ "absent" repository_version in ansible_run_tags else repository_state }}'
+    state: '{{ "absent" if "remove" in ansible_run_tags else repository_state }}'
     name: '{{ repository_name }}' 
     types: [deb, deb-src]
     # uris: '{{ [repository_baseurl]
@@ -33,7 +33,6 @@
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
     signed_by: '{{ repository_gpg_key }}'
     allow_insecure: true
-  when: repository_state != "absent"
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
