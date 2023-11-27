@@ -19,11 +19,11 @@ provisioner:
     links:
       group_vars: inventory/group_vars
       host_vars: ../default/inventory/host_vars
-  playbooks:
-    create: ../default/create.yml
-    prepare: ../default/prepare.yml
-    converge: ../default/converge.yml
-    verify: ../default/verify.yml
+        #  playbooks:
+        #    create: ../default/create.yml
+        #    prepare: ../default/prepare.yml
+        #    converge: ../default/converge.yml
+        #    verify: ../default/verify.yml
 scenario:
   check_sequence:
     - dependency
