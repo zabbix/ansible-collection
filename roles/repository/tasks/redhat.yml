@@ -1,20 +1,4 @@
 ---
-- name: 'YUM : GPG key presence'
-  become: true
-  until: repository_register_gpg_key_state is not failed
-  retries: 3
-  delay: 3
-  ansible.builtin.rpm_key:
-    state: '{{ repository_internal_key_state }}'
-    key: '{{ agent_repository.key }}'
-  register: repository_register_gpg_key_state
-  vars:
-    repository_internal_key_state: '{{ "absent" if repository_source_state == "absent" else "present" }}'
-  environment:
-    http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
-  tags: [deploy]
-
 - name: DEBUG
   ansible.builtin.debug:
     var: agent_repository.uri
@@ -23,10 +7,11 @@
 ### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
 - name: 'YUM : Plugin "priorities" presence'
   when: >-
-    repository_priority and repository_priority is number
+    repository_state == "present"
+    and repository_priority and repository_priority is number
     and repository_map_os_transition[ansible_distribution] is defined
-    and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-    and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_version] is defined
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_version] | int <= 7
   become: true
   until: repository_register_yum_plugin_state is not failed
   retries: 3
@@ -34,67 +19,34 @@
   register: repository_register_yum_plugin_state
   ansible.builtin.yum:
     name: 'yum-plugin-priorities'
-    state: '{{ agent_package_state }}'
-  tags: [deploy]
-- name: 'YUM : Set Zabbix repo priority'
-  when: repository_priority and repository_priority is number
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/yum.repos.d/zabbix.repo
-    insertafter: '^\[zabbix\]'
-    regexp: '^priority='
-    line: 'priority={{ repository_priority | string }}'
+    state: present
   tags: [deploy]
 
-- name: 'YUM : Repository source presence'
+- name: 'YUM : Zabbix Repository presence'
   become: true
-  until: agent_register_repository_state is not failed
+  until: repository_register_state is not failed
   retries: 3
   delay: 3
-  ansible.builtin.yum:
-    name: '{{ agent_repository.uri }}'
-  when: agent_package_state != "absent"
-  register: agent_register_repository_state
+  register: repository_register_state
+  ansible.builtin.yum_repository:
+    state: '{{ "absent" if "remove" in ansible_run_tags else repository_state }}'
+    name: '{{ repository_name }}'
+    description: '{{ repository_description }}'
+    baseurl: '{{ repository_baseurl }}'
+    gpgcheck: '{{ repository_gpg_check }}'
+    gpgkey: '{{ repository_gpg_key }}'
+    priority: '{{ repository_priority | default(omit) }}'
+    # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
+    enabled: true
+    # sslverify: true
   environment:
     http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
-  tags: [deploy]
-
+  tags: [deploy, remove]
+  
 - name: 'YUM : yum clean all'
-  when: repository_register_repository_state.changed
+  when: repository_register_state.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
-  tags: [skip_ansible_lint, deploy]
-
-# - name: 'YUM : Zabbix packages presence'
-#   become: true
-#   notify: 'Service restart'
-#   until: agent_register_packages_state is not failed
-#   retries: 3
-#   delay: 3
-#   register: agent_register_packages_state
-#   ansible.builtin.yum:
-#     name: '{{ agent_internal_install_package_list }}'
-#     state: '{{ agent_package_state }}'
-#     disablerepo: '{{ agent_repository_disable }}'  # disable epel repos | should contain epel word in repo name
-#     enablerepo: '{{ agent_repository.name }}'
-#     install_weak_deps: true
-#     # enable_plugin: priorities ### cant find the plugin by its name... seems bugged
-#   vars:
-#     ### if "agent_minor_version" is defined calculate "agent_internal_full_version".
-#     agent_internal_full_version: '{{ None if (agent_minor_version is not defined or not agent_minor_version)
-#       else agent_major_version | string + "." + agent_minor_version | string }}'
-#     ### change minor version of zabbix components (excluding agent2 plugins). Use single quotes for regex expression!!!
-#     agent_internal_component_package_list: "{{ agent_package_list if not agent_internal_full_version
-#       else agent_package_list | map('regex_replace', '^(zabbix-(get|sender|agent2|agent))$', '\\1-%s' % agent_internal_full_version) | list }}"
-#     ### change version of agent2 plugins. Use single quotes for regex expression!!!
-#     agent_internal_install_package_list: "{{
-#       agent_internal_component_package_list if (agent_2_plugin_version is not defined
-#                                  or not agent_2_plugin_version or agent_variant | string != '2')
-#       else agent_internal_component_package_list | map('regex_replace',
-#                   '^(zabbix-agent2-plugin-(mongodb|postgresql))$', '\\1-%s' % agent_2_plugin_version) | list }}"
-#   environment:
-#     http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
-#     https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
-#   tags: [deploy]
+  tags: [skip_ansible_lint, deploy, remove]

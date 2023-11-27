@@ -1,19 +1,4 @@
 ---
-# - name: 'DEBUG : var types'
-#   ansible.builtin.debug:
-#     msg: >
-#       agent_major_version: {{ agent_major_version | string | type_debug }}
-#       ansible_distribution_version: {{ ansible_distribution_version | type_debug }}
-#       ansible_distribution_major_version: {{ ansible_distribution_major_version | type_debug }}
-#   tags: [never, debug]
-
-# - name: 'DEBUG : show repo uri'
-#   ansible.builtin.debug:
-#     msg: '{{ agent_repository.uri }}'
-#   tags: [never, debug]
-
-#  uri: '{{ agent_repository_mirror + "/zabbix/" + agent_major_version | string + "/"
- 
 # deb822 sources support 
 - name: 'APT : Support package presence : python3-debian'
   become: true
@@ -24,66 +9,44 @@
   ansible.builtin.apt:
     name: python3-debian
     state: present
-  when: repository_source_state != "absent"
+  when: repository_state != "absent"
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
   tags: [deploy]
 
-- name: Repository source presence
+- name: 'DEB822 : Zabbix repository presence'
   become: true
-  until: repository_register_source_state is not failed
+  until: repository_register_state is not failed
   retries: 3
   delay: 3
-  register: repository_register_source_state
+  register: repository_register_state
   deb822_repository:
-    state: '{{ repository_source_state }}'
+    state: '{{ "absent" repository_version in ansible_run_tags else repository_state }}'
     name: '{{ repository_name }}' 
     types: [deb, deb-src]
-    # uris: '{{ [repository_uri]
-    #           + ([repository_uri_old_agent2_plugins] if repository_major_version | string == "6.0" else []) }}'
-    uris: '{{ repository_uri }}'
+    # uris: '{{ [repository_baseurl]
+    #           + ([repository_uri_old_agent2_plugins] if repository_version | string == "6.0" else []) }}'
+    uris: '{{ repository_baseurl }}'
     suites: '{{ ansible_distribution_release }}' #jammy  etc
     components: main
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
-    signed_by: '{{ repository_key }}'
-  when: repository_source_state != "absent"
+    signed_by: '{{ repository_gpg_key }}'
+    allow_insecure: true
+  when: repository_state != "absent"
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
-  tags: [deploy]
+  tags: [deploy, remove]
 
-# - name: 'APT : Zabbix-release repository presence'
-#   become: true
-#   until: agent_register_repository_state is not failed
-#   retries: 3
-#   delay: 3
-#   register: agent_register_repository_state
-#   ansible.builtin.apt:
-#     # deb module requires xz-utils to be installed on target machine????
-#     deb: '{{ agent_repository.uri }}'
-#   when: agent_package_state != "absent"
-#   environment:
-#     http_proxy: "{{ agent_http_proxy | default(None) | default(omit) }}"
-#     https_proxy: "{{ agent_https_proxy | default(None) | default(omit) }}"
-#   tags: [deploy]
-
-# - name: 'APT : Zabbix packages presence'
-#   become: true
-#   notify: 'Service restart'
-#   until: agent_register_packages_state is not failed
-#   retries: 3
-#   delay: 3
-#   register: agent_register_packages_state
-#   ansible.builtin.apt:
-#     name: '{{ agent_package_list }}'
-#     state: '{{ agent_package_state }}'
-#     # do not trigger service start
-#     policy_rc_d: 101
-#     # update cache before installing
-#     cache_valid_time: 0
-#     update_cache: true
-#   environment:
-#     http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
-#     https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
-#   tags: [deploy]
+### update cache separately fro install task to save time during consequential runs for deployed instances
+- name: 'APT : Update cache'
+  when: >-
+    repository_register_state.changed
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  environment:
+    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+  tags: [deploy, remove]

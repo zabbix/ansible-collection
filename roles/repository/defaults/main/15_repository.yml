@@ -1,10 +1,14 @@
 ---
-repository_source_state: present
-repository_major_version: 6.0
+repository_state: present
+repository_version: 6.0
+repository_name: 'zabbix-managed'
+repository_description: 'Zabbix repository source (Ansible managed)'
 ### Override repositrory URL for self hosted mirrors.
 repository_url: 'https://repo.zabbix.com'
 ### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)
 ### integer: 1-99
 repository_priority: false # !!
+### disable/enable gpg check for rhel based os
+repository_gpg_check: true
 ### Disable repository during package installation
 agent_repository_disable: "*epel*" # !!

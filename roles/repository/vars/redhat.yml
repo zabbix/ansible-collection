@@ -1,18 +1,15 @@
 ---
 # if version transition(fedora, amazon etc) is not available it will use default ansible_distribution_major_version mappings.
-repository_name: 'zabbix-managed'  # for enable/disable repo during package installation
-repository_key: '{{  repository_url + "/" +
-              (
-                repository_map_gpg_key[repository_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
-                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-                else repository_map_gpg_key[ansible_distribution_major_version]
-              ) }}'
-repository_uri: '{{ repository_url + "/zabbix/" + repository_major_version | string + "/rhel/"
+repository_gpg_key: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+              + repository_url + "/"
+              + (
+                  repository_map_gpg_key[repository_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
+                  if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                  else repository_map_gpg_key[ansible_distribution_major_version]
+                ) }}'
+repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+          + repository_url + "/zabbix/" + repository_version | string + "/rhel/"
           + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
             if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
               else ansible_distribution_major_version | string)
-          + "/" + ansible_architecture + "/zabbix-release-latest.el"
-          + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
-            if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-              else ansible_distribution_major_version | string)
-          + ".noarch.rpm" }}'
+          + "/$basearch/" }}'
