@@ -1,3 +1,9 @@
+# v1.3.2
+
+## Feature
+
+- `repository` role: removed "allow_insecure" option from deb822 
+
 # v1.3.1
 
 ## Bug
