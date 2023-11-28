@@ -22,7 +22,9 @@
   delay: 3
   register: repository_register_state
   deb822_repository:
-    state: '{{ "absent" if "remove" in ansible_run_tags else repository_state }}'
+    state: '{{ "absent" if ("remove" in ansible_run_tags 
+                            or repository_state=="absent")
+                else "present" }}'
     name: '{{ repository_name }}' 
     types: [deb, deb-src]
     # uris: '{{ [repository_baseurl]
@@ -42,6 +44,7 @@
 - name: 'APT : Update cache'
   when: >-
     repository_register_state.changed
+  register: repository_register_update_cache
   become: true
   ansible.builtin.apt:
     update_cache: true

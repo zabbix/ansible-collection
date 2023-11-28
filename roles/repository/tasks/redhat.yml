@@ -29,7 +29,9 @@
   delay: 3
   register: repository_register_state
   ansible.builtin.yum_repository:
-    state: '{{ "absent" if "remove" in ansible_run_tags else repository_state }}'
+    state: '{{ "absent" if ("remove" in ansible_run_tags 
+                            or repository_state=="absent")
+                else "present" }}'
     name: '{{ repository_name }}'
     description: '{{ repository_description }}'
     baseurl: '{{ repository_baseurl }}'

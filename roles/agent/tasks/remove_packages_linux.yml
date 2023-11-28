@@ -10,7 +10,8 @@
 - name: 'Remove packages : Package absence'
   become: true
   ansible.builtin.package:
-    name: '{{ agent_package_list + ["zabbix-release"] }}'
+    name: '{{ agent_package_list }}'
+    # name: '{{ agent_package_list + ["zabbix-release"] }}'
     state: absent
   tags: [remove]
 
