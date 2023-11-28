@@ -51,7 +51,7 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies:
-  - role: repository
+  - role: zabbix.zabbix.repository
     repository_version: '{{ agent_major_version }}'
     repository_state: '{{ agent_package_state }}'
     repository_url: '{{ agent_repository_mirror }}'
