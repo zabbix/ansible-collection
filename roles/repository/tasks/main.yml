@@ -1,9 +1,27 @@
 ---
-- name: 'Package: Remove "zabbix-release" package to avoid conflict'
-  become: true
-  ansible.builtin.package:
-    name: zabbix-release
-    state: absent
+- name: Resolve repository conflict
+  block:
+    - name: 'Package : Remove "zabbix-release" package to avoid conflict'
+      become: true
+      ansible.builtin.package:
+        name: zabbix-release
+        state: absent
+        purge: '{{ true if ansible_os_family == "Debian" else omit }}'
+  rescue:
+    - name: 'Rescue : Source file absent'
+      ansible.builtin.file:
+        path: '{{ repository_internal_old_source_file[ansible_os_family] }}'
+        state: absent
+      vars:
+        repository_internal_old_source_file:
+          Debian: /etc/apt/sources.list.d/zabbix.list 
+          RedHat: /etc/yum.repos.d/zabbix.repo
+    - name: 'Rescue : Remove "zabbix-release" package to avoid conflict'
+      become: true
+      ansible.builtin.package:
+        name: zabbix-release
+        state: absent
+        purge: '{{ true if ansible_os_family == "Debian" else omit }}'
 
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ ansible_os_family | lower }}.yml'

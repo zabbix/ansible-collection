@@ -4,6 +4,10 @@
 
 - `repository` role: removed "allow_insecure" option from deb822 
 
+## Bug
+
+- `repository` role: added purge for Debian os family and rescue tasks to resolve repository conflict
+
 # v1.3.1
 
 ## Bug
