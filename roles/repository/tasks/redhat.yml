@@ -29,9 +29,8 @@
   delay: 3
   register: repository_register_state
   ansible.builtin.yum_repository:
-    state: '{{ "absent" if ("remove" in ansible_run_tags 
-                            or repository_state=="absent")
-                else "present" }}'
+    state: '{{ "absent" if ("remove" in ansible_run_tags or repository_state == "absent")
+              else "present" }}'
     name: '{{ repository_name }}'
     description: '{{ repository_description }}'
     baseurl: '{{ repository_baseurl }}'
@@ -45,10 +44,11 @@
     http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
   tags: [deploy, remove]
-  
+
 - name: 'YUM : yum clean all'
   when: repository_register_state.changed
   become: true
   ansible.builtin.command: yum clean all
   register: yum_clean_all
+  # tags: [skip_ansible_lint, deploy, remove]
   tags: [skip_ansible_lint, deploy, remove]

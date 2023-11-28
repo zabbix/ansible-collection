@@ -1,6 +1,6 @@
 ---
-# deb822 sources support 
-- name: 'APT : Support package presence : python3-debian'
+# deb822 sources support
+- name: 'APT : DEB822 python support : python3-debian'
   become: true
   until: repository_register_deb822_state is not failed
   retries: 3
@@ -21,16 +21,15 @@
   retries: 3
   delay: 3
   register: repository_register_state
-  deb822_repository:
-    state: '{{ "absent" if ("remove" in ansible_run_tags 
-                            or repository_state=="absent")
-                else "present" }}'
-    name: '{{ repository_name }}' 
+  ansible.builtin.deb822_repository:
+    state: '{{ "absent" if ("remove" in ansible_run_tags or repository_state == "absent")
+              else "present" }}'
+    name: '{{ repository_name }}'
     types: [deb, deb-src]
     # uris: '{{ [repository_baseurl]
     #           + ([repository_uri_old_agent2_plugins] if repository_version | string == "6.0" else []) }}'
     uris: '{{ repository_baseurl }}'
-    suites: '{{ ansible_distribution_release }}' #jammy  etc
+    suites: '{{ ansible_distribution_release }}' # jammy etc
     components: main
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
     signed_by: '{{ repository_gpg_key }}'
@@ -51,4 +50,4 @@
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
-  tags: [deploy, remove]
+  tags: [skip_ansible_lint, deploy, remove]

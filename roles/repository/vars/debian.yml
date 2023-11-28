@@ -1,5 +1,5 @@
 ---
-### 
+###
 repository_gpg_key: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
                         + repository_url
                         + "/zabbix-official-repo.key" }}'
