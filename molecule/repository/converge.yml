@@ -8,7 +8,7 @@
     - name: Debug
       ansible.builtin.debug:
         var: ansible_distribution_major_version
-    - name: hosts file for custom repo
+    - name: Hosts file for custom repo
       become: true
       ansible.builtin.blockinfile:
         state: absent
@@ -28,30 +28,27 @@
     #      tags: [always]
   roles:
     - role: repository
-      repository_version: 6.0
-      repository_priority: 99
-      # repository_url: 'http://{{ custom_repo }}'
   post_tasks:
-    - name: apt - zabbix-agent
+    - name: Apt - zabbix-agent
       when: ansible_os_family == "Debian"
       ansible.builtin.apt:
         name:
           - zabbix-agent
-        state: latest
+        state: present
         policy_rc_d: 101
         # update cache before installing
         cache_valid_time: 0
         update_cache: true
-    - name: yum - zabbix-agent
+    - name: Yum - zabbix-agent
       when: ansible_os_family == "RedHat"
       ansible.builtin.yum:
         name:
           - zabbix-agent
-        state: latest
-    - name: version check
+        state: present
+    - name: Version check
       ansible.builtin.command: zabbix_agentd -V
       register: agent_version
       changed_when: false
-    - name: version output
+    - name: Version output
       ansible.builtin.debug:
         msg: '{{ agent_version.stdout }}'
