@@ -33,7 +33,7 @@
     components: main
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
     signed_by: '{{ repository_gpg_key }}'
-    allow_insecure: true
+    # allow_insecure: true
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
