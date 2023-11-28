@@ -1,0 +1,54 @@
+---
+- name: DEBUG
+  ansible.builtin.debug:
+    var: agent_repository.uri
+  tags: [never, debug]
+
+### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
+- name: 'YUM : Plugin "priorities" presence'
+  when: >-
+    repository_state == "present"
+    and repository_priority and repository_priority is number
+    and repository_map_os_transition[ansible_distribution] is defined
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
+  become: true
+  until: repository_register_yum_plugin_state is not failed
+  retries: 3
+  delay: 3
+  register: repository_register_yum_plugin_state
+  ansible.builtin.yum:
+    name: 'yum-plugin-priorities'
+    state: present
+  tags: [deploy]
+
+- name: 'YUM : Zabbix Repository presence'
+  become: true
+  until: repository_register_state is not failed
+  retries: 3
+  delay: 3
+  register: repository_register_state
+  ansible.builtin.yum_repository:
+    state: '{{ "absent" if ("remove" in ansible_run_tags or repository_state == "absent")
+              else "present" }}'
+    name: '{{ repository_name }}'
+    description: '{{ repository_description }}'
+    baseurl: '{{ repository_baseurl }}'
+    gpgcheck: '{{ repository_gpg_check }}'
+    gpgkey: '{{ repository_gpg_key }}'
+    priority: '{{ repository_priority | default(omit) }}'
+    # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
+    enabled: true
+    # sslverify: true
+  environment:
+    http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
+    https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
+  tags: [deploy, remove]
+
+- name: 'YUM : yum clean all'
+  when: repository_register_state.changed
+  become: true
+  ansible.builtin.command: yum clean all
+  register: yum_clean_all
+  # tags: [skip_ansible_lint, deploy, remove]
+  tags: [skip_ansible_lint, deploy, remove]

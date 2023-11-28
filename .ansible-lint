@@ -10,3 +10,6 @@ profile: production
 
 # skip_list:
 #  - var-naming[no-role-prefix]
+warn_list:
+  - yaml[key-duplicates]
+  - no-handler

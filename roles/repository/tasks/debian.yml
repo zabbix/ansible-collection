@@ -1,0 +1,53 @@
+---
+# deb822 sources support
+- name: 'APT : DEB822 python support : python3-debian'
+  become: true
+  until: repository_register_deb822_state is not failed
+  retries: 3
+  delay: 3
+  register: repository_register_deb822_state
+  ansible.builtin.apt:
+    name: python3-debian
+    state: present
+  when: repository_state != "absent"
+  environment:
+    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+  tags: [deploy]
+
+- name: 'DEB822 : Zabbix repository presence'
+  become: true
+  until: repository_register_state is not failed
+  retries: 3
+  delay: 3
+  register: repository_register_state
+  ansible.builtin.deb822_repository:
+    state: '{{ "absent" if ("remove" in ansible_run_tags or repository_state == "absent")
+              else "present" }}'
+    name: '{{ repository_name }}'
+    types: [deb, deb-src]
+    # uris: '{{ [repository_baseurl]
+    #           + ([repository_uri_old_agent2_plugins] if repository_version | string == "6.0" else []) }}'
+    uris: '{{ repository_baseurl }}'
+    suites: '{{ ansible_distribution_release }}' # jammy etc
+    components: main
+    architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
+    signed_by: '{{ repository_gpg_key }}'
+    allow_insecure: true
+  environment:
+    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+  tags: [deploy, remove]
+
+### update cache separately fro install task to save time during consequential runs for deployed instances
+- name: 'APT : Update cache'
+  when: >-
+    repository_register_state.changed
+  register: repository_register_update_cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  environment:
+    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+  tags: [skip_ansible_lint, deploy, remove]

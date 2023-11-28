@@ -1,0 +1,57 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    custom_repo: custom.repo.test
+  pre_tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        var: ansible_distribution_major_version
+    - name: hosts file for custom repo
+      become: true
+      ansible.builtin.blockinfile:
+        state: absent
+        path: /etc/hosts
+        unsafe_writes: true
+        block: |
+          127.0.0.1 repo.zabbix.com
+          178.128.6.101 {{ custom_repo }}
+    #  pre_tasks:
+    #    - name: Include all from vars folder
+    #      ansible.builtin.include_vars:
+    #        dir: vars
+    #        ignore_unknown_extensions: true
+    #        extensions:
+    #          - 'yaml'
+    #          - 'yml'
+    #      tags: [always]
+  roles:
+    - role: repository
+      repository_version: 6.0
+      repository_priority: 99
+      # repository_url: 'http://{{ custom_repo }}'
+  post_tasks:
+    - name: apt - zabbix-agent
+      when: ansible_os_family == "Debian"
+      ansible.builtin.apt:
+        name:
+          - zabbix-agent
+        state: latest
+        policy_rc_d: 101
+        # update cache before installing
+        cache_valid_time: 0
+        update_cache: true
+    - name: yum - zabbix-agent
+      when: ansible_os_family == "RedHat"
+      ansible.builtin.yum:
+        name:
+          - zabbix-agent
+        state: latest
+    - name: version check
+      ansible.builtin.command: zabbix_agentd -V
+      register: agent_version
+      changed_when: false
+    - name: version output
+      ansible.builtin.debug:
+        msg: '{{ agent_version.stdout }}'

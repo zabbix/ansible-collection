@@ -1,73 +1,4 @@
 ---
-- name: 'YUM : GPG key presence'
-  become: true
-  until: agent_register_gpg_key_state is not failed
-  retries: 3
-  delay: 3
-  ansible.builtin.rpm_key:
-    state: '{{ agent_repository_key_state }}'
-    key: '{{ agent_repository.key }}'
-  register: agent_register_gpg_key_state
-  vars:
-    agent_repository_key_state: '{{ "absent" if agent_package_state == "absent" else "present" }}'
-  environment:
-    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
-  tags: [deploy]
-
-- name: DEBUG
-  ansible.builtin.debug:
-    var: agent_repository.uri
-  tags: [never, debug]
-
-- name: 'YUM : Zabbix-release repository presence'
-  become: true
-  until: agent_register_repository_state is not failed
-  retries: 3
-  delay: 3
-  ansible.builtin.yum:
-    name: '{{ agent_repository.uri }}'
-  when: agent_package_state != "absent"
-  register: agent_register_repository_state
-  environment:
-    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
-  tags: [deploy]
-
-### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
-- name: 'YUM : Set Zabbix repo priority'
-  when: agent_repository_priority and agent_repository_priority is number
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/yum.repos.d/zabbix.repo
-    insertafter: '^\[zabbix\]'
-    regexp: '^priority='
-    line: 'priority={{ agent_repository_priority | string }}'
-  tags: [deploy]
-
-- name: 'YUM : Plugin "priorities" presence'
-  when: >-
-    agent_repository_priority and agent_repository_priority is number
-    and agent_map_os_transition[ansible_distribution] is defined
-    and agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-    and agent_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
-  become: true
-  until: agent_register_yum_plugin_state is not failed
-  retries: 3
-  delay: 3
-  register: agent_register_yum_plugin_state
-  ansible.builtin.yum:
-    name: 'yum-plugin-priorities'
-    state: '{{ agent_package_state }}'
-  tags: [deploy]
-
-- name: 'YUM : yum clean all'
-  when: agent_register_repository_state.changed
-  become: true
-  ansible.builtin.command: yum clean all
-  register: yum_clean_all
-  tags: [skip_ansible_lint, deploy]
-
 - name: 'YUM : Zabbix packages presence'
   become: true
   notify: 'Service restart'
@@ -79,7 +10,7 @@
     name: '{{ agent_internal_install_package_list }}'
     state: '{{ agent_package_state }}'
     disablerepo: '{{ agent_repository_disable }}'  # disable epel repos | should contain epel word in repo name
-    enablerepo: '{{ agent_repository.name }}'
+    # enablerepo: '{{ agent_repository.name }}'
     install_weak_deps: true
     # enable_plugin: priorities ### cant find the plugin by its name... seems bugged
   vars:

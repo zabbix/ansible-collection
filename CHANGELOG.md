@@ -1,3 +1,15 @@
+# v1.3.0
+
+## Feature
+
+- `agent` role: decomposed repository tasks to separate dependent role
+- `agent` role: apt cache update from package state task to `repository`` role
+- `repository` role: added dependent role for repository customization
+
+## Bug
+
+- `agent` role: fixed repository mirror
+
 # v1.2.5
 
 ## Bug

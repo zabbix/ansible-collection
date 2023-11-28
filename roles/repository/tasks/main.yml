@@ -1,0 +1,7 @@
+---
+- name: 'Variables : Include system and distribution specific'
+  ansible.builtin.include_vars: '{{ ansible_os_family | lower }}.yml'
+  tags: [deploy, remove]
+- name: Include OS packager(yum/apt) specific tasks
+  ansible.builtin.include_tasks: '{{ ansible_os_family | lower }}.yml'
+  tags: [deploy, remove]

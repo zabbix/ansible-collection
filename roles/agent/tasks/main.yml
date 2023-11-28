@@ -8,7 +8,6 @@
       become_method: {{ ansible_become_method }}
       agent_logrotate_path: {{ agent_logrotate_path }}
       agent_param_include: {{ agent_param_include }}
-      agent_map_os_transition: {{ agent_map_os_transition }}
   tags: [never, debug]
 
 - name: Supported OS and agent version control
