@@ -10,20 +10,11 @@
       agent_param_include: {{ agent_param_include }}
   tags: [never, debug]
 
-- name: Supported OS and agent version control
+- name: 'Assert : Variables validation'
   ansible.builtin.assert:
     that:
-      - agent_internal_supported_os is true
-      - agent_major_version | string in ['6.0', '6.4']
       - agent_package_state in ["present", "latest"]
     quiet: true
-  vars:
-    agent_internal_supported_os: '{{
-        agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution] is defined
-        and agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version] is defined
-        and ansible_distribution_version
-          is regex(agent_map_supported_os_version[ansible_architecture][ansible_system][ansible_distribution][ansible_distribution_major_version])
-      }}'
   tags: [assert, deploy, config]
 
 # - name: Assert TLS files or settings

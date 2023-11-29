@@ -13,3 +13,4 @@
         # public: true
       vars:
         agent_verification: true
+      tags: verify

@@ -51,3 +51,24 @@ repository_map_gpg_key:
   '7': 'RPM-GPG-KEY-ZABBIX-A14FE591'
   '8': 'RPM-GPG-KEY-ZABBIX-A14FE591'
   '9': 'RPM-GPG-KEY-ZABBIX-08EFA7DD'
+
+### used for repository base url
+repository_map_os_to_url:
+  '6.0':
+    'RedHat': 'rhel'
+    'OracleLinux': 'rhel'
+    'AlmaLinux': 'rhel'
+    'Rocky': 'rhel'
+    'CentOS': 'rhel'
+  '6.4':
+    'RedHat': 'rhel'
+    'OracleLinux': 'rhel'
+    'AlmaLinux': 'rhel'
+    'Rocky': 'rhel'
+    'CentOS': 'rhel'
+  '6.5':
+    'RedHat': 'rhel'
+    'OracleLinux': 'oracle'
+    'AlmaLinux': 'alma'
+    'Rocky': 'rocky'
+    'CentOS': 'centos'
