@@ -1,17 +1,4 @@
 ---
-- name: Debug
-  ansible.builtin.debug:
-    var:  repository_map_supported_os_version
-- name: Debug
-  ansible.builtin.debug:
-    var:  repository_map_supported_os_version[repository_version | string]
-- name: Debug
-  ansible.builtin.debug:
-    var:  repository_map_supported_os_version[repository_version | string][ansible_architecture]
-- name: Debug
-  ansible.builtin.debug:
-    var:  repository_map_supported_os_version[repository_version | string][ansible_architecture][ansible_distribution]
-
 - name: 'Assert : Supported version control'
   ansible.builtin.assert:
     that:
