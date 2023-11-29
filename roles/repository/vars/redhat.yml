@@ -7,7 +7,7 @@ repository_gpg_key: '{{ ("https://" if repository_url | regex_search("^http(|s):
               else repository_map_gpg_key[ansible_distribution_major_version]) }}'
 repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
           + repository_url + "/zabbix/" + repository_version | string + "/"
-          + repository_map_os_to_url[repository_version][ansible_distribution] + "/"
+          + repository_map_os_to_url[repository_version | string][ansible_distribution] + "/"
           + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
             if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
               else ansible_distribution_major_version | string)
