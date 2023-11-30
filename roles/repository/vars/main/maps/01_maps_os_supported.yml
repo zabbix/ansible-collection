@@ -2,7 +2,7 @@
 ### Supported OS version map
 ##
 ## minor versions compared using regex: '.*' - any minor
-repository_map_supported_os_version:
+repository_map_os_support:
   '6.0':
     x86_64:
       RedHat:

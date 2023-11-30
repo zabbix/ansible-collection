@@ -6,14 +6,17 @@
     quiet: true
   vars:
     repository_internal_supported_os: '{{
-        repository_map_supported_os_version[repository_version | string][ansible_architecture][ansible_distribution] is defined
-        and repository_map_supported_os_version[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version] is defined
+        repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution]
+          is defined
+        and repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version]
+          is defined
         and ansible_distribution_version
-          is regex(repository_map_supported_os_version[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version])
+          is regex(repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version])
       }}'
   tags: [assert, deploy, config, remove]
 
 - name: Resolve repository conflict
+  tags: [deploy]
   block:
     - name: 'Package : Remove "zabbix-release" package to avoid conflict'
       become: true
@@ -36,7 +39,6 @@
         name: zabbix-release
         state: absent
         purge: '{{ true if ansible_os_family == "Debian" else omit }}'
-  tags: [deploy]
 
 - name: 'Variables : Include system and distribution specific'
   ansible.builtin.include_vars: '{{ ansible_os_family | lower }}.yml'
