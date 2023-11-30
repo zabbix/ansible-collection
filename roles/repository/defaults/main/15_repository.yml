@@ -7,6 +7,6 @@ repository_description: 'Zabbix repository source (Ansible managed)'
 repository_url: 'https://repo.zabbix.com'
 ### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)
 ### integer: 1-99
-repository_priority: false # !!
+repository_priority: 98 # !!
 ### disable/enable gpg check for rhel based os
 repository_gpg_check: true

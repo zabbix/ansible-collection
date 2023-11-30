@@ -3,6 +3,6 @@
 agent_repository_mirror: "https://repo.zabbix.com/"
 ### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)
 ### integer: 1-99
-agent_repository_priority: false
+agent_repository_priority: 98
 ### Disable repository during package installation
-agent_repository_disable: "*epel*"
+agent_repository_disable: "epel"
