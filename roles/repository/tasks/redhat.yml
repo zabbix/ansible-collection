@@ -36,7 +36,8 @@
     baseurl: '{{ repository_baseurl }}'
     gpgcheck: '{{ repository_gpg_check }}'
     gpgkey: '{{ repository_gpg_key }}'
-    priority: '{{ repository_priority | default(omit) }}'
+    priority: '{{ repository_priority if (repository_priority is defined and repository_priority)
+                  else omit }}'
     # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
     enabled: true
     # sslverify: true
