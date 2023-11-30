@@ -5,8 +5,12 @@
 - `repository` role: added 6.5 version
 - `repository` role: added aarch support for multiple distros
 - `repository` role: moved and updated os version assert  
+- `repository` role: increased repository priority defaults
 
 # v1.3.2
+
+- `agent` role: removed wildcards from agent_disable_repository for yum
+- `repository` role: fixed priority handling for yum
 
 ## Feature
 

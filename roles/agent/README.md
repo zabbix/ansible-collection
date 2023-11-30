@@ -119,8 +119,8 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | agent_https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | agent_repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
-| agent_repository_priority | `int` || **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
-| agent_repository_disable | `string` | "\*epel\*" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
+| agent_repository_priority | `int` | 99 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
+| agent_repository_disable | `string` | "epel" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
 
 ### User settings:
 

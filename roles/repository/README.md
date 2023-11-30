@@ -65,10 +65,10 @@ Role variables
 |--|--|--|--|
 | repository_version | `string` | 6.0 | The major version of Zabbix. Defaults to the latest LTS.
 | repository_state | `string` | present | The state of the repository. Use 'present' to ensure repository presence. And 'absent' to remove the repository.
-| repository_http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
+| repository_http_proxy | `string` || Defines HTTP proxy address for the packager.
 | repository_https_proxy | `string` || Defines HTTPS proxy address for the packager.
 | repository_url | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
-| repository_priority | `int` || **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
+| repository_priority | `int` | 98 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
 
 Tags
 -----
