@@ -1,17 +1,42 @@
 ---
+- name: 'RaspberryPIE check'
+  when: ansible_os_family == "Debian"
+  ansible.builtin.lineinfile:
+    path: /proc/kallsyms
+    regexp: raspberrypi
+    state: absent ## check mode prevents this 
+  check_mode: true ## cmd overrides does not affect this
+  register: repository_internal_raspberry_check
+  tags: [deploy]
+
+- name: 'Override fact for RaspberryPIE devices: ansible_distribution'
+  when: >-
+    repository_internal_raspberry_check is defined
+    and repository_internal_raspberry_check.changed
+  ansible.builtin.set_fact:
+    ansible_distribution: Raspbian
+  tags: [deploy]
+
 - name: 'Assert : Supported version control'
   ansible.builtin.assert:
     that:
       - repository_internal_supported_os is true
     quiet: true
   vars:
+    repository_internal_dversion: '{{ ansible_distribution_version if ansible_distribution == "Ubuntu"
+        else ansible_distribution_major_version }}' 
     repository_internal_supported_os: '{{
-        repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution]
-          is defined
-        and repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version]
-          is defined
-        and ansible_distribution_version
-          is regex(repository_map_os_support[repository_version | string][ansible_architecture][ansible_distribution][ansible_distribution_major_version])
+        ansible_architecture
+          in repository_map_os_support[ansible_distribution][repository_internal_dversion][repository_version | string]
+        if (
+          repository_map_os_support[ansible_distribution]
+            is defined
+          and repository_map_os_support[ansible_distribution][repository_internal_dversion]
+            is defined
+          and repository_map_os_support[ansible_distribution][repository_internal_dversion][repository_version | string]
+            is defined
+        )
+        else False
       }}'
   tags: [assert, deploy, config, remove]
 
