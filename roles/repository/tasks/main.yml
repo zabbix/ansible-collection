@@ -26,6 +26,7 @@
 - name: 'Override fact for RaspberryPIE devices: ansible_distribution'
   when: >-
     repository_internal_raspberry_check is defined
+    and repository_internal_raspberry_check.matched is defined
     and repository_internal_raspberry_check.matched
   ansible.builtin.set_fact:
     ansible_distribution: Raspbian
