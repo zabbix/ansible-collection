@@ -84,14 +84,17 @@ repository_map_os_support:
       '6.5': ["x86_64", "aarch64"]
   Raspbian:
     '9':
-      '6.0': ["armv6l"]
-      '6.4': ["armv6l"]
-      '6.5': ["armv6l"]
+      '6.0': ["armv6l", "armv7l"]
+      '6.4': ["armv6l", "armv7l"]
+      '6.5': ["armv6l", "armv7l"]
     '10':
-      '6.0': ["armv6l"]
-      '6.4': ["armv6l"]
-      '6.5': ["armv6l"]
+      '6.0': ["armv6l", "armv7l"]
+      '6.4': ["armv6l", "armv7l"]
+      '6.5': ["armv6l", "armv7l"]
     '11':
-      '6.0': ["armv6l"]
-      '6.4': ["armv6l"]
-      '6.5': ["armv6l"]
+      '6.0': ["armv6l", "armv7l", "aarch64"]
+      '6.4': ["armv6l", "armv7l", "aarch64"]
+      '6.5': ["armv6l", "armv7l", "aarch64"]
+    '12':
+      '6.0': ["armv6l", "armv7l", "aarch64"]
+      '6.5': ["armv6l", "armv7l", "aarch64"]
