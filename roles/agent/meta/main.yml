@@ -52,9 +52,9 @@ galaxy_info:
 
 dependencies:
   - role: zabbix.zabbix.repository
-    repository_version: '{{ agent_major_version }}'
-    repository_state: '{{ agent_package_state }}'
-    repository_url: '{{ agent_repository_mirror }}'
-    repository_priotity: '{{ agent_repository_priority }}'
-    repository_http_proxy: '{{ agent_http_proxy }}'
-    repository_https_proxy: '{{ agent_https_proxy }}'
+    repository_version: '{{ agent_major_version | default(None) }}'
+    repository_state: '{{ agent_package_state | default(None) }}'
+    repository_url: '{{ agent_repository_mirror | default(None) }}'
+    repository_priotity: '{{ agent_repository_priority | default(None) }}'
+    repository_http_proxy: '{{ agent_http_proxy | default(None) }}'
+    repository_https_proxy: '{{ agent_https_proxy | default(None) }}'
