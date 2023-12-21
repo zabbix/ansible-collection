@@ -1,3 +1,13 @@
+# v1.3.4
+
+## Feature
+
+- `repository` role: added raspberry pi support
+
+## Bug
+
+- `agent` role: fixed role dependency for ansible-core 2.13
+
 # v1.3.3
 
 ## Feature
