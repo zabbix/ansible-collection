@@ -23,7 +23,7 @@
      and agent_source_tlscafile is defined)
   ansible.builtin.include_vars: tls_cert_parameters.yml
 
-- name: 'Import vars: Custom user overrrides'
+- name: 'Import vars: Custom user overrides'
   when: agent_verification is defined and agent_verification and agent_service_user != "zabbix"
   ansible.builtin.include_vars: custom_user_overrides.yml
 

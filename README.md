@@ -42,7 +42,7 @@ Modules:
   - [**zabbix_host**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#host-module) - Ansible module for Zabbix hosts management (uses [**HTTP API**](https://github.com/zabbix/ansible-collection/blob/main/plugins/README.md#http-api-plugin) plugin).
 
 Rulebooks:
-  - [**zabbix.zabbix.example**](https://github.com/zabbix/ansible-collection/blob/main/extensions/eda/rulebooks/README.md) - Ansible rulebook example for remediation of issues, detected by Zabbix.
+  - [**zabbix.zabbix.example**](https://github.com/zabbix/ansible-collection/blob/main/extensions/eda/rulebooks) - Ansible rulebook example for remediation of issues, detected by Zabbix.
 
 ## Related content
 
