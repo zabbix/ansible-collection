@@ -1,3 +1,10 @@
+# v1.3.5
+
+## Feature
+
+- rulebook and playbook examples for Zabbix - EDA sequence
+- event update with message added to modules
+
 # v1.3.4
 
 ## Feature
