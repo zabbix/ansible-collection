@@ -2,7 +2,7 @@
 - name: Example1_agentd_activeonly
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       agent_remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
@@ -15,7 +15,7 @@
 - name: Example2_agentd_activeonly
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       agent_remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
@@ -33,7 +33,7 @@
 - name: Example3_psk_autoreg
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       agent_remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
@@ -50,7 +50,7 @@
 - name: Example4_cert
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       agent_remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
@@ -71,7 +71,7 @@
 - name: Example5_agent2_MongoDB
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       agent_remove_previous_packages: true
       report_path: '/tmp/examples_verify_zabbix_agent.report'
@@ -97,7 +97,7 @@
 - name: Example6_agentd_downgrade
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       report_path: '/tmp/examples_verify_zabbix_agent.report'
       test_name: '{{ ansible_play_name }}'
@@ -111,7 +111,7 @@
 - name: Example7_custom_user
   hosts: all
   roles:
-    - role: zabbix_agent
+    - role: agent
       #######################################
       report_path: '/tmp/examples_verify_zabbix_agent.report'
       test_name: '{{ ansible_play_name }}'
@@ -121,7 +121,7 @@
       agent_param_server: ::/0         # address of Zabbix server to accept connections from;
       agent_param_serveractive: 192.168.64.1   # address of Zabbix server to connect using active checks;
       agent_param_hostmetadata: '{{ group_names | join(",") }}'   # concatenate group list to the string;
-      agent_service_$1 dor               # if service_user is not "zabbix" multiple changes are applied
-      agent_service_$1 blue
-      agent_service_$1 1115
-      agent_service_$1 1115
+      agent_service_user: dor               # if agent_service_user is not "zabbix", multiple changes are applied
+      agent_service_group: blue
+      agent_service_uid: 1115
+      agent_service_gid: 1115
