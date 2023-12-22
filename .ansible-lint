@@ -5,6 +5,8 @@ exclude_paths:
   - molecule
   - .github
   - roles/zabbix_agent
+  - playbooks/example_dummy.yml
+  - playbooks/example_oci_volume_extend.yml
 #  - tests
 profile: production
 

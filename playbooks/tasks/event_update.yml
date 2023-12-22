@@ -1,0 +1,16 @@
+---
+- name: Event update
+  delegate_to: '{{ event_zabbix_api_server }}'
+  zabbix.zabbix.zabbix_event:
+    action: message
+    ids: '{{ event_ids }}'
+    msg: '{{ event_message }}'
+  vars:
+    ansible_connection: httpapi
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_httpapi_port: '{{ event_zabbix_api_port }}'
+    zabbix_api_token: '{{ event_zabbix_api_token if event_zabbix_api_token is defined else None }}'
+    ansible_user: '{{ event_zabbix_api_user if event_zabbix_api_token is not defined else None }}'
+    ansible_httpapi_pass: '{{ event_zabbix_api_password if event_zabbix_api_token is not defined else None }}'
+    ansible_httpapi_use_ssl: '{{ event_zabbix_api_use_ssl | default("False") }}'
+    ansible_httpapi_validate_certs: '{{ event_zabbix_api_validate_certs | default("False") }}'

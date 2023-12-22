@@ -1,0 +1,61 @@
+---
+- name: Rulebook example
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: '{{ webhook_port | default(5001) }}'
+  rules:
+    - name: Extend Boot volume for OCI OracleLinux Instance
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and "oci" in event.payload.host_groups
+        and event.payload.trigger_name is search("Disk space is low")
+        and event.payload.event_tags.filesystem is select("==", "/")
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_oci_volume_extend
+    - name: Force log rotation
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and event.payload.trigger_name is search("Disk space is low")
+        and event.payload.event_tags.filesystem is select("==", "/var/log")
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_dummy
+    - name: Renew Website Certificate
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and (event.payload.trigger_name is search("Cert: SSL certificate expires soon")
+              or event.payload.trigger_name is search("Cert: SSL certificate is invalid"))
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_dummy
+    - name: Restart Nginx Service
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and event.payload.trigger_name is search("Nginx: Service is down")
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_dummy
+    - name: Reapply Zabbix agent state
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and event.payload.trigger_name is search("Linux: Zabbix agent is not available")
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_dummy
+    - name: Reapply Zabbix frontend state
+      condition: >-
+        event.payload.event_tags.remediation is defined
+        and event.payload.trigger_name is search("Web scenario: Zabbix frontend is not available")
+      action:
+        run_playbook:
+          name: zabbix.zabbix.example_dummy
+    - name: Show event data
+      condition: >-
+        event.payload is defined
+        and event.payload.event_tags.remediation is defined
+      action:
+        print_event:
+          pretty: true

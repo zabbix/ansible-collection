@@ -1,0 +1,37 @@
+---
+- name: Example of remediation action
+  gather_facts: false
+  hosts: '{{ ansible_eda.event.payload.host_host }}'
+  vars:
+    event_ids: '{{ ansible_eda.event.payload.event_id }}'
+    ### --------------- Zabbix API credentials should be placed in Vault -------------
+    # event_zabbix_api_server: 127.0.0.1
+    # event_zabbix_api_port: 8060
+    # # event_zabbix_api_token: some_token
+    # event_zabbix_api_user: EDA
+    # event_zabbix_api_password: some_password
+    ### ------------------------------------------------------------------------------
+  pre_tasks:
+    - name: Import Event update tasks
+      ansible.builtin.include_tasks: tasks/event_update.yml
+      vars:
+        event_message: "EDA : Starting remediation"
+  tasks:
+    - block:
+        - name: Import OCI volume extend tasks
+          ansible.builtin.include_tasks: tasks/volume_extend.yml
+          vars:
+            size_multiplier: 1.1
+            size_increment: 1
+        - name: Set remediation state
+          ansible.builtin.set_fact:
+            remediation_state: SUCCESS
+      rescue:
+        - name: Set remediation state
+          ansible.builtin.set_fact:
+            remediation_state: FAILED
+      always:
+        - name: Import Event update task
+          ansible.builtin.include_tasks: tasks/event_update.yml
+          vars:
+            event_message: "EDA : Remediation state : {{ remediation_state }}"
