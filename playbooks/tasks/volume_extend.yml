@@ -1,0 +1,61 @@
+---
+- name: Gather facts
+  ansible.builtin.setup:
+
+- name: Assert OS version
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "OracleLinux"
+      - ansible_distribution_major_version | string in ["8", "9"]
+    fail_msg: Unsupported OS
+    success_msg: OS check passed
+
+- name: Get boot volume attachment info
+  delegate_to: localhost
+  oracle.oci.oci_compute_boot_volume_attachment_facts:
+    compartment_id: '{{ compartment_id }}'
+    instance_id: '{{ id }}'
+    availability_domain: '{{ availability_domain }}'
+  register: boot_volume_attachment_info
+
+- name: Set Boot Volume OCID
+  ansible.builtin.set_fact:
+    boot_volume_id: '{{ boot_volume_attachment_info.boot_volume_attachments[0].boot_volume_id }}'
+
+- name: Get boot volume attachment info
+  delegate_to: localhost
+  oracle.oci.oci_blockstorage_boot_volume_facts:
+    compartment_id: '{{ compartment_id }}'
+    boot_volume_id: '{{ boot_volume_id }}'
+  register: boot_volume_info
+
+- name: Set new boot volume size
+  ansible.builtin.set_fact:
+    new_boot_volume_size: '{{ (boot_volume_info.boot_volumes[0].size_in_gbs * size_multiplier + size_increment) | round | int }}'
+
+- name: Extend Boot Volume
+  delegate_to: localhost
+  oracle.oci.oci_blockstorage_boot_volume:
+    compartment_id: '{{ compartment_id }}'
+    boot_volume_id: '{{ boot_volume_id }}'
+    size_in_gbs: '{{ new_boot_volume_size }}'
+    wait: true
+  register: extend_boot_volume_result
+
+- name: Rescan disk
+  become: true
+  ansible.builtin.shell: |
+    dd iflag=direct if=/dev/oracleoci/oraclevda of=/dev/null count=1
+    echo "1" | sudo tee /sys/class/block/`readlink /dev/oracleoci/oraclevda | cut -d'/' -f 2`/device/rescan
+  args:
+    executable: /bin/bash
+
+- name: Grow FS
+  become: true
+  register: register_growfs
+  ansible.builtin.command: /usr/libexec/oci-growfs -y
+  changed_when: register_growfs.stdout | regex_search("CHANGED", ignorecase=False) is not none
+
+- name: New size of boot volume
+  ansible.builtin.debug:
+    var: new_boot_volume_size
