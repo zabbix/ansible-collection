@@ -6,7 +6,6 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-import json
 
 DOCUMENTATION = r'''
 ---
@@ -31,9 +30,10 @@ options:
         elements: str
         required: true
         aliases: [ eventids, event_ids ]
-    message:
+    msg:
         description: Update event with message
         type: str
+        required: true
 '''
 
 EXAMPLES = r'''
@@ -42,7 +42,7 @@ EXAMPLES = r'''
   zabbix.zabbix.zabbix_event:
     action: message
     ids: ["2222"]
-    message: "Hello world"
+    msg: "Hello world"
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
@@ -54,6 +54,7 @@ RETURN = r""" # """
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.zabbix.zabbix.plugins.module_utils.zabbix_api import ZabbixApi
+
 
 class Event(object):
 
@@ -86,19 +87,20 @@ class Event(object):
 
         return [str(elem) for elem in result["eventids"]]
 
+
 def main():
     """entry point for module execution"""
     spec = {
         'action': {
             'type': 'str',
             'default': 'message',
-            'choices': ['message', 'severity']},
+            'choices': ['message']},
         'ids': {
             'type': 'list',
             'elements': 'str',
-            'aliases': ['event_ids','eventids'],
+            'aliases': ['event_ids', 'eventids'],
             'required': True},
-        'message': {
+        'msg': {
             'type': 'str',
             'required': True}}
 
@@ -108,7 +110,7 @@ def main():
 
     action = module.params['action']
     ids = module.params['ids']
-    message = module.params['message']
+    message = module.params['msg']
 
     event = Event(module)
 
@@ -126,6 +128,7 @@ def main():
                 result="Failed updating events")
     else:
         pass
+
 
 if __name__ == '__main__':
     main()
