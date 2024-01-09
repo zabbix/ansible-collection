@@ -40,7 +40,7 @@
                   else omit }}'
     # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
     enabled: true
-    # sslverify: true
+    sslverify: '{{ repository_sslverify }}'
   environment:
     http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'

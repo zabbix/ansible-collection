@@ -10,3 +10,4 @@ repository_url: 'https://repo.zabbix.com'
 repository_priority: 98 # !!
 ### disable/enable gpg check for rhel based os
 repository_gpg_check: true
+repository_sslverify: true
