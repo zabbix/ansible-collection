@@ -2,6 +2,8 @@
 
 ## Bug
 
+- `repository role`: added sslverify option
+- `agent role`: changed system home folder of zabbix user for rhel-like os
 - molecule default scenario fixes
 - lint fixes
 
