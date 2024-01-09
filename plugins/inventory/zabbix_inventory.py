@@ -340,7 +340,7 @@ zabbix_user: Admin
 zabbix_password: zabbix
 filter:
   hostgroups: Linux
-cache: yes
+cache: true
 cache_plugin: jsonfile
 cache_timeout: 7200
 cache_connection: /tmp/zabbix_inventory
@@ -354,7 +354,7 @@ plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
-cache: yes
+cache: true
 cache_plugin: jsonfile
 cache_timeout: 7200
 cache_connection: /tmp/zabbix_inventory

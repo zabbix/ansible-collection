@@ -4,14 +4,14 @@ exclude_paths:
 #  - molecule/agentd_cert_selfmanaged/
   - molecule
   - .github
-  - roles/zabbix_agent
-  - playbooks/example_dummy.yml
-  - playbooks/example_oci_volume_extend.yml
+  - roles/zabbix_agent # deprecated role
+  - playbooks/example_dummy.yml # uses vars from EDA (undefined)
+  - playbooks/example_oci_volume_extend.yml # uses vars from EDA (undefined)
 #  - tests
 profile: production
 
 # skip_list:
 #  - var-naming[no-role-prefix]
 warn_list:
-  - yaml[key-duplicates]
+  - yaml[key-duplicates] # multiple examples in inventory plugin
   - no-handler

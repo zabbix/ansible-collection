@@ -46,14 +46,15 @@
     #   # when: ansible_distribution == 'Ubuntu'
     #   when: ansible_os_family == 'Debian'
 
-    # - name: 'Prepare containers : {{ list_of_additional_soft }}'
-    #   ansible.builtin.package:
-    #     name: '{{ list_of_additional_soft }}'
-    #     state: present
-    #   vars:
-    #     list_of_additional_soft:
-    #       - util-linux
-    #       # - vim
+    - name: 'Prepare containers : {{ list_of_additional_soft | select }}'
+      ansible.builtin.package:
+        name: '{{ list_of_additional_soft | select }}'
+        state: present
+      vars:
+        list_of_additional_soft:
+          - '{{ "python3-apt" if ansible_os_family == "Debian" else None }}'
+          # - util-linux
+          # - vim
 
     # - name: 'Prepare containers : firewalld'
     #   ansible.builtin.package:

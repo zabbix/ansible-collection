@@ -1,3 +1,10 @@
+# v1.3.6
+
+## Bug
+
+- molecule default scenario fixes
+- lint fixes
+
 # v1.3.5
 
 ## Feature

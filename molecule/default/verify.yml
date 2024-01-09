@@ -1,16 +1,28 @@
 ---
-### Verify playbook does not inherit role defaults and vars. To make it happen import the role tasks.
 - name: Verify
   hosts: all
+  tags: verify
   tasks:
 
-    - name: Import defaults, vars and verification tasks from zabbix_agent role
-      when: >-
-        "remove" not in ansible_run_tags
-      ansible.builtin.include_role:
-        name: agent
-        tasks_from: verify
-        # public: true
+    - name: Gather the package facts
+      become: true
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Print the package facts
+      ignore_errors: true
+      ansible.builtin.debug:
+        var: ansible_facts.packages["{{ agent_internal_bin_file }}"]
+        # var: ansible_facts.packages.{{ agent_internal_bin_file }}
       vars:
-        agent_verification: true
-      tags: verify
+        agent_internal_bin_file: 'zabbix-agent{{ "2" if (agent_variant is defined and agent_variant | string == "2") else "" }}'
+
+    - name: 'Systemd : Gather status'
+      ignore_errors: true
+      become: true
+      ansible.builtin.systemd:
+        name: zabbix-agent
+      register: agent_register_systemd_info
+    - name: Print the package facts
+      ansible.builtin.debug:
+        # var: agent_register_systemd_info.status.SubState
+        var: agent_register_systemd_info.status.SubState

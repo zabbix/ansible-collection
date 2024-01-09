@@ -279,7 +279,7 @@ EXAMPLES = r'''
     state: present
     host: Example host
     hostgroups:
-     - Linux servers
+      - Linux servers
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
@@ -416,15 +416,15 @@ EXAMPLES = r'''
     state: present
     host: Example host
     hostgroups:
-     - Linux servers
+      - Linux servers
   vars:
     # Connection parameters
     ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
     ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
     ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
     ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
-    ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
+    ansible_httpapi_use_ssl: false              # Specifying the type of connection. True for https, False for http (by default).
+    ansible_httpapi_validate_certs: false       # Specifying certificate validation.
     # User parameters for connecting to Zabbix API
     ansible_user: Admin                         # Username to connect to Zabbix API.
     ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
