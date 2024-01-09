@@ -37,7 +37,7 @@ agent_map_service_user:
   Linux: zabbix
 agent_map_service_user_home:
   Debian: /var/lib/zabbix/
-  RedHat: /usr/lib/zabbix/
+  RedHat: /var/lib/zabbix/
 agent_map_default_home_folder:
   Linux: /home/
 agent_map_service_group:
