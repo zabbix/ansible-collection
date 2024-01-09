@@ -44,7 +44,9 @@
 
 - name: Rescan disk
   become: true
+  changed_when: true
   ansible.builtin.shell: |
+    set -o pipefail
     dd iflag=direct if=/dev/oracleoci/oraclevda of=/dev/null count=1
     echo "1" | sudo tee /sys/class/block/`readlink /dev/oracleoci/oraclevda | cut -d'/' -f 2`/device/rescan
   args:
