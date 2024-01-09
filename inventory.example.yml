@@ -1,0 +1,20 @@
+---
+plugin: zabbix.zabbix.zabbix_inventory
+
+zabbix_api_url: 'http://localhost:8070'
+zabbix_user: 'Admin'
+zabbix_password: 'zabbix'
+
+################
+
+query:
+  selectHostGroups: ['name']
+  selectInterfaces: ['ip', 'dns', 'useip']
+
+keyed_groups:
+  - key: zabbix_hostgroups | map(attribute='name')
+    separator: ''
+
+compose:
+  ansible_host: 'zabbix_interfaces[0].ip if zabbix_interfaces[0].useip | bool
+                  else zabbix_interfaces[0].dns'
