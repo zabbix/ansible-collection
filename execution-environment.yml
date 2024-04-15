@@ -1,0 +1,36 @@
+### build and run
+# ansible-builder build -t custom-ee -v3
+# ansible-navigator run play.yml -i inv.yml --eei custom-ee --pull-policy missing --mode stdout
+### Ansible navigator mounts current folder to container
+### add private keys using ssh-agent:
+# ssh-add ~/.ssh/your_key
+# ssh-add -L ## list keys
+version: 3
+dependencies:
+  ansible_core:
+    package_pip: ansible-core==2.15
+  ansible_runner:
+    package_pip: ansible-runner
+  galaxy:
+    collections:
+      - name: zabbix.zabbix
+        version: '>=1.3.6'
+      - name: ansible.utils
+        version: '>=2.8.0'
+      - name: ansible.posix
+        version: '>=1.4.0'
+      - name: ansible.netcommon
+        version: '>=3.1.1'
+  python_interpreter:
+    package_system: "python311"
+    python_path: "/usr/bin/python3.11"
+  python:
+      - netaddr>=0.8
+      - Jinja2==3.1.2
+  system:
+    - openssl
+    # - openssh-clients
+
+images:
+  base_image:
+    name: quay.io/centos/centos:stream9
