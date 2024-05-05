@@ -15,13 +15,22 @@
   delay: 3
   register: agent_register_packages_state
   ansible.builtin.apt:
-    name: '{{ agent_package_list }}'
+    name: '{{ agent_internal_package_list }}'
     state: '{{ agent_package_state }}'
     # do not trigger service start
     policy_rc_d: 101
     ## update cache before installing
     # cache_valid_time: '{{ 0 if repository_register_update_cache.changed else omit }}'
     # update_cache: '{{ true if repository_register_update_cache.changed else omit }}'
+  vars:
+    agent_internal_distribution_version: '{{ ansible_distribution_version if ansible_distribution == "Ubuntu"
+        else ansible_distribution_major_version }}'
+    agent_internal_package_suffix: '{{ agent_major_version + "." + agent_minor_version
+        + "+" + ansible_distribution | lower + agent_internal_distribution_version }}'
+    agent_internal_package_list: "{{
+            agent_package_list if (agent_minor_version is not defined or not agent_minor_version)
+            else agent_package_list | map('regex_replace', '^(.*)$', '\\1=1:'
+              + agent_internal_package_suffix) }}"
   environment:
     http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'

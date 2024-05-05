@@ -1,6 +1,9 @@
 # v1.3.7
 
 ## Feature
+
+- `agent role`: added minor version for debian-like distributions
+
 ## Bug
 
 # v1.3.6
