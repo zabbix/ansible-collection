@@ -21,6 +21,7 @@ platforms:
       - podman
       - linux
       - rhel
+      - yum
 
   - name: podman_cs9
     dockerfile: ../default/files/Dockerfile.rhel.j2
@@ -45,6 +46,7 @@ platforms:
       - podman
       - linux
       - centos
+      - yum
 
   - name: podman_ora9
     dockerfile: ../default/files/Dockerfile.rhel.j2
@@ -69,6 +71,7 @@ platforms:
       - podman
       - linux
       - oracle
+      - yum
 
   - name: podman_alma9
     dockerfile: ../default/files/Dockerfile.rhel.j2
@@ -91,6 +94,7 @@ platforms:
       - podman
       - linux
       - alma
+      - yum
 
   - name: podman_rocky9
     dockerfile: ../default/files/Dockerfile.rhel.j2
@@ -113,6 +117,7 @@ platforms:
       - podman
       - linux
       - rocky
+      - yum
 
   - name: podman_ubuntu22
     dockerfile: ../default/files/Dockerfile.ubuntu.j2
@@ -135,6 +140,7 @@ platforms:
       - podman
       - linux
       - ubuntu
+      - apt
 
   - name: podman_debian12
     image: docker.io/library/debian:12
@@ -157,3 +163,4 @@ platforms:
       - podman
       - linux
       - debian
+      - apt

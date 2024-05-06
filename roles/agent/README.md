@@ -113,7 +113,7 @@ The default settings are aimed at the ease of installation. You can override tho
 |--|--|--|--|
 | agent_variant | `int` | 1 | The variant of Zabbix agent (1: Zabbix agentd, 2: Zabbix agent 2).
 | agent_major_version | `string` | 6.0 | The major version of Zabbix agent. Defaults to the latest LTS.
-| agent_minor_version | `string` || Zabbix agent minor version customization is available for **RedHat-based OS only**.
+| agent_minor_version | `string` || Zabbix agent minor version customization. For downgrade use with `agent_remove_previous_packages=true`. Minor version example for debian family distributions: `25-1` (minor version - package version). For RHEL family: `25` (minor version). In both cases minor version will be applied to all packages in `agent_package_list`.
 | agent_package_state | `string` | present | The state of packages to be deployed. Available options: `present`, `latest` - update to the latest version if available in the installed **zabbix-managed** repository.
 | agent_remove_previous_packages | `boolean` | `false` | Trigger removal of previous packages prior to the installation of the new ones. Mandatory to deploy earlier version than the one currently installed.
 | agent_2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent 2 plugins to configure and deploy (if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent 2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent 2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
