@@ -6,6 +6,8 @@
 
 ## Bug
 
+- fixed readme.md links
+
 # v1.3.6
 
 ## Feature
