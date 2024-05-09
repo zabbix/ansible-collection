@@ -16,9 +16,9 @@ Plugins.MQTT.Timeout={{ agent_param_plugins_mqtt_timeout }}
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Sessions.*.Url=
-{% if param_plugins_mqtt_sessions is defined and param_plugins_mqtt_sessions is iterable and param_plugins_mqtt_sessions is not string and param_plugins_mqtt_sessions is not mapping %}
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
 
-{% for session in param_plugins_mqtt_sessions %}
+{% for session in agent_param_plugins_mqtt_sessions %}
 {% if session["url"] is defined and session["url"] %}
 Plugins.MQTT.Sessions.{{ session["name"] }}.Url={{ session["url"] }}
 {% endif %}
@@ -32,9 +32,9 @@ Plugins.MQTT.Sessions.{{ session["name"] }}.Url={{ session["url"] }}
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Sessions.*.Topic=
-{% if param_plugins_mqtt_sessions is defined and param_plugins_mqtt_sessions is iterable and param_plugins_mqtt_sessions is not string and param_plugins_mqtt_sessions is not mapping %}
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
 
-{% for session in param_plugins_mqtt_sessions %}
+{% for session in agent_param_plugins_mqtt_sessions %}
 {% if session["topic"] is defined and session["topic"] %}
 Plugins.MQTT.Sessions.{{ session["name"] }}.Topic={{ session["topic"] }}
 {% endif %}
@@ -47,9 +47,9 @@ Plugins.MQTT.Sessions.{{ session["name"] }}.Topic={{ session["topic"] }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Sessions.*.User=
-{% if param_plugins_mqtt_sessions is defined and param_plugins_mqtt_sessions is iterable and param_plugins_mqtt_sessions is not string and param_plugins_mqtt_sessions is not mapping %}
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
 
-{% for session in param_plugins_mqtt_sessions %}
+{% for session in agent_param_plugins_mqtt_sessions %}
 {% if session["user"] is defined and session["user"] %}
 Plugins.MQTT.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 {% endif %}
@@ -62,9 +62,9 @@ Plugins.MQTT.Sessions.{{ session["name"] }}.User={{ session["user"] }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Sessions.*.Password=
-{% if param_plugins_mqtt_sessions is defined and param_plugins_mqtt_sessions is iterable and param_plugins_mqtt_sessions is not string and param_plugins_mqtt_sessions is not mapping %}
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
 
-{% for session in param_plugins_mqtt_sessions %}
+{% for session in agent_param_plugins_mqtt_sessions %}
 {% if session["password"] is defined and session["password"] %}
 Plugins.MQTT.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}
@@ -78,9 +78,9 @@ Plugins.MQTT.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Sessions.*.TLSCAFile=
-{% if zabbix_agent_plugins_mqtt_tls_file_list is defined and zabbix_agent_plugins_mqtt_tls_file_list is iterable and zabbix_agent_plugins_mqtt_tls_file_list is not string and zabbix_agent_plugins_mqtt_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mqtt_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
 {% if tls_file["type"] == "ca" %}
 Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
 {% endif %}
@@ -93,9 +93,9 @@ Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["targ
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Sessions.*.TLSCertFile=
-{% if zabbix_agent_plugins_mqtt_tls_file_list is defined and zabbix_agent_plugins_mqtt_tls_file_list is iterable and zabbix_agent_plugins_mqtt_tls_file_list is not string and zabbix_agent_plugins_mqtt_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mqtt_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
 {% if tls_file["type"] == "cert" %}
 Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
 {% endif %}
@@ -108,9 +108,9 @@ Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["ta
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Sessions.*.TLSKeyFile=
-{% if zabbix_agent_plugins_mqtt_tls_file_list is defined and zabbix_agent_plugins_mqtt_tls_file_list is iterable and zabbix_agent_plugins_mqtt_tls_file_list is not string and zabbix_agent_plugins_mqtt_tls_file_list is not mapping %}
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
 
-{% for tls_file in zabbix_agent_plugins_mqtt_tls_file_list %}
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
 {% if tls_file["type"] == "key" %}
 Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}
@@ -125,9 +125,9 @@ Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["tar
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Default.Url=
-{% if param_plugins_mqtt_default_url is defined and param_plugins_mqtt_default_url %}
+{% if agent_param_plugins_mqtt_default_url is defined and agent_param_plugins_mqtt_default_url %}
 
-Plugins.MQTT.Default.Url={{ param_plugins_mqtt_default_url }}
+Plugins.MQTT.Default.Url={{ agent_param_plugins_mqtt_default_url }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.Topic
@@ -138,9 +138,9 @@ Plugins.MQTT.Default.Url={{ param_plugins_mqtt_default_url }}
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Default.Topic=
-{% if param_plugins_mqtt_default_topic is defined and param_plugins_mqtt_default_topic %}
+{% if agent_param_plugins_mqtt_default_topic is defined and agent_param_plugins_mqtt_default_topic %}
 
-Plugins.MQTT.Default.Topic={{ param_plugins_mqtt_default_topic }}
+Plugins.MQTT.Default.Topic={{ agent_param_plugins_mqtt_default_topic }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.User
@@ -150,9 +150,9 @@ Plugins.MQTT.Default.Topic={{ param_plugins_mqtt_default_topic }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.User=
-{% if param_plugins_mqtt_default_user is defined and param_plugins_mqtt_default_user %}
+{% if agent_param_plugins_mqtt_default_user is defined and agent_param_plugins_mqtt_default_user %}
 
-Plugins.MQTT.Default.User={{ param_plugins_mqtt_default_user }}
+Plugins.MQTT.Default.User={{ agent_param_plugins_mqtt_default_user }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.Password
@@ -162,9 +162,9 @@ Plugins.MQTT.Default.User={{ param_plugins_mqtt_default_user }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.Password=
-{% if param_plugins_mqtt_default_password is defined and param_plugins_mqtt_default_password %}
+{% if agent_param_plugins_mqtt_default_password is defined and agent_param_plugins_mqtt_default_password %}
 
-Plugins.MQTT.Default.Password={{ param_plugins_mqtt_default_password }}
+Plugins.MQTT.Default.Password={{ agent_param_plugins_mqtt_default_password }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSCAFile
@@ -175,9 +175,9 @@ Plugins.MQTT.Default.Password={{ param_plugins_mqtt_default_password }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSCAFile=
-{% if param_plugins_mqtt_default_tlscafile is defined and param_plugins_mqtt_default_tlscafile %}
+{% if agent_param_plugins_mqtt_default_tlscafile is defined and agent_param_plugins_mqtt_default_tlscafile %}
 
-Plugins.MQTT.Default.TLScafile={{ param_plugins_mqtt_default_tlscafile }}
+Plugins.MQTT.Default.TLScafile={{ agent_param_plugins_mqtt_default_tlscafile }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSCertFile
@@ -188,9 +188,9 @@ Plugins.MQTT.Default.TLScafile={{ param_plugins_mqtt_default_tlscafile }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSCertFile=
-{% if param_plugins_mqtt_default_tlscertfile is defined and param_plugins_mqtt_default_tlscertfile %}
+{% if agent_param_plugins_mqtt_default_tlscertfile is defined and agent_param_plugins_mqtt_default_tlscertfile %}
 
-Plugins.MQTT.Default.TLScertfile={{ param_plugins_mqtt_default_tlscertfile }}
+Plugins.MQTT.Default.TLScertfile={{ agent_param_plugins_mqtt_default_tlscertfile }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSKeyFile
@@ -200,7 +200,7 @@ Plugins.MQTT.Default.TLScertfile={{ param_plugins_mqtt_default_tlscertfile }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSKeyFile=
-{% if param_plugins_mqtt_default_tlskeyfile is defined and param_plugins_mqtt_default_tlskeyfile %}
+{% if agent_param_plugins_mqtt_default_tlskeyfile is defined and agent_param_plugins_mqtt_default_tlskeyfile %}
 
-Plugins.MQTT.Default.TLSkeyfile={{ param_plugins_mqtt_default_tlskeyfile }}
+Plugins.MQTT.Default.TLSkeyfile={{ agent_param_plugins_mqtt_default_tlskeyfile }}
 {% endif %}

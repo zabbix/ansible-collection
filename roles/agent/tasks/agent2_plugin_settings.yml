@@ -85,10 +85,10 @@
 
 - name: 'Variables : Agent2 : generate list of MQTT plugin cert sources'
   when: >
-    param_plugins_mqtt_sessions is defined
-    and param_plugins_mqtt_sessions
+    agent_param_plugins_mqtt_sessions is defined
+    and agent_param_plugins_mqtt_sessions
   ansible.builtin.set_fact:
-    zabbix_agent_plugins_mqtt_tls_file_list: '{{ (zabbix_agent_plugins_mqtt_tls_file_list | default([]))
+    agent_internal_plugins_mqtt_tls_file_list: '{{ (agent_internal_plugins_mqtt_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
@@ -107,7 +107,7 @@
       }}'
   loop_control:
     label: '{{ item.name }}'
-  loop: '{{ param_plugins_mqtt_sessions }}'
+  loop: '{{ agent_param_plugins_mqtt_sessions }}'
   tags: [vars, verify, deploy, config]
 
 - name: 'Variables : Agent2 : Add loadable plugins to package list'
