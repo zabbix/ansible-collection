@@ -298,9 +298,6 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
-| param_plugins_ceph_default_apikey | `string` | [**Plugins.Ceph.Default.ApiKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | ApiKey to be used for connection. Default value used if no other is specified.
-| param_plugins_ceph_default_user | `string` | [**Plugins.Ceph.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Username to be used for connection. Default value used if no other is specified.
-| param_plugins_ceph_default_uri | `string` | [**Plugins.Ceph.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Uri to connect. Default value used if no other is specified.
 
 ### Zabbix **agent 2 Docker plugin** parameters:
 
@@ -320,9 +317,6 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
-| param_plugins_memcached_default_uri | `string` | [**Plugins.Memcached.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Uri to connect. Default value used if no other is specified.
-| param_plugins_memcached_default_user | `string` | [**Plugins.Memcached.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Username to send to protected Memcached server. Default value used if no other is specified.
-| param_plugins_memcached_default_password | `string` | [**Plugins.Memcached.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Password to send to protected Memcached server. Default value used if no other is specified.
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -351,9 +345,6 @@ Don't use both local path and final path to avoid unpredictable results!
 | param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | param_plugins_mongodb_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb | [**Plugins.MongoDB.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Path to external plugin executable. Supported since Zabbix 6.0.6.
 | param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
-| param_plugins_mongodb_default_uri | `string` || [**Plugins.MongoDB.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Uri to connect. Default value used if no other is specified.
-| param_plugins_mongodb_default_user | `string` || [**Plugins.MongoDB.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Username to send to protected MongoDB server. Default value used if no other is specified.
-| param_plugins_mongodb_default_password | `string` || [**Plugins.MongoDB.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Password to send to protected MongoDB server. Default value used if no other is specified.
 
 ### Zabbix **agent 2 MQTT plugin** parameters:
 
