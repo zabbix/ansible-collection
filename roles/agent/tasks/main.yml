@@ -365,6 +365,7 @@
   loop: '{{ agent_internal_plugins_mysql_tls_file_list | default([])
           + agent_internal_plugins_postgresql_tls_file_list | default([])
           + agent_internal_plugins_mongodb_tls_file_list | default([])
+          + agent_internal_plugins_mqtt_tls_file_list | default([])
           }}'
   tags: [deploy, config]
 
