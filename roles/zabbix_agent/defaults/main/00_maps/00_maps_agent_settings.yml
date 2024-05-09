@@ -29,8 +29,16 @@ map_agent2_plugin_list:
     - oracle
     - redis
     - smart
-    # - mongodb
-    # - postgresql
+  '6.5':
+    - ceph
+    - docker
+    - memcached
+    - modbus
+    - mqtt
+    - mysql
+    - oracle
+    - redis
+    - smart
 
 ### User and Group to run Zabbix agent under.
 map_service_user:
