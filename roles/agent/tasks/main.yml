@@ -296,10 +296,10 @@
     agent_internal_maintenance_folders:
       - '{{ agent_binary_name | upper + "/.CERT/" if agent_source_tlscafile is defined else None }}'
       - '{{ agent_binary_name | upper + "/.PSK/" if "psk" in agent_param_tlsaccept or agent_param_tlsconnect == "psk" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/MQTT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MONGODB/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MQTT/DEFAULT" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
 ## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!
@@ -366,6 +366,7 @@
           + agent_internal_plugins_postgresql_tls_file_list | default([])
           + agent_internal_plugins_mongodb_tls_file_list | default([])
           + agent_internal_plugins_mqtt_tls_file_list | default([])
+          + agent_internal_plugins_mysql_default_tls_file_list | default([])
           }}'
   tags: [deploy, config]
 

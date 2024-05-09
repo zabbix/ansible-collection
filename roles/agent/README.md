@@ -424,7 +424,9 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
 | agent_param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Time of waiting (in seconds) before unused connections are closed.
 | agent_param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
+| agent_param_plugins_mysql_customqueriespath | `string` | [**Plugins.Mysql.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Full pathname of a directory containing *.sql* files with custom queries.
 | agent_param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mysql_default | dictionary | [**Plugins.Mysql.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 Redis plugin** parameters:
 

@@ -110,6 +110,29 @@
   loop: '{{ agent_param_plugins_mqtt_sessions }}'
   tags: [vars, verify, deploy, config]
 
+- name: 'Variables : Agent2 : Default : Generate list of Mysql plugin default cert sources'
+  when: >
+    agent_internal_item is defined
+    and agent_internal_item.tlsconnect is defined
+    and agent_internal_item.tlsconnect
+  vars:
+    agent_internal_item: agent_param_plugins_mysql_default
+  ansible.builtin.set_fact:
+    agent_internal_plugins_mysql_default_tls_file_list:
+      - {"type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit),
+          "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlscafile | basename}
+      - {"type": "cert",
+          "source": agent_internal_item.source_tlscertfile | default(omit),
+          "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlscertfile | basename}
+      - {"type": "key",
+          "source": agent_internal_item.source_tlskeyfile | default(omit),
+          "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlskeyfile | basename}
+  tags: [vars, verify, deploy, config]
+
 - name: 'Variables : Agent2 : Add loadable plugins to package list'
   ansible.builtin.set_fact:
     agent_package_list: '{{ agent_package_list + (agent_internal_loadable_plugin_list | select | list) }}'
