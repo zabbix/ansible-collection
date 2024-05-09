@@ -298,6 +298,9 @@ For these settings to take effect, the plugin should be listed in [`agent2_plugi
 | param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
+| param_plugins_ceph_default_apikey | `int` | [**Plugins.Ceph.Default.ApiKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | ApiKey to be used for connection. Default value used if no other is specified.
+| param_plugins_ceph_default_user | `int` | [**Plugins.Ceph.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Username to be used for connection. Default value used if no other is specified.
+| param_plugins_ceph_default_uri | `int` | [**Plugins.Ceph.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Uri to connect. Default value used if no other is specified.
 
 ### Zabbix **agent 2 Docker plugin** parameters:
 
