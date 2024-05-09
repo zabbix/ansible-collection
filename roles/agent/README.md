@@ -347,9 +347,23 @@ Don't use both local path and final path to avoid unpredictable results!
 
 For these settings to take effect, the plugin should be listed in [`agent_2_plugin_list`](#general-settings).
 
+You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", url: "", topic: "", user: "", password: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
 | agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| param_plugins_mqtt_default_url | `string` | [**Plugins.MQTT.Default.Url**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default MQTT broker connection string; used if no value is specified in an item key or named session.
+| param_plugins_mqtt_default_topic | `string` | [**Plugins.MQTT.Default.Topic**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) |  	Default topic for MQTT subscription; used if no value is specified in an item key or named session.
+| param_plugins_mqtt_default_user | `string` | [**Plugins.MQTT.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default username for connecting to MQTT; used if no value is specified in an item key or named session.
+| param_plugins_mqtt_default_password | `string` | [**Plugins.MQTT.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default password for connecting to MQTT; used if no value is specified in an item key or named session.
+| param_plugins_mqtt_default_tlscafile | `string` | [**Plugins.MQTT.Default.TLSCAFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the top-level CA(s) certificates for peer certificate verification for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
+| param_plugins_mqtt_default_tlscertfile | `string` | [**Plugins.MQTT.Default.TLSCertFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the agent certificate or certificate chain for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
+| param_plugins_mqtt_default_tlskeyfile | `string` | [**Plugins.MQTT.Default.TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the MQTT private key for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 

@@ -299,6 +299,7 @@
       - '{{ agent_binary_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
       - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
       - '{{ agent_binary_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MQTT" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
 ## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!

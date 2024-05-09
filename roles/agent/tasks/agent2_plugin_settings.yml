@@ -83,6 +83,33 @@
   loop: '{{ agent_param_plugins_mongodb_sessions }}'
   tags: [vars, verify, deploy, config]
 
+- name: 'Variables : Agent2 : generate list of MQTT plugin cert sources'
+  when: >
+    param_plugins_mqtt_sessions is defined
+    and param_plugins_mqtt_sessions
+  ansible.builtin.set_fact:
+    zabbix_agent_plugins_mqtt_tls_file_list: '{{ (zabbix_agent_plugins_mqtt_tls_file_list | default([]))
+      + [{"session_name": item.name,
+          "type": "ca",
+          "source": item.source_tlscafile | default(omit),
+          "target": item.tlscafile if item.source_tlscafile is not defined
+            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlscafile | basename}]
+      + [{"session_name": item.name,
+          "type": "cert",
+          "source": item.source_tlscertfile | default(omit),
+          "target": item.tlscertfile if item.source_tlscertfile is not defined
+            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlscertfile | basename}]
+      + [{"session_name": item.name,
+          "type": "key",
+          "source": item.source_tlskeyfile | default(omit),
+          "target": item.tlskeyfile if item.source_tlskeyfile is not defined
+            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlskeyfile | basename}]
+      }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ param_plugins_mqtt_sessions }}'
+  tags: [vars, verify, deploy, config]
+
 - name: 'Variables : Agent2 : Add loadable plugins to package list'
   ansible.builtin.set_fact:
     agent_package_list: '{{ agent_package_list + (agent_internal_loadable_plugin_list | select | list) }}'
