@@ -1,3 +1,8 @@
+# v1.3.8
+
+## Feature
+## Bug
+
 # v1.3.7
 
 ## Feature
@@ -43,7 +48,7 @@
 
 - `repository` role: added 6.5 version
 - `repository` role: added aarch support for multiple distros
-- `repository` role: moved and updated os version assert  
+- `repository` role: moved and updated os version assert
 - `repository` role: increased repository priority defaults
 
 # v1.3.2
@@ -53,7 +58,7 @@
 
 ## Feature
 
-- `repository` role: removed "allow_insecure" option from deb822 
+- `repository` role: removed "allow_insecure" option from deb822
 
 ## Bug
 
