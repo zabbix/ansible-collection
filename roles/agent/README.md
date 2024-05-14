@@ -295,9 +295,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
-| agent_param_plugins_ceph_default_apikey | `string` | [**Plugins.Ceph.Default.ApiKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | ApiKey to be used for connection. Default value used if no other is specified.
-| agent_param_plugins_ceph_default_user | `string` | [**Plugins.Ceph.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Username to be used for connection. Default value used if no other is specified.
-| agent_param_plugins_ceph_default_uri | `string` | [**Plugins.Ceph.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Uri to connect. Default value used if no other is specified.
+| agent_param_plugins_ceph_default | `dictionary` | [**Plugins.Ceph.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ apikey: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Docker plugin** parameters:
 
@@ -317,9 +315,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
-| agent_param_plugins_memcached_default_uri | `string` | [**Plugins.Memcached.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Uri to connect. Default value used if no other is specified.
-| agent_param_plugins_memcached_default_user | `string` | [**Plugins.Memcached.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Username to send to protected Memcached server. Default value used if no other is specified.
-| agebnt_param_plugins_memcached_default_password | `string` | [**Plugins.Memcached.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Password to send to protected Memcached server. Default value used if no other is specified.
+| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -348,9 +344,7 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_mongodb_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb | [**Plugins.MongoDB.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Path to external plugin executable. Supported since Zabbix 6.0.6.
 | agent_param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
-| agent_param_plugins_mongodb_default_uri | `string` || [**Plugins.MongoDB.Default.Uri**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Uri to connect. Default value used if no other is specified.
-| agent_param_plugins_mongodb_default_user | `string` || [**Plugins.MongoDB.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Username to send to protected MongoDB server. Default value used if no other is specified.
-| agent_param_plugins_mongodb_default_password | `string` || [**Plugins.MongoDB.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Password to send to protected MongoDB server. Default value used if no other is specified.
+| agent_param_plugins_mongodb_default | `dictionary` || [**Plugins.MongoDB.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "",}`
 
 ### Zabbix **agent 2 MQTT plugin** parameters:
 
@@ -366,13 +360,7 @@ Don't use both local path and final path to avoid unpredictable results!
 |--|--|--|--|
 | agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
-| agent_param_plugins_mqtt_default_url | `string` | [**Plugins.MQTT.Default.Url**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default MQTT broker connection string; used if no value is specified in an item key or named session.
-| agent_param_plugins_mqtt_default_topic | `string` | [**Plugins.MQTT.Default.Topic**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) |  	Default topic for MQTT subscription; used if no value is specified in an item key or named session.
-| agent_param_plugins_mqtt_default_user | `string` | [**Plugins.MQTT.Default.User**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default username for connecting to MQTT; used if no value is specified in an item key or named session.
-| agent_param_plugins_mqtt_default_password | `string` | [**Plugins.MQTT.Default.Password**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Default password for connecting to MQTT; used if no value is specified in an item key or named session.
-| agent_param_plugins_mqtt_default_tlscafile | `string` | [**Plugins.MQTT.Default.TLSCAFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the top-level CA(s) certificates for peer certificate verification for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
-| agent_param_plugins_mqtt_default_tlscertfile | `string` | [**Plugins.MQTT.Default.TLSCertFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the agent certificate or certificate chain for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
-| agent_param_plugins_mqtt_default_tlskeyfile | `string` | [**Plugins.MQTT.Default.TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Full pathname of a file containing the MQTT private key for encrypted communications between Zabbix agent 2 and MQTT broker; used if no value is specified in a named session.
+| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 
@@ -385,6 +373,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
 | agent_param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
+| agent_param_plugins_oracle_default | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", service: "", user: "", password: "" }`
 
 ### Zabbix **agent 2 PostgreSQL plugin** parameters:
 
@@ -394,7 +383,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 
 You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
 Here is the dictionary skeleton for self-managed certificate files:
-`{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+`{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: "", cachemode: ""}`
 
 Don't use both local path and final path to avoid unpredictable results!
 
@@ -405,7 +394,8 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Time of waiting (in seconds) for unused connections to be closed.
 | agent_param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | agent_param_plugins_postgresql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql | [**Plugins.Postgresql.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Path to the external plugin executable. Supported since Zabbix 6.0.6.
-| agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", cahcemode: ""}`
+| agent_param_plugins_postgresql_default | `dictionary` || [**Plugins.Postgresql.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", cachemode: ""}`
 
 ### Zabbix **agent 2 MySQL plugin** parameters:
 
@@ -436,7 +426,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "" }`
+| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "" }`
+| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "" }`
 
 ### Zabbix **agent 2 Smart plugin** parameters:
 

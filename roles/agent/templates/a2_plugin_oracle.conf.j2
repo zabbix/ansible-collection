@@ -109,3 +109,52 @@ Plugins.Oracle.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}
 {% endfor %}
 {% endif %}
+
+### Option: Plugins.Oracle.Default.Uri
+#	Uri to connect. Default value used if no other is specified.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   The only supported schema is "tcp".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.Oracle.Default.Uri=
+{% if agent_param_plugins_oracle_default is defined and agent_param_plugins_oracle_default.uri is defined and agent_param_plugins_oracle_default.uri %}
+
+Plugins.Oracle.Default.Uri={{ agent_param_plugins_oracle_default.uri }}
+{% endif %}
+
+### Option: Plugins.Oracle.Default.Service
+#	Service name to be used for connection. Default value used if no other is specified.
+#
+# Mandatory: no
+# Range: SID is not supported.
+# Default:
+# Plugins.Oracle.Default.Service=
+{% if agent_param_plugins_oracle_default is defined and agent_param_plugins_oracle_default.service is defined and agent_param_plugins_oracle_default.service %}
+
+Plugins.Oracle.Default.Service={{ agent_param_plugins_oracle_default.service }}
+{% endif %}
+
+### Option: Plugins.Oracle.Default.User
+#	Username to be used for connection. Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.Oracle.Default.User=
+{% if agent_param_plugins_oracle_default is defined and agent_param_plugins_oracle_default.user is defined and agent_param_plugins_oracle_default.user %}
+
+Plugins.Oracle.Default.User={{ agent_param_plugins_oracle_default.user }}
+{% endif %}
+
+### Option: Plugins.Oracle.Default.Password
+#	Password to be used for connectione. Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.Oracle.Default.Password=
+{% if agent_param_plugins_oracle_default is defined and agent_param_plugins_oracle_default.password is defined and agent_param_plugins_oracle_default.password %}
+
+Plugins.Oracle.Default.Password={{ agent_param_plugins_oracle_default.password }}
+{% endif %}

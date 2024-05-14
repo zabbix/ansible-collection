@@ -125,9 +125,9 @@ Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["tar
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Default.Url=
-{% if agent_param_plugins_mqtt_default_url is defined and agent_param_plugins_mqtt_default_url %}
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.url is defined and agent_param_plugins_mqtt_default.url %}
 
-Plugins.MQTT.Default.Url={{ agent_param_plugins_mqtt_default_url }}
+Plugins.MQTT.Default.Url={{ agent_param_plugins_mqtt_default.url }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.Topic
@@ -138,9 +138,9 @@ Plugins.MQTT.Default.Url={{ agent_param_plugins_mqtt_default_url }}
 # Range: Must matches the URL format.
 # Default:
 # Plugins.MQTT.Default.Topic=
-{% if agent_param_plugins_mqtt_default_topic is defined and agent_param_plugins_mqtt_default_topic %}
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.topic is defined and agent_param_plugins_mqtt_default.topic %}
 
-Plugins.MQTT.Default.Topic={{ agent_param_plugins_mqtt_default_topic }}
+Plugins.MQTT.Default.Topic={{ agent_param_plugins_mqtt_default.topic }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.User
@@ -150,9 +150,9 @@ Plugins.MQTT.Default.Topic={{ agent_param_plugins_mqtt_default_topic }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.User=
-{% if agent_param_plugins_mqtt_default_user is defined and agent_param_plugins_mqtt_default_user %}
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.user is defined and agent_param_plugins_mqtt_default.user %}
 
-Plugins.MQTT.Default.User={{ agent_param_plugins_mqtt_default_user }}
+Plugins.MQTT.Default.User={{ agent_param_plugins_mqtt_default.user }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.Password
@@ -162,9 +162,9 @@ Plugins.MQTT.Default.User={{ agent_param_plugins_mqtt_default_user }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.Password=
-{% if agent_param_plugins_mqtt_default_password is defined and agent_param_plugins_mqtt_default_password %}
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.password is defined and agent_param_plugins_mqtt_default.password %}
 
-Plugins.MQTT.Default.Password={{ agent_param_plugins_mqtt_default_password }}
+Plugins.MQTT.Default.Password={{ agent_param_plugins_mqtt_default.password }}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSCAFile
@@ -175,9 +175,13 @@ Plugins.MQTT.Default.Password={{ agent_param_plugins_mqtt_default_password }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSCAFile=
-{% if agent_param_plugins_mqtt_default_tlscafile is defined and agent_param_plugins_mqtt_default_tlscafile %}
+{% if agent_internal_plugins_mqtt_default_tls_file_list is defined and agent_internal_plugins_mqtt_default_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
 
-Plugins.MQTT.Default.TLScafile={{ agent_param_plugins_mqtt_default_tlscafile }}
+{% for tls_file in agent_internal_plugins_mqtt_default_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MQTT.Default.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSCertFile
@@ -188,9 +192,13 @@ Plugins.MQTT.Default.TLScafile={{ agent_param_plugins_mqtt_default_tlscafile }}
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSCertFile=
-{% if agent_param_plugins_mqtt_default_tlscertfile is defined and agent_param_plugins_mqtt_default_tlscertfile %}
+{% if agent_internal_plugins_MQTT_default_tls_file_list is defined and agent_internal_plugins_MQTT_default_tls_file_list is iterable and agent_internal_plugins_MQTT_tls_file_list is not string and agent_internal_plugins_MQTT_tls_file_list is not mapping %}
 
-Plugins.MQTT.Default.TLScertfile={{ agent_param_plugins_mqtt_default_tlscertfile }}
+{% for tls_file in agent_internal_plugins_MQTT_default_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.MQTT.Default.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
 {% endif %}
 
 ### Option: Plugins.MQTT.Default.TLSKeyFile
@@ -200,7 +208,11 @@ Plugins.MQTT.Default.TLScertfile={{ agent_param_plugins_mqtt_default_tlscertfile
 # Mandatory: no
 # Default:
 # Plugins.MQTT.Default.TLSKeyFile=
-{% if agent_param_plugins_mqtt_default_tlskeyfile is defined and agent_param_plugins_mqtt_default_tlskeyfile %}
+{% if agent_internal_plugins_MQTT_default_tls_file_list is defined and agent_internal_plugins_MQTT_default_tls_file_list is iterable and agent_internal_plugins_MQTT_tls_file_list is not string and agent_internal_plugins_MQTT_tls_file_list is not mapping %}
 
-Plugins.MQTT.Default.TLSkeyfile={{ agent_param_plugins_mqtt_default_tlskeyfile }}
+{% for tls_file in agent_internal_plugins_MQTT_default_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.MQTT.Default.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
 {% endif %}

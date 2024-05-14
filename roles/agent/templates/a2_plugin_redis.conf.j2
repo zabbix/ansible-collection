@@ -55,3 +55,29 @@ Plugins.Redis.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endif %}
 {% endfor %}
 {% endif %}
+
+### Option: Plugins.Redis.Default.Uri
+#	Uri to connect. Default value used if no other is specified.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   Supported schemas: "tcp" and "unix".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.Redis.Default.Uri=
+{% if agent_param_plugins_redis_default is defined and agent_param_plugins_redis_default.uri is defined and agent_param_plugins_redis_default.uri %}
+
+Plugins.Redis.Default.Uri={{ agent_param_plugins_redis_default.uri }}
+{% endif %}
+
+### Option: Plugins.Redis.Default.Password
+#	Password to send to protected Redis server. Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.Redis.Default.Password=
+{% if agent_param_plugins_redis_default is defined and agent_param_plugins_redis_default.password is defined and agent_param_plugins_redis_default.password %}
+
+Plugins.Redis.Default.Password={{ agent_param_plugins_redis_default.password }}
+{% endif %}

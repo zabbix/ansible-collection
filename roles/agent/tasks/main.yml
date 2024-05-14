@@ -367,6 +367,8 @@
           + agent_internal_plugins_mongodb_tls_file_list | default([])
           + agent_internal_plugins_mqtt_tls_file_list | default([])
           + agent_internal_plugins_mysql_default_tls_file_list | default([])
+          + agent_internal_plugins_mqtt_default_tls_file_list | default([])
+          + agent_internal_plugins_postgresql_default_tls_file_list | default([])
           }}'
   tags: [deploy, config]
 

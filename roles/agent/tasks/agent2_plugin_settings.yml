@@ -4,23 +4,25 @@
     agent_param_plugins_mysql_sessions is defined
     and agent_param_plugins_mysql_sessions
     and item.tlsconnect is defined and item.tlsconnect
+  vars:
+    agent_internal_item_folder: '.CERT/MYSQL'
   ansible.builtin.set_fact:
     agent_internal_plugins_mysql_tls_file_list: '{{ (agent_internal_plugins_mysql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -32,23 +34,25 @@
     agent_param_plugins_postgresql_sessions is defined
     and agent_param_plugins_postgresql_sessions
     and item.tlsconnect is defined and item.tlsconnect
+  vars:
+    agent_internal_item_folder: '.CERT/POSTGRESQL'
   ansible.builtin.set_fact:
     agent_internal_plugins_postgresql_tls_file_list: '{{ (agent_internal_plugins_postgresql_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/POSTGRESQL/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
@@ -60,23 +64,25 @@
     agent_param_plugins_mongodb_sessions is defined
     and agent_param_plugins_mongodb_sessions
     and item.tlsconnect is defined and item.tlsconnect
+  vars:
+    agent_internal_item_folder: '.CERT/MONGODB'
   ansible.builtin.set_fact:
     agent_internal_plugins_mongodb_tls_file_list: '{{ (agent_internal_plugins_mongodb_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MONGODB/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MONGODB/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MONGODB/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
@@ -87,23 +93,25 @@
   when: >
     agent_param_plugins_mqtt_sessions is defined
     and agent_param_plugins_mqtt_sessions
+  vars:
+    agent_internal_item_folder: '.CERT/MQTT'
   ansible.builtin.set_fact:
     agent_internal_plugins_mqtt_tls_file_list: '{{ (agent_internal_plugins_mqtt_tls_file_list | default([]))
       + [{"session_name": item.name,
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlscafile | basename}]
+            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlscertfile | basename}]
+            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/.CERT/MQTT/" + item.source_tlskeyfile | basename}]
+            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -117,20 +125,75 @@
     and agent_internal_item.tlsconnect
   vars:
     agent_internal_item: '{{ agent_param_plugins_mysql_default }}'
+    agent_internal_item_folder: '.CERT/MYSQL/DEFAULT'
   ansible.builtin.set_fact:
     agent_internal_plugins_mysql_default_tls_file_list: '{{[
         { "type": "ca",
           "source": agent_internal_item.source_tlscafile | default(omit) ,
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlscafile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
         { "type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlscertfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
         { "type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT/" + agent_internal_item.source_tlskeyfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
+      ]}}'
+  tags: [vars, verify, deploy, config]
+
+- name: 'Variables : Agent2 : Default : Generate list of PostgreSQL plugin default cert sources'
+  when: >
+    agent_internal_item is defined
+    and agent_internal_item.tlsconnect is defined
+    and agent_internal_item.tlsconnect
+  vars:
+    agent_internal_item: '{{ agent_param_plugins_postgresql_default }}'
+    agent_internal_item_folder: '.CERT/POSTGRESQL/DEFAULT'
+  ansible.builtin.set_fact:
+    agent_internal_plugins_postgresql_default_tls_file_list: '{{[
+        { "type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit) ,
+          "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
+        { "type": "cert",
+          "source": agent_internal_item.source_tlscertfile | default(omit),
+          "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
+        { "type": "key",
+          "source": agent_internal_item.source_tlskeyfile | default(omit),
+          "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
+      ]}}'
+  tags: [vars, verify, deploy, config]
+
+- name: 'Variables : Agent2 : Default : Generate list of MQTT plugin default cert sources'
+  when: >
+    agent_internal_item is defined
+    and (agent_internal_item.source_tlscafile is defined
+        or agent_internal_item.source_tlscertfile is defined
+        or agent_internal_item.source_tlskeyfile is defined
+        or agent_internal_item.tlscafile is defined
+        or agent_internal_item.tlscertfile is defined
+        or agent_internal_item.tlskeyfile is defined)
+  vars:
+    agent_internal_item: '{{ agent_param_plugins_mqtt_default }}'
+    agent_internal_item_folder: '.CERT/MQTT/DEFAULT'
+  ansible.builtin.set_fact:
+    agent_internal_plugins_mqtt_default_tls_file_list: '{{[
+        { "type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit) ,
+          "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
+        { "type": "cert",
+          "source": agent_internal_item.source_tlscertfile | default(omit),
+          "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
+        { "type": "key",
+          "source": agent_internal_item.source_tlskeyfile | default(omit),
+          "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
       ]}}'
   tags: [vars, verify, deploy, config]
 

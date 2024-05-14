@@ -81,9 +81,9 @@ Plugins.Memcached.Sessions.{{ session["name"] }}.Password={{ session["password"]
 #   Embedded credentials will be ignored.
 # Default:
 # Plugins.Memcached.Default.Uri=
-{% if agent_param_plugins_memcached_default_uri is defined and agent_param_plugins_memcached_default_uri %}
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.uri is defined and agent_param_plugins_memcached_default.uri %}
 
-Plugins.Memcached.Default.Uri={{ agent_param_plugins_memcached_default_uri }}
+Plugins.Memcached.Default.Uri={{ agent_param_plugins_memcached_default.uri }}
 {% endif %}
 
 ### Option: Plugins.Memcached.Default.User
@@ -92,9 +92,9 @@ Plugins.Memcached.Default.Uri={{ agent_param_plugins_memcached_default_uri }}
 # Mandatory: no
 # Default:
 # Plugins.Memcached.Default.User=
-{% if agent_param_plugins_memcached_default_user is defined and agent_param_plugins_memcached_default_user %}
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.user is defined and agent_param_plugins_memcached_default.user %}
 
-Plugins.Memcached.Default.User={{ agent_param_plugins_memcached_default_user }}
+Plugins.Memcached.Default.User={{ agent_param_plugins_memcached_default.user }}
 {% endif %}
 
 ### Option: Plugins.Memcached.Default.Password
@@ -103,7 +103,7 @@ Plugins.Memcached.Default.User={{ agent_param_plugins_memcached_default_user }}
 # Mandatory: no
 # Default:
 # Plugins.Memcached.Default.Password=
-{% if agent_param_plugins_memcached_default_password is defined and agent_param_plugins_memcached_default_password %}
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.password is defined and agent_param_plugins_memcached_default.password %}
 
-Plugins.Memcached.Default.Password={{ agent_param_plugins_memcached_default_password }}
+Plugins.Memcached.Default.Password={{ agent_param_plugins_memcached_default.password }}
 {% endif %}
