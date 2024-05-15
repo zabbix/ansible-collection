@@ -1,0 +1,294 @@
+{{ ansible_managed | comment }}
+### Option:Plugins.MSSQL.System.Path
+#	Path to external plugin executable.
+#
+# Mandatory: yes
+# Default:
+# Plugins.MSSQL.System.Path=
+{% if agent_param_plugins_mssql_system_path is defined and agent_param_plugins_mssql_system_path %}
+
+Plugins.MSSQL.System.Path={{ agent_param_plugins_mssql_system_path }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Timeout
+#	Amount of time to wait for a server to respond when first connecting and on
+#   follow up operations in the session.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.MSSQL.Timeout=<Global timeout>
+{% if agent_param_plugins_mssql_timeout is defined and agent_param_plugins_mssql_timeout %}
+
+Plugins.MSSQL.Timeout={{ agent_param_plugins_mssql_timeout }}
+{% endif %}
+
+### Option: Plugins.MSSQL.KeepAlive
+#	Time in seconds for waiting before unused connections will be closed.
+#
+# Mandatory: no
+# Range: 60-900
+# Default:
+# Plugins.MSSQL.KeepAlive=300
+{% if agent_param_plugins_mssql_keepalive is defined and agent_param_plugins_mssql_keepalive %}
+
+Plugins.MSSQL.KeepAlive={{ agent_param_plugins_mssql_keepalive }}
+{% endif %}
+
+### Option: Plugins.MSSQL.CustomQueriesDir
+#	Filepath to a directory containing user defined .sql files with custom
+#	queries that the plugin can execute.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.CustomQueriesDir=
+{% if agent_param_plugins_mssql_customqueriesdir is defined and agent_param_plugins_mssql_customqueriesdir %}
+
+Plugins.MSSQL.CustomQueriesDir={{ agent_param_plugins_mssql_customqueriesdir }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.Uri
+#	Uri to connect.
+#	Replace "*" with a session name.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   The only supported schema is "sqlserver".
+#   Embedded credentials will be ignored.
+# Default: sqlserver://localhost:1433
+# Plugins.MSSQL.Sessions.*.Uri=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["uri"] is defined and session["uri"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.User
+#	Username to send to protected MSSQL server.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Sessions.*.User=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.Password
+#	Password to send to protected MSSQL server.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Sessions.*.Password=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.CACertPath
+#	Filepath to the public key certificate of the certificate authority (CA)
+#	that issued the certificate of the MSSQL server.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Sessions.*.CACertPath=
+{% if agent_internal_plugins_mssql_tls_file_list is defined and agent_internal_plugins_mssql_tls_file_list is iterable and agent_internal_plugins_mssql_tls_file_list is not string and agent_internal_plugins_mssql_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mssql_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MSSQL.Sessions.{{ tls_file["session_name"] }}.CACertPath={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.TrustServerCertificate
+#	Boolean value to indicate whether the plugin should trust the server
+#	certificate without validating it.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Range: true, false
+# Default:
+# Plugins.MSSQL.Sessions.*.TrustServerCertificate=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["trustservercertificate"] is defined and session["trustservercertificate"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.TrustServerCertificate={{ session["trustservercertificate"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.HostNameInCertificate
+#	Common name (CN) of the certificate of the MSSQL server.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Sessions.*.HostNameInCertificate=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["hostnameincertificate"] is defined and session["hostnameincertificate"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.HostNameInCertificate={{ session["hostnameincertificate"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.Encrypt
+#	Connection encription type.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Range: true, false, strict, disable
+# Plugins.MSSQL.Sessions.*.Encrypt=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["encrypt"] is defined and session["encrypt"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.Encrypt={{ session["encrypt"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Sessions.*.TLSMinVersion
+#	Minimum TLS version to use.
+#   Replace "*" with a session name.
+#
+# Mandatory: no
+# Default:
+# Range: 1.0, 1.1, 1.2, 1.3
+# Plugins.MSSQL.Sessions.*.TLSMinVersion=
+{% if agent_param_plugins_mssql_sessions is defined and agent_param_plugins_mssql_sessions is iterable and agent_param_plugins_mssql_sessions is not string and agent_param_plugins_mssql_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mssql_sessions %}
+{% if session["tlsminversion"] is defined and session["tlsminversion"] %}
+Plugins.MSSQL.Sessions.{{ session["name"] }}.TLSMinVersion={{ session["tlsminversion"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.Uri
+#	Uri to connect.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   The only supported schema is "sqlserver".
+#   Embedded credentials will be ignored.
+# Default: sqlserver://localhost:1433
+# Plugins.MSSQL.Default.Uri=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.uri is defined and agent_param_plugins_mssql_default.uri %}
+
+Plugins.MSSQL.Default.Uri={{ agent_param_plugins_mssql_default.uri }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.User
+#	Username to send to protected MSSQL server.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Default.User=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.user is defined and agent_param_plugins_mssql_default.user %}
+
+Plugins.MSSQL.Default.User={{ agent_param_plugins_mssql_default.user }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.Password
+#	Password to send to protected MSSQL server.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Default.Password=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.password is defined and agent_param_plugins_mssql_default.password %}
+
+Plugins.MSSQL.Default.Password={{ agent_param_plugins_mssql_default.password }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.CACertPath
+#	Filepath to the public key certificate of the certificate authority (CA)
+#	that issued the certificate of the MSSQL server.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Default.CACertPath=
+{% if agent_internal_plugins_mssql_default_tls_file_list is defined and agent_internal_plugins_mssql_default_tls_file_list is iterable and agent_internal_plugins_mssql_tls_file_list is not string and agent_internal_plugins_mssql_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mssql_default_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MSSQL.Default.CACertPath={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.TrustServerCertificate
+#	Boolean value to indicate whether the plugin should trust the server
+#	certificate without validating it.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Range: true, false
+# Default:
+# Plugins.MSSQL.Default.TrustServerCertificate=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.trustservercertificate is defined and agent_param_plugins_mssql_default.trustservercertificate %}
+
+Plugins.MSSQL.Default.TrustServerCertificate={{ agent_param_plugins_mssql_default.trustservercertificate }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.HostNameInCertificate
+#	Common name (CN) of the certificate of the MSSQL server.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.MSSQL.Default.HostNameInCertificate=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.hostnameincertificate is defined and agent_param_plugins_mssql_default.hostnameincertificate %}
+
+Plugins.MSSQL.Default.HostNameInCertificate={{ agent_param_plugins_mssql_default.hostnameincertificate }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.Encrypt
+#	Connection encryption type.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Range: true, false, strict, disable
+# Plugins.MSSQL.Default.Encrypt=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.encrypt is defined and agent_param_plugins_mssql_default.encrypt %}
+
+Plugins.MSSQL.Default.Encrypt={{ agent_param_plugins_mssql_default.encrypt }}
+{% endif %}
+
+### Option: Plugins.MSSQL.Default.TLSMinVersion
+#	Minimum TLS version to use.
+#   Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Range: 1.0, 1.1, 1.2, 1.3
+# Plugins.MSSQL.Default.TLSMinVersion=
+{% if agent_param_plugins_mssql_default is defined and agent_param_plugins_mssql_default.tlsminversion is defined and agent_param_plugins_mssql_default.tlsminversion %}
+
+Plugins.MSSQL.Default.TLSMinVersion={{ agent_param_plugins_mssql_default.tlsminversion }}
+{% endif %}

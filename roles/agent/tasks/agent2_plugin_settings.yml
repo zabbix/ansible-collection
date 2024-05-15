@@ -1,4 +1,6 @@
 ---
+### Sessions:
+
 - name: 'Variables : Agent2 : generate list of Mysql plugin cert sources'
   when: >
     agent_param_plugins_mysql_sessions is defined
@@ -118,6 +120,29 @@
   loop: '{{ agent_param_plugins_mqtt_sessions }}'
   tags: [vars, verify, deploy, config]
 
+- name: 'Variables : Agent2 : generate list of MSSQL plugin cert sources'
+  when: >
+    agent_param_plugins_mssql_sessions is defined
+    and agent_param_plugins_mssql_sessions
+    and (item.cacertpath is defined and item.cacertpath
+         or item.source_cacertpath is defined and item.source_cacertpath)
+  vars:
+    agent_internal_item_folder: '.CERT/MSSQL'
+  ansible.builtin.set_fact:
+    agent_internal_plugins_mssql_tls_file_list: '{{ (agent_internal_plugins_mssql_tls_file_list | default([]))
+      + [{"session_name": item.name,
+          "type": "ca",
+          "source": item.source_cacertpath | default(omit),
+          "target": item.cacertpath if item.source_cacertpath is not defined
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_cacertpath | basename}]
+      }}'
+  loop_control:
+    label: '{{ item.name }}'
+  loop: '{{ agent_param_plugins_mssql_sessions }}'
+  tags: [vars, verify, deploy, config]
+
+### Defaults:
+ 
 - name: 'Variables : Agent2 : Default : Generate list of Mysql plugin default cert sources'
   when: >
     agent_internal_item is defined
@@ -197,6 +222,25 @@
       ]}}'
   tags: [vars, verify, deploy, config]
 
+- name: 'Variables : Agent2 : Default : Generate list of MSSQL plugin default cert sources'
+  when: >
+    agent_internal_item is defined
+    and (agent_internal_item.source_cacertpath is defined and agent_internal_item.source_cacertpath
+         or agent_internal_item.cacertpath is defined and agent_internal_item.cacertpath)
+  vars:
+    agent_internal_item: '{{ agent_param_plugins_mssql_default }}'
+    agent_internal_item_folder: '.CERT/MSSQL/DEFAULT'
+  ansible.builtin.set_fact:
+    agent_internal_plugins_mssql_default_tls_file_list: '{{[
+        { "type": "ca",
+          "source": agent_internal_item.source_cacertpath | default(omit) ,
+          "target": agent_internal_item.cacertpath if agent_internal_item.source_cacertpath is not defined
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_cacertpath | basename}
+      ]}}'
+  tags: [vars, verify, deploy, config]
+
+### Loadable plugin list:
+
 - name: 'Variables : Agent2 : Add loadable plugins to package list'
   ansible.builtin.set_fact:
     agent_package_list: '{{ agent_package_list + (agent_internal_loadable_plugin_list | select | list) }}'
@@ -204,4 +248,5 @@
     agent_internal_loadable_plugin_list:
       - '{{ "zabbix-agent2-plugin-mongodb" if "mongodb" in agent_2_plugin_list else None }}'
       - '{{ "zabbix-agent2-plugin-postgresql" if "postgresql" in agent_2_plugin_list else None }}'
+      - '{{ "zabbix-agent2-plugin-mssql" if "mssql" in agent_2_plugin_list else None }}'
   tags: [vars, verify, remove, deploy, config]

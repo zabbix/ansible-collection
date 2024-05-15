@@ -45,6 +45,7 @@ agent_2_full_plugin_list:
   - mongodb
   - mqtt
   - mysql
+  - mssql
   - oracle
   - postgresql
   - redis

@@ -1,6 +1,10 @@
 # v1.3.8
 
 ## Feature
+
+- `agent role`: added mssql agent2 plugin
+- `agent role`: added default variables for agent2 plugins
+
 ## Bug
 
 # v1.3.7

@@ -300,6 +300,7 @@
       - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL/DEFAULT" if agent_variant | string == "2" else None }}'
       - '{{ agent_binary_name | upper + "/.CERT/MONGODB/DEFAULT" if agent_variant | string == "2" else None }}'
       - '{{ agent_binary_name | upper + "/.CERT/MQTT/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MSSQL/DEFAULT" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
 ## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!
@@ -366,9 +367,11 @@
           + agent_internal_plugins_postgresql_tls_file_list | default([])
           + agent_internal_plugins_mongodb_tls_file_list | default([])
           + agent_internal_plugins_mqtt_tls_file_list | default([])
+          + agent_internal_plugins_mssql_tls_file_list | default([])
           + agent_internal_plugins_mysql_default_tls_file_list | default([])
-          + agent_internal_plugins_mqtt_default_tls_file_list | default([])
           + agent_internal_plugins_postgresql_default_tls_file_list | default([])
+          + agent_internal_plugins_mqtt_default_tls_file_list | default([])
+          + agent_internal_plugins_mssql_default_tls_file_list | default([])
           }}'
   tags: [deploy, config]
 

@@ -39,6 +39,7 @@ Table of contents
         * [Oracle plugin parameters](#zabbix-agent-2-oracle-plugin-parameters)
         * [PostgreSQL plugin parameters](#zabbix-agent-2-postgresql-plugin-parameters)
         * [MySQL plugin parameters](#zabbix-agent-2-mysql-plugin-parameters)
+        * [MSSQL plugin parameters](#zabbix-agent-2-mssql-plugin-parameters)
         * [Redis plugin parameters](#zabbix-agent-2-redis-plugin-parameters)
         * [Smart plugin parameters](#zabbix-agent-2-smart-plugin-parameters)
   * [Hints & Tags](#hints--tags)
@@ -418,6 +419,24 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 | agent_param_plugins_mysql_default | dictionary | [**Plugins.Mysql.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
+### Zabbix **agent 2 MSSQL plugin** parameters:
+
+For these settings to take effect, the plugin should be listed in [`agent_2_plugin_list`](#general-settings).
+Parameter prefixes `source_` should point to the certificate files located on Ansible execution environment. The certificate files will be placed on the target machine and added to configuration automatically.
+
+You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", uri: "", user: "", password: "", cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
+| Variable | Type | Parameter | Description |
+|--|--|--|--|
+| agent_param_plugins_mssql_keepalive | `int` | [**Plugins.MSSQL.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Time of waiting (in seconds) before unused connections are closed.
+| agent_param_plugins_mssql_timeout | `int` | [**Plugins.MSSQL.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | The amount of time to wait for a server to respond when first connecting and on follow-up operations in the session.
+| agent_param_plugins_mssql_customqueriespath | `string` | [**Plugins.MSSQL.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Full pathname of a directory containing *.sql* files with custom queries. Changes requires Zabbix agent2 restart.
+| agent_param_plugins_mssql_sessions | `list of dictionaries` | [**Plugins.MSSQL.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
+| agent_param_plugins_mssql_default | dictionary | [**Plugins.MSSQL.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
 ### Zabbix **agent 2 Redis plugin** parameters:
 
 For these settings to take effect, the plugin should be listed in [`agent_2_plugin_list`](#general-settings).
