@@ -14,17 +14,17 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -44,17 +44,17 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
@@ -74,17 +74,17 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
@@ -103,17 +103,17 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else service_user_home + "/" + agent.file_name | upper + "/" + agent_internal_item_folder + "/" + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -134,7 +134,7 @@
           "type": "ca",
           "source": item.source_cacertpath | default(omit),
           "target": item.cacertpath if item.source_cacertpath is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.source_cacertpath | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_cacertpath | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
