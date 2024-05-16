@@ -123,10 +123,11 @@ Plugins.PostgreSQL.Sessions.{{ session["name"] }}.Database={{ session["database"
 
 ### Option: Plugins.PostgreSQL.Sessions.*.TLSConnect
 #	Encryption type for PostgreSQL connection. "*" should be replaced with a session name.
-#		required    - connect using TLS as transport mode without identity checks;
-#		verify_ca   - connect using TLS and verify certificate;
-#		verify_full - connect using TLS, verify certificate and verify that database identity (CN) specified by
-#				DBHost matches its certificate;
+#		require/required        - connect using TLS as transport mode without identity checks, acts like verify-ca if ca 
+#               file is provided;
+#		verify-ca/verify_ca     - connect using TLS and verify certificate;
+#		verify-full/verify_full - connect using TLS, verify certificate and verify that database identity (CN) specified
+#				by DBHost matches its certificate;
 #	Undefined encryption type means unencrypted connection.
 #
 # Mandatory: no
