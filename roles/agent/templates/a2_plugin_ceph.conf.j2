@@ -96,7 +96,7 @@ Plugins.Ceph.Sessions.{{ session["name"] }}.Uri={{ session["uri"] }}
 # Plugins.Ceph.Default.ApiKey=
 {% if agent_param_plugins_ceph_default is defined and agent_param_plugins_ceph_default.apikey is defined and agent_param_plugins_ceph_default.apikey %}
 
-Plugins.Ceph.Default.Uri={{ agent_param_plugins_ceph_default.apikey }}
+Plugins.Ceph.Default.ApiKey={{ agent_param_plugins_ceph_default.apikey }}
 {% endif %}
 
 ### Option: Plugins.Ceph.Default.User
