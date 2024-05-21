@@ -4,6 +4,12 @@ dependency:
 driver:
   name: podman
     # name: delegated
+# driver:
+#   options:
+#     managed: False
+#     login_cmd_template: "podman exec -ti {instance} bash"
+#     ansible_connection_options:
+#       ansible_connection: podman
 
 provisioner:
   name: ansible
@@ -53,9 +59,10 @@ scenario:
     - verify
     - cleanup
     - destroy
+
 verifier:
   name: ansible
-# lint: ansible-lint -p roles/zabbix_agent/tasks/main.yml
+
 lint: ansible-lint -p roles
     # lint: |
     #   set -e
