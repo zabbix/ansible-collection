@@ -8,26 +8,36 @@
 #   check_mode: true ## cmd overrides does not affect this
 #   register: repository_internal_raspberry_check
 #   tags: [deploy, remove]
-- name: 'RaspberryPIE check'
-  when: ansible_distribution == "Debian"
-  ansible.builtin.find:
-    path: /proc
-    file_type: file
-    # use_regex: true
-    patterns: kallsyms
-    contains: raspberrypi
-    read_whole_file: true
-  register: repository_internal_raspberry_check
-  tags: [deploy, remove]
+#
+# - name: 'RaspberryPIE check'
+#   when: ansible_distribution == "Debian"
+#   ansible.builtin.find:
+#     path: /proc
+#     file_type: file
+#     # use_regex: true
+#     patterns: kallsyms
+#     contains: raspberrypi
+#     read_whole_file: true
+#   register: repository_internal_raspberry_check
+#   tags: [deploy, remove]
 
 # - debug:
 #     var: repository_internal_raspberry_check
 
+# - name: 'Override fact for RaspberryPIE devices: ansible_distribution'
+#   when: >-
+#     repository_internal_raspberry_check is defined
+#     and repository_internal_raspberry_check.matched is defined
+#     and repository_internal_raspberry_check.matched
+#   ansible.builtin.set_fact:
+#     ansible_distribution: Raspbian
+#   tags: [deploy, remove]
+
 - name: 'Override fact for RaspberryPIE devices: ansible_distribution'
   when: >-
-    repository_internal_raspberry_check is defined
-    and repository_internal_raspberry_check.matched is defined
-    and repository_internal_raspberry_check.matched
+    ansible_lsb is defined
+    and ansible_lsb.id is defined
+    and ansible_lsb.id == "Raspbian"
   ansible.builtin.set_fact:
     ansible_distribution: Raspbian
   tags: [deploy, remove]

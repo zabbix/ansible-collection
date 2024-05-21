@@ -5,6 +5,7 @@
 - `agent role`: added mssql agent2 plugin
 - `agent role`: added default variables for agent2 plugins
 - `agent role`: added session name prefix to plugin certificate filenames on target devices
+- `agent role`: changed raspberry pi check to ansible_lsb
 
 ## Bug
 
