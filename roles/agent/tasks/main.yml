@@ -160,7 +160,7 @@
     group: '{{ agent_conf_file.permissions.group }}'
     # recursive: true
     # delete: true
-  tags: [userparam, deploy, config]
+  tags: [userparam, deploy, config, upload]
 
 - name: 'Zabbix agent configuration "Include folders" maintenance'
   # create path & apply permissions
@@ -224,7 +224,7 @@
     # recursive: true
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
-  tags: [userparam, deploy, config]
+  tags: [userparam, deploy, config, upload]
 
 - name: 'Upload : "modules" folder'
   when: agent_source_modules_dir is defined and agent_source_modules_dir and agent_variant | string != '2'
@@ -241,7 +241,7 @@
     # recursive: true
     ## Default zabbix user home folder /var/lib/zabbix can hold other component data... keeping all for now
     # delete: false
-  tags: [deploy]
+  tags: [deploy, upload]
 
 # Add userparams to first include folder
 - name: 'Fill configuration with custom UserParameters'
@@ -296,9 +296,11 @@
     agent_internal_maintenance_folders:
       - '{{ agent_binary_name | upper + "/.CERT/" if agent_source_tlscafile is defined else None }}'
       - '{{ agent_binary_name | upper + "/.PSK/" if "psk" in agent_param_tlsaccept or agent_param_tlsconnect == "psk" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/MYSQL" if agent_variant | string == "2" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL" if agent_variant | string == "2" else None }}'
-      - '{{ agent_binary_name | upper + "/.CERT/MONGODB" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MYSQL/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/POSTGRESQL/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MONGODB/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MQTT/DEFAULT" if agent_variant | string == "2" else None }}'
+      - '{{ agent_binary_name | upper + "/.CERT/MSSQL/DEFAULT" if agent_variant | string == "2" else None }}'
   tags: [deploy, config]
 
 ## Consider removing agent_source_* file checks. To report problem on this step instead of waiting for agent restart handler!!!
@@ -329,7 +331,7 @@
       - '{{ {"source": agent_source_tlscrlfile, "target": agent_param_tlscrlfile} if agent_source_tlscrlfile is defined else None }}'
       - {source: "{{ agent_source_tlscertfile }}", target: "{{ agent_param_tlscertfile }}"}
       - {source: "{{ agent_source_tlskeyfile }}", target: "{{ agent_param_tlskeyfile }}"}
-  tags: [deploy, config]
+  tags: [deploy, config, upload]
 
 - name: 'Placing PSK key file'
   when: agent_package_state != 'absent' and (agent_param_tlsconnect == "psk" or "psk" in agent_param_tlsaccept )
@@ -364,8 +366,14 @@
   loop: '{{ agent_internal_plugins_mysql_tls_file_list | default([])
           + agent_internal_plugins_postgresql_tls_file_list | default([])
           + agent_internal_plugins_mongodb_tls_file_list | default([])
+          + agent_internal_plugins_mqtt_tls_file_list | default([])
+          + agent_internal_plugins_mssql_tls_file_list | default([])
+          + agent_internal_plugins_mysql_default_tls_file_list | default([])
+          + agent_internal_plugins_postgresql_default_tls_file_list | default([])
+          + agent_internal_plugins_mqtt_default_tls_file_list | default([])
+          + agent_internal_plugins_mssql_default_tls_file_list | default([])
           }}'
-  tags: [deploy, config]
+  tags: [deploy, config, upload]
 
 - name: 'Logrotate file maintenance'
   become: true

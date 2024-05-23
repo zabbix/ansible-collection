@@ -70,3 +70,40 @@ Plugins.Memcached.Sessions.{{ session["name"] }}.Password={{ session["password"]
 {% endif %}
 {% endfor %}
 {% endif %}
+
+### Option: Plugins.Memcached.Default.Uri
+#	Uri to connect. Default value used if no other is specified.
+#
+# Mandatory: no
+# Range:
+#   Must matches the URI format.
+#   Supported schemas: "tcp" and "unix".
+#   Embedded credentials will be ignored.
+# Default:
+# Plugins.Memcached.Default.Uri=
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.uri is defined and agent_param_plugins_memcached_default.uri %}
+
+Plugins.Memcached.Default.Uri={{ agent_param_plugins_memcached_default.uri }}
+{% endif %}
+
+### Option: Plugins.Memcached.Default.User
+#	Username to send to protected Memcached server. Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Default.User=
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.user is defined and agent_param_plugins_memcached_default.user %}
+
+Plugins.Memcached.Default.User={{ agent_param_plugins_memcached_default.user }}
+{% endif %}
+
+### Option: Plugins.Memcached.Default.Password
+#	Password to send to protected Memcached server. Default value used if no other is specified.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Default.Password=
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.password is defined and agent_param_plugins_memcached_default.password %}
+
+Plugins.Memcached.Default.Password={{ agent_param_plugins_memcached_default.password }}
+{% endif %}

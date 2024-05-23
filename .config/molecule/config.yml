@@ -119,9 +119,9 @@ platforms:
       - rocky
       - yum
 
-  - name: podman_ubuntu22
+  - name: podman_ubuntu24
     dockerfile: ../default/files/Dockerfile.ubuntu.j2
-    image: docker.io/library/ubuntu:22.04
+    image: docker.io/library/ubuntu:24.04
     pre_build_image: false
     # tmpfs:
     #   - /run
@@ -132,8 +132,8 @@ platforms:
     capabilities:
       - SYS_ADMIN
     published_ports:
-      - "12250:10050/tcp"
-      - "12220:10020/tcp"
+      - "12450:10050/tcp"
+      - "12420:10020/tcp"
     command: "/usr/sbin/init"
     groups:
       - molecule

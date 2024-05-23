@@ -1,5 +1,26 @@
 ---
 platforms:
+  - name: podman_ubuntu24
+    dockerfile: ../default/files/Dockerfile.ubuntu.j2
+    image: docker.io/library/ubuntu:24.04
+    pre_build_image: false
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+    capabilities:
+      - SYS_ADMIN
+    published_ports:
+      - "12450:10050/tcp"
+      - "12420:10020/tcp"
+    command: "/usr/sbin/init"
+    groups:
+      - molecule
+      - podman
+      - linux
+      - ubuntu
   - name: podman_ubuntu22
     dockerfile: ../default/files/Dockerfile.ubuntu.j2
     image: docker.io/library/ubuntu:22.04

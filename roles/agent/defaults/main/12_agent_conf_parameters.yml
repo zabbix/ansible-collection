@@ -80,6 +80,7 @@ agent_param_includeplugins: '{{ agent_map_param_includeplugins[ansible_system] }
 
 ### agent2 Plugins:
 agent_param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
+agent_param_plugins_mssql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mssql
 ## agent2 Plugins.PostgreSQL:
 agent_param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
 agent_param_plugins_log_maxlinespersecond: '{{ agent_param_maxlinespersecond | default(None) | default(omit) }}'

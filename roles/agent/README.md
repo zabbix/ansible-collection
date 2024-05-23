@@ -39,6 +39,7 @@ Table of contents
         * [Oracle plugin parameters](#zabbix-agent-2-oracle-plugin-parameters)
         * [PostgreSQL plugin parameters](#zabbix-agent-2-postgresql-plugin-parameters)
         * [MySQL plugin parameters](#zabbix-agent-2-mysql-plugin-parameters)
+        * [MSSQL plugin parameters](#zabbix-agent-2-mssql-plugin-parameters)
         * [Redis plugin parameters](#zabbix-agent-2-redis-plugin-parameters)
         * [Smart plugin parameters](#zabbix-agent-2-smart-plugin-parameters)
   * [Hints & Tags](#hints--tags)
@@ -295,6 +296,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_ceph_keepalive | `int` | [**Plugins.Ceph.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_ceph_timeout | `int` | [**Plugins.Ceph.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_ceph_sessions | `list of dictionaries` | [**Plugins.Ceph.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", apikey: "", user: "", uri: ""}`
+| agent_param_plugins_ceph_default | `dictionary` | [**Plugins.Ceph.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/ceph_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ apikey: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Docker plugin** parameters:
 
@@ -314,6 +316,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
+| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: ""}`
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -342,14 +345,23 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_mongodb_timeout | `int` || [**Plugins.MongoDB.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
 | agent_param_plugins_mongodb_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb | [**Plugins.MongoDB.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Path to external plugin executable. Supported since Zabbix 6.0.6.
 | agent_param_plugins_mongodb_sessions | `list of dictionaries` || [**Plugins.MongoDB.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mongodb_default | `dictionary` || [**Plugins.MongoDB.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mongodb_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "",}`
 
 ### Zabbix **agent 2 MQTT plugin** parameters:
 
 For these settings to take effect, the plugin should be listed in [`agent_2_plugin_list`](#general-settings).
 
+You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", url: "", topic: "", user: "", password: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
 | agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 
@@ -362,6 +374,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
 | agent_param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
+| agent_param_plugins_oracle_default | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", service: "", user: "", password: "" }`
 
 ### Zabbix **agent 2 PostgreSQL plugin** parameters:
 
@@ -371,7 +384,7 @@ Parameter prefixes `source_` should point to the certificate files located on An
 
 You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
 Here is the dictionary skeleton for self-managed certificate files:
-`{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: ""}`
+`{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", tlscafile: "", tlscertfile: "", tlskeyfile: "", cachemode: ""}`
 
 Don't use both local path and final path to avoid unpredictable results!
 
@@ -382,7 +395,8 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_postgresql_keepalive | `int` || [**Plugins.Postgresql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Time of waiting (in seconds) for unused connections to be closed.
 | agent_param_plugins_postgresql_timeout | `int` || [**Plugins.Postgresql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
 | agent_param_plugins_postgresql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql | [**Plugins.Postgresql.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Path to the external plugin executable. Supported since Zabbix 6.0.6.
-| agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_postgresql_sessions | `list of dictionaries` || [**Plugins.Postgresql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", cahcemode: ""}`
+| agent_param_plugins_postgresql_default | `dictionary` || [**Plugins.Postgresql.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/postgresql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", database: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", cachemode: ""}`
 
 ### Zabbix **agent 2 MySQL plugin** parameters:
 
@@ -401,7 +415,29 @@ Don't use both local path and final path to avoid unpredictable results!
 | agent_param_plugins_mysql_calltimeout | `int` | [**Plugins.Mysql.CallTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a request to be done.
 | agent_param_plugins_mysql_keepalive | `int` | [**Plugins.Mysql.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Time of waiting (in seconds) before unused connections are closed.
 | agent_param_plugins_mysql_timeout | `int` | [**Plugins.Mysql.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Maximum time of waiting (in seconds) for a connection to be established.
+| agent_param_plugins_mysql_customqueriespath | `string` | [**Plugins.Mysql.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Full pathname of a directory containing *.sql* files with custom queries.
 | agent_param_plugins_mysql_sessions | `list of dictionaries` | [**Plugins.Mysql.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mysql_default | dictionary | [**Plugins.Mysql.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mysql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", tlsconnect: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+
+### Zabbix **agent 2 MSSQL plugin** parameters:
+
+For these settings to take effect, the plugin should be listed in [`agent_2_plugin_list`](#general-settings).
+Parameter prefixes `source_` should point to the certificate files located on Ansible execution environment. The certificate files will be placed on the target machine and added to configuration automatically.
+
+You can also manage session certificate files outside this role. In this case, use same keys without `source_` prefix and fill them with final path to files on the target machine.
+Here is the dictionary skeleton for self-managed certificate files:
+`{ name: "", uri: "", user: "", password: "", cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
+
+Don't use both local path and final path to avoid unpredictable results!
+
+| Variable | Type | Parameter | Description |
+|--|--|--|--|
+| agent_param_plugins_mssql_keepalive | `int` | [**Plugins.MSSQL.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Time of waiting (in seconds) before unused connections are closed.
+| agent_param_plugins_mssql_timeout | `int` | [**Plugins.MSSQL.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | The amount of time to wait for a server to respond when first connecting and on follow-up operations in the session.
+| agent_param_plugins_mssql_customqueriespath | `string` | [**Plugins.MSSQL.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Full pathname of a directory containing *.sql* files with custom queries. Changes requires Zabbix agent2 restart.
+| agent_param_plugins_mssql_system_path | `string` | /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mssql | [**Plugins.MSSQL.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Path to the external plugin executable.
+| agent_param_plugins_mssql_sessions | `list of dictionaries` | [**Plugins.MSSQL.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
+| agent_param_plugins_mssql_default | dictionary | [**Plugins.MSSQL.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
 
 ### Zabbix **agent 2 Redis plugin** parameters:
 
@@ -411,7 +447,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "" }`
+| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "" }`
+| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "" }`
 
 ### Zabbix **agent 2 Smart plugin** parameters:
 

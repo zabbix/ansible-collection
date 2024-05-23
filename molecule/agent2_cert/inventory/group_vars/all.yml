@@ -1,7 +1,7 @@
 ---
 level: group_all
 test_name: agent2_cert
-# agent_source_tlspskfile: '../default/files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}.psk'
+# source_tlspskfile: '../default/files/.PSK/ZABBIX_AGENT2/{{ inventory_hostname }}.psk'
 ### variant of agent to deploy: 1 - agentd, 2 - agent2
 agent_variant: 2
 # agent_major_version: '6.4'
@@ -21,11 +21,11 @@ agent_variant: 2
 # agent_service_gid: 1114
 
 ### local path of configuration folder, which should be transferred to host and included to configuration(relative or absolute)
-# agent_source_conf_dir: conf.d/
+# source_conf_dir: conf.d/
 ### local path of scripts folder to transfer on target host under service user home directory
-# agent_source_scripts_dir: scripts/
+# source_scripts_dir: scripts/
 ### local path of modules folder to transfer on target host under service user home directory
-# agent_source_modules_dir: modules/
+# source_modules_dir: modules/
 
 ### Simple firewall rule to allow incoming connection to target host from any source. Or rich rule if source is set.
 ## Previous rules are left intact. More complex firewall logic should be maintained out of the Zabbix agent role!
@@ -39,18 +39,19 @@ agent_variant: 2
 ### Also defines installation of loadable plugins: [mongodb, postgresql]
 ### Note that package of Zabbix agent2 version 6.0 depends on loadable plugins.
 ### But starting with 6.4 loadable plugins are optional and not installed by default.
-# agent_2_plugin_list:
-#   - ceph
-#   - docker
-#   - memcached
-#   - modbus
-#   - mongodb
-#   - mqtt
-#   - mysql
-#   - oracle
-#   - postgresql
-#   - redis
-#   - smart
+agent_2_plugin_list:
+  - ceph
+  - docker
+  - memcached
+  - modbus
+  - mongodb
+  - mqtt
+  - mysql
+  - mssql
+  - oracle
+  - postgresql
+  - redis
+  - smart
 
 ### Zabbix agent parameters of configuration file
 
@@ -174,93 +175,184 @@ agent_source_tlskeyfile: ../default/files/certs/{{ inventory_hostname }}.key
 # agent_param_includeplugins: # List of paths. Folder path must end with "/", like :"/etc/zabbix/basename/" (or basename will be cut off)
 #   - "/etc/zabbix/zabbix_agent2.d/plugins.d/*.conf"
 
-# ## agent2 Plugins.Ceph:
-# agent_param_plugins_ceph_insecureskipverify: "false" # "true" or "false" - should be string (not boolean)
-# agent_param_plugins_ceph_keepalive: 300 # limit: 60-900 seconds
-# agent_param_plugins_ceph_timeout: 6 # limit: 1-30 seconds
-# agent_param_plugins_ceph_sessions:  # list of dictionaries: fill values
-#   - { name: "sessionname", apikey: "sessionapikey", user: "sessionuser", uri: "sessionuri" }
-# ## agent2 Plugins.Docker:
-# agent_param_plugins_docker_endpoint: unix:///var/run/docker.sock
-# agent_param_plugins_docker_timeout: 3 # limit: 1-30 seconds
-# ## agent2 Plugins.Memcached:
-# agent_param_plugins_memcached_keepalive: 300 # limit: 60-900 seconds
-# agent_param_plugins_memcached_timeout: 6 # limit: 1-30 seconds
-# agent_param_plugins_memcached_sessions:  # list of dictionaries: fill values
-#   - { name: "sessionname", password: "sessionpassword", user: "sessionuser", uri: "sessionuri" }
-# ## agent2 Plugins.Modbus:
-# agent_param_plugins_modbus_timeout: 6 # limit: 1-30 seconds
-# agent_param_plugins_modbus_sessions:  # list of dictionaries: fill values
-#   - { name: "sessiontest", endpoint: "rtu://com1:9600:8n1", slaveid: "11" }
-#   - { name: "sessionname", endpoint: "tcp://127.0.0.1:502", slaveid: "12", timeout: "3" }
-# ## agent2 Plugins.MongoDB:
-# agent_param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
-# agent_param_plugins_mongodb_timeout: 3 # limit: 1-30 seconds
-# agent_param_plugins_mongodb_keepalive: 300
-# agent_param_plugins_mongodb_sessions:
-#   - name: "sessionname"
-#     uri: "someuri"
-#     user: "someuser"
-#     password: "somepassword"
-#     tlsconnect: "required"
-#     ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
-#     agent_source_tlscafile: "../default/files/certs/ca.crt"
-#     agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-#     agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
-#   - name: "sessionname2"
-#     uri: "someuri"
-#     user: "someuser"
-#     password: "somepassword"
-#     tlsconnect: "required"
-#     ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
-#     agent_source_tlscafile: "../default/files/certs/ca.crt"
-#     agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-#     agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
-# ## agent2 Plugins.MQTT:
-# agent_param_plugins_mqtt_timeout: 3
-# ## agent2 Plugins.Oracle:
-# agent_param_plugins_oracle_calltimeout: 3
-# agent_param_plugins_oracle_connecttimeout: 3
-# agent_param_plugins_oracle_customqueriespath: /some/path
-# agent_param_plugins_oracle_keepalive: 300
-# agent_param_plugins_oracle_sessions:
-#   - { name: "sessionname", uri: "someuri", service: "servicename", user: "someuser", password: "somepassword" }
-# ## agent2 Plugins.PostgreSQL configuration parameters:
-# agent_param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
-# agent_param_plugins_postgresql_calltimeout: 3
-# agent_param_plugins_postgresql_timeout: 3
-# agent_param_plugins_postgresql_customqueriespath: /some/path
-# agent_param_plugins_postgresql_keepalive: 300
-# agent_param_plugins_postgresql_sessions:
-#   - name: "sessionname"
-#     uri: "someuri"
-#     user: "someuser"
-#     password: "somepassword"
-#     database: "somedatabase"
-#     tlsconnect: "required"
-#     ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
-#     agent_source_tlscafile: "../default/files/certs/ca.crt"
-#     agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-#     agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
-# ## agent2 Plugins.Mysql:
-# agent_param_plugins_mysql_calltimeout: 3
-# agent_param_plugins_mysql_timeout: 3
-# agent_param_plugins_mysql_keepalive: 300
-# agent_param_plugins_mysql_sessions:
-#   - name: "sessionname"
-#     uri: "someuri"
-#     user: "someuser"
-#     password: "somepassword"
-#     tlsconnect: "required"
-#     ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
-#     agent_source_tlscafile: "../default/files/certs/ca.crt"
-#     agent_source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
-#     agent_source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
-# ## agent2 Plugins.Redis:
-# agent_param_plugins_redis_timeout: 3
-# agent_param_plugins_redis_keepalive: 300
-# agent_param_plugins_redis_sessions:
-#   - { name: "sessionname", uri: "someuri", user: "someuser", password: "somepassword" }
-# ## agent2 Plugins.Smart:
-# agent_param_plugins_smart_path: /usr/sbin/smartctl
-# agent_param_plugins_smart_timeout: 3
+## agent2 Plugins.Ceph:
+agent_param_plugins_ceph_insecureskipverify: "false" # "true" or "false" - should be string (not boolean)
+agent_param_plugins_ceph_keepalive: 300 # limit: 60-900 seconds
+agent_param_plugins_ceph_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_ceph_sessions:  # list of dictionaries: fill values
+  - { name: "sessionname", apikey: "sessionapikey", user: "sessionuser", uri: "sessionuri" }
+agent_param_plugins_ceph_default:  { apikey: "sessionapikey", user: "sessionuser", uri: "sessionuri" }
+
+## agent2 Plugins.Docker:
+agent_param_plugins_docker_endpoint: unix:///var/run/docker.sock
+agent_param_plugins_docker_timeout: 3 # limit: 1-30 seconds
+
+## agent2 Plugins.Memcached:
+agent_param_plugins_memcached_keepalive: 300 # limit: 60-900 seconds
+agent_param_plugins_memcached_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_memcached_sessions:  # list of dictionaries: fill values
+  - { name: "sessionname", password: "sessionpassword", user: "sessionuser", uri: "sessionuri" }
+agent_param_plugins_memcached_default: { password: "sessionpassword", user: "sessionuser", uri: "sessionuri" }
+
+## agent2 Plugins.Modbus:
+agent_param_plugins_modbus_timeout: 6 # limit: 1-30 seconds
+agent_param_plugins_modbus_sessions:  # list of dictionaries: fill values
+  - { name: "sessiontest", endpoint: "rtu://com1:9600:8n1", slaveid: "11" }
+  - { name: "sessionname", endpoint: "tcp://127.0.0.1:502", slaveid: "12", timeout: "3" }
+
+## agent2 Plugins.MongoDB:
+agent_param_plugins_mongodb_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb
+agent_param_plugins_mongodb_timeout: 3 # limit: 1-30 seconds
+agent_param_plugins_mongodb_keepalive: 300
+agent_param_plugins_mongodb_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    tlsconnect: "required"
+    ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+  - name: "sessionname2"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    tlsconnect: "required"
+    ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+agent_param_plugins_mongodb_default:
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    tlsconnect: "required"
+    ## agent2 Plugins.MongoDB local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+
+## agent2 Plugins.MQTT:
+agent_param_plugins_mqtt_timeout: 3
+agent_param_plugins_mqtt_sessions:
+  - name: "sessionname"
+    url: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    topic: "some topic"
+    ## agent2 Plugins.mqtt local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+agent_param_plugins_mqtt_default:
+    url: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    topic: "some topic"
+    ## agent2 Plugins.mqtt local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+
+## agent2 Plugins.Oracle:
+agent_param_plugins_oracle_calltimeout: 3
+agent_param_plugins_oracle_connecttimeout: 3
+agent_param_plugins_oracle_customqueriespath: /some/path
+agent_param_plugins_oracle_keepalive: 300
+agent_param_plugins_oracle_sessions:
+  - { name: "sessionname", uri: "someuri", service: "servicename", user: "someuser", password: "somepassword" }
+agent_param_plugins_oracle_default:
+  - { uri: "someuri", service: "servicename", user: "someuser", password: "somepassword" }
+
+## agent2 Plugins.PostgreSQL configuration parameters:
+agent_param_plugins_postgresql_system_path: /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql
+agent_param_plugins_postgresql_calltimeout: 3
+agent_param_plugins_postgresql_timeout: 3
+agent_param_plugins_postgresql_customqueriespath: /some/path
+agent_param_plugins_postgresql_keepalive: 300
+agent_param_plugins_postgresql_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    database: "somedatabase"
+    tlsconnect: "required"
+    ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+agent_param_plugins_postgresql_default:
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    database: "somedatabase"
+    tlsconnect: "required"
+    ## agent2 Plugins.PostgreSQL local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+
+## agent2 Plugins.Mysql:
+agent_param_plugins_mysql_calltimeout: 3
+agent_param_plugins_mysql_timeout: 3
+agent_param_plugins_mysql_keepalive: 300
+agent_param_plugins_mysql_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    tlsconnect: "required"
+    ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+agent_param_plugins_mysql_default:
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    tlsconnect: "required"
+    ## agent2 Plugins.Mysql local certificate file location. Will be transferred to target devices:
+    source_tlscafile: "../default/files/certs/ca.crt"
+    source_tlscertfile: "../default/files/certs/{{ inventory_hostname }}.crt"
+    source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
+
+## agent2 Plugins.MSSQL:
+agent_param_plugins_mssql_calltimeout: 3
+agent_param_plugins_mssql_timeout: 3
+agent_param_plugins_mssql_keepalive: 300
+agent_param_plugins_mssql_customqueriespath: /some/path
+agent_param_plugins_mssql_sessions:
+  - name: "sessionname"
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    encrypt: "true"
+    ## agent2 Plugins.mssql local certificate file location. Will be transferred to target devices:
+    source_cacertpath: "../default/files/certs/ca.crt"
+    database: "../default/files/certs/{{ inventory_hostname }}.crt"
+    hostnameincertificate: "somenameincert"
+    tlsminversion: "somenameincert"
+    trustservercertificate: "true"
+agent_param_plugins_mssql_default:
+    uri: "someuri"
+    user: "someuser"
+    password: "somepassword"
+    encrypt: "true"
+    ## agent2 Plugins.mssql local certificate file location. Will be transferred to target devices:
+    source_cacertpath: "../default/files/certs/ca.crt"
+    database: "../default/files/certs/{{ inventory_hostname }}.crt"
+    hostnameincertificate: "somenameincert"
+    tlsminversion: "somenameincert"
+    trustservercertificate: "true"
+
+## agent2 Plugins.Redis:
+agent_param_plugins_redis_timeout: 3
+agent_param_plugins_redis_keepalive: 300
+agent_param_plugins_redis_sessions:
+  - { name: "sessionname", uri: "someuri", user: "someuser", password: "somepassword" }
+agent_param_plugins_redis_default:
+  - { uri: "someuri", user: "someuser", password: "somepassword" }
+## agent2 Plugins.Smart:
+agent_param_plugins_smart_path: /usr/sbin/smartctl
+agent_param_plugins_smart_timeout: 3

@@ -8,3 +8,211 @@
 
 Plugins.MQTT.Timeout={{ agent_param_plugins_mqtt_timeout }}
 {% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.Url
+#	Broker connection string. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range: Must matches the URL format.
+# Default:
+# Plugins.MQTT.Sessions.*.Url=
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mqtt_sessions %}
+{% if session["url"] is defined and session["url"] %}
+Plugins.MQTT.Sessions.{{ session["name"] }}.Url={{ session["url"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.Topic
+#	Topic to subscribe. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Range: Must matches the URL format.
+# Default:
+# Plugins.MQTT.Sessions.*.Topic=
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mqtt_sessions %}
+{% if session["topic"] is defined and session["topic"] %}
+Plugins.MQTT.Sessions.{{ session["name"] }}.Topic={{ session["topic"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.User
+#	Username to be used for MQTT authentication. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Sessions.*.User=
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mqtt_sessions %}
+{% if session["user"] is defined and session["user"] %}
+Plugins.MQTT.Sessions.{{ session["name"] }}.User={{ session["user"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.Password
+#	Password to be used for MQTT authentication. "*" should be replaced with a session name.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Sessions.*.Password=
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mqtt_sessions %}
+{% if session["password"] is defined and session["password"] %}
+Plugins.MQTT.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for MQTT
+#	peer certificate verification.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Sessions.*.TLSCAFile=
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.TLSCertFile
+#	Full pathname of a file containing the MQTT certificate or certificate chain.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Sessions.*.TLSCertFile=
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Sessions.*.TLSKeyFile
+#	Full pathname of a file containing the mysql private key.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Sessions.*.TLSKeyFile=
+{% if agent_internal_plugins_mqtt_tls_file_list is defined and agent_internal_plugins_mqtt_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mqtt_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.Url
+#	Default MQTT broker connection string; used if no value is specified in an item key or named session.
+#   Supported since version 6.4.4.
+#
+# Mandatory: no
+# Range: Must matches the URL format.
+# Default:
+# Plugins.MQTT.Default.Url=
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.url is defined and agent_param_plugins_mqtt_default.url %}
+
+Plugins.MQTT.Default.Url={{ agent_param_plugins_mqtt_default.url }}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.Topic
+#	Default topic for MQTT subscription; used if no value is specified in an item key or named session.
+#   Supported since version 6.4.4.
+#
+# Mandatory: no
+# Range: Must matches the URL format.
+# Default:
+# Plugins.MQTT.Default.Topic=
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.topic is defined and agent_param_plugins_mqtt_default.topic %}
+
+Plugins.MQTT.Default.Topic={{ agent_param_plugins_mqtt_default.topic }}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.User
+#	Default username for connecting to MQTT; used if no value is specified in an item key or named session.
+#   Supported since version 6.4.4.
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Default.User=
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.user is defined and agent_param_plugins_mqtt_default.user %}
+
+Plugins.MQTT.Default.User={{ agent_param_plugins_mqtt_default.user }}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.Password
+#	Default password for connecting to MQTT; used if no value is specified in an item key or named session.
+#   Supported since version 6.4.4
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Default.Password=
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.password is defined and agent_param_plugins_mqtt_default.password %}
+
+Plugins.MQTT.Default.Password={{ agent_param_plugins_mqtt_default.password }}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for mysql
+#	peer certificate verification. Default value used if no other is specified.
+#   Supported since version 6.4.4
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Default.TLSCAFile=
+{% if agent_internal_plugins_mqtt_default_tls_file_list is defined and agent_internal_plugins_mqtt_default_tls_file_list is iterable and agent_internal_plugins_mqtt_tls_file_list is not string and agent_internal_plugins_mqtt_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_mqtt_default_tls_file_list %}
+{% if tls_file["type"] == "ca" %}
+Plugins.MQTT.Default.TLSCAFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.TLSCertFile
+#	Full pathname of a file containing the MQTT certificate or certificate chain.
+#   Default value used if no other is specified.
+#   Supported since version 6.4.4
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Default.TLSCertFile=
+{% if agent_internal_plugins_MQTT_default_tls_file_list is defined and agent_internal_plugins_MQTT_default_tls_file_list is iterable and agent_internal_plugins_MQTT_tls_file_list is not string and agent_internal_plugins_MQTT_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_MQTT_default_tls_file_list %}
+{% if tls_file["type"] == "cert" %}
+Plugins.MQTT.Default.TLSCertFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.TLSKeyFile
+#	Full pathname of a file containing the MQTT private key. Default value used if no other is specified.
+#   Supported since version 6.4.4
+#
+# Mandatory: no
+# Default:
+# Plugins.MQTT.Default.TLSKeyFile=
+{% if agent_internal_plugins_MQTT_default_tls_file_list is defined and agent_internal_plugins_MQTT_default_tls_file_list is iterable and agent_internal_plugins_MQTT_tls_file_list is not string and agent_internal_plugins_MQTT_tls_file_list is not mapping %}
+
+{% for tls_file in agent_internal_plugins_MQTT_default_tls_file_list %}
+{% if tls_file["type"] == "key" %}
+Plugins.MQTT.Default.TLSKeyFile={{ tls_file["target"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
