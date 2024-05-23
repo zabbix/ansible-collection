@@ -6,6 +6,9 @@
 - `agent role`: added default variables for agent2 plugins
 - `agent role`: added session name prefix to plugin certificate filenames on target devices
 - `agent role`: changed raspberry pi check to ansible_lsb
+- `repository role`: added ubuntu24.04 support
+- `molecule`: updated agent2_cert scenario for plugin testing
+- `molecule`: updated platforms with ubuntu24.04
 
 ## Bug
 
