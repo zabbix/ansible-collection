@@ -165,23 +165,23 @@
     agent_internal_item: '{{ agent_param_plugins_mysql_default }}'
     agent_internal_item_folder: '.CERT/MYSQL/DEFAULT'
   ansible.builtin.set_fact:
-    agent_internal_plugins_mysql_default_tls_file_list: '{{[
-        { "type": "ca",
-          "source": agent_internal_item.source_tlscafile | default(omit) ,
+    agent_internal_plugins_mysql_default_tls_file_list: '{{
+        [{"type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit),
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
-        { "type": "cert",
+         {"type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
-        { "type": "key",
+         {"type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
-                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
-      ]}}'
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename}]
+      }}'
   tags: [vars, verify, deploy, config]
 
 - name: 'Variables : Agent2 : Default : Generate list of PostgreSQL plugin certificate sources'
@@ -193,23 +193,23 @@
     agent_internal_item: '{{ agent_param_plugins_postgresql_default }}'
     agent_internal_item_folder: '.CERT/POSTGRESQL/DEFAULT'
   ansible.builtin.set_fact:
-    agent_internal_plugins_postgresql_default_tls_file_list: '{{[
-        { "type": "ca",
-          "source": agent_internal_item.source_tlscafile | default(omit) ,
+    agent_internal_plugins_postgresql_default_tls_file_list: '{{
+        [{"type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit),
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
-        { "type": "cert",
+         {"type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
-        { "type": "key",
+         {"type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
-                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
-      ]}}'
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename}]
+      }}'
   tags: [vars, verify, deploy, config]
 
 - name: 'Variables : Agent2 : Default : Generate list of MQTT plugin certificate sources'
@@ -225,23 +225,23 @@
     agent_internal_item: '{{ agent_param_plugins_mqtt_default }}'
     agent_internal_item_folder: '.CERT/MQTT/DEFAULT'
   ansible.builtin.set_fact:
-    agent_internal_plugins_mqtt_default_tls_file_list: '{{[
-        { "type": "ca",
-          "source": agent_internal_item.source_tlscafile | default(omit) ,
+    agent_internal_plugins_mqtt_default_tls_file_list: '{{
+        [{"type": "ca",
+          "source": agent_internal_item.source_tlscafile | default(omit),
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
-        { "type": "cert",
+         {"type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
                    + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
-        { "type": "key",
+         {"type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
-                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
-      ]}}'
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename}]
+      }}'
   tags: [vars, verify, deploy, config]
 
 - name: 'Variables : Agent2 : Default : Generate list of MSSQL plugin certificate sources'
@@ -253,13 +253,13 @@
     agent_internal_item: '{{ agent_param_plugins_mssql_default }}'
     agent_internal_item_folder: '.CERT/MSSQL/DEFAULT'
   ansible.builtin.set_fact:
-    agent_internal_plugins_mssql_default_tls_file_list: '{{[
-        { "type": "ca",
-          "source": agent_internal_item.source_cacertpath | default(omit) ,
+    agent_internal_plugins_mssql_default_tls_file_list: '{{
+        [{"type": "ca",
+          "source": agent_internal_item.source_cacertpath | default(omit),
           "target": agent_internal_item.cacertpath if agent_internal_item.source_cacertpath is not defined
               else agent_service_user_home + "/" + agent_binary_name | upper + "/"
-                   + agent_internal_item_folder + "/" + agent_internal_item.source_cacertpath | basename}
-      ]}}'
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_cacertpath | basename}]
+      }}'
   tags: [vars, verify, deploy, config]
 
 ### Loadable plugin list:
