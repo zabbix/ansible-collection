@@ -1,7 +1,7 @@
 ---
 ### Sessions:
 
-- name: 'Variables : Agent2 : generate list of Mysql plugin cert sources'
+- name: 'Variables : Agent2 : Generate list of Mysql plugin certificate sources'
   when: >
     agent_param_plugins_mysql_sessions is defined
     and agent_param_plugins_mysql_sessions
@@ -14,24 +14,27 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
   loop: '{{ agent_param_plugins_mysql_sessions }}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : generate list of PostgreSQL plugin cert sources'
+- name: 'Variables : Agent2 : Generate list of PostgreSQL plugin certificate sources'
   when: >
     agent_param_plugins_postgresql_sessions is defined
     and agent_param_plugins_postgresql_sessions
@@ -44,24 +47,27 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
   loop: '{{ agent_param_plugins_postgresql_sessions }}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : generate list of MongoDB plugin certs'
+- name: 'Variables : Agent2 : Generate list of MongoDB plugin certs'
   when: >
     agent_param_plugins_mongodb_sessions is defined
     and agent_param_plugins_mongodb_sessions
@@ -74,24 +80,27 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                  + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
        }}'
   loop_control:
     label: '{{ item.name }}'
   loop: '{{ agent_param_plugins_mongodb_sessions }}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : generate list of MQTT plugin cert sources'
+- name: 'Variables : Agent2 : Generate list of MQTT plugin certificate sources'
   when: >
     agent_param_plugins_mqtt_sessions is defined
     and agent_param_plugins_mqtt_sessions
@@ -103,24 +112,27 @@
           "type": "ca",
           "source": item.source_tlscafile | default(omit),
           "target": item.tlscafile if item.source_tlscafile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscafile | basename}]
       + [{"session_name": item.name,
           "type": "cert",
           "source": item.source_tlscertfile | default(omit),
           "target": item.tlscertfile if item.source_tlscertfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlscertfile | basename}]
       + [{"session_name": item.name,
           "type": "key",
           "source": item.source_tlskeyfile | default(omit),
           "target": item.tlskeyfile if item.source_tlskeyfile is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_tlskeyfile | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
   loop: '{{ agent_param_plugins_mqtt_sessions }}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : generate list of MSSQL plugin cert sources'
+- name: 'Variables : Agent2 : Generate list of MSSQL plugin certificate sources'
   when: >
     agent_param_plugins_mssql_sessions is defined
     and agent_param_plugins_mssql_sessions
@@ -134,7 +146,8 @@
           "type": "ca",
           "source": item.source_cacertpath | default(omit),
           "target": item.cacertpath if item.source_cacertpath is not defined
-            else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + item.name + "." + item.source_cacertpath | basename}]
+            else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                 + agent_internal_item_folder + "/" + item.name + "." + item.source_cacertpath | basename}]
       }}'
   loop_control:
     label: '{{ item.name }}'
@@ -142,8 +155,8 @@
   tags: [vars, verify, deploy, config]
 
 ### Defaults:
- 
-- name: 'Variables : Agent2 : Default : Generate list of Mysql plugin default cert sources'
+
+- name: 'Variables : Agent2 : Default : Generate list of Mysql plugin certificate sources'
   when: >
     agent_internal_item is defined
     and agent_internal_item.tlsconnect is defined
@@ -156,19 +169,22 @@
         { "type": "ca",
           "source": agent_internal_item.source_tlscafile | default(omit) ,
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
         { "type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
         { "type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
       ]}}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : Default : Generate list of PostgreSQL plugin default cert sources'
+- name: 'Variables : Agent2 : Default : Generate list of PostgreSQL plugin certificate sources'
   when: >
     agent_internal_item is defined
     and agent_internal_item.tlsconnect is defined
@@ -181,19 +197,22 @@
         { "type": "ca",
           "source": agent_internal_item.source_tlscafile | default(omit) ,
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
         { "type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
         { "type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
       ]}}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : Default : Generate list of MQTT plugin default cert sources'
+- name: 'Variables : Agent2 : Default : Generate list of MQTT plugin certificate sources'
   when: >
     agent_internal_item is defined
     and (agent_internal_item.source_tlscafile is defined
@@ -210,19 +229,22 @@
         { "type": "ca",
           "source": agent_internal_item.source_tlscafile | default(omit) ,
           "target": agent_internal_item.tlscafile if agent_internal_item.source_tlscafile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscafile | basename},
         { "type": "cert",
           "source": agent_internal_item.source_tlscertfile | default(omit),
           "target": agent_internal_item.tlscertfile if agent_internal_item.source_tlscertfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlscertfile | basename},
         { "type": "key",
           "source": agent_internal_item.source_tlskeyfile | default(omit),
           "target": agent_internal_item.tlskeyfile if agent_internal_item.source_tlskeyfile is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_tlskeyfile | basename},
       ]}}'
   tags: [vars, verify, deploy, config]
 
-- name: 'Variables : Agent2 : Default : Generate list of MSSQL plugin default cert sources'
+- name: 'Variables : Agent2 : Default : Generate list of MSSQL plugin certificate sources'
   when: >
     agent_internal_item is defined
     and (agent_internal_item.source_cacertpath is defined and agent_internal_item.source_cacertpath
@@ -235,7 +257,8 @@
         { "type": "ca",
           "source": agent_internal_item.source_cacertpath | default(omit) ,
           "target": agent_internal_item.cacertpath if agent_internal_item.source_cacertpath is not defined
-              else agent_service_user_home + "/" + agent_binary_name | upper + "/" + agent_internal_item_folder + "/" + agent_internal_item.source_cacertpath | basename}
+              else agent_service_user_home + "/" + agent_binary_name | upper + "/"
+                   + agent_internal_item_folder + "/" + agent_internal_item.source_cacertpath | basename}
       ]}}'
   tags: [vars, verify, deploy, config]
 
