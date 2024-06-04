@@ -21,29 +21,29 @@ platforms:
       - linux
       - rhel
 
-  - name: podman_cs8
-    dockerfile: ../default/files/Dockerfile.rhel.j2
-    image: quay.io/centos/centos:stream8
-    pre_build_image: false
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /etc/localtime:/etc/localtime:ro
-    # capabilities:
-    #   - SYS_ADMIN
-    published_ports:
-      - "18350:10050/tcp"
-      - "18320:10020/tcp"
-    # exposed_ports:
-    #   - "22018/tcp"
-    command: "/usr/sbin/init"
-    groups:
-      - molecule
-      - podman
-      - linux
-      - centos
+  # - name: podman_cs8
+  #   dockerfile: ../default/files/Dockerfile.rhel.j2
+  #   image: quay.io/centos/centos:stream8
+  #   pre_build_image: false
+  #   # tmpfs:
+  #   #   - /run
+  #   #   - /tmp
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   # capabilities:
+  #   #   - SYS_ADMIN
+  #   published_ports:
+  #     - "18350:10050/tcp"
+  #     - "18320:10020/tcp"
+  #   # exposed_ports:
+  #   #   - "22018/tcp"
+  #   command: "/usr/sbin/init"
+  #   groups:
+  #     - molecule
+  #     - podman
+  #     - linux
+  #     - centos
 
   - name: podman_ora8
     dockerfile: ../default/files/Dockerfile.oracle.8.j2

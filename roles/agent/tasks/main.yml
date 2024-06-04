@@ -5,9 +5,9 @@
       variant: {{ agent_variant | string }}
       distr: {{ ansible_distribution }}
       major: {{ ansible_distribution_major_version }}
-      become_method: {{ ansible_become_method }}
-      agent_logrotate_path: {{ agent_logrotate_path }}
-      agent_param_include: {{ agent_param_include }}
+      become_method: {{ ansible_become_method | default(None) }}
+      agent_logrotate_path: {{ agent_logrotate_path | default(None) }}
+      agent_param_include: {{ agent_param_include | default(None) }}
   tags: [never, debug]
 
 - name: 'Assert : Variables validation'

@@ -1,3 +1,10 @@
+# v1.3.9
+
+## Feature
+
+- `repository role`: added Zabbix 7.0 support
+- `agent role`: added Zabbix 7.0 support
+
 # v1.3.8
 
 ## Feature

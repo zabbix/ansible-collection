@@ -19,4 +19,6 @@ RUN mkdir -p /etc/systemd/user/sockets.target.wants/  ;\
     ln -s /usr/lib/systemd/user/dbus.service /etc/systemd/user/dbus.service ;\
     ln -s /usr/lib/systemd/user/dbus.socket /etc/systemd/user/sockets.target.wants/dbus.socket ;
 
+# RUN dnf install python3
+
 CMD ["/usr/sbin/init"]

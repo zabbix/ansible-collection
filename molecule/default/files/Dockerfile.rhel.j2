@@ -12,4 +12,6 @@ RUN rm -f /lib/systemd/system/multi-user.target.wants/*;\
 RUN yum makecache && yum --assumeyes reinstall systemd dbus util-linux firewalld && yum clean all \
     || yum makecache && yum --assumeyes install systemd dbus util-linux firewalld && yum clean all
 
+# RUN dnf install python3
+
 CMD ["/usr/sbin/init"]

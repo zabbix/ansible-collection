@@ -35,7 +35,7 @@
     description: '{{ repository_description }}'
     baseurl: '{{ repository_baseurl }}'
     gpgcheck: '{{ repository_gpg_check }}'
-    gpgkey: '{{ repository_gpg_key }}'
+    gpgkey: '{{ repository_internal_gpg_key_url_list }}'
     priority: '{{ repository_priority if (repository_priority is defined and repository_priority)
                   else omit }}'
     # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
@@ -44,6 +44,18 @@
   environment:
     http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
     https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
+  vars:
+    repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+              + repository_url + "/zabbix/" + repository_version | string + "/"
+              + repository_map_os_to_url[repository_version | string][ansible_distribution] + "/"
+              + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                  else ansible_distribution_major_version | string)
+              + "/$basearch/" }}'
+    repository_gpg_key_list: '{{ repository_map_gpg_key_list[repository_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
+                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                  else repository_map_gpg_key_list[ansible_distribution_major_version] }}'
+    repository_internal_gpg_key_url_list: "{{ repository_gpg_key_list | map('regex_replace', '^(.*)$', repository_url + '/\\1') | list }}"
   tags: [deploy, remove]
 
 - name: 'YUM : yum clean all'

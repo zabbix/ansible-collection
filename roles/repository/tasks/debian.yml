@@ -34,6 +34,18 @@
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
     signed_by: '{{ repository_gpg_key }}'
     # allow_insecure: true
+  vars:
+    repository_gpg_key: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+                            + repository_url
+                            + "/zabbix-official-repo.key" }}'
+    repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+                        + repository_url + "/zabbix/"
+                        + repository_version | string + "/"
+                        + ansible_distribution | lower
+                        + ("" if (ansible_architecture == "x86_64"
+                                  or ansible_distribution == "Raspbian")
+                            else ("-arm64" if ansible_architecture == "aarch64" else ""))
+                        }}'
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
