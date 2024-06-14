@@ -1,3 +1,13 @@
+# v1.3.10
+
+## Feature
+
+- moved supported ansible-core range to 2.17-2.15
+
+## Bug
+
+- `zabbix_api module_utils`: removed certificate error exception.
+
 # v1.3.9
 
 ## Feature

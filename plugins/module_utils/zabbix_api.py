@@ -9,7 +9,6 @@ __metaclass__ = type
 
 from uuid import uuid4
 
-from ansible.module_utils.urls import CertificateError
 from ansible.module_utils.connection import ConnectionError
 from ansible.module_utils.connection import Connection
 
@@ -77,9 +76,6 @@ class ZabbixApi(object):
 
         except ConnectionError as e:
             self.module.fail_json(msg="Connection error: {0}".format(e))
-
-        except CertificateError as e:
-            self.module.fail_json(msg="Certificate error: {0}".format(e))
 
         except ValueError as e:
             self.module.fail_json(msg="Certificate not found: {0}".format(e))
