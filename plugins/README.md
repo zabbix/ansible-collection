@@ -75,7 +75,7 @@ You can configure Zabbix API connection settings with the following parameters:
 
 ```yaml
 - name: Create host groups
-  zabbix.zabbix.zabbix_group:
+  zabbix.zabbix.zabbix_hostgroup:
     state: present
     host_groups:
      - Group 1
@@ -106,7 +106,7 @@ Example of using options to create a host group. For a typical application, it i
 
 ```yaml
 - name: Create host groups
-  zabbix.zabbix.zabbix_group:
+  zabbix.zabbix.zabbix_hostgroup:
     state: present
     host_groups:
      - G1
@@ -566,7 +566,7 @@ To update host to empty parameters, you can use this example.
     host: Example host
     hostgroups:                           # Host group must be not empty
       - Linux servers
-    templates: []
+    templates: []                         # Read important note in this example
     status: enabled
     description: ''
     name: ''                              # The technical name will be used
@@ -583,6 +583,34 @@ To update host to empty parameters, you can use this example.
     tls_connect: unencrypted
     proxy: ''
     inventory_mode: disabled
+    interfaces: []                        # Read important note in this example
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+**IMPORTANT**: If you want to clear templates and interface on the host, but the template contains items that use this interface, then you need to perform this operation in 2 tasks: first clear templates, then clear interfaces. If the template contains items that do not use an interface, clearing the template and removing interfaces can be done in one task.
+
+First step: clearing templates
+```yaml
+- name: Clearing templates
+  zabbix.zabbix.zabbix_host:
+    host: Example host
+    templates: []
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+Second step: clearing interfaces
+```yaml
+- name: Clearing interfaces
+  zabbix.zabbix.zabbix_host:
+    host: Example host
     interfaces: []
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
