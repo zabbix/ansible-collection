@@ -52,7 +52,7 @@
   register: agent_register_verify_execution_environment_get_agent_version
   # first tlsaccept value taken for connection settings
   ansible.builtin.command: >-
-      zabbix_get -k agent.version
+      /usr/bin/zabbix_get -k agent.version
       -s {{ ansible_host }}
       -t 5
       {% if driver is defined and driver in ["podman", "docker"] %}
