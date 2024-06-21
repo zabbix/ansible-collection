@@ -344,6 +344,12 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=1 align="left">Name of the proxy that is used to monitor the host.</td>
         </tr>
         <tr>
+            <td colspan=3 align="left">proxy_group</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Name of the proxy group that is used to monitor the host. Used only for Zabbix versions above 7.0.</td>
+        </tr>
+        <tr>
             <td colspan=3 align="left">inventory_mode</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>

@@ -149,6 +149,11 @@ options:
     proxy:
         description: Name of the proxy that is used to monitor the host.
         type: str
+    proxy_group:
+        description: 
+            - Name of the proxy group that is used to monitor the host.
+            - Used only for Zabbix versions above 7.0.
+        type: str
     inventory_mode:
         description: Host inventory population mode.
         choices: [ automatic, manual, disabled ]
@@ -637,16 +642,41 @@ class Host(object):
         # proxy
         if self.module.params.get('proxy') is not None:
             if len(self.module.params.get('proxy')) == 0:
-                host_params['proxy_hostid'] = '0'
+                if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
+                    host_params['proxy_hostid'] = '0'
+                else:
+                    host_params['proxyid'] = '0'
+                    host_params['monitored_by'] = '0'
             else:
                 proxy = self.zapi.find_zabbix_proxy_by_names(
                     self.module.params['proxy'])
                 if len(proxy) > 0:
-                    host_params['proxy_hostid'] = proxy[0]['proxyid']
+                    if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
+                        host_params['proxy_hostid'] = proxy[0]['proxyid']
+                    else:
+                        host_params['proxyid'] = proxy[0]['proxyid']
+                        host_params['monitored_by'] = '1'
                 else:
                     self.module.fail_json(
                         msg="Proxy not found in Zabbix: {0}".format(
                             self.module.params.get('proxy')))
+
+        # proxy group
+        if self.module.params.get('proxy_group') is not None:
+            if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
+                if len(self.module.params.get('proxy_group')) == 0:
+                    host_params['proxy_groupid'] = '0'
+                    host_params['monitored_by'] = '0'
+                else:
+                    proxy_groups = self.zapi.find_zabbix_proxy_groups_by_names(
+                        self.module.params['proxy_group'])
+                    if len(proxy_groups) > 0:
+                        host_params['proxy_groupid'] = proxy_groups[0]['proxy_groupid']
+                        host_params['monitored_by'] = '2'
+                    else:
+                        self.module.fail_json(
+                            msg="Proxy group not found in Zabbix: {0}".format(
+                                self.module.params.get('proxy_group')))
 
         # status
         if self.module.params.get('status'):
@@ -873,7 +903,8 @@ class Host(object):
         wo_process = ['status', 'description', 'ipmi_authtype', 'proxy_hostid',
                       'ipmi_privilege', 'ipmi_username', 'ipmi_password',
                       'inventory_mode', 'tls_accept', 'tls_psk_identity',
-                      'tls_psk', 'tls_issuer', 'tls_subject', 'tls_connect']
+                      'tls_psk', 'tls_issuer', 'tls_subject', 'tls_connect',
+                      'monitored_by', 'proxy_groupid', 'proxyid']
         for each in wo_process:
             if (new_host.get(each) is not None and
                     new_host.get(each) != exist_host.get(each)):
@@ -1061,6 +1092,7 @@ def main():
         'tls_issuer': {'type': 'str'},
         'tls_subject': {'type': 'str'},
         'proxy': {'type': 'str'},
+        'proxy_group': {'type': 'str'},
         'inventory_mode': {
             'type': 'str',
             'choices': ['automatic', 'manual', 'disabled']},
@@ -1102,6 +1134,7 @@ def main():
 
     module = AnsibleModule(
         argument_spec=spec,
+        mutually_exclusive=[('proxy', 'proxy_group')],
         required_together=[('tls_psk_identity', 'tls_psk')],
         supports_check_mode=True)
 
