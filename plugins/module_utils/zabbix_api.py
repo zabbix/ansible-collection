@@ -378,7 +378,7 @@ class ZabbixApi(object):
                 'filter': search_filter})
 
         return existing_proxy_groups
-    
+
     def find_zabbix_proxy_groups_by_names(self, proxy_group_names):
         """
         Function to search for a proxy group in Zabbix by proxy_group_names

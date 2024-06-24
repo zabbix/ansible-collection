@@ -150,7 +150,7 @@ options:
         description: Name of the proxy that is used to monitor the host.
         type: str
     proxy_group:
-        description: 
+        description:
             - Name of the proxy group that is used to monitor the host.
             - Used only for Zabbix versions above 7.0.
         type: str
@@ -677,6 +677,8 @@ class Host(object):
                         self.module.fail_json(
                             msg="Proxy group not found in Zabbix: {0}".format(
                                 self.module.params.get('proxy_group')))
+            else:
+                self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: proxy_group")
 
         # status
         if self.module.params.get('status'):
