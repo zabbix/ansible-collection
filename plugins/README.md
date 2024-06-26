@@ -714,6 +714,12 @@ Inventory plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=1 align="left">List of proxies for host search in Zabbix. Will return hosts that are linked to the given proxies. Wildcard search is possible. Case-sensitive search.</td>
         </tr>
         <tr>
+            <td colspan=2 align="left">proxy_group</td>
+            <td colspan=1 align="left"><code>list</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">List of proxy groups for host search in Zabbix. Will return hosts that are linked to the given proxy groups. Wildcard search is possible. Case-sensitive search. Used only for Zabbix versions above 7.0.</td>
+        </tr>
+        <tr>
             <td colspan=2 align="left">status</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>

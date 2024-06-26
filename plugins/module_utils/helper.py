@@ -251,3 +251,9 @@ host_subquery = [
     "selectHostGroups", "selectHttpTests", "selectInterfaces", "selectInventory",
     "selectItems", "selectMacros", "selectParentTemplates", "selectDashboards",
     "selectTags", "selectInheritedTags", "selectTriggers", "selectValueMaps", "selectGroups"]
+
+# Dictionary for filtering parameters depending on the API version
+filter_params_depends_on_version = {
+    'query': [],
+    'output': [],
+    'filter': ['proxy_group']}

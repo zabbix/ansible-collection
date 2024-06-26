@@ -146,6 +146,7 @@ class TestParserFilters(unittest.TestCase):
             for each in test_cases:
                 inventory = InventoryModule()
                 inventory.args = each['input']
+                inventory.zabbix_version = '6.0.18'
                 result = inventory.parse_filter()
                 result['proxyids'].sort()
                 self.assertEqual(result, each['expected'],

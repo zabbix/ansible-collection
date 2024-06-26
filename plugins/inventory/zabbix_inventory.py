@@ -113,6 +113,15 @@ options:
                     - Will return hosts that are linked to the given proxies.
                     - Wildcard search is possible.
                     - Case-sensitive search.
+            proxy_group:
+                type: list
+                elements: str
+                description:
+                    - List of proxy groups for host search in Zabbix.
+                    - Will return hosts that are linked to the given proxy groups.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
+                    - Used only for Zabbix versions above 7.0.
             name:
                 type: list
                 elements: str
@@ -415,7 +424,7 @@ from ansible.parsing.yaml.objects import AnsibleUnicode
 from ansible.plugins.inventory import (BaseInventoryPlugin, Cacheable,
                                        Constructable)
 from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
-    host_subquery, tags_compare_operators)
+    host_subquery, tags_compare_operators, Zabbix_version, filter_params_depends_on_version)
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
@@ -594,7 +603,21 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 - Unknown tags_behavior filter
                 - Not found tag name
                 - Unknown tag operator filter
+                - Unsupported filter: proxy_group
         """
+
+        # Check depending on the Zabbix version
+        # If the arguments contain parameters which depends on the version,
+        # we need to get the version of the API.
+        need_version = False
+
+        for key in filter_params_depends_on_version:
+            if self.args.get(key) is not None:
+                if len(list(set(filter_params_depends_on_version.get(key, [])) & set(self.args.get(key, [])))) != 0:
+                    need_version = True
+
+        if need_version:
+            self.zabbix_version = self.get_api_version()
 
         # Check query parameters
         if self.args.get('query'):
@@ -659,6 +682,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     tags.append(new_tag)
                 self.args['filter']['tags'] = list(tags)
 
+            # proxy group
+            if self.args['filter'].get('proxy_group') is not None:
+                if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0'):
+                    raise AnsibleParserError(
+                        'Unsupported filter: proxy_group. This filter is not supported in Zabbix API v.{0}'.format(
+                            self.zabbix_version))
+
     def parse_filter(self):
         """
         This function parses all filtering conditions and, depending on the situation,
@@ -687,10 +717,20 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # Zabbix proxies
         if self.args['filter'].get('proxy') is not None:
-            subquery_params['output'] = ["host", "proxyid"]
-            subquery_params['search'] = {"host": self.args['filter']['proxy']}
+            subquery_params['output'] = ["name", "proxyid"]
+            subquery_params['search'] = {"name": self.args['filter']['proxy']}
+            if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0'):
+                subquery_params['output'] = ["host", "proxyid"]
+                subquery_params['search'] = {"host": self.args['filter']['proxy']}
             response = self.api_request(method='proxy.get', params=subquery_params)
             zabbix_filter['proxyids'] = [p['proxyid'] for p in response]
+
+        # Zabbix proxy groups
+        if self.args['filter'].get('proxy_group') is not None:
+            subquery_params['output'] = ["name", "proxy_groupid"]
+            subquery_params['search'] = {"name": self.args['filter']['proxy_group']}
+            response = self.api_request(method='proxygroup.get', params=subquery_params)
+            zabbix_filter['proxy_groupids'] = [pg['proxy_groupid'] for pg in response]
 
         # Host
         if self.args['filter'].get('host') is not None:
@@ -780,7 +820,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 for tag in old_input_args['filter'][key] + self.args['filter'][key]:
                     if tag not in old_input_args['filter'][key] or tag not in self.args['filter'][key]:
                         return False
-            elif key in ['hostgroups', 'templates', 'proxy', 'name', 'host']:
+            elif key in ['hostgroups', 'templates', 'proxy', 'proxy_group', 'name', 'host']:
                 if len(list(set(self.args['filter'][key]) ^ set(old_input_args['filter'][key]))) != 0:
                     return False
 
@@ -811,6 +851,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # Get and validate input parameters
         self.args = self.get_options()
+        self.zabbix_api_url = self.get_absolute_url()
         self.validate_params()
 
         # Get constructed parameters
@@ -854,8 +895,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 os.environ['https_proxy'] = proxy
                 os.environ['HTTPS_PROXY'] = proxy
 
-            self.zabbix_api_url = self.get_absolute_url()
-            self.zabbix_version = self.get_api_version()
+            if hasattr(self, "zabbix_version") is False:
+                self.zabbix_version = self.get_api_version()
+
             self.auth = self.login()
 
             self.query = {
