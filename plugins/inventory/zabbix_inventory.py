@@ -613,7 +613,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         for key in filter_params_depends_on_version:
             if self.args.get(key) is not None:
-                if len(list(set(filter_params_depends_on_version.get(key, [])) & set(self.args.get(key, [])))) != 0:
+                if len(list(
+                    set(filter_params_depends_on_version.get(key, [])) &
+                        set([e.lower() for e in self.args.get(key, [])]))) != 0:
                     need_version = True
 
         if need_version:

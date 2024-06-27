@@ -152,6 +152,91 @@ class TestParserFilters(unittest.TestCase):
                 self.assertEqual(result, each['expected'],
                                  'error with input data: {0}'.format(each['input']))
 
+    def test_filter_proxies_70(self):
+        """
+        This test checks filtering by proxy for Zabbix versions above 7.0.0.
+
+        Test cases:
+            1. Filter by proxy with asterisk.
+            2. Certain proxy.
+            3. Non-existing proxy.
+            4. Several conditions in a list with asterisk.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if params['search']['name'] == 'proxy*':
+                return [{'proxyid': '2'}, {'proxyid': '628'}]
+            if params['search']['name'] == 'Linux proxy':
+                return [{'proxyid': '2'}]
+            if params['search']['name'] == 'Unknown':
+                return {}
+            if params['search']['name'] == ['Linux*', 'Windows*']:
+                return [{'proxyid': '2'}, {'proxyid': '628'}]
+
+        test_cases = [
+            {'input': {'filter': {'proxy': 'proxy*'}}, 'expected': {'proxyids': ['2', '628']}},
+            {'input': {'filter': {'proxy': 'Linux proxy'}}, 'expected': {'proxyids': ['2']}},
+            {'input': {'filter': {'proxy': 'Unknown'}}, 'expected': {'proxyids': []}},
+            {'input': {'filter': {'proxy': ['Linux*', 'Windows*']}}, 'expected': {'proxyids': ['2', '628']}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                inventory.zabbix_version = '7.0.0'
+                result = inventory.parse_filter()
+                result['proxyids'].sort()
+                self.assertEqual(result, each['expected'],
+                                 'error with input data: {0}'.format(each['input']))
+
+    def test_filter_proxy_groups(self):
+        """
+        This test checks filtering by proxy group.
+
+        Test cases:
+            1. Filter by proxy group with asterisk.
+            2. Certain proxy group.
+            3. Non-existing proxy group.
+            4. Several conditions in a list with asterisk.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if params['search']['name'] == 'proxy*':
+                return [{'proxy_groupid': '2'}, {'proxy_groupid': '628'}]
+            if params['search']['name'] == 'Linux proxy group':
+                return [{'proxy_groupid': '2'}]
+            if params['search']['name'] == 'Unknown':
+                return {}
+            if params['search']['name'] == ['Linux*', 'Windows*']:
+                return [{'proxy_groupid': '2'}, {'proxy_groupid': '628'}]
+
+        test_cases = [
+            {'input': {'filter': {'proxy_group': 'proxy*'}}, 'expected': {'proxy_groupids': ['2', '628']}},
+            {'input': {'filter': {'proxy_group': 'Linux proxy group'}}, 'expected': {'proxy_groupids': ['2']}},
+            {'input': {'filter': {'proxy_group': 'Unknown'}}, 'expected': {'proxy_groupids': []}},
+            {'input': {'filter': {'proxy_group': ['Linux*', 'Windows*']}}, 'expected': {'proxy_groupids': ['2', '628']}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                result = inventory.parse_filter()
+                result['proxy_groupids'].sort()
+                self.assertEqual(result, each['expected'],
+                                 'error with input data: {0}'.format(each['input']))
+
     def test_filter_host(self):
         """
         This test checks filtering by technical name of hosts.
