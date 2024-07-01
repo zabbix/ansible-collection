@@ -193,7 +193,6 @@ zabbix_password: zabbix
 
 # To select hosts by host groups name, you can use the following example.
 # In this example, all hosts linked to any host groups the names of which start with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -203,7 +202,6 @@ filter:
 
 # To select hosts by certain host group name, you can use the following example.
 # In this example, all hosts linked only to host group 'Linux' will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -213,7 +211,6 @@ filter:
 
 # To select hosts from several host groups, you can use the following example.
 # In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups the names of which start with 'Windows' will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -230,7 +227,6 @@ filter:
 # Also, you can use tags for searching by tag name or tag value.
 # In this example, all hosts linked to the host group 'Linux' and to any of the '*http*' or '*agent*' templates as well as
 # containing 'sql' or 'SQL' in their visible names will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -245,7 +241,6 @@ filter:
 
 # To limit fields in output, you can specify the list of fields in output options.
 # In this example, only name and two mandatory fields (hostid and host) will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -256,7 +251,6 @@ output: name
 
 # To have several output fields, you need to specify those in the list format.
 # In this example, name, status and two mandatory fields (hostid and host) will be returned.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -282,7 +276,6 @@ output:
 # grouping with 'keyed_groups'.
 # IMPORTANT: Keep in mind that all parameters from Zabbix will have prefix (by default, 'zabbix_').
 # And you need to specify it in postprocessing (zabbix_groups, zabbix_status, etc.).
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -301,7 +294,6 @@ keyed_groups:
     separator: ""
 
 # For grouping by template names. Other parameters (credentials, URL, etc.) were skipped in this example.
----
 query:
   selectParentTemplates: ['name']
 keyed_groups:
@@ -309,7 +301,6 @@ keyed_groups:
     separator: ""
 
 # For searching by 'Location' tag and grouping by tag names. Other parameters (credentials, URL, etc.) were skipped in this example.
----
 query:
   selectTags: 'extend'
 filter:
@@ -322,7 +313,6 @@ keyed_groups:
 # For searching by 'Location' tag and grouping by tag values. Other parameters (credentials, URL, etc.) were skipped in this example.
 # In this example, hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
 # then the following groups will be created: Riga, Berlin.
----
 query:
   selectTags: 'extend'
 filter:
@@ -334,7 +324,6 @@ keyed_groups:
 
 # For transforming given host groups to the list, you can use 'compose' and the following example.
 # Other parameters (credentials, URL, etc.) were skipped in this example.
----
 query:
   selectGroups: ['name']
 compose:
@@ -342,7 +331,6 @@ compose:
 
 # For transforming given interfaces to the list of IP addresses, you can use 'compose' and the following example.
 # Other parameters (credentials, URL, etc.) were skipped in this example.
----
 query:
   selectInterfaces: ['ip']
 compose:
@@ -355,7 +343,6 @@ compose:
 # During the loading of cached data, the plugin will compare the input parameters. If any parameters impacting the given data
 # (login, password, API token, URL, output, filter, query) have been changed, then cached data will be skipped and new data will be requested from Zabbix.
 # For caching, you can use the following example:
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -372,7 +359,6 @@ cache_connection: /tmp/zabbix_inventory
 # In this example, you can use filtering by host groups, templates, proxy, tags, names, status.
 # Grouping by Zabbix host groups.
 # Transform IP addresses to the list of IP.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -407,7 +393,6 @@ keyed_groups:
 
 # In this example, you can apply filtering by 'Location' tag with empty value and grouping by status (enabled, disabled).
 # In this example, status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
----
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
