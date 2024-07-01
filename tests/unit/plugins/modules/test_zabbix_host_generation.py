@@ -23,6 +23,13 @@ def mock_api_version(self):
     return '6.0.18'
 
 
+def mock_api_version_70(self):
+    """
+    Mock function to get Zabbix API version 7.0.
+    """
+    return '7.0.0'
+
+
 class TestWOProcessing(TestModules):
     """Class for testing parameters that do not require preprocessing"""
     module = zabbix_host
@@ -271,7 +278,7 @@ class TestProxy(TestModules):
 
         Expected result: the resulting data equals the expected result.
         """
-        def mock_find_zabbix_proxy_by_names(self, hostgroup_names):
+        def mock_find_zabbix_proxy_by_names(self, proxy_names):
             return [{'proxyid': '2', 'name': 'Test Proxy'}]
 
         exist_host = {'host': 'exist host', 'inventory_mode': '1'}
@@ -300,7 +307,7 @@ class TestProxy(TestModules):
 
         Expected result: an exception.
         """
-        def mock_find_zabbix_proxy_by_names(self, hostgroup_names):
+        def mock_find_zabbix_proxy_by_names(self, proxy_names):
             return []
 
         exist_host = {'host': 'exist host', 'inventory_mode': '1'}
@@ -321,6 +328,221 @@ class TestProxy(TestModules):
             self.assertTrue(ansible_result.exception.args[0]['failed'])
             self.assertEqual(
                 'Proxy not found in Zabbix: Test Proxy',
+                ansible_result.exception.args[0]['msg'])
+
+
+class TestProxy_70(TestModules):
+    """Class for testing the operation of the module with proxy in
+    Zabbix API version 7.0.0"""
+    module = zabbix_host
+
+    def test_removing_proxy(self):
+        """
+        Testing the processing of the proxy parameter.
+        In this case, we can clear the proxy from the host.
+
+        Expected result: the resulting data equals the expected result, and
+        the proxy parameter is set to '0'.
+        """
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy': ''}
+            expected_result = {
+                'host': 'test_host',
+                'proxyid': '0',
+                'monitored_by': '0'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            result = host.generate_zabbix_host(exist_host)
+            self.assertEqual(result, expected_result)
+
+    def test_processing_proxy(self):
+        """
+        Testing the processing of the proxy parameter.
+        In this case, input parameters must be processed successfully.
+
+        Expected result: the resulting data equals the expected result.
+        """
+        def mock_find_zabbix_proxy_by_names(self, proxy_names):
+            return [{'proxyid': '2', 'name': 'Test Proxy'}]
+
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70,
+                find_zabbix_proxy_by_names=mock_find_zabbix_proxy_by_names):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy': 'Test Proxy'}
+            expected_result = {
+                'host': 'test_host',
+                'proxyid': '2',
+                'monitored_by': '1'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            result = host.generate_zabbix_host(exist_host)
+            self.assertEqual(result, expected_result)
+
+    def test_processing_proxy_error(self):
+        """
+        Testing the processing of the proxy parameter.
+        In this case, the proxy was not found in Zabbix, resulting in an error.
+
+        Expected result: an exception.
+        """
+        def mock_find_zabbix_proxy_by_names(self, proxy_names):
+            return []
+
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70,
+                find_zabbix_proxy_by_names=mock_find_zabbix_proxy_by_names):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy': 'Test Proxy'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            with self.assertRaises(AnsibleFailJson) as ansible_result:
+                host.generate_zabbix_host(exist_host)
+            self.assertTrue(ansible_result.exception.args[0]['failed'])
+            self.assertEqual(
+                'Proxy not found in Zabbix: Test Proxy',
+                ansible_result.exception.args[0]['msg'])
+
+
+class TestProxyGroup(TestModules):
+    """Class for testing the operation of the module with proxy group"""
+    module = zabbix_host
+
+    def test_processing_proxy_group_version_error(self):
+        """
+        Testing the processing of the proxy group parameter.
+        In this case, the proxy group is not applicable, resulting in an error.
+
+        Expected result: an exception.
+        """
+        def mock_find_zabbix_proxy_groups_by_names(self, proxy_group_names):
+            return []
+
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version,
+                find_zabbix_proxy_groups_by_names=mock_find_zabbix_proxy_groups_by_names):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy_group': 'Test Proxy Group'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            with self.assertRaises(AnsibleFailJson) as ansible_result:
+                host.generate_zabbix_host(exist_host)
+            self.assertTrue(ansible_result.exception.args[0]['failed'])
+            self.assertEqual(
+                'Incorrect arguments for Zabbix version < 7.0.0: proxy_group',
+                ansible_result.exception.args[0]['msg'])
+
+    def test_removing_proxy_group(self):
+        """
+        Testing the processing of the proxy group parameter.
+        In this case, we can clear the proxy group from the host.
+
+        Expected result: the resulting data equals the expected result, and
+        the proxy group parameter is set to '0'.
+        """
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy_group': ''}
+            expected_result = {
+                'host': 'test_host',
+                'proxy_groupid': '0',
+                'monitored_by': '0'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            result = host.generate_zabbix_host(exist_host)
+            self.assertEqual(result, expected_result)
+
+    def test_processing_proxy_group(self):
+        """
+        Testing the processing of the proxy group parameter.
+        In this case, input parameters must be processed successfully.
+
+        Expected result: the resulting data equals the expected result.
+        """
+        def mock_find_zabbix_proxy_groups_by_names(self, proxy_group_names):
+            return [{'proxy_groupid': '2', 'name': 'Test Proxy Group'}]
+
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70,
+                find_zabbix_proxy_groups_by_names=mock_find_zabbix_proxy_groups_by_names):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy_group': 'Test Proxy Group'}
+            expected_result = {
+                'host': 'test_host',
+                'proxy_groupid': '2',
+                'monitored_by': '2'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            result = host.generate_zabbix_host(exist_host)
+            self.assertEqual(result, expected_result)
+
+    def test_processing_proxy_group_error(self):
+        """
+        Testing the processing of the proxy group parameter.
+        In this case, the proxy group was not found in Zabbix, resulting in an error.
+
+        Expected result: an exception.
+        """
+        def mock_find_zabbix_proxy_groups_by_names(self, proxy_names):
+            return []
+
+        exist_host = {'host': 'exist host', 'inventory_mode': '1'}
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70,
+                find_zabbix_proxy_groups_by_names=mock_find_zabbix_proxy_groups_by_names):
+
+            input_param = {
+                'host': 'test_host',
+                'proxy_group': 'Test Proxy Group'}
+
+            self.mock_module_functions.params = input_param
+            host = self.module.Host(self.mock_module_functions)
+
+            with self.assertRaises(AnsibleFailJson) as ansible_result:
+                host.generate_zabbix_host(exist_host)
+            self.assertTrue(ansible_result.exception.args[0]['failed'])
+            self.assertEqual(
+                'Proxy group not found in Zabbix: Test Proxy Group',
                 ansible_result.exception.args[0]['msg'])
 
 

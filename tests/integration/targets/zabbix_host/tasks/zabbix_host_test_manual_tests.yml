@@ -2,6 +2,7 @@
 # Before testing, you need to create a proxy with the name "test proxy"
 - name: Check proxy parameter
   block:
+    # Set proxy
     - name: Test - Set proxy for monitoring via test proxy
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
@@ -10,6 +11,7 @@
 
     - name: Assert that proxy was updated
       ansible.builtin.assert:
+        quiet: true
         that:
           - zabbix_host_proxy is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_proxy.result"
@@ -22,18 +24,224 @@
 
     - name: Assert that proxy was not updated
       ansible.builtin.assert:
+        quiet: true
         that:
           - zabbix_host_proxy_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_proxy_again.result"
 
+    # Clear proxy
     - name: Test - Set proxy for monitoring via zabbix-server
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         proxy: ''
+      register: zabbix_host_clear_proxy
+
+    - name: Assert that proxy was updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_clear_proxy is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_clear_proxy.result"
+
+    - name: Test - Set proxy for monitoring via zabbix-server again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: ''
+      register: zabbix_host_clear_proxy_again
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_clear_proxy_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_clear_proxy_again.result"
+
+# Before testing, you need to create a proxy with the name "test proxy group"
+- name: Check support of the proxy group parameter
+  block:
+    # Set proxy group
+    - name: Test - Set proxy group for monitoring via test proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group
+      ignore_errors: true
+
+    - name: Get result true
+      when:
+        - zabbix_host_proxy_group is changed
+        - zabbix_host_proxy_group.result is defined
+        - "'Successfully updated host' in zabbix_host_proxy_group.result"
+      ansible.builtin.set_fact:
+        proxy_group_support: true
+
+    - name: Get result false
+      when:
+        - zabbix_host_proxy_group is failed
+        - zabbix_host_proxy_group.msg is defined
+        - "'Incorrect arguments for Zabbix version < 7.0.0' in zabbix_host_proxy_group.msg"
+      ansible.builtin.set_fact:
+        proxy_group_support: false
+
+    - name: Assert that proxy group support defined
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - proxy_group_support is defined
+
+    - name: Test - Clean after test
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: ''
+      register: zabbix_host_proxy_group
+      ignore_errors: true
+
+- name: Check proxy group parameter
+  when: proxy_group_support
+  block:
+    # Set proxy group
+    - name: Test - Set proxy group for monitoring via test proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group
+
+    - name: Assert that proxy group was updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_group is changed
+          - "'Successfully updated host' in zabbix_host_proxy_group.result"
+
+    - name: Test - Set proxy group for monitoring via test proxy group again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group_again
+
+    - name: Assert that proxy group was not updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_group_again is not changed
+          - "'No need to update host' in zabbix_host_proxy_group_again.result"
+
+    # Clear proxy group
+    - name: Test - Set proxy group for monitoring via zabbix-server
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: ''
+      register: zabbix_host_clear_proxy_group
+
+    - name: Assert that proxy group was updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_clear_proxy_group is changed
+          - "'Successfully updated host' in zabbix_host_clear_proxy_group.result"
+
+    - name: Test - Set proxy group for monitoring via zabbix-server again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: ''
+      register: zabbix_host_clear_proxy_group_again
+
+    - name: Assert that proxy group was not updated (>=7.0.0) or failed
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_clear_proxy_group_again is not changed
+          - "'No need to update host' in zabbix_host_clear_proxy_group_again.result"
+
+- name: Check changing between proxy and proxy group
+  when: proxy_group_support
+  block:
+    # Change proxy to proxy group
+    - name: Test - Set proxy for monitoring via test proxy
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'test proxy'
+      register: zabbix_host_proxy_change
+
+    - name: Assert that proxy was updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_change is changed
+          - "'Successfully updated host' in zabbix_host_proxy_change.result"
+
+    - name: Test - Change proxy to proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group_change
+
+    - name: Assert that proxy group was updated (>=7.0.0) or failed
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_group_change is changed
+          - "'Successfully updated host' in zabbix_host_proxy_group_change.result"
+
+    # Check result of changing
+    - name: Test - Change proxy to proxy group again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group_change_again
+
+    - name: Assert that proxy group was not updated (>=7.0.0) or failed
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_group_change_again is not changed
+          - "'No need to update host' in zabbix_host_proxy_group_change_again.result"
+
+- name: Check changing between proxy group and proxy
+  when: proxy_group_support
+  block:
+    # Change proxy to proxy group
+    - name: Test - Clean proxy before test
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: ''
+
+    - name: Test - Set proxy group for monitoring via test proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'test proxy group'
+
+    - name: Test - Change proxy group to proxy
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'test proxy'
+      register: zabbix_host_proxy_change
+
+    - name: Assert that proxy was updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_change is changed
+          - "'Successfully updated host' in zabbix_host_proxy_change.result"
+
+    # Check result of changing
+    - name: Test - Change proxy group to proxy again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'test proxy'
+      register: zabbix_host_proxy_change_again
+
+    - name: Assert that proxy group was not updated
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_host_proxy_change_again is not changed
+          - "'No need to update host' in zabbix_host_proxy_change_again.result"
 
 # Before testing, you need to set automatic inventory mode and create any item
 # on the "zabbix_test_host" host and link it with the "type" inventory field.
 # The "type_full" inventory field must NOT be linked to any metric.
+
 - name: Check inventory automatic mode parameter
   block:
     - name: Test - Check linked inventory field 'type'
@@ -46,6 +254,7 @@
 
     - name: Assert that task was failed
       ansible.builtin.assert:
+        quiet: true
         that:
           - zabbix_host_inventory_set_linked_field is failed
           - "'already linked to the item' in zabbix_host_inventory_set_linked_field.msg"
@@ -59,6 +268,7 @@
 
     - name: Assert that inventory was updated
       ansible.builtin.assert:
+        quiet: true
         that:
           - zabbix_host_inventory_set_unlinked_field is changed
           - "'Successfully updated host: zabbix_test_host' == zabbix_host_inventory_set_unlinked_field.result"
@@ -72,6 +282,7 @@
 
     - name: Assert that inventory was not updated
       ansible.builtin.assert:
+        quiet: true
         that:
           - zabbix_host_inventory_set_unlinked_field_again is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_inventory_set_unlinked_field_again.result"
@@ -94,4 +305,5 @@
 
     - name: Assert that task was failed
       ansible.builtin.assert:
+        quiet: true
         that: zabbix_host_interface_w_two_interfaces_on_host is failed

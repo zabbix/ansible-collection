@@ -198,7 +198,7 @@ class TestCompareCachedInputArgs(unittest.TestCase):
             {'input': ['Linux*', 'Windows*'], 'old': '', 'expected': False},
             {'input': '', 'old': ['Windows*', 'Linux*'], 'expected': False}]
 
-        params = ['hostgroups', 'templates', 'proxy', 'name', 'host']
+        params = ['hostgroups', 'templates', 'proxy', 'proxy_group', 'name', 'host']
         for param in params:
             for each in test_cases:
                 inventory = InventoryModule()

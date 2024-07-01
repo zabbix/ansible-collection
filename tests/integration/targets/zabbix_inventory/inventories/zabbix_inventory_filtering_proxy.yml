@@ -1,0 +1,14 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Filtering by host group names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group *'
+  proxy:
+    - 'test proxy*'

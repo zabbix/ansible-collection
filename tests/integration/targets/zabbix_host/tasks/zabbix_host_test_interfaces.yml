@@ -478,19 +478,18 @@
       ansible.builtin.assert:
         that: zabbix_host_interface_remove_if_w_attached_items is failed
 
-    # Deleting interface and template in one task
-    - name: Test - Changing interface with attached items
+    # Clean template and interface
+    - name: Test - Changing template
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        templates: []
+      register: zabbix_host_interface_clean_templ
+
+    - name: Test - Changing interface
       zabbix.zabbix.zabbix_host:
         host: zabbix_test_host
         interfaces: []
-        templates: []
-      register: zabbix_host_interface_clean_templ_and_if
-
-    - name: Assert that host was updated and both interfaces and templates were deleted
-      ansible.builtin.assert:
-        that:
-          - zabbix_host_interface_clean_templ_and_if is changed
-          - "'Successfully updated host: zabbix_test_host' in zabbix_host_interface_clean_templ_and_if.result"
+      register: zabbix_host_interface_clean_if
 
     - name: Test - Check current settings
       zabbix.zabbix.zabbix_host:

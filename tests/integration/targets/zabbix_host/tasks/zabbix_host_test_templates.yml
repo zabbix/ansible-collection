@@ -7,7 +7,7 @@
         host: zabbix_test_host
         templates:
           - Zabbix agent active
-          - Windows by Zabbix agent active
+          - Zabbix server health
       register: zabbix_host_template_update
 
     - name: Assert that template was updated

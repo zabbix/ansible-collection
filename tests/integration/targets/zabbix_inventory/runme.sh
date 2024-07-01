@@ -23,5 +23,11 @@ ansible-playbook playbooks/check_inventory_filtering.yml -i inventories/zabbix_i
 # Testing group, keyed groups and compose.
 ansible-playbook playbooks/check_inventory_post_processing.yml -i inventories/zabbix_inventory_post_processing.yml
 
+# Manual tests of proxy and proxy group
+# Before test you need to create 3 proxy: "test proxy", "test proxy 2" and "inventory test proxy".
+# For Zabbix varsions above 7.0.0 you also need to create 3 proxy group: "test proxy group", "test proxy group 2" and "inventory test proxy group"
+# ansible-playbook playbooks/check_inventory_filtering_proxy.yml -i inventories/zabbix_inventory_filtering_proxy.yml
+# ansible-playbook playbooks/check_inventory_filtering_proxy_group.yml -i inventories/zabbix_inventory_filtering_proxy_group.yml
+
 # Clear host groups and hosts after testing.
 ansible-playbook playbooks/teardown.yml

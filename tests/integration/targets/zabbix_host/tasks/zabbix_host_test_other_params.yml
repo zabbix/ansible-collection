@@ -395,3 +395,92 @@
     - name: Assert that proxy was not updated
       ansible.builtin.assert:
         that: zabbix_host_proxy_error is failed
+
+- name: Check support of the proxy group parameter
+  block:
+    # Set proxy group
+    - name: Test - Set proxy group for monitoring via test proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'integration test proxy group'
+      register: zabbix_host_proxy_group
+      ignore_errors: true
+
+    - name: Get result true
+      when:
+        - "'Proxy group not found in Zabbix' in zabbix_host_proxy_group.msg"
+      ansible.builtin.set_fact:
+        proxy_group_support: true
+
+    - name: Get result false
+      when:
+        - "'Incorrect arguments for Zabbix version < 7.0.0' in zabbix_host_proxy_group.msg"
+      ansible.builtin.set_fact:
+        proxy_group_support: false
+
+    - name: Assert that proxy group support defined
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - proxy_group_support is defined
+
+- name: Check proxy group parameters
+  when: proxy_group_support
+  block:
+    # Set proxy group
+    - name: Test - Set proxy group for monitoring via zabbix-server
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: ''
+      register: zabbix_host_proxy_group
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy_group is not changed
+          - "'No need to update host' in zabbix_host_proxy_group.result"
+
+    - name: Test - Set non-existent proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy_group: 'integration test proxy group'
+      register: zabbix_host_proxy_group_error
+      ignore_errors: true
+
+    - name: Assert that proxy was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy_group_error is failed
+          - "'Proxy group not found in Zabbix' in zabbix_host_proxy_group_error.msg"
+
+- name: Check proxy group and proxy parameters
+  when: proxy_group_support
+  block:
+    # Set proxy group and proxy in one task
+    - name: Test - Set proxy group and proxy in one task
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: 'integration test proxy'
+        proxy_group: 'integration test proxy group'
+      register: zabbix_host_proxy_and_proxy_group
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_proxy_and_proxy_group is failed
+          - "'parameters are mutually exclusive' in zabbix_host_proxy_and_proxy_group.msg"
+
+    - name: Test - Set empty proxy group and empty proxy in one task
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        proxy: ''
+        proxy_group: ''
+      register: zabbix_host_empty_proxy_and_empty_proxy_group
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_empty_proxy_and_empty_proxy_group is failed
+          - "'parameters are mutually exclusive' in zabbix_host_empty_proxy_and_empty_proxy_group.msg"
