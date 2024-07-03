@@ -45,6 +45,3 @@ host_tags:
 # host_inventory_mode:
 # host_inventory:
 host_status: enabled
-
-### assign inventory group name containing regex as host proxy (takes first match)
-host_proxy: '{{ group_names | select("match", "^zabbix_proxy.*") | first | default(None) }}'
