@@ -597,7 +597,7 @@ To update host to empty parameters, you can use this example.
     ansible_httpapi_pass: zabbix
 ```
 
-**IMPORTANT**: If you want to clear templates and interface on the host, but the template contains items that use this interface, then you need to perform this operation in 2 tasks: first clear templates, then clear interfaces. If the template contains items that do not use an interface, clearing the template and removing interfaces can be done in one task.
+**IMPORTANT**: If you want to clear templates and interfaces on the host, but the template contains items that use this interface, then you need to perform this operation in two tasks: first, unassign the templates; then, remove the interfaces in the second task. If the template contains items that do not use an interface, clearing the template and removing the interfaces can be done in one task.
 
 First step: clearing templates
 ```yaml
