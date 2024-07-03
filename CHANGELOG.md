@@ -1,3 +1,10 @@
+# v1.3.11
+
+## Feature
+
+- `zabbix_host module`: added proxy group support
+- `host role`: added proxy group support
+
 # v1.3.10
 
 ## Feature
