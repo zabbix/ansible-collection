@@ -125,13 +125,17 @@ class TestParserFilters(unittest.TestCase):
         # mock for api_request
         def mock_api_request(self, method, params):
             if params['search']['host'] == 'proxy*':
-                return [{'proxyid': '2'}, {'proxyid': '628'}]
+                return [
+                    {'proxyid': '2', 'host': 'Linux proxy'},
+                    {'proxyid': '628', 'host': 'Windows proxy'}]
             if params['search']['host'] == 'Linux proxy':
-                return [{'proxyid': '2'}]
+                return [{'proxyid': '2', 'host': 'Linux proxy'}]
             if params['search']['host'] == 'Unknown':
                 return {}
             if params['search']['host'] == ['Linux*', 'Windows*']:
-                return [{'proxyid': '2'}, {'proxyid': '628'}]
+                return [
+                    {'proxyid': '2', 'host': 'Linux proxy'},
+                    {'proxyid': '628', 'host': 'Windows proxy'}]
 
         test_cases = [
             {'input': {'filter': {'proxy': 'proxy*'}}, 'expected': {'proxyids': ['2', '628']}},
@@ -168,13 +172,17 @@ class TestParserFilters(unittest.TestCase):
         # mock for api_request
         def mock_api_request(self, method, params):
             if params['search']['name'] == 'proxy*':
-                return [{'proxyid': '2'}, {'proxyid': '628'}]
+                return [
+                    {'proxyid': '2', 'name': 'Linux proxy'},
+                    {'proxyid': '628', 'name': 'Windows proxy'}]
             if params['search']['name'] == 'Linux proxy':
-                return [{'proxyid': '2'}]
+                return [{'proxyid': '2', 'name': 'Linux proxy'}]
             if params['search']['name'] == 'Unknown':
                 return {}
             if params['search']['name'] == ['Linux*', 'Windows*']:
-                return [{'proxyid': '2'}, {'proxyid': '628'}]
+                return [
+                    {'proxyid': '2', 'name': 'Linux proxy'},
+                    {'proxyid': '628', 'name': 'Windows proxy'}]
 
         test_cases = [
             {'input': {'filter': {'proxy': 'proxy*'}}, 'expected': {'proxyids': ['2', '628']}},
@@ -211,13 +219,17 @@ class TestParserFilters(unittest.TestCase):
         # mock for api_request
         def mock_api_request(self, method, params):
             if params['search']['name'] == 'proxy*':
-                return [{'proxy_groupid': '2'}, {'proxy_groupid': '628'}]
+                return [
+                    {'proxy_groupid': '2', 'name': 'Linux proxy group'},
+                    {'proxy_groupid': '628', 'name': 'Windows proxy group'}]
             if params['search']['name'] == 'Linux proxy group':
-                return [{'proxy_groupid': '2'}]
+                return [{'proxy_groupid': '2' , 'name': 'Linux proxy group'}]
             if params['search']['name'] == 'Unknown':
                 return {}
             if params['search']['name'] == ['Linux*', 'Windows*']:
-                return [{'proxy_groupid': '2'}, {'proxy_groupid': '628'}]
+                return [
+                    {'proxy_groupid': '2', 'name': 'Linux proxy group'},
+                    {'proxy_groupid': '628', 'name': 'Windows proxy group'}]
 
         test_cases = [
             {'input': {'filter': {'proxy_group': 'proxy*'}}, 'expected': {'proxy_groupids': ['2', '628']}},
