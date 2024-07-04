@@ -7,6 +7,13 @@ This role is compatible with [**zabbix.zabbix.agent**](https://github.com/zabbix
 
 Since hostgroups are mandatory for any host, this role ensures, that hostgroups are created on monitoring instance.
 
+[**Default host interfaces**](#zabbix-host-interfaces-default) are taken from [**ansible_host**](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html#term-ansible_host) special variable. <u>Make sure it is defined on inventory level!</u> Even for cases when inventory hostname should be taken! Here is the trick:
+```yaml
+hosts:
+  my.host.dns.com:
+    ansible_host: '{{inventory_hostname}}'
+```
+
 **Note**: This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
 Table of contents
@@ -16,6 +23,7 @@ Table of contents
   * [Role variables](#role-variables)
     * [API connection parameters](#api-connection-parameters)
     * [Zabbix host configuration parameters](#zabbix-host-configuration-parameters)
+      * [Zabbix host interfaces default](#zabbix-host-interfaces-default)
   * [Role Tags](#role-tags)
   * [Playbook examples](#playbook-examples)
     * [Playbook 1: Deploy Zabbix agent with passive checks only and add hosts to Zabbix](#playbook-1)
@@ -29,9 +37,10 @@ Requirements
 
 Ansible core >= 2.13
 
-Zabbix agent role requires additional tools from two Ansible certified collections:
+Zabbix agent role requires additional tools from 3 Ansible certified collections:
 - ansible.posix >= 2.8
 - ansible.utils >= 1.4
+- ansible.netcommon >=3.1.1
 
 You can install required collections easily:
 ```bash
@@ -101,7 +110,7 @@ This group of variables is used to represent the state of target device in Zabbi
 | host_inventory_mode | `string` || Host [inventory population mode](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_status | `string` | `enabled` | The host status. Available values: `enabled` or `disabled`.
-| host_proxy | `string` || Assign proxy to the host. Mutually exclusive with `host_proxy_group`.
+| host_proxy | `string` || Assign proxy to the host. Mutually exclusive with `host_proxy_group`. 
 | host_proxy_group | `string` || Assign proxy group to the host. Mutually exclusive with `host_proxy` variable.
 | host_tls_accept | `list` | `{{ agent_param_tlsconnect \| default(["unencrypted"]) }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
 | host_tls_connect | `string` | `{{ agent_param_tlsconnect \| default("unencrypted") }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
@@ -128,6 +137,7 @@ Default value describes interface of Zabbix agent type. If `ansible_host` is fil
         dns: '{{ ansible_host if not ansible_host | ansible.utils.ipaddr else omit }}'
         useip: '{{ true if ansible_host | ansible.utils.ipaddr else false }}'
         port: '{{ agent_param_listenport | default(10050) }}'
+Do not leave an **ansible_host** variable undefined, or it will be replaced with `host_zabbix_api_server` and you will fail to collect passive checks from the agents. *This is the specifics of ansible httpapi plugin usage with delegation.*
 
 [More examples of interface configuration](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 

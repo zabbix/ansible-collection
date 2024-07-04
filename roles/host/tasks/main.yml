@@ -82,8 +82,8 @@
         inventory_mode: '{{ host_inventory_mode | default(omit) }}'
         inventory: '{{ host_inventory | default(omit) }}'
         status: '{{ host_status | default(omit) }}'
-        proxy: '{{ host_proxy | default(None) }}'
-        proxy_group: '{{ host_proxy_group | default(None) }}'
+        proxy: '{{ host_proxy | default(omit) }}'
+        proxy_group: '{{ host_proxy_group | default(omit) }}'
         ### tls
         tls_accept: '{{ host_tls_accept }}'
         tls_connect: '{{ host_tls_connect }}'

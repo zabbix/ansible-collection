@@ -4,6 +4,7 @@
 
 - `zabbix_host module`: added proxy group support
 - `host role`: added proxy group support
+- `host role`: removed default value from host_proxy variable
 
 # v1.3.10
 
