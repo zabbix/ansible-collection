@@ -28,6 +28,7 @@ ansible-playbook playbooks/check_inventory_post_processing.yml -i inventories/za
 # For Zabbix varsions above 7.0.0 you also need to create 3 proxy group: "test proxy group", "test proxy group 2" and "inventory test proxy group"
 # ansible-playbook playbooks/check_inventory_filtering_proxy.yml -i inventories/zabbix_inventory_filtering_proxy.yml
 # ansible-playbook playbooks/check_inventory_filtering_proxy_group.yml -i inventories/zabbix_inventory_filtering_proxy_group.yml
+# ansible-playbook playbooks/check_inventory_resolving_id.yml -i inventories/zabbix_inventory_resolving_id.yml
 
 # Clear host groups and hosts after testing.
 ansible-playbook playbooks/teardown.yml

@@ -53,35 +53,31 @@ class TestParserResolving(unittest.TestCase):
         test_cases = [
             # case #1
             {'input': {'filter': {'status': 'enabled'}, 'output': 'extend'},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '2', 'proxy_groupid': '0'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '2'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '2', 'proxy_name': 'Linux proxy',
-                                 'proxy_groupid': '0', 'proxy_group_name': ''}}},
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '2', 'proxy_name': 'Linux proxy'}}},
             # case #2
             {'input': {'filter': {'status': 'enabled'}, 'output': 'extend'},
              'ids': {'proxy': {}, 'proxy_group': {}},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '2', 'proxy_groupid': '0'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '2'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '2', 'proxy_name': 'Linux proxy',
-                                 'proxy_groupid': '0', 'proxy_group_name': ''}}},
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '2', 'proxy_name': 'Linux proxy'}}},
             # case #3
             {'input': {'filter': {'status': 'enabled'}, 'output': 'extend'},
              'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '3', 'proxy_groupid': '0'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '3'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy', '3': 'Windows proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '3', 'proxy_name': 'Windows proxy',
-                                 'proxy_groupid': '0', 'proxy_group_name': ''}}},
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '3', 'proxy_name': 'Windows proxy'}}},
             # case #4
             {'input': {'filter': {'status': 'enabled'}, 'output': 'extend'},
              'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '2', 'proxy_groupid': '0'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '2'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '2', 'proxy_name': 'Linux proxy',
-                                 'proxy_groupid': '0', 'proxy_group_name': ''}}}]
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '2', 'proxy_name': 'Linux proxy'}}}]
 
         with patch.multiple(
                 InventoryModule,
@@ -136,18 +132,18 @@ class TestParserResolving(unittest.TestCase):
         test_cases = [
             # case #1
             {'input': {'filter': {'status': 'enabled'}, 'output': 'extend'},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '2', 'proxy_groupid': '0'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '2', 'proxy_groupid': '0'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '2', 'proxy_name': 'Linux proxy',
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '2', 'proxy_name': 'Linux proxy',
                                  'proxy_groupid': '0', 'proxy_group_name': ''}}},
             # case #2
-            {'input': {'filter': {'status': 'enabled'}, 'output': 'proxyid'},
+            {'input': {'filter': {'status': 'enabled'}, 'output': 'proxy_hostid'},
              'ids': {'proxy': {}, 'proxy_group': {}},
-             'zabbix_hosts': [{'host': 'test', 'proxyid': '2'}],
+             'zabbix_hosts': [{'host': 'test', 'proxy_hostid': '2'}],
              'expected': {
                 'ids': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}},
-                'zabbix_hosts': {'host': 'test', 'proxyid': '2', 'proxy_name': 'Linux proxy'}}},
+                'zabbix_hosts': {'host': 'test', 'proxy_hostid': '2', 'proxy_name': 'Linux proxy'}}},
             # case #3
             {'input': {'filter': {'status': 'enabled'}, 'output': 'status'},
              'ids': {'proxy': {}, 'proxy_group': {}},

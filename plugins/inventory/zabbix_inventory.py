@@ -846,22 +846,23 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             self.ids = {'proxy': {}, 'proxy_group': {}}
 
         # find all proxyid in self.zabbix_host and request missing proxy
-        if 'extend' in self.args.get('output') or 'proxyid' in self.args.get('output'):
-            host_proxy_ids = [h.get('proxyid') for h in self.zabbix_hosts]
-            request_ids = list(set(host_proxy_ids) - set(self.ids['proxy'].keys()))
+        proxy_param_name = "host" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "name"
+        proxy_field_name = "proxy_hostid" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "proxyid"
+        if 'extend' in self.args.get('output') or proxy_field_name in self.args.get('output'):
+            host_proxy_ids = [h.get(proxy_field_name, '0') for h in self.zabbix_hosts]
+            request_ids = list(set(host_proxy_ids) - set(self.ids['proxy'].keys()) - set(['0']))
             if len(request_ids) > 0:
-                param_name = "host" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "name"
                 response = self.api_request(
                     method='proxy.get',
                     params={
-                        'output': [param_name, 'proxyid'],
+                        'output': [proxy_param_name, 'proxyid'],
                         'proxyids': request_ids})
-                self.ids['proxy'].update({p['proxyid']: p[param_name] for p in response})
+                self.ids['proxy'].update({p['proxyid']: p[proxy_param_name] for p in response})
 
         # find all proxy_groupid in self.zabbix_host and request missing proxy_group
         if 'extend' in self.args.get('output') or 'proxy_groupid' in self.args.get('output'):
-            host_proxy_groupid_ids = [h.get('proxy_groupid') for h in self.zabbix_hosts]
-            request_ids = list(set(host_proxy_groupid_ids) - set(self.ids['proxy_group'].keys()))
+            host_proxy_groupid_ids = [h.get('proxy_groupid', '0') for h in self.zabbix_hosts]
+            request_ids = list(set(host_proxy_groupid_ids) - set(self.ids['proxy_group'].keys()) - set(['0']))
             if len(request_ids) > 0:
                 response = self.api_request(
                     method='proxygroup.get',
@@ -873,8 +874,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         for i, host in enumerate(self.zabbix_hosts):
 
             # resolve proxy name
-            if 'proxyid' in host:
-                self.zabbix_hosts[i]['proxy_name'] = self.ids['proxy'].get(host['proxyid'], '')
+            if proxy_field_name in host:
+                self.zabbix_hosts[i]['proxy_name'] = self.ids['proxy'].get(host[proxy_field_name], '')
 
             # # resolve proxy group name
             if 'proxy_groupid' in host:
