@@ -474,3 +474,215 @@ class TestParserFilters(unittest.TestCase):
             result = inventory.parse_filter()
             self.assertEqual(result, each['expected'],
                              'error with input data: {0}'.format(each['input']))
+
+    def test_filter_ids_proxy(self):
+        """
+        This test checks 'self.ids' in case of filtering by proxy.
+
+        Test cases:
+            1. There is no 'proxy' field in the filter. Dictionary 'self.ids' is empty.
+            2. Non-existent proxy. Dictionary 'self.ids' is empty.
+            3. The filter specifies one proxy. Dictionary 'self.ids' is not empty.
+            4. The filter specifies two proxy. Dictionary 'self.ids' is not empty.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if params['search']['host'] == 'Linux proxy':
+                return [{'proxyid': '2', 'host': 'Linux proxy'}]
+            if params['search']['host'] == 'Unknown':
+                return {}
+            if params['search']['host'] == ['Linux*', 'Windows*']:
+                return [
+                    {'proxyid': '2', 'host': 'Linux proxy'},
+                    {'proxyid': '628', 'host': 'Windows proxy'}]
+
+        test_cases = [
+            {'input': {'filter': {'status': 'enabled'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': 'Unknown'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': 'Linux proxy'}},
+             'expected': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': ['Linux*', 'Windows*']}},
+             'expected': {'proxy': {'2': 'Linux proxy', '628': 'Windows proxy'}, 'proxy_group': {}}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                inventory.zabbix_version = '6.0.18'
+                inventory.parse_filter()
+                self.assertEqual(inventory.ids.keys(), each['expected'].keys(),
+                                 'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy').items())),
+                    dict(sorted(each['expected'].get('proxy').items())),
+                    'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy_group').items())),
+                    dict(sorted(each['expected'].get('proxy_group').items())),
+                    'error with input data: {0}'.format(each['input']))
+
+    def test_filter_ids_proxy_70(self):
+        """
+        This test checks 'self.ids' in case of filtering by proxy.
+
+        Test cases:
+            1. There is no 'proxy' field in the filter. Dictionary 'self.ids' is empty.
+            2. Non-existent proxy. Dictionary 'self.ids' is empty.
+            3. The filter specifies one proxy. Dictionary 'self.ids' is not empty.
+            4. The filter specifies two proxy. Dictionary 'self.ids' is not empty.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if params['search']['name'] == 'Linux proxy':
+                return [{'proxyid': '2', 'name': 'Linux proxy'}]
+            if params['search']['name'] == 'Unknown':
+                return {}
+            if params['search']['name'] == ['Linux*', 'Windows*']:
+                return [
+                    {'proxyid': '2', 'name': 'Linux proxy'},
+                    {'proxyid': '628', 'name': 'Windows proxy'}]
+
+        test_cases = [
+            {'input': {'filter': {'status': 'enabled'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': 'Unknown'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': 'Linux proxy'}},
+             'expected': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy': ['Linux*', 'Windows*']}},
+             'expected': {'proxy': {'2': 'Linux proxy', '628': 'Windows proxy'}, 'proxy_group': {}}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                inventory.zabbix_version = '7.0.0'
+                inventory.parse_filter()
+                self.assertEqual(inventory.ids.keys(), each['expected'].keys(),
+                                 'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy').items())),
+                    dict(sorted(each['expected'].get('proxy').items())),
+                    'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy_group').items())),
+                    dict(sorted(each['expected'].get('proxy_group').items())),
+                    'error with input data: {0}'.format(each['input']))
+
+    def test_filter_ids_proxy_group(self):
+        """
+        This test checks 'self.ids' in case of filtering by proxy group.
+
+        Test cases:
+            1. There is no 'proxy_group' field in the filter. Dictionary 'self.ids' is empty.
+            2. Non-existent proxy group. Dictionary 'self.ids' is empty.
+            3. The filter specifies one proxy group. Dictionary 'self.ids' is not empty.
+            4. The filter specifies two proxy group. Dictionary 'self.ids' is not empty.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if params['search']['name'] == 'Linux proxy group':
+                return [{'proxy_groupid': '2', 'name': 'Linux proxy group'}]
+            if params['search']['name'] == 'Unknown':
+                return {}
+            if params['search']['name'] == ['Linux*', 'Windows*']:
+                return [
+                    {'proxy_groupid': '2', 'name': 'Linux proxy group'},
+                    {'proxy_groupid': '628', 'name': 'Windows proxy group'}]
+
+        test_cases = [
+            {'input': {'filter': {'status': 'enabled'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy_group': 'Unknown'}}, 'expected': {'proxy': {}, 'proxy_group': {}}},
+            {'input': {'filter': {'proxy_group': 'Linux proxy group'}},
+             'expected': {'proxy_group': {'2': 'Linux proxy group'}, 'proxy': {}}},
+            {'input': {'filter': {'proxy_group': ['Linux*', 'Windows*']}},
+             'expected': {'proxy_group': {'2': 'Linux proxy group', '628': 'Windows proxy group'}, 'proxy': {}}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                inventory.zabbix_version = '7.0.0'
+                inventory.parse_filter()
+                self.assertEqual(inventory.ids.keys(), each['expected'].keys(),
+                                 'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy').items())),
+                    dict(sorted(each['expected'].get('proxy').items())),
+                    'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy_group').items())),
+                    dict(sorted(each['expected'].get('proxy_group').items())),
+                    'error with input data: {0}'.format(each['input']))
+
+    def test_filter_ids_proxy_and_proxy_group(self):
+        """
+        This test checks 'self.ids' in case of filtering by proxy and proxy group in one task.
+
+        Test cases:
+            1. The filter specifies one proxy and one proxy group. Dictionary 'self.ids' is not empty.
+            2. The filter specifies two proxy and two proxy group. Dictionary 'self.ids' is not empty.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for api_request
+        def mock_api_request(self, method, params):
+            if method == 'proxy.get':
+                if params['search']['name'] == 'Linux proxy':
+                    return [{'proxyid': '2', 'name': 'Linux proxy'}]
+                if params['search']['name'] == ['Linux*', 'Windows*']:
+                    return [
+                        {'proxyid': '2', 'name': 'Linux proxy'},
+                        {'proxyid': '628', 'name': 'Windows proxy'}]
+            if method == 'proxygroup.get':
+                if params['search']['name'] == 'Linux proxy group':
+                    return [{'proxy_groupid': '5', 'name': 'Linux proxy group'}]
+                if params['search']['name'] == ['Linux*', 'Windows*']:
+                    return [
+                        {'proxy_groupid': '5', 'name': 'Linux proxy group'},
+                        {'proxy_groupid': '555', 'name': 'Windows proxy group'}]
+
+        test_cases = [
+            {'input': {'filter': {'proxy_group': 'Linux proxy group', 'proxy': 'Linux proxy'}},
+             'expected': {'proxy': {'2': 'Linux proxy'}, 'proxy_group': {'5': 'Linux proxy group'}}},
+            {'input': {'filter': {'proxy_group': ['Linux*', 'Windows*'], 'proxy': ['Linux*', 'Windows*']}},
+             'expected': {
+                'proxy_group': {'5': 'Linux proxy group', '555': 'Windows proxy group'},
+                'proxy': {'2': 'Linux proxy', '628': 'Windows proxy'}}}]
+
+        with patch.multiple(
+                InventoryModule,
+                api_request=mock_api_request):
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+                inventory.zabbix_version = '7.0.0'
+                inventory.parse_filter()
+                self.assertEqual(inventory.ids.keys(), each['expected'].keys(),
+                                 'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy').items())),
+                    dict(sorted(each['expected'].get('proxy').items())),
+                    'error with input data: {0}'.format(each['input']))
+                self.assertEqual(
+                    dict(sorted(inventory.ids.get('proxy_group').items())),
+                    dict(sorted(each['expected'].get('proxy_group').items())),
+                    'error with input data: {0}'.format(each['input']))
