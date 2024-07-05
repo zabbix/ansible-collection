@@ -95,6 +95,7 @@ This set of variables explains Ansible how to connect to Zabbix API.
 ### Zabbix host configuration parameters
 
 This group of variables is used to represent the state of target device in Zabbix. Defaults are adopted to use together with [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role. Override those for different use cases.
+Role respects module behavior, where unset variables are omitted. For example to reassign host back to zabbix server set one of variables(`host_proxy` or `host_proxy_group`) to empty string "".
 
 | Variable | Type | Default | Description |
 |--|--|--|--|
@@ -103,15 +104,15 @@ This group of variables is used to represent the state of target device in Zabbi
 | host_visible_name | `string` || Unique visible name of the host.
 | host_description | `string` | `Managed by Ansible. Added with "zabbix_host" module.` | Describe instance.
 | host_hostgroups | `list` | `{{ group_names }}` | List of hostgroup names assigned to the host. At least one hostgroup needed. By default, uses the list of groups assigned to the host in Ansible inventory.
-| host_templates | `list` | `[]` | List of template names that should be linked to the host.
+| host_templates | `list` || List of template names that should be linked to the host.
 | host_interfaces | `list` | [↓](#zabbix-host-interfaces-default) | Holds a list of dictionaries. Each dictionary describes an [interface](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) set for the host. Only one interface of each type is supported. Look [below](#zabbix-host-interfaces-default) for default description.
 | host_tags | `list` | `[{"tag": "managed"}]` | Accepts host level tags in a list of dictionaries format.
 | host_macros | `list` || Accepts macros in a list of dictionaries format.
 | host_inventory_mode | `string` || Host [inventory population mode](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_inventory | `dictionary` || Define [inventory fields](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters).
 | host_status | `string` | `enabled` | The host status. Available values: `enabled` or `disabled`.
-| host_proxy | `string` || Assign proxy to the host. Mutually exclusive with `host_proxy_group`. 
-| host_proxy_group | `string` || Assign proxy group to the host. Mutually exclusive with `host_proxy` variable.
+| host_proxy | `string` || Assign proxy to the host. Mutually exclusive with `host_proxy_group`. To assign host back to Zabbix server, set only one of them to None(or empty "").
+| host_proxy_group | `string` || Assign proxy group to the host. Mutually exclusive with `host_proxy` variable. To assign host back to Zabbix server, set only one of them to None(or empty "").
 | host_tls_accept | `list` | `{{ agent_param_tlsconnect \| default(["unencrypted"]) }}` | Linked to agent parameter to accept **active checks**. Add [more options](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) if needed. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
 | host_tls_connect | `string` | `{{ agent_param_tlsconnect \| default("unencrypted") }}` | Mirrors agent outgoing connection behavior. Override if you need [different encryption](https://github.com/zabbix/ansible-collection/tree/main/plugins#host-module-parameters) for **passive checks**. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
 | host_tls_psk_identity | `string` | `{{ agent_param_tlspskidentity \| default("PSK_ID_" + inventory_hostname) }}` | PSK key identity formed from prefix and hostname from the Ansible inventory. Linked to [**zabbix.zabbix.agent**](https://github.com/zabbix/ansible-collection/blob/main/roles/agent/README.md) role if used together.
