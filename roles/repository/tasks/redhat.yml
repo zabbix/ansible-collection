@@ -4,25 +4,7 @@
     var: agent_repository.uri
   tags: [never, debug]
 
-### yum in rhel7(and earlier) requires "yum-plugin-priorities" packages installed and loaded
-- name: 'YUM : Plugin "priorities" presence'
-  when: >-
-    repository_state == "present"
-    and repository_priority and repository_priority is number
-    and repository_map_os_transition[ansible_distribution] is defined
-      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
-      and repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | int <= 7
-  become: true
-  until: repository_register_yum_plugin_state is not failed
-  retries: 3
-  delay: 3
-  register: repository_register_yum_plugin_state
-  ansible.builtin.yum:
-    name: 'yum-plugin-priorities'
-    state: present
-  tags: [deploy]
-
-- name: 'YUM : Zabbix Repository presence'
+- name: 'DNF: Zabbix Repository presence'
   become: true
   until: repository_register_state is not failed
   retries: 3
@@ -38,7 +20,6 @@
     gpgkey: '{{ repository_internal_gpg_key_url_list }}'
     priority: '{{ repository_priority if (repository_priority is defined and repository_priority)
                   else omit }}'
-    # proxy: '{{ repository_https_proxy | default(repository_http_proxy) | default(omit) }}'
     enabled: true
     sslverify: '{{ repository_sslverify }}'
   environment:
@@ -58,10 +39,10 @@
     repository_internal_gpg_key_url_list: "{{ repository_gpg_key_list | map('regex_replace', '^(.*)$', repository_url + '/\\1') | list }}"
   tags: [deploy, remove]
 
-- name: 'YUM : yum clean all'
+- name: 'DNF: Clean all'
   when: repository_register_state.changed
   become: true
-  ansible.builtin.command: yum clean all
-  register: yum_clean_all
+  ansible.builtin.command: dnf clean all
+  register: dnf_clean_all
   # tags: [skip_ansible_lint, deploy, remove]
   tags: [skip_ansible_lint, deploy, remove]

@@ -5,6 +5,14 @@
 - `zabbix_host module`: added proxy group support
 - `host role`: added proxy group support
 - `host role`: removed default value from host_proxy variable
+- `agent role`: Ansible rpm package management module change from `yum` to `dnf`
+- `repository role`: Ansible rpm package management module change from `yum` to `dnf`
+
+## REMOVED
+
+- `agent role`: removed RHEL 7 support (reached EOM)
+- `repository role`: removed RHEL 7 support (reached EOM)
+- `zabbix_agent role`: removed previsouly deprecated role
 
 # v1.3.10
 
