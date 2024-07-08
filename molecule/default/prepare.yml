@@ -1,6 +1,7 @@
 ---
 - name: 'Prepare containers'
   hosts: all
+  gather_facts: false
   pre_tasks:
 
     #     - name: "Prepare containers : logrotate for {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
@@ -9,6 +10,13 @@
     #           - logrotate
     #         state: present
     #       when: ansible_distribution == 'RedHat'
+
+    - name: 'RAW: add python39 support to el8'
+      ansible.builtin.raw: bash -c "grep "el8" /etc/*release && test -e /usr/bin/python || dnf install -y python39"
+      failed_when: false
+
+    - name: Setup
+      ansible.builtin.setup:
 
     - name: 'DBus : Gather status'
       become: true

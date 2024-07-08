@@ -48,7 +48,6 @@ python3 -m pip install molecule molecule-plugins[podman] ansible-lint yamllint
 
 ##### Use different platforms presets:
 
-- `molecue -c ".config/molecule/config.full.yml" create/converge/test`
-- `molecue -c ".config/molecule/config.debian.yml" create/converge/test`
-- `molecue -c ".config/molecule/config.rhel.9.yml" create/converge/test`
-- `molecue -c ".config/molecule/config.rhel.8.yml" create/converge/test`
+- `molecule -c ".config/molecule/config.debian.yml" create/converge/test`
+- `molecule -c ".config/molecule/config.rhel.9.yml" create/converge/test`
+- `molecule -c ".config/molecule/config.rhel.8.yml" create/converge/test`  # use ansible 2.16 or lower
