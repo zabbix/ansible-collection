@@ -7,7 +7,7 @@ Currently, the following OS of target machines are supported:
 - Oracle Linux 8, 9
 - Alma Linux 8, 9
 - Rocky Linux 8, 9
-- CentOS Stream 8, 9
+- CentOS Stream 9
 - Ubuntu 18.04, 20.04, 22.04, 24.04
 - Debian 10, 11, 12
 - Raspberry Pi Os
@@ -100,6 +100,7 @@ Check the [**Python documentation**](https://docs.python.org/3/installing/index.
 
 SELinux tasks depend on `policycoreutils` package. It will be installed as dependency with `zabbix-selinux-policy` package.
 
+Note that Ansible-core 2.17 requires at least python3.7 on the target devices. Check the [**compatibility matrix**](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix) for other versions.
 
 Role variables
 --------------

@@ -10,9 +10,11 @@
 
 ## REMOVED
 
+- `zabbix_agent role`: removed previsouly deprecated role
 - `agent role`: removed RHEL 7 support (reached EOM)
 - `repository role`: removed RHEL 7 support (reached EOM)
-- `zabbix_agent role`: removed previsouly deprecated role
+- `agent role`: removed CentOS 8 Stream support (reached EOL)
+- `repository role`: removed CentOS 8 Stream support (reached EOL)
 
 # v1.3.10
 
