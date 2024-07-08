@@ -1,3 +1,0 @@
----
-apply_firewalld_rule: auto
-apply_iptables_rule: false
