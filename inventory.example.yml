@@ -9,12 +9,21 @@ zabbix_password: 'zabbix'
 
 query:
   selectHostGroups: ['name']
-  selectInterfaces: ['ip', 'dns', 'useip']
+  selectInterfaces: ['ip', 'dns', 'useip', 'type']
 
 keyed_groups:
   - key: zabbix_hostgroups | map(attribute='name')
     separator: ''
 
 compose:
+  ## uses first interface from the list of all interfaces
   ansible_host: 'zabbix_interfaces[0].ip if zabbix_interfaces[0].useip | bool
-                  else zabbix_interfaces[0].dns'
+                   else zabbix_interfaces[0].dns'
+  ### use first agent type interface from the list of all interfaes
+  #ansible_host: (zabbix_interfaces | selectattr('type','==','1') | first).ip if (zabbix_interfaces | selectattr('type','==','1') | first).useip | bool
+  #                else (zabbix_interfaces | selectattr('type','==','1') | first).dns
+
+  ## assign proxy group to variable from host role
+  host_proxy_group: 'zabbix_proxy_group_name if zabbix_proxy_group_name else omit'
+  ## assign proxy to variable from host role
+  host_proxy: 'zabbix_proxy_name if zabbix_proxy_name else omit'
