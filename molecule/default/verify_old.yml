@@ -1,4 +1,5 @@
 ---
+### USES zabbix_get !!!
 ### Verify playbook does not inherit role defaults and vars. To make it happen import the role tasks.
 - name: Verify
   hosts: all
