@@ -7,6 +7,7 @@
 - `host role`: removed default value from host_proxy variable
 - `agent role`: Ansible rpm package management module change from `yum` to `dnf`
 - `repository role`: Ansible rpm package management module change from `yum` to `dnf`
+- `zabbix_inventory plugin`: added resolving proxyid and proxy_groupid to names
 
 ## REMOVED
 
