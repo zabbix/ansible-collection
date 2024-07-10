@@ -1,6 +1,6 @@
 ##### Test playbook with ansible-playbook
 ```
-ansible-playbook -i inventory converge.yml -l ubuntu -i all,verify,report
+ansible-playbook -i inventory converge.yml -l ubuntu -t all,verify,report
 ```
 #### Project tags:
 

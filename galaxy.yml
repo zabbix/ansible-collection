@@ -83,6 +83,7 @@ build_ignore:
   - '*.psk'
   - 'inv*.test.yml'
   - 'play*.test.yml'
+  - '__pycache__'
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a
 # list of MANIFEST.in style
