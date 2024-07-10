@@ -79,9 +79,9 @@ The **repository role** share two tags with the **agent role** and other **initi
   - remove
   - deploy
 
-Note, that passing `remove` tag to playbook with **initiator role** will remove repository too. 
+Note, that passing `remove` tag to playbook with **initiator role** will remove repository too.
 
 License
 -------
 
-Ansible Zabbix collection is released under the GNU General Public License (GPL) version 2. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.
+Ansible Zabbix collection is released under the GNU Affero General Public License (AGPL) version 3. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.

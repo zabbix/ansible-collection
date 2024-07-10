@@ -1,3 +1,0 @@
----
-### Folder for psk key files. If psk key is not found, it will be generated and placed in to the folder.
-source_tlspskfile: '.PSK/{{ inventory_hostname }}.psk'

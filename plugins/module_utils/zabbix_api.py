@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from ansible.module_utils.connection import ConnectionError
 from ansible.module_utils.connection import Connection
+from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import Zabbix_version
 
 
 class ZabbixException(Exception):
@@ -302,10 +303,14 @@ class ZabbixApi(object):
         :return: found proxy
         :rtype: list
         """
+        output_list = ['name', 'proxyid']
+        if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
+            output_list = ['host', 'proxyid']
+
         existing_proxys = self.send_api_request(
             method='proxy.get',
             params={
-                'output': ['host', 'proxyid'],
+                'output': output_list,
                 'filter': search_filter})
 
         return existing_proxys
@@ -324,7 +329,9 @@ class ZabbixApi(object):
             * NoParametersForSearch - if proxy_names is empty
         """
         if proxy_names and len(proxy_names) > 0:
-            search_filter = {'host': proxy_names}
+            search_filter = {'name': proxy_names}
+            if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
+                search_filter = {'host': proxy_names}
         else:
             raise NoParametersForSearch(
                 "No parameters for searching for Zabbix proxy")
@@ -351,3 +358,44 @@ class ZabbixApi(object):
                 "No parameters for searching for Zabbix proxy")
 
         return self.find_zabbix_proxys(search_filter)
+
+    # #########################################################
+    # ZABBIX PROXY GROUPS
+    def find_zabbix_proxy_groups(self, search_filter):
+        """
+        Function to search for a proxy groups in Zabbix by a given filter
+
+        :param search_filter: proxy group search filter
+        :type search_filter: dict
+
+        :return: found proxy group
+        :rtype: list
+        """
+        existing_proxy_groups = self.send_api_request(
+            method='proxygroup.get',
+            params={
+                'output': ['name', 'proxy_groupid'],
+                'filter': search_filter})
+
+        return existing_proxy_groups
+
+    def find_zabbix_proxy_groups_by_names(self, proxy_group_names):
+        """
+        Function to search for a proxy group in Zabbix by proxy_group_names
+
+        :param proxy_group_names: proxy group names for search
+        :type proxy_names: list
+
+        :return: found proxy groups
+        :rtype: list
+
+        :raise:
+            * NoParametersForSearch - if proxy_group_names is empty
+        """
+        if proxy_group_names and len(proxy_group_names) > 0:
+            search_filter = {'name': proxy_group_names}
+        else:
+            raise NoParametersForSearch(
+                "No parameters for searching for Zabbix proxy group")
+
+        return self.find_zabbix_proxy_groups(search_filter)

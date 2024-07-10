@@ -1,12 +1,12 @@
 ---
-- name: 'YUM : Zabbix packages presence'
+- name: 'DNF: Zabbix packages presence'
   become: true
   notify: 'Service restart'
   until: agent_register_packages_state is not failed
   retries: 3
   delay: 3
   register: agent_register_packages_state
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: '{{ agent_internal_install_package_list }}'
     state: '{{ agent_package_state }}'
     disablerepo: '{{ agent_repository_disable }}'  # disable epel repos | should contain epel word in repo name

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -14,9 +14,11 @@ import sys
 
 if sys.version_info[0] > 2:
     import unittest
+    from unittest.mock import patch
 else:
     try:
         import unittest2 as unittest
+        from mock import patch
     except ImportError:
         print("Error import unittest library for Python 2")
 
@@ -25,6 +27,60 @@ from ansible.parsing.yaml.objects import AnsibleUnicode
 
 
 class TestValidation(unittest.TestCase):
+
+    def test_getting_version(self):
+        """
+        This test checks validation of query.
+
+        Test cases:
+            1. Parameters are empty .
+            2. Parameters with 'None' in value.
+            3. Parameters with values, with not require version.
+            4. Parameters with values, with not require version in upper case.
+            5. Two parameters with values, with not require version.
+            5. Parameters with values, with require version. Request of the version.
+            6. Parameters with values, with require version in upper case. Request of the version.
+            7. Two parameters and one of them, with require version. Request of the version.
+            8. Two parameters and one of them, with require version in upper case
+               + one in different field. Request of the version.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for get_api_version
+        def mock_get_api_version(self):
+            return '7.0.0'
+
+        with patch.multiple(
+                InventoryModule,
+                get_api_version=mock_get_api_version):
+
+            test_cases = [
+                {'input': {},
+                 'expected': False},
+                {'input': {'query': None, 'output': None, 'filter': None},
+                 'expected': False},
+                {'input': {'output': ['name']},
+                 'expected': False},
+                {'input': {'output': ['NAME']},
+                 'expected': False},
+                {'input': {'filter': {'status': AnsibleUnicode('enabled'), 'tags_behavior': AnsibleUnicode('and/or')}},
+                 'expected': False},
+                {'input': {'filter': {'proxy_group': 'test'}},
+                 'expected': True},
+                {'input': {'filter': {'PROXY_GROUP': 'test'}},
+                 'expected': True},
+                {'input': {'filter': {'proxy_group': 'test', 'status': AnsibleUnicode('enabled')}},
+                 'expected': True},
+                {'input': {'filter': {'proxy_group': 'test', 'status': AnsibleUnicode('enabled')}, 'output': ['NAME']},
+                 'expected': True}]
+
+            inventory = InventoryModule()
+            for each in test_cases:
+                inventory.args = each['input']
+                inventory.validate_params()
+                self.assertEqual(hasattr(inventory, 'zabbix_version'), each['expected'],
+                                 'error with input data: {0}'.format(each['input']))
 
     def test_query_validation(self):
         """
@@ -162,6 +218,75 @@ class TestValidation(unittest.TestCase):
             inventory.validate_params()
             self.assertEqual(inventory.args, each['expected'],
                              'error with input data: {0}'.format(each['input']))
+
+    def test_filter_validation_proxy_group(self):
+        """
+        This test checks filter validation proxy_group.
+
+        Test cases:
+            1. Filter option in upper case and value as a string.
+            2. Filter option in upper case and value as a list.
+            3. Filter option in upper case and value in upper case as a list.
+            4. Filter option in upper case and two values as a list.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for get_api_version
+        def mock_get_api_version(self):
+            return '7.0.0'
+
+        with patch.multiple(
+                InventoryModule,
+                get_api_version=mock_get_api_version):
+
+            test_cases = [
+                {'input': {'filter': {'PROXY_GROUP': 'test'}},
+                 'expected': {'filter': {'proxy_group': 'test'}}},
+                {'input': {'filter': {'PROXY_GROUP': ['test']}},
+                 'expected': {'filter': {'proxy_group': ['test']}}},
+                {'input': {'filter': {'PROXY_GROUP': ['TEST']}},
+                 'expected': {'filter': {'proxy_group': ['TEST']}}},
+                {'input': {'filter': {'PROXY_GROUP': ['test', 'test*']}},
+                 'expected': {'filter': {'proxy_group': ['test', 'test*']}}}]
+
+            inventory = InventoryModule()
+            for each in test_cases:
+                inventory.args = each['input']
+                inventory.validate_params()
+                self.assertEqual(inventory.args, each['expected'],
+                                 'error with input data: {0}'.format(each['input']))
+
+    def test_filter_validation_error_proxy_group(self):
+        """
+        This test checks filter validation of proxy group parameter
+        with error in case of Zabbix varsion below 7.0.0.
+
+        Test cases:
+            1. Filter 'proxy_group' option with Zabbix version 6.0.18.
+
+        Expected result: all cases run successfully.
+        """
+
+        # mock for get_api_version
+        def mock_get_api_version(self):
+            return '6.0.18'
+
+        with patch.multiple(
+                InventoryModule,
+                get_api_version=mock_get_api_version):
+
+            test_cases = [
+                {'input': {'filter': {'proxy_group': 'test'}},
+                 'expected': 'Unsupported filter: proxy_group. This filter is not supported in Zabbix API v.6.0.18'}]
+
+            for each in test_cases:
+                inventory = InventoryModule()
+                inventory.args = each['input']
+
+                with self.assertRaises(AnsibleParserError) as ansible_result:
+                    inventory.validate_params()
+                self.assertIn(each['expected'], str(ansible_result.exception))
 
     def test_filter_validation_error(self):
         """

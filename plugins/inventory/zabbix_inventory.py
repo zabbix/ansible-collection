@@ -1,5 +1,5 @@
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 
@@ -113,6 +113,15 @@ options:
                     - Will return hosts that are linked to the given proxies.
                     - Wildcard search is possible.
                     - Case-sensitive search.
+            proxy_group:
+                type: list
+                elements: str
+                description:
+                    - List of proxy groups for host search in Zabbix.
+                    - Will return hosts that are linked to the given proxy groups.
+                    - Wildcard search is possible.
+                    - Case-sensitive search.
+                    - Used only for Zabbix versions above 7.0.
             name:
                 type: list
                 elements: str
@@ -415,7 +424,7 @@ from ansible.parsing.yaml.objects import AnsibleUnicode
 from ansible.plugins.inventory import (BaseInventoryPlugin, Cacheable,
                                        Constructable)
 from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
-    host_subquery, tags_compare_operators)
+    host_subquery, tags_compare_operators, Zabbix_version, filter_params_depends_on_version)
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
@@ -594,7 +603,23 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 - Unknown tags_behavior filter
                 - Not found tag name
                 - Unknown tag operator filter
+                - Unsupported filter: proxy_group
         """
+
+        # Check depending on the Zabbix version
+        # If the arguments contain parameters which depends on the version,
+        # we need to get the version of the API.
+        need_version = False
+
+        for key in filter_params_depends_on_version:
+            if self.args.get(key) is not None:
+                if len(list(
+                    set(filter_params_depends_on_version.get(key, [])) &
+                        set([e.lower() for e in self.args.get(key, [])]))) != 0:
+                    need_version = True
+
+        if need_version:
+            self.zabbix_version = self.get_api_version()
 
         # Check query parameters
         if self.args.get('query'):
@@ -659,6 +684,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     tags.append(new_tag)
                 self.args['filter']['tags'] = list(tags)
 
+            # proxy group
+            if self.args['filter'].get('proxy_group') is not None:
+                if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0'):
+                    raise AnsibleParserError(
+                        'Unsupported filter: proxy_group. This filter is not supported in Zabbix API v.{0}'.format(
+                            self.zabbix_version))
+
     def parse_filter(self):
         """
         This function parses all filtering conditions and, depending on the situation,
@@ -670,6 +702,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         """
         zabbix_filter = {}
         subquery_params = {"searchByAny": True, "searchWildcardsEnabled": True}
+        self.ids = {'proxy': {}, 'proxy_group': {}}
 
         # Zabbix host groups
         if self.args['filter'].get('hostgroups') is not None:
@@ -687,10 +720,20 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # Zabbix proxies
         if self.args['filter'].get('proxy') is not None:
-            subquery_params['output'] = ["host", "proxyid"]
-            subquery_params['search'] = {"host": self.args['filter']['proxy']}
+            param_name = "host" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "name"
+            subquery_params['output'] = [param_name, "proxyid"]
+            subquery_params['search'] = {param_name: self.args['filter']['proxy']}
             response = self.api_request(method='proxy.get', params=subquery_params)
+            self.ids['proxy'].update({p['proxyid']: p[param_name] for p in response})
             zabbix_filter['proxyids'] = [p['proxyid'] for p in response]
+
+        # Zabbix proxy groups
+        if self.args['filter'].get('proxy_group') is not None:
+            subquery_params['output'] = ["name", "proxy_groupid"]
+            subquery_params['search'] = {"name": self.args['filter']['proxy_group']}
+            response = self.api_request(method='proxygroup.get', params=subquery_params)
+            self.ids['proxy_group'].update({pg['proxy_groupid']: pg['name'] for pg in response})
+            zabbix_filter['proxy_groupids'] = [pg['proxy_groupid'] for pg in response]
 
         # Host
         if self.args['filter'].get('host') is not None:
@@ -780,11 +823,63 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 for tag in old_input_args['filter'][key] + self.args['filter'][key]:
                     if tag not in old_input_args['filter'][key] or tag not in self.args['filter'][key]:
                         return False
-            elif key in ['hostgroups', 'templates', 'proxy', 'name', 'host']:
+            elif key in ['hostgroups', 'templates', 'proxy', 'proxy_group', 'name', 'host']:
                 if len(list(set(self.args['filter'][key]) ^ set(old_input_args['filter'][key]))) != 0:
                     return False
 
         return True
+
+    def resolve_id_to_names(self):
+        """
+        The function resolves IDs to names and adds them to the output
+        as additional parameters. If a name for any ID is not found among
+        the available ones, it will be requested from Zabbix.
+
+        Currently, the following parameters are supported:
+            - proxyid -> proxy_name
+            - proxy_groupid -> proxy_group_name
+
+        :return: None
+        """
+
+        if hasattr(self, 'ids') is False:
+            self.ids = {'proxy': {}, 'proxy_group': {}}
+
+        # find all proxyid in self.zabbix_host and request missing proxy
+        proxy_param_name = "host" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "name"
+        proxy_field_name = "proxy_hostid" if Zabbix_version(self.zabbix_version) < Zabbix_version('7.0.0') else "proxyid"
+        if 'extend' in self.args.get('output') or proxy_field_name in self.args.get('output'):
+            host_proxy_ids = [h.get(proxy_field_name, '0') for h in self.zabbix_hosts]
+            request_ids = list(set(host_proxy_ids) - set(self.ids['proxy'].keys()) - set(['0']))
+            if len(request_ids) > 0:
+                response = self.api_request(
+                    method='proxy.get',
+                    params={
+                        'output': [proxy_param_name, 'proxyid'],
+                        'proxyids': request_ids})
+                self.ids['proxy'].update({p['proxyid']: p[proxy_param_name] for p in response})
+
+        # find all proxy_groupid in self.zabbix_host and request missing proxy_group
+        if 'extend' in self.args.get('output') or 'proxy_groupid' in self.args.get('output'):
+            host_proxy_groupid_ids = [h.get('proxy_groupid', '0') for h in self.zabbix_hosts]
+            request_ids = list(set(host_proxy_groupid_ids) - set(self.ids['proxy_group'].keys()) - set(['0']))
+            if len(request_ids) > 0:
+                response = self.api_request(
+                    method='proxygroup.get',
+                    params={
+                        'output': ['name', 'proxy_groupid'],
+                        'proxy_groupids': request_ids})
+                self.ids['proxy_group'].update({pg['proxy_groupid']: pg['name'] for pg in response})
+
+        for i, host in enumerate(self.zabbix_hosts):
+
+            # resolve proxy name
+            if proxy_field_name in host:
+                self.zabbix_hosts[i]['proxy_name'] = self.ids['proxy'].get(host[proxy_field_name], '')
+
+            # # resolve proxy group name
+            if 'proxy_groupid' in host:
+                self.zabbix_hosts[i]['proxy_group_name'] = self.ids['proxy_group'].get(host['proxy_groupid'], '')
 
     def parse(self, inventory, loader, path, cache=True):
         """
@@ -811,6 +906,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # Get and validate input parameters
         self.args = self.get_options()
+        self.zabbix_api_url = self.get_absolute_url()
         self.validate_params()
 
         # Get constructed parameters
@@ -840,7 +936,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 elif self.compare_cached_input_args(cached_data['input_args']) is False:
                     cache_needs_update = True
                 elif 'zabbix_hosts' in cached_data:
-                    zabbix_hosts = cached_data['zabbix_hosts']
+                    self.zabbix_hosts = cached_data['zabbix_hosts']
                 else:
                     cache_needs_update = True
 
@@ -854,8 +950,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 os.environ['https_proxy'] = proxy
                 os.environ['HTTPS_PROXY'] = proxy
 
-            self.zabbix_api_url = self.get_absolute_url()
-            self.zabbix_version = self.get_api_version()
+            if hasattr(self, "zabbix_version") is False:
+                self.zabbix_version = self.get_api_version()
+
             self.auth = self.login()
 
             self.query = {
@@ -882,13 +979,16 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                         self.query['output'].append('host')
 
             # getting result data
-            zabbix_hosts = self.api_request('host.get', params=self.query)
+            self.zabbix_hosts = self.api_request('host.get', params=self.query)
+
+            # resolve id to names
+            self.resolve_id_to_names()
 
             # logout
             self.logout()
 
         # Process data from Zabbix API / cached data
-        for host in zabbix_hosts:
+        for host in self.zabbix_hosts:
 
             # Add data about host to inventory
             self.inventory.add_host(host['host'])
@@ -910,6 +1010,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # Save new data to cache
         if cache_needs_update:
             cached_data = {}
-            cached_data['zabbix_hosts'] = zabbix_hosts
+            cached_data['zabbix_hosts'] = self.zabbix_hosts
             cached_data['input_args'] = self.args
             self._cache[cache_key] = cached_data

@@ -53,6 +53,8 @@
     #    The "type_full" inventory field must NOT be linked to any metric.
     # 3. You need to create two agent interfaces on the host.
     #    It is enough to create those with default parameters.
+    # 4. If you are using a Zabbix version greater than 7.0.0,
+    #    then create a proxy group "test proxy group"
     #
     # - name: Manual testing options
     #   ansible.builtin.include_tasks: zabbix_host_test_manual_tests.yml

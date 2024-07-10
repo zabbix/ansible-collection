@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -51,7 +51,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '1', 'tls_accept': '1',
                     'tls_psk_identity': 'psk_identity', 'tls_psk': 'tls_psk',
                     'tls_issuer': 'tls_issuer', 'tls_subject': 'tls_subject',
-                    'tls_connect': '1'},
+                    'tls_connect': '1', 'monitored_by': '0', 'proxy_groupid': '0',
+                    'proxyid': '0'},
                 'expected': {}
             },
             {
@@ -63,7 +64,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '0', 'tls_accept': '4',
                     'tls_psk_identity': 'test_identity', 'tls_psk': 'test_psk',
                     'tls_issuer': 'test_issuer', 'tls_subject': 'test_subject',
-                    'tls_connect': '2'},
+                    'tls_connect': '2', 'monitored_by': '2', 'proxy_groupid': '1',
+                    'proxyid': '1'},
                 'exist': {
                     'host': 'test_host', 'status': 'enabled',
                     'description': '', 'ipmi_authtype': '0',
@@ -72,7 +74,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '1', 'tls_accept': '1',
                     'tls_psk_identity': 'psk_identity', 'tls_psk': 'tls_psk',
                     'tls_issuer': 'tls_issuer', 'tls_subject': 'tls_subject',
-                    'tls_connect': '1'},
+                    'tls_connect': '1', 'monitored_by': '0', 'proxy_groupid': '0',
+                    'proxyid': '0'},
                 'expected': {
                     'status': 'disabled',
                     'description': 'test', 'ipmi_authtype': '1',
@@ -81,7 +84,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '0', 'tls_accept': '4',
                     'tls_psk_identity': 'test_identity', 'tls_psk': 'test_psk',
                     'tls_issuer': 'test_issuer', 'tls_subject': 'test_subject',
-                    'tls_connect': '2'}
+                    'tls_connect': '2', 'monitored_by': '2', 'proxy_groupid': '1',
+                    'proxyid': '1'}
             },
             {
                 'new': {
@@ -92,7 +96,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '1', 'tls_accept': '1',
                     'tls_psk_identity': 'psk_identity', 'tls_psk': 'tls_psk',
                     'tls_issuer': 'tls_issuer', 'tls_subject': 'tls_subject',
-                    'tls_connect': '1'},
+                    'tls_connect': '1', 'monitored_by': '2', 'proxy_groupid': '1',
+                    'proxyid': '1'},
                 'exist': {
                     'host': 'test_host', 'status': 'enabled',
                     'description': '', 'ipmi_authtype': '0',
@@ -101,7 +106,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '1', 'tls_accept': '1',
                     'tls_psk_identity': 'psk_identity', 'tls_psk': 'tls_psk',
                     'tls_issuer': 'tls_issuer', 'tls_subject': 'tls_subject',
-                    'tls_connect': '1'},
+                    'tls_connect': '1', 'monitored_by': '2', 'proxy_groupid': '1',
+                    'proxyid': '1'},
                 'expected': {}
             },
             {
@@ -113,7 +119,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '0', 'tls_accept': '1',
                     'tls_psk_identity': '', 'tls_psk': '',
                     'tls_issuer': '', 'tls_subject': '',
-                    'tls_connect': '1'},
+                    'tls_connect': '1', 'monitored_by': '0',
+                    'proxy_groupid': '0', 'proxyid': '0'},
                 'exist': {
                     'host': 'test_host', 'status': 'disabled',
                     'description': 'test', 'ipmi_authtype': '1',
@@ -122,7 +129,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '1', 'tls_accept': '4',
                     'tls_psk_identity': 'psk_identity', 'tls_psk': 'tls_psk',
                     'tls_issuer': 'tls_issuer', 'tls_subject': 'tls_subject',
-                    'tls_connect': '4'},
+                    'tls_connect': '4', 'monitored_by': '2', 'proxy_groupid': '1',
+                    'proxyid': '1'},
                 'expected': {
                     'status': 'enabled',
                     'description': '', 'ipmi_authtype': '0',
@@ -131,7 +139,8 @@ class TestWOProcessing(TestModules):
                     'inventory_mode': '0', 'tls_accept': '1',
                     'tls_psk_identity': '', 'tls_psk': '',
                     'tls_issuer': '', 'tls_subject': '',
-                    'tls_connect': '1'}
+                    'tls_connect': '1', 'monitored_by': '0',
+                    'proxy_groupid': '0', 'proxyid': '0'}
             }
         ]
 

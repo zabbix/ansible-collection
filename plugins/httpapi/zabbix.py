@@ -1,5 +1,5 @@
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 

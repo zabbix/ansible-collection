@@ -1,0 +1,121 @@
+---
+- name: Check filtering proxy in inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    # Add both hosts to the one of proxy
+    - name: Add 'Integration test host 1' to the 'test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        proxy: 'test proxy'
+
+    - name: Add 'Integration test host 2' to the 'test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        proxy: 'test proxy'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 2
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] == 'test proxy'
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy'
+
+    # Add one of host to the different proxy 'test proxy 2', witch match with 'test proxy*'
+    - name: Add 'Integration test host 2' to the 'test proxy 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        proxy: 'test proxy 2'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 2
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] == 'test proxy'
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy 2'
+
+    # Add rest host to the different proxy 'test proxy 2', witch match with 'test proxy*'
+    - name: Add 'Integration test host 1' to the 'test proxy 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        proxy: 'test proxy 2'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 2
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] == 'test proxy 2'
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy 2'
+
+    # Add one of hosts to the third proxy 'inventory test proxy', witch doesn't match with 'test proxy*'
+    - name: Add 'Integration test host 1' to the 'inventory test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        proxy: 'inventory test proxy'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 1
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy 2'
+
+    # Add both hosts to the third proxy 'inventory test proxy', witch doesn't match with 'test proxy*'
+    - name: Add 'Integration test host 1' to the 'inventory test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        proxy: 'inventory test proxy'
+
+    - name: Add 'Integration test host 2' to the 'inventory test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        proxy: 'inventory test proxy'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 0
+          - vars.hostvars['Integration test host 1'] is not defined
+          - vars.hostvars['Integration test host 2'] is not defined

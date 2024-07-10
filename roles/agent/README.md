@@ -3,11 +3,11 @@ Zabbix agent role
 
 You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
 Currently, the following OS of target machines are supported:
-- Redhat 7, 8, 9
+- Redhat 8, 9
 - Oracle Linux 8, 9
 - Alma Linux 8, 9
 - Rocky Linux 8, 9
-- CentOS Stream 8, 9
+- CentOS Stream 9
 - Ubuntu 18.04, 20.04, 22.04, 24.04
 - Debian 10, 11, 12
 - Raspberry Pi Os
@@ -100,6 +100,7 @@ Check the [**Python documentation**](https://docs.python.org/3/installing/index.
 
 SELinux tasks depend on `policycoreutils` package. It will be installed as dependency with `zabbix-selinux-policy` package.
 
+Note that Ansible-core 2.17 requires at least python3.7 on the target devices. Check the [**compatibility matrix**](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix) for other versions.
 
 Role variables
 --------------
@@ -692,4 +693,4 @@ Playbook examples
 License
 -------
 
-Ansible Zabbix collection is released under the GNU General Public License (GPL) version 2. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.
+Ansible Zabbix collection is released under the GNU Affero General Public License (AGPL) version 3. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.

@@ -70,7 +70,7 @@ platforms:
       - oracle
 
   - name: podman_alma8
-    dockerfile: ../default/files/Dockerfile.rhel.j2
+    dockerfile: ../default/files/Dockerfile.rhel.8.j2
     image: docker.io/library/almalinux:8
     pre_build_image: false
     # tmpfs:
@@ -92,7 +92,7 @@ platforms:
       - alma
 
   - name: podman_rocky8
-    dockerfile: ../default/files/Dockerfile.rhel.j2
+    dockerfile: ../default/files/Dockerfile.rhel.8.j2
     image: docker.io/library/rockylinux:8
     pre_build_image: false
     # tmpfs:

@@ -75,7 +75,7 @@ You can configure Zabbix API connection settings with the following parameters:
 
 ```yaml
 - name: Create host groups
-  zabbix.zabbix.zabbix_group:
+  zabbix.zabbix.zabbix_hostgroup:
     state: present
     host_groups:
      - Group 1
@@ -106,7 +106,7 @@ Example of using options to create a host group. For a typical application, it i
 
 ```yaml
 - name: Create host groups
-  zabbix.zabbix.zabbix_group:
+  zabbix.zabbix.zabbix_hostgroup:
     state: present
     host_groups:
      - G1
@@ -344,6 +344,12 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=1 align="left">Name of the proxy that is used to monitor the host.</td>
         </tr>
         <tr>
+            <td colspan=3 align="left">proxy_group</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Name of the proxy group that is used to monitor the host. Used only for Zabbix versions above 7.0.</td>
+        </tr>
+        <tr>
             <td colspan=3 align="left">inventory_mode</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
@@ -566,7 +572,7 @@ To update host to empty parameters, you can use this example.
     host: Example host
     hostgroups:                           # Host group must be not empty
       - Linux servers
-    templates: []
+    templates: []                         # Read important note in this example
     status: enabled
     description: ''
     name: ''                              # The technical name will be used
@@ -583,6 +589,34 @@ To update host to empty parameters, you can use this example.
     tls_connect: unencrypted
     proxy: ''
     inventory_mode: disabled
+    interfaces: []                        # Read important note in this example
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+**IMPORTANT**: If you want to clear templates and interfaces on the host, but the template contains items that use this interface, then you need to perform this operation in two tasks: first, unassign the templates; then, remove the interfaces in the second task. If the template contains items that do not use an interface, clearing the template and removing the interfaces can be done in one task.
+
+First step: clearing templates
+```yaml
+- name: Clearing templates
+  zabbix.zabbix.zabbix_host:
+    host: Example host
+    templates: []
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+Second step: clearing interfaces
+```yaml
+- name: Clearing interfaces
+  zabbix.zabbix.zabbix_host:
+    host: Example host
     interfaces: []
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
@@ -706,6 +740,12 @@ Inventory plugin allows Ansible users to generate a dynamic inventory based on d
             <td colspan=1 align="left"><code>list</code></td>
             <td colspan=1 align="left"></td>
             <td colspan=1 align="left">List of proxies for host search in Zabbix. Will return hosts that are linked to the given proxies. Wildcard search is possible. Case-sensitive search.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">proxy_group</td>
+            <td colspan=1 align="left"><code>list</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">List of proxy groups for host search in Zabbix. Will return hosts that are linked to the given proxy groups. Wildcard search is possible. Case-sensitive search. Used only for Zabbix versions above 7.0.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">status</td>
@@ -1341,4 +1381,4 @@ compose:
 License
 -------
 
-Ansible Zabbix collection is released under the GNU General Public License (GPL) version 2. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.
+Ansible Zabbix collection is released under the GNU Affero General Public License (AGPL) version 3. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.

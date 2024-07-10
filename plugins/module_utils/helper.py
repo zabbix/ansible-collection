@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Zabbix Ltd
-# GNU General Public License v2.0+ (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+# GNU Affero General Public License v3.0 (see https://www.gnu.org/licenses/agpl-3.0.html#license-text)
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -251,3 +251,9 @@ host_subquery = [
     "selectHostGroups", "selectHttpTests", "selectInterfaces", "selectInventory",
     "selectItems", "selectMacros", "selectParentTemplates", "selectDashboards",
     "selectTags", "selectInheritedTags", "selectTriggers", "selectValueMaps", "selectGroups"]
+
+# Dictionary for filtering parameters depending on the API version
+filter_params_depends_on_version = {
+    'query': [],
+    'output': [],
+    'filter': ['proxy_group']}

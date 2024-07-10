@@ -1,0 +1,121 @@
+# inventory file doesn't contein proxy or proxy group. This file nedds for checking resolving id to name
+# in case of additional requests for resolving.
+---
+- name: Check filtering proxy in inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    # Add both hosts to the one of proxy
+    - name: Add 'Integration test host 1' to the 'test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 1
+        proxy: 'test proxy'
+
+    - name: Add 'Integration test host 2' to the 'test proxy'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        proxy: 'test proxy'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 2
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] == 'test proxy'
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy'
+
+    # Add one of host to the different proxy 'test proxy 2', witch match with 'test proxy*'
+    - name: Add 'Integration test host 2' to the 'test proxy 2'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Integration test host 2
+        proxy: 'test proxy 2'
+
+    - name: Refreshing inventory
+      ansible.builtin.meta: refresh_inventory
+
+    - name: Assert that both hosts were given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars | length == 2
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] == 'test proxy'
+          - vars.hostvars['Integration test host 2']['zabbix_proxy_name'] == 'test proxy 2'
+
+    - name: Check support of the proxy group parameter
+      block:
+        # Set proxy group
+        - name: Test - Set proxy group for monitoring via test proxy group
+          zabbix.zabbix.zabbix_host:
+            host: Integration test host 1
+            proxy_group: 'test proxy group'
+          register: zabbix_host_proxy_group
+          ignore_errors: true
+
+        - name: Get result true
+          when:
+            - zabbix_host_proxy_group.result is defined
+            - "'Successfully updated host' in zabbix_host_proxy_group.result"
+          ansible.builtin.set_fact:
+            proxy_group_support: true
+
+        - name: Get result false
+          when:
+            - zabbix_host_proxy_group is failed
+            - zabbix_host_proxy_group.msg is defined
+            - "'Incorrect arguments for Zabbix version < 7.0.0' in zabbix_host_proxy_group.msg"
+          ansible.builtin.set_fact:
+            proxy_group_support: false
+
+        - name: Assert that proxy group support defined
+          ansible.builtin.assert:
+            quiet: true
+            that:
+              - proxy_group_support is defined
+
+    - name: Check support of the proxy group parameter
+      when: proxy_group_support
+      block:
+        # Add both hosts to the one of proxy group
+        - name: Add 'Integration test host 1' to the 'test proxy group'
+          zabbix.zabbix.zabbix_host:
+            state: present
+            host: Integration test host 1
+            proxy_group: 'test proxy group'
+
+        - name: Add 'Integration test host 2' to the 'test proxy group'
+          zabbix.zabbix.zabbix_host:
+            state: present
+            host: Integration test host 2
+            proxy_group: 'test proxy group'
+
+        - name: Refreshing inventory
+          ansible.builtin.meta: refresh_inventory
+
+        - name: Assert that both hosts were given
+          ansible.builtin.assert:
+            that:
+              - vars.hostvars | length == 2
+              - vars.hostvars['Integration test host 1'] is defined
+              - vars.hostvars['Integration test host 2'] is defined
+              - vars.hostvars['Integration test host 1']['zabbix_proxy_group_name'] is defined
+              - vars.hostvars['Integration test host 2']['zabbix_proxy_group_name'] is defined
+              - vars.hostvars['Integration test host 1']['zabbix_proxy_group_name'] == 'test proxy group'
+              - vars.hostvars['Integration test host 2']['zabbix_proxy_group_name'] == 'test proxy group'

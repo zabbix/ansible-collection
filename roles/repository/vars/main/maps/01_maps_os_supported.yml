@@ -4,11 +4,6 @@
 ## Distro -> Distro Version -> Zabbix Major -> Distro Arch
 repository_map_os_support:
   RedHat:
-    '7':
-      '6.0': ["x86_64"]
-      '6.4': ["x86_64"]
-      '6.5': ["x86_64"]
-      '7.0': ["x86_64"]
     '8':
       '6.0': ["x86_64", "aarch64"]
       '6.4': ["x86_64", "aarch64"]
@@ -53,11 +48,6 @@ repository_map_os_support:
       '6.5': ["x86_64", "aarch64"]
       '7.0': ["x86_64", "aarch64"]
   CentOS:
-    '8':
-      '6.0': ["x86_64", "aarch64"]
-      '6.4': ["x86_64", "aarch64"]
-      '6.5': ["x86_64", "aarch64"]
-      '7.0': ["x86_64", "aarch64"]
     '9':
       '6.0': ["x86_64", "aarch64"]
       '6.4': ["x86_64", "aarch64"]
