@@ -5,7 +5,7 @@ galaxy_info:
 
   issue_tracker_url: https://github.com/zabbix/ansible-collection/issues
 
-  license: GPL-2.0-or-later
+  license: AGPL-3.0-only
 
   min_ansible_version: '2.13'
 
