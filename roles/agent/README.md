@@ -8,9 +8,9 @@ Currently, the following OS of target machines are supported:
 - Alma Linux 8, 9
 - Rocky Linux 8, 9
 - CentOS Stream 9
-- Ubuntu 18.04, 20.04, 22.04, 24.04
+- Ubuntu 20.04, 22.04, 24.04
 - Debian 10, 11, 12
-- Raspberry Pi Os
+- Raspberry Pi Os: 11, 12
 
 Supported distribution list to be extended.
 
@@ -69,7 +69,7 @@ The role contains firewalld application rule to allow agent listen port. Firewal
 
 Multiple tasks require `superuser` privileges (sudo).
 
-Ansible core >= 2.13
+Ansible core >= 2.15
 
 Zabbix agent role requires additional tools from two Ansible certified collections:
 - ansible.posix >= 2.8

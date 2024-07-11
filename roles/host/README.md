@@ -35,7 +35,7 @@ Table of contents
 Requirements
 ------------
 
-Ansible core >= 2.13
+Ansible core >= 2.15
 
 Zabbix agent role requires additional tools from 3 Ansible certified collections:
 - ansible.posix >= 2.8

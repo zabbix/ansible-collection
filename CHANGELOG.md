@@ -1,3 +1,16 @@
+# v1.3.12
+
+## BUG
+
+- `agent role`: added absolute path for verify task
+
+## REMOVED
+
+- `agent role`: removed Debian 9 support (reached EOL)
+- `repository role`: removed Debian 9 support (reached EOL)
+- `agent role`: removed Ubuntu 18.04 support (reached EOM)
+- `repository role`: removed Ubuntu 18.04 support (reached EOM)
+
 # v1.3.11
 
 ## Feature
@@ -212,13 +225,17 @@
 - Added support of self-managed certificates for Zabbix agent connections.
 - Added support of self-managed certificates for Zabbix agent2 plugin sessions.
 - Added `remove` tag to uninstall agent packages.
+
   ```bash
   ansible-playbook -i inventory play.yml -t remove
   ```
+
 - Added `userparam` tag to manage user parameters only.
+
   ```bash
   ansible-playbook -i inventory play.yml -t userparam
   ```
+
 - Added self-managed repo mirror support
 
 # v1.0.4
@@ -226,16 +243,16 @@
 ## Feature
 
 - Zabbix agent role extended distribution support for:
-    - CentOS Stream 8,9
+  - CentOS Stream 8,9
 
 # v1.0.3
 
 ## Feature
 
 - Zabbix agent role extended distribution support for:
-    - Alma Linux 8,9
-    - Rocky Linux 8,9
-    - Oracle Linux 8,9
+  - Alma Linux 8,9
+  - Rocky Linux 8,9
+  - Oracle Linux 8,9
 
 # v1.0.2
 

@@ -7,7 +7,7 @@ galaxy_info:
 
   license: AGPL-3.0-only
 
-  min_ansible_version: '2.13'
+  min_ansible_version: '2.15'
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:
@@ -29,13 +29,11 @@ galaxy_info:
         - noble # 24.04
         - jammy  # 22.04
         - focal  # 20.04
-        - bionic  # 18.04
     - name: Debian
       versions:
         - bookworm  # 12
         - bullseye  # 11
         - buster  # 10
-        - stretch  # 9
 
   galaxy_tags:
     - zabbix
