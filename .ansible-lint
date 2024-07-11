@@ -1,17 +1,12 @@
 exclude_paths:
-#  - molecule/default/inventory/tasty.inv.yml
-#  - molecule/default/
-#  - molecule/agentd_cert_selfmanaged/
-  - molecule
-  - .github
+  - molecule/
+  - .github/
   - roles/zabbix_agent # deprecated role
   - playbooks/example_dummy.yml # uses vars from EDA (undefined)
   - playbooks/example_oci_volume_extend.yml # uses vars from EDA (undefined)
-#  - tests
+  - execution-environment.yml # old lint in AAP triggers images entry
 profile: production
 
-# skip_list:
-#  - var-naming[no-role-prefix]
 warn_list:
   - yaml[key-duplicates] # multiple examples in inventory plugin
   - no-handler

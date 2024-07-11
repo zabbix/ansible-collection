@@ -25,8 +25,8 @@ dependencies:
     package_system: "python311"
     python_path: "/usr/bin/python3.11"
   python:
-      - netaddr>=0.8
-      - Jinja2==3.1.2
+    - netaddr>=0.8
+    - Jinja2==3.1.2
   system:
     - openssl
     # - openssh-clients
