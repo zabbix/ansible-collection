@@ -1,0 +1,29 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: '{{url}}host'
+zabbix_user: Admin
+zabbix_password: zabbix
+use_extra_vars: true
+
+# Add additional queries in a lot of different ways
+query:
+  selectMacros: '{{ macros }}'
+
+# Filtering by host group names, templates, tags, visible and technical names
+filter:
+  HOSTGROUPS:
+    - '{{ hostgroups }}'
+  templates: '{{ templates }}'
+  TAGS:
+    - '{{ tags }}'
+  name: ['{{host_name}} test host 1 (visible)']
+
+# Add output fields
+output:
+  - status
+  - name
+
+# # Add prefix for all values from Zabbix API
+prefix: 'zabbix_{{ prefix }}_'
