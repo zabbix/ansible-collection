@@ -425,6 +425,7 @@ from ansible.plugins.inventory import (BaseInventoryPlugin, Cacheable,
                                        Constructable)
 from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
     host_subquery, tags_compare_operators, Zabbix_version, filter_params_depends_on_version)
+from ansible.utils.vars import load_extra_vars
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
@@ -881,6 +882,21 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             if 'proxy_groupid' in host:
                 self.zabbix_hosts[i]['proxy_group_name'] = self.ids['proxy_group'].get(host['proxy_groupid'], '')
 
+    def resolve_extra_vars(self):
+        """
+        The function reads the value of variables from extra-vars.
+        If the parameter "use_extra_vars: true" is specified,
+        and the input data contains variables in Jinja format,
+        then the variables in the input parameters are replaced with their values.
+
+        :return: None
+        """
+        extra_vars = load_extra_vars(self.loader)
+        self.templar.available_variables = extra_vars
+
+        if extra_vars and self.templar.is_template(self.args) and self.args.get('use_extra_vars') is True:
+            self.args = self.templar.template(self.args)
+
     def parse(self, inventory, loader, path, cache=True):
         """
         The function processes data about hosts in Zabbix.
@@ -906,6 +922,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # Get and validate input parameters
         self.args = self.get_options()
+        self.resolve_extra_vars()
         self.zabbix_api_url = self.get_absolute_url()
         self.validate_params()
 
