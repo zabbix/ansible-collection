@@ -409,6 +409,47 @@ keyed_groups:
     separator: ""
 compose:
   zabbix_verbose_status: zabbix_status.replace("1", "Disabled").replace("0", "Enabled")
+
+# USING 'extra-vars' EXAMPLES
+
+# For using extra-vars, you need to meet 3 conditions:
+# 1. add use_extra_vars: true to the inventory file or specify the use of extra-vars in the ansible configuration file;
+# 2. specify a variable in the inventory file in 'Jinja' format. (e.g., {{ url }});
+# 3. add --extra-vars or -e with the value in the command line. (e.g., --extra-vars url="http://localhost");
+
+# To use extra-vars in your inventory file, you can see the example below:
+# To pass a parameter as a list, you can use the following construct: -e macros="['macro','value']"
+# To pass a parameter as a dict, you can use the following construct: -e host_tag="{'tag':'My host test','value':'host 1'}"
+# To pass a parameter as a string, you can use the following construct: -e os_tag_value="Linux", -e inventory_field="Model", -e url="your-zabbix.com"
+
+# The final command for this example will look like this:
+# ansible-playbook -e macros="['macro','value']" \
+# -e host_tag="{'tag':'My host test','value':'host 1'}" \
+# -e os_tag_value="Linux" \
+# -e inventory_field="Model" \
+# -e url="your-zabbix.com" \
+# playbook.yaml -i inventory.yml
+
+# IMPORTANT: Please note that the value types of all fields in the inventory file are checked before the extra-vars values are expanded!
+# For example, you cannot specify query: '{{ my_query }}' in the inventory file and pass all query fields as extra-vars.
+# The query field should accept a value of type dict, but it receives a value of type string ('{{ my_query }}').
+# In this case, you need to specify query parameters as in the example below.
+plugin: "zabbix.zabbix.zabbix_inventory"
+zabbix_api_url: 'http://{{ url }}'
+zabbix_user: Admin
+zabbix_password: zabbix
+use_extra_vars: true
+query:
+  selectMacros: '{{ macros }}'
+  selectInventory: ['Name', 'OS', '{{ inventory_field }}']
+filter:
+  tags:
+    - tag: OS
+      value: '{{ os_tag_value }}'
+    - '{{ host_tag }}'
+output:
+  - status
+  - name
 '''
 
 import base64
