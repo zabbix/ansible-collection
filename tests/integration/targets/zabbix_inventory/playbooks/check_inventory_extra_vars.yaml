@@ -1,0 +1,48 @@
+---
+- name: Check basic inventory
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    - name: Assert that all variables read correctly.
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['host_name'] == "Integration"
+          - vars.hostvars['Integration test host 1']['hostgroups'] == "Integration test group*"
+          - vars.hostvars['Integration test host 1']['macros'] == "['macro','value']"
+          - vars.hostvars['Integration test host 1']['prefix'] == "test"
+          - vars.hostvars['Integration test host 1']['tags'] == "{'TAG':'integration test','value':'host 1'}"
+          - vars.hostvars['Integration test host 1']['templates'] == "['Zabbix agent *']"
+          - vars.hostvars['Integration test host 1']['url'] == "test"
+
+    - name: Assert that only 'Integration test host 1' is defined.
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1'] is defined
+          - vars.hostvars['Integration test host 2'] is not defined
+
+    - name: Assert that only 'macro', 'value' are defined in host macro.
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_macros'][0] | length == 2
+          - vars.hostvars['Integration test host 1']['zabbix_test_macros'][0]['macro'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_macros'][0]['value'] is defined
+
+    - name: Assert that visiable host name is correct.
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_name'] == 'Integration test host 1 (visible)'
+
+    - name: Assert that prefix is correct.
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Integration test host 1']['zabbix_test_host'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_hostid'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_macros'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_name'] is defined
+          - vars.hostvars['Integration test host 1']['zabbix_test_status'] is defined
