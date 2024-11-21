@@ -31,6 +31,10 @@ Table of contents
     * [Overview](#host-module-overview)
     * [Parameters](#host-module-parameters)
     * [Examples](#host-module-examples)
+  * [Proxy module](#proxy-module)
+    * [Overview](#proxy-module-overview)
+    * [Parameters](#proxy-module-parameters)
+    * [Examples](#proxy-module-examples)
   * [Inventory plugin](#inventory-plugin)
     * [Overview](#inventory-plugin-overview)
     * [Parameters](#inventory-plugin-parameters)
@@ -639,7 +643,7 @@ To update only one parameter, you can specify just the host name (used for searc
     ansible_httpapi_pass: zabbix
 ```
 
-### Example 4
+### Example 5
 To remove a host, you can use:
 ```yaml
 - name: Delete host
@@ -652,6 +656,319 @@ To remove a host, you can use:
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 ```
+
+Proxy module
+------------
+## Proxy module overview:
+This module provides functionality to create, update, and delete proxy in Zabbix. If the specified proxy already exists, its settings will be updated based on the provided input parameters. Only the specified settings will be updated, while any settings not included in the task will remain unchanged.
+
+**Note**: If the task includes the tls_psk_identity and tls_psk parameters, each execution of the task will result in an update.
+
+## Host module parameters:
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">Parameter</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan=2 align="left">state</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left">present</td>
+            <td colspan=1 align="left">Perform actions with host: <code>present</code> to add proxy (update, in case the proxy is already created) and <code>absent</code> to delete it.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">name</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Proxy name to create. The name of an existing proxy in case of an update. You can use the aliases <code>host_name</code> to refer to the host name.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">mode</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left">active</td>
+            <td colspan=1 align="left">Type of proxy. Available values: <code>active</code> or <code>passive</code>. You can use the aliases <code>operating_mode</code>.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">proxy_group</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">The name of the proxy group to which this proxy belongs. Used only for Zabbix versions above 7.0.Set the value to empty to exclude the proxy from the proxy group <code>proxy_group=''</code>.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">local_address</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Address for active agents. IP address or DNS name to connect to. Used only for Zabbix versions above 7.0. Required if <code>proxy_group</code> is not empty when adding proxy to proxy group. Set <code>local_address=''</code> to clean.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">local_port</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Local proxy port number to connect to. Used only for Zabbix versions above 7.0. Required if <code>proxy_group</code> is not empty when adding proxy to proxy group. Set <code>local_port=''</code> or <code>local_port='10051'</code> to clean or reset to the default value.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">interface</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">The proxy interface object defines the interface used to connect to a passive proxy. Supported only in passive proxy mode. Has additional options.</td>
+        </tr>
+        <tr>
+            <td rowspan=3></td>
+            <td colspan=1 align="left">address</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left">127.0.0.1</td>
+            <td colspan=1 align="left">IP address or DNS name to connect to. Supported only in passive proxy mode. Set <code>address=''</code> or <code>address='127.0.0.1'</code> to clean or reset to the default value.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">port</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left">10051</td>
+            <td colspan=1 align="left">Port number to connect to. Supported only in passive proxy mode. Set <code>port=''</code> or <code>port='10051'</code> to clean or reset to the default value.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">useip</td>
+            <td colspan=1 align="left"><code>bool</code></td>
+            <td colspan=1 align="left">True</td>
+            <td colspan=1 align="left">Whether the connection should be made through IP or DNS. In Zabbix versions 7.0 abd above this parameter will be ignored!</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">allowed_addresses</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Comma-delimited IP addresses or DNS names of active Zabbix proxy. Supported only in active proxy mode. Set <code>allowed_addresses=''</code> to clean.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_connect</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Connections to the proxy. Supported only in passive proxy mode. Available values: <li>''<li>unencrypted<li>psk<li>cert.<br>Set <code>tls_connect=''</code> to clean.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_accept</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Connections from the proxy. Supported only in active proxy mode. Available values: <li>unencrypted<li>psk<li>cert.<br>Set <code>tls_accept=[]</code> to clean.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_psk_identity</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">PSK identity.<br>If you are creating a new proxy and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing proxy and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the parameter is defined, each execution of the task will result in an update.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_psk</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">The pre-shared key, at least 32 hex digits.<br>If you are creating a new proxy and you have PSK mode (tls_accept or tls_connect), then this parameter is required. If you are upgrading an existing proxy and it already has PSK mode configured, whether it is in accept or connect mode, you can skip this parameter. If the parameter is defined, each execution of the task will result in an update.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_issuer</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Certificate issuer.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">tls_subject</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Certificate subject.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">custom_timeouts</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Whether to override global item timeouts on the proxy level. You can use the aliases <code>timeouts</code>. Has additional options. Set <code>custom_timeouts={}</code> to clear all configured timeouts and use global ones.</td>
+        </tr>
+        <tr>
+            <td rowspan=10></td>
+            <td colspan=1 align="left">timeout_zabbix_agent</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of Zabbix agent checks. You can use the aliases <code>zabbix_agent</code>. Set <code>timeout_zabbix_agent=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_simple_check</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of simple checks. You can use the aliases <code>simple_check</code>. Set <code>timeout_simple_check=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_snmp_agent</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of SNMP checks. You can use the aliases <code>snmp_agent</code>. Set <code>timeout_snmp_agent=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_external_check</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of external checks. You can use the aliases <code>external_check</code>. Set <code>timeout_external_check=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_db_monitor</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of database checks. You can use the aliases <code>db_monitor</code>. Set <code>timeout_db_monitor=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_http_agent</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of HTTP agent checks. You can use the aliases <code>http_agent</code>. Set <code>timeout_http_agent=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_ssh_agent</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of SSH agent checks. You can use the aliases <code>ssh_agent</code>. Set <code>timeout_ssh_agent=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_telnet_agent</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of Telnet checks. You can use the aliases <code>telnet_agent</code>. Set <code>timeout_telnet_agent=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_script</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of script checks. You can use the aliases <code>script</code>. Set <code>timeout_script=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">timeout_browser</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than specified seconds on processing of browser checks. You can use the aliases <code>browser</code>. Set <code>timeout_browser=''</code> to clear the value and use global timeout for this type of checks.</td>
+        </tr>
+        <tr>
+            <td colspan=2 align="left">description</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Proxy description.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Proxy module examples:
+
+### Example 1
+To create proxy with minimum parameters, you can use this example.
+```yaml
+- name: Create proxy
+  zabbix.zabbix.zabbix_proxy:
+    state: present
+    name: My Zabbix proxy
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 2
+To create proxy with maximum parameters, you can use this example. Note that part of the parameters depend on the proxy operating mode: active or passive
+```yaml
+- name: Create proxy with maximum parameters
+  zabbix.zabbix.zabbix_proxy:
+    state: present
+    name: My Zabbix proxy
+    mode: active
+    proxy_group: My proxy group
+    local_address: 10.10.10.10
+    local_port: 10051
+    interface:
+        address: 127.0.0.1
+        port: 10051
+    allowed_addresses: 10.10.10.10
+    tls_connect: ''
+    tls_accept:
+        - psk
+        - cert
+    tls_psk_identity: my_psk
+    tls_psk: 12345abcde...
+    tls_issuer: my_tls_issuer
+    tls_subject: my_tls_subject
+    custom_timeouts:
+        timeout_zabbix_agent: 10s
+        timeout_simple_check: ''                    # To use value from Zabbix global setting
+        timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in the global macro)
+        timeout_external_check: 10s
+        timeout_db_monitor: 10s
+        timeout_http_agent: 10s
+        timeout_ssh_agent: 10s
+        timeout_telnet_agent: 10s
+        timeout_script: 10s
+        timeout_browser: 10s
+    description: Description of my proxy
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 3
+To update proxy to empty parameters, you can use this example.
+```yaml
+- name: Clean all parameters from proxy
+  zabbix.zabbix.zabbix_proxy:
+    name: My Zabbix proxy
+    mode: active
+    proxy_group: ''
+    local_address: ''
+    local_port: ''
+    interface:
+      address: ''
+      port: ''
+    allowed_addresses: ''
+    tls_connect: ''
+    tls_accept: []
+    tls_psk_identity: ''
+    tls_psk: ''
+    tls_issuer: ''
+    tls_subject: ''
+    custom_timeouts: {}
+    description: ''
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 4
+To update only one parameter, you can specify just the proxy name (used for searching) and the desired parameter. The rest of the proxy parameters will not be changed. For example, if you want to update proxy description, you can use the following example:
+```yaml
+- name: Update proxy description
+  zabbix.zabbix.zabbix_proxy:
+    name: My Zabbix proxy
+    description: Description of my proxy
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 5
+To remove a proxy, you can use:
+```yaml
+- name: Delete proxy
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
 Inventory plugin
 ------------
 ## Inventory plugin overview:
@@ -786,7 +1103,7 @@ Inventory plugin allows Ansible users to generate a dynamic inventory based on d
             This parameter impacts the logic of searching by tags. Can be <code>and/or</code> or <code>or</code>.</td>
         </tr>
         <tr>
-            <td colspan=2 align="left">templates</td>
+            <td colspan=3 align="left">templates</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left"></td>
             <td colspan=1 align="left">List of templates for host search in Zabbix. Will return hosts that are linked to the given templates. Wildcard search is possible. Case-sensitive search.</td>
@@ -1412,13 +1729,13 @@ query:
 # Filtering by tags
 # You can specify the tag value as a variable or the tag as a dictionary.
 filter:
-  tags: 
+  tags:
     - tag: OS
       value: '{{ os_tag_value }}'
     - '{{ host_tag }}'
 
 # Add output fields
-output: 
+output:
   - status
   - name
 ```

@@ -39,6 +39,7 @@ class ZabbixApi(object):
         self.connection.setup_connection()
         self.jsonrpc_version = '2.0'
         self.zbx_api_version = None
+        self.global_setting = None
 
     def api_version(self):
         """
@@ -87,6 +88,28 @@ class ZabbixApi(object):
                     code, response))
 
         return response
+
+    # #########################################################
+    # ZABBIX GLOBAL SETTING
+    def get_global_setting(self):
+        """
+        The function checks whether the global settings have been loaded.
+        If they have already been loaded at least once, the function returns them.
+        If the global settings have not yet been requested, it requests them and
+        saves them as a class attribute.
+
+        :rtype: dict
+        :return: all global setting
+        """
+        if self.global_setting is None:
+            try:
+                self.global_setting = self.send_api_request(
+                    method='settings.get',
+                    params={'output': 'extend'})
+            except Exception as e:
+                self.module.fail_json(msg="Failed to get global setting {0}".format(e))
+
+        return self.global_setting
 
     # #########################################################
     # ZABBIX HOST
