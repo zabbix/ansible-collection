@@ -346,8 +346,7 @@ class Proxy(object):
                 method='proxy.get',
                 params=params)
         except Exception as e:
-            self.module.fail_json(
-                msg="Failed to get existing proxy: {0}".format(e))
+            self.module.fail_json(msg="Failed to get existing proxy: {0}".format(e))
 
         return proxy[0]
 
@@ -909,15 +908,15 @@ def main():
             if delete_result:
                 module.exit_json(
                     changed=True,
-                    result="Successfully delete host: {0}".format(proxy_name))
+                    result="Successfully delete proxy: {0}".format(proxy_name))
             else:
                 module.fail_json(
-                    msg="Failed to delete host: {0}".format(proxy_name))
+                    msg="Failed to delete proxy: {0}".format(proxy_name))
         else:
             # No need to delete proxy
             module.exit_json(
                 changed=False,
-                result="No need to delete host: {0}".format(proxy_name))
+                result="No need to delete proxy: {0}".format(proxy_name))
 
 if __name__ == '__main__':
     main()

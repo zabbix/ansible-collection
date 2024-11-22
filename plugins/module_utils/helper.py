@@ -119,7 +119,7 @@ default_values = {
     },
     'proxy_port': '10051',
     'proxy_address': '127.0.0.1',
-    'proxy_dns': '',
+    'proxy_dns': 'localhost',
     'proxy_useip': True,
     'proxy_mode': {'6.0': '5', '7': '0'}
 }

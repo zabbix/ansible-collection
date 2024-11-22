@@ -664,7 +664,7 @@ This module provides functionality to create, update, and delete proxy in Zabbix
 
 **Note**: If the task includes the tls_psk_identity and tls_psk parameters, each execution of the task will result in an update.
 
-## Host module parameters:
+## Proxy module parameters:
 <table>
     <thead>
         <tr>
@@ -1729,13 +1729,13 @@ query:
 # Filtering by tags
 # You can specify the tag value as a variable or the tag as a dictionary.
 filter:
-  tags:
+  tags: 
     - tag: OS
       value: '{{ os_tag_value }}'
     - '{{ host_tag }}'
 
 # Add output fields
-output:
+output: 
   - status
   - name
 ```
