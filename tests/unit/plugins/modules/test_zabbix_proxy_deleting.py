@@ -32,6 +32,7 @@ class TestDeleting(TestModules):
         Expected result: the task has not been changed and the proxy
         has not been deleted.
         """
+
         def find_zabbix_proxy_by_names(self, proxy_name):
             return []
 
@@ -59,6 +60,7 @@ class TestDeleting(TestModules):
         Expected result: the task has been changed and the proxy
         has been updated successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -90,6 +92,7 @@ class TestDeleting(TestModules):
 
         Expected result: the task has been failed.
         """
+
         def mock_send_request(self, method, params):
             raise Exception
 

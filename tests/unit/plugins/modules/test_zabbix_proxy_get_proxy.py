@@ -20,11 +20,13 @@ def mock_api_version(self):
     """
     return '6.0.18'
 
+
 def mock_api_version_70(self):
     """
     Mock function to get Zabbix API version 7.0.0.
     """
     return '7.0.0'
+
 
 class TestGetZabbixProxy(TestModules):
     module = zabbix_proxy
@@ -37,6 +39,7 @@ class TestGetZabbixProxy(TestModules):
         Expected result: all executions of the function returned
         empty inventory data.
         """
+
         def mock_send_request(self, method, params):
             proxy_data = {
                 'proxyid': '4',
@@ -44,7 +47,7 @@ class TestGetZabbixProxy(TestModules):
                 'proxy_groupid': '0',
                 'local_address': '',
                 'proxyGroup': [{"name": "test_proxy_group"}]
-                }
+            }
 
             return [proxy_data]
 
@@ -69,6 +72,7 @@ class TestGetZabbixProxy(TestModules):
         Expected result: all executions of the function returned
         empty inventory data.
         """
+
         def mock_send_request(self, method, params):
             proxy_data = {
                 "proxy_hostid": "0",
@@ -97,7 +101,7 @@ class TestGetZabbixProxy(TestModules):
                 "custom_interfaces": "0",
                 "uuid": "",
                 "proxyid": "11085",
-                'interface':[{
+                'interface': [{
                     "interfaceid": "199",
                     "hostid": "11085",
                     "main": "1",
@@ -135,6 +139,7 @@ class TestGetZabbixProxy(TestModules):
 
         Expected result: Exception.
         """
+
         def mock_send_request(self, method, params):
             raise Exception
 

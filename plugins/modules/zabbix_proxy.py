@@ -83,6 +83,7 @@ options:
             - Supported if I(proxy_mode) is active.
             - Set empty to clean.
         type: str
+        aliases: [ proxy_address ]
     tls_connect:
         description:
             - Connections to proxy. Supported only in passive proxy mode.
@@ -465,15 +466,22 @@ class Proxy(object):
                 else:
                     proxy_params[proxy_fnames['mode']] = default_values['proxy_mode']['6.0']
 
+        # Find the future proxy group status
+        # Used for 'local address'
+        feature_proxy_group, configured_proxy_group = False, False
+        if exist_proxy is not None and exist_proxy.get('proxy_groupid', '0') != '0':
+            feature_proxy_group, configured_proxy_group = True, True
+
         # proxy_group
         #
-        # Only for Zabbix veriosn 7.0 +
+        # Only for Zabbix version 7.0 +
         if self.module.params.get('proxy_group') is not None:
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
 
                 # Clear proxy group
                 if len(self.module.params.get('proxy_group')) == 0:
                     proxy_params['proxy_groupid'] = '0'
+                    feature_proxy_group = False
 
                 # Find proxy group by name and set it's id
                 else:
@@ -481,6 +489,7 @@ class Proxy(object):
                         self.module.params['proxy_group'])
                     if len(proxy_groups) > 0:
                         proxy_params['proxy_groupid'] = proxy_groups[0]['proxy_groupid']
+                        feature_proxy_group = True
                     else:
                         self.module.fail_json(msg="Proxy group not found in Zabbix: {0}".format(
                             self.module.params.get('proxy_group')))
@@ -489,33 +498,25 @@ class Proxy(object):
 
         # local_address
         #
-        # Only for Zabbix veriosn 7.0 +
+        # Only for Zabbix version 7.0 +
         if self.module.params.get('local_address') is not None:
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
-                proxy_params['local_address'] = self.module.params['local_address']
-
-                if len(proxy_params['local_address']) > 0:
-
-                    # Error of using parameter without proxy group in task
-                    if proxy_params.get('proxy_groupid') == '0':
-                        self.module.fail_json(msg="Incorrect argument: local_address. Value must be empty.")
-
-                    # Error of using parameter without already configured proxy group
-                    if (proxy_params.get('proxy_groupid') is None and
-                            (exist_proxy is not None and int(exist_proxy.get('proxy_groupid')) == 0)):
-                        self.module.fail_json(
-                            msg="Incorrect argument: local_address. Can be used only with proxy group.")
-                else:
-                    # Error of empty value
-                    if (proxy_params.get('proxy_groupid') != '0' and
-                            (exist_proxy is not None and int(exist_proxy.get('proxy_groupid')) != 0)):
+                # Proxy group will be used on proxy (in task or already exist on proxy)
+                if feature_proxy_group is True:
+                    if len(self.module.params['local_address']) > 0: 
+                        proxy_params['local_address'] = self.module.params['local_address']
+                    else:
                         self.module.fail_json(
                             msg="Incorrect argument: local_address. Can not be empty with configured proxy group.")
+                # Proxy group will NOT be used on proxy
+                else:
+                    if len(self.module.params['local_address']) > 0:
+                        self.module.fail_json(
+                            msg="Incorrect argument: local_address. Can be used only with proxy group.")
             else:
-                self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: local_address")
+                self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: local_port.")
         else:
-            if (proxy_params.get('proxy_groupid') != '0' and proxy_params.get('proxy_groupid') is not None and
-                    (exist_proxy is not None and int(exist_proxy.get('proxy_groupid')) == 0)):
+            if feature_proxy_group is True and configured_proxy_group is False:
                 self.module.fail_json(msg="Not found required argument: local_address")
 
         # local_port
@@ -531,16 +532,7 @@ class Proxy(object):
 
                 # Check value
                 elif self.module.params['local_port'] != default_values['proxy_port']:
-
-                    # Error of using parameter without proxy group in task
-                    if proxy_params.get('proxy_groupid') == '0':
-                        self.module.fail_json(
-                            msg="Incorrect argument: local_port. Can be used only with proxy group. "\
-                            "Without proxy group value must be '{}' or empty.".format(default_values['proxy_port']))
-
-                    # Error of using parameter without already configured proxy group
-                    if (proxy_params.get('proxy_groupid') is None and
-                            (exist_proxy is not None and int(exist_proxy.get('proxy_groupid')) == 0)):
+                    if feature_proxy_group is False:
                         self.module.fail_json(
                             msg="Incorrect argument: local_port. Can be used only with proxy group. "\
                             "Without proxy group value must be '{}' or empty.".format(default_values['proxy_port']))
@@ -588,9 +580,9 @@ class Proxy(object):
                 elif exist_proxy is not None and len(exist_proxy['interface']) > 0:
                     # Use value from existing proxy
                     if proxy_useip is True:
-                        proxy_address = exist_proxy['interface']['ip']
+                        proxy_address = exist_proxy['interface']['ip'] or default_values['proxy_address']
                     else:
-                        proxy_address = exist_proxy['interface']['dns']
+                        proxy_address = exist_proxy['interface']['dns'] or default_values['proxy_dns']
                 else:
                     # Use default value
                     if proxy_useip is True:
@@ -624,7 +616,7 @@ class Proxy(object):
                         proxy_params['interface']['dns'] = proxy_address
 
         else:
-            if (proxy_params[proxy_fnames['mode']] in ['1', '6'] and
+            if (proxy_params[proxy_fnames['mode']] == '6' and
                     Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0')):
                 if exist_proxy is not None and isinstance(exist_proxy['interface'], dict):
                     # Set interface based on existing proxy interface
@@ -811,7 +803,7 @@ def main():
                 'address': {'type': 'str'},
                 'port': {'type': 'str'},
                 'useip': {'type': 'bool'}}},
-        'allowed_addresses': {'type': 'str'},
+        'allowed_addresses': {'type': 'str', 'aliases': ['proxy_address']},
         'tls_accept': {
             'type': 'list',
             'elements': 'str',

@@ -7,7 +7,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import uuid
 from ansible_collections.zabbix.zabbix.plugins.modules import zabbix_proxy
 from ansible_collections.zabbix.zabbix.tests.unit.plugins.modules.common import (
     AnsibleExitJson, AnsibleFailJson, TestModules, set_module_args, patch)
@@ -39,6 +38,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -71,6 +71,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -137,6 +138,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -178,6 +180,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -250,6 +253,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -295,6 +299,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -364,6 +369,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -408,6 +414,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -480,6 +487,7 @@ class TestCreating(TestModules):
         Expected result: the task has been changed and the proxy
         has been created successfully.
         """
+
         def mock_send_request(self, method, params):
             return True
 
@@ -524,6 +532,7 @@ class TestCreating(TestModules):
 
         Expected result: the task has been failed.
         """
+
         def mock_send_request(self, method, params):
             raise Exception
 

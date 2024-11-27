@@ -39,6 +39,7 @@ class TestUpdating(TestModules):
         Expected result: the task has been changed and the proxy
         has been updated successfully.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
@@ -106,6 +107,7 @@ class TestUpdating(TestModules):
         Expected result: the task has been changed and the proxy
         has been updated successfully.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
@@ -170,6 +172,7 @@ class TestUpdating(TestModules):
         Expected result: the task has not been changed and the proxy
         has not been updated.
         """
+
         def mock_send_request(self, method, params):
             return [{
                 "proxyid": "4",
@@ -234,6 +237,7 @@ class TestUpdating(TestModules):
         Expected result: the task has not been changed and the proxy
         has not been updated.
         """
+
         def mock_send_request(self, method, params):
             return [{
                 "proxy_hostid": "0",
@@ -295,6 +299,7 @@ class TestUpdating(TestModules):
         Expected result: the task has been changed and the proxy
         has been updated successfully.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
@@ -400,6 +405,7 @@ class TestUpdating(TestModules):
         Expected result: the task has been changed and the proxy
         has been updated successfully.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
@@ -476,6 +482,7 @@ class TestUpdating(TestModules):
 
         Expected result: the task has been failed.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
@@ -543,6 +550,7 @@ class TestUpdating(TestModules):
 
         Expected result: the task has been failed.
         """
+
         def mock_send_request(self, method, params):
             if method == 'proxy.get':
                 return [{
