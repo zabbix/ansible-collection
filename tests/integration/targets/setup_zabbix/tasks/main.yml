@@ -5,3 +5,48 @@
     ansible_httpapi_pass: zabbix
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
+
+- name: 'Variables: Set Zabbix version'
+  block:
+    # Set proxy group
+    - name: Test - Set proxy group for monitoring via test proxy group
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        hostgroups: 'Discovered hosts'
+        proxy_group: 'test proxy group'
+      register: zabbix_host_proxy_group
+      ignore_errors: true
+
+    - name: Get result true
+      when:
+        - zabbix_host_proxy_group is failed
+        - zabbix_host_proxy_group.msg is defined
+        - "'Proxy group not found in Zabbix' in zabbix_host_proxy_group.msg"
+      ansible.builtin.set_fact:
+        zabbix_version: 7
+
+    - name: Get result false
+      when:
+        - zabbix_host_proxy_group is failed
+        - zabbix_host_proxy_group.msg is defined
+        - "'Incorrect arguments for Zabbix version < 7.0.0' in zabbix_host_proxy_group.msg"
+      ansible.builtin.set_fact:
+        zabbix_version: 6
+
+    - name: Assert that zabbix version is defined
+      ansible.builtin.assert:
+        quiet: true
+        that:
+          - zabbix_version is defined
+
+    - name: Test - Clean after test
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: zabbix_test_host
+      ignore_errors: true
+
+- name: 'Variables: Generate PSK keys'
+  block:
+    - name: 'Variables: Generate PSK keys'
+      ansible.builtin.set_fact:
+        zabbix_psk_value: '{{ lookup("password", "/dev/null" + " chars=hexdigits length=64") | lower }}'

@@ -278,7 +278,7 @@ EXAMPLES = r'''
     ansible_httpapi_pass: zabbix
 
 # You can configure Zabbix API connection settings with the following parameters:
-- name: Create host groups
+- name: Create zabbix proxy
   zabbix.zabbix.zabbix_proxy:
     state: present
     name: My Zabbix proxy

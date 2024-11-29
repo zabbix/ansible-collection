@@ -1,0 +1,23 @@
+---
+- name: Integration tests for the module for creating proxy
+  block:
+
+    - name: Documentation example tests
+      ansible.builtin.include_tasks: zabbix_proxy_doc.yml
+
+    - name: Basic functionality check
+      ansible.builtin.include_tasks: zabbix_proxy_basic_check.yml
+    
+    - name: Proxy mode
+      ansible.builtin.include_tasks: zabbix_proxy_mode.yml
+
+    - name: Proxy group, local_address, local_port
+      ansible.builtin.include_tasks: zabbix_proxy_proxy_group.yml
+
+  always:
+    - name: Remove test proxy
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        state: absent
+
+

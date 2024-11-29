@@ -1,0 +1,408 @@
+---
+- name: Check minimal parameters
+  block:
+    # Check the required parameter 'name'
+    - name: Test - Creating proxy without name
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+      register: zabbix_proxy_create_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_empty is failed
+          - "'missing required arguments: name' in zabbix_proxy_create_empty.msg"
+          
+    # Try to create with empty name ("")
+    - name: Test - Creating proxy without name
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: ''
+      register: zabbix_proxy_create_empty_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_empty_2 is failed
+
+    # Try to create with correct name
+    - name: Test - Creating proxy with correct name
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+      register: zabbix_proxy_create
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create is changed
+          - "'Successfully created proxy: My Zabbix proxy' == zabbix_proxy_create.result"
+
+    # Check idempotence
+    - name: Test - Creating proxy with default 'state' and the same parameters
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+      register: zabbix_proxy_create_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_again is not changed
+
+- name: Check updating
+  block:
+    # Check the updating parameters
+    - name: Test - Update one parameter on the proxy
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        description: Description of the proxy
+      register: zabbix_proxy_update_description
+
+    - name: Assert that task was changes
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_description is changed
+          - "'Successfully updated proxy: My Zabbix proxy' == zabbix_proxy_update_description.result"
+
+    - name: Test - Update second parameter on the proxy
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+      register: zabbix_proxy_update_mode
+
+    - name: Assert that task was changes
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_mode is changed
+          - "'Successfully updated proxy: My Zabbix proxy' == zabbix_proxy_update_mode.result"
+
+    # We check that the parameters are independent of each other when updated.
+    # Changing one parameter does not affect the others.
+    - name: Test - Update proxy with the same description and mode
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        description: Description of the proxy
+      register: zabbix_proxy_update_check
+
+    - name: Assert that task was not changes
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_check is not changed
+          - "'No need to update proxy: My Zabbix proxy' == zabbix_proxy_update_check.result"
+
+- name: Check deleting of proxy
+  block:
+    # Check the required parameter 'name'
+    - name: Test - Deleting proxy without name
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+      register: zabbix_proxy_delete_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_empty is failed
+
+    - name: Test - Deleting proxy with empty name
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: ""
+      register: zabbix_proxy_delete_empty_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_empty_2 is failed
+
+    # Delete proxy
+    - name: Delete proxy
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete
+
+    - name: Assert that proxy was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete is changed
+
+    # Check idempotence of deleting proxy
+    - name: Check deleting proxy 
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete_again
+
+    - name: Assert that proxy was not changed
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_again is not changed
+
+- name: Create and update proxy with maximum parameters for Zabbix version 7.0 +
+  when: zabbix_version == 7
+  block:
+    # Active mode
+    - name: Create proxy with maximum parameters for active proxy mode for Zabbix version 7.0 +
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+        proxy_group: My proxy group
+        local_address: 10.10.10.10
+        local_port: 10051
+        interface:
+          address: 127.0.0.1
+          port: 10051
+        allowed_addresses: 10.10.10.10
+        tls_connect: ''
+        tls_accept:
+          - psk
+          - cert
+        tls_psk_identity: my_psk
+        tls_psk: '{{ zabbix_psk_value }}'
+        tls_issuer: my_tls_issuer
+        tls_subject: my_tls_subject
+        custom_timeouts:
+          timeout_zabbix_agent: 10s
+          timeout_simple_check: ''
+          timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+          timeout_external_check: 10s
+          timeout_db_monitor: 10s
+          timeout_http_agent: 10s
+          timeout_ssh_agent: 10s
+          timeout_telnet_agent: 10s
+          timeout_script: 10s
+          timeout_browser: 10s
+        description: Description of my proxy
+      register: zabbix_proxy_create_active
+
+    - name: Assert that proxy was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_create_active is changed
+
+    - name: Clean all parameters from proxy for active proxy mode for Zabbix version 7.0 +
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+        proxy_group: ''
+        local_address: ''
+        local_port: ''
+        interface:
+          address: ''
+          port: ''
+        allowed_addresses: ''
+        tls_connect: ''
+        tls_accept: []
+        tls_psk_identity: ''
+        tls_psk: ''
+        tls_issuer: ''
+        tls_subject: ''
+        custom_timeouts: {}
+        description: ''
+      register: zabbix_proxy_clean_active
+
+    - name: Assert that proxy was cleaned
+      ansible.builtin.assert:
+        that: zabbix_proxy_clean_active is changed
+
+    - name: Delete proxy
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete_active
+
+    - name: Assert that proxy was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_active is changed
+
+    # Passive mode
+    - name: Create proxy with maximum parameters for passive proxy mode for Zabbix version 7.0 +
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+        proxy_group: My proxy group
+        local_address: 10.10.10.10
+        local_port: 10052
+        interface:
+          address: 192.168.0.10
+          port: 10052
+          useip: true
+        allowed_addresses: ''
+        tls_connect: 'psk'
+        tls_accept: []
+        tls_psk_identity: my_psk
+        tls_psk: '{{ zabbix_psk_value }}'
+        tls_issuer: ''
+        tls_subject: ''
+        custom_timeouts:
+          timeout_zabbix_agent: 10s
+          timeout_simple_check: ''
+          timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+          timeout_external_check: 10s
+          timeout_db_monitor: 10s
+          timeout_http_agent: 10s
+          timeout_ssh_agent: 10s
+          timeout_telnet_agent: 10s
+          timeout_script: 10s
+          timeout_browser: 10s
+        description: Description of my proxy
+      register: zabbix_proxy_create_passive
+
+    - name: Assert that proxy was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_create_passive is changed
+
+    - name: Clean all parameters from proxy for passive proxy mode for Zabbix version 7.0 +
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+        proxy_group: ''
+        local_address: ''
+        local_port: ''
+        interface:
+          address: ''
+          port: ''
+        allowed_addresses: ''
+        tls_connect: ''
+        tls_accept: []
+        tls_psk_identity: ''
+        tls_psk: ''
+        tls_issuer: ''
+        tls_subject: ''
+        custom_timeouts: {}
+        description: ''
+      register: zabbix_proxy_clean_passive
+
+    - name: Assert that proxy was cleaned
+      ansible.builtin.assert:
+        that: zabbix_proxy_clean_passive is changed
+
+    - name: Delete proxy
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete_passive
+
+    - name: Assert that proxy was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_passive is changed
+
+- name: Create and update proxy with maximum parameters for Zabbix version 6.0
+  when: zabbix_version == 6
+  block:
+    # Active mode
+    - name: Create proxy with maximum parameters for active proxy mode for Zabbix version 6.0
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+        interface:
+          address: 127.0.0.1
+          port: 10051
+        allowed_addresses: 10.10.10.10
+        tls_connect: ''
+        tls_accept:
+          - psk
+          - cert
+        tls_psk_identity: my_psk
+        tls_psk: '{{ zabbix_psk_value }}'
+        tls_issuer: my_tls_issuer
+        tls_subject: my_tls_subject
+        description: Description of my proxy
+      register: zabbix_proxy_create_active
+
+    - name: Assert that proxy was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_create_active is changed
+
+    - name: Clean all parameters from proxy for active proxy mode for Zabbix version 6.0
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+        interface:
+          address: ''
+          port: ''
+        allowed_addresses: ''
+        tls_connect: ''
+        tls_accept: []
+        tls_psk_identity: ''
+        tls_psk: ''
+        tls_issuer: ''
+        tls_subject: ''
+        description: ''
+      register: zabbix_proxy_clean_active
+
+    - name: Assert that proxy was cleaned
+      ansible.builtin.assert:
+        that: zabbix_proxy_clean_active is changed
+
+    - name: Delete proxy
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete_active
+
+    - name: Assert that proxy was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_active is changed
+
+    # Passive mode
+    - name: Create proxy with maximum parameters for passive proxy mode for Zabbix version 6.0
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+        interface:
+          address: 192.168.0.10
+          port: 10052
+          useip: true
+        allowed_addresses: ''
+        tls_connect: 'psk'
+        tls_accept: []
+        tls_psk_identity: my_psk
+        tls_psk: '{{ zabbix_psk_value }}'
+        tls_issuer: ''
+        tls_subject: ''
+        description: Description of my proxy
+      register: zabbix_proxy_create_passive
+
+    - name: Assert that proxy was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_create_passive is changed
+
+    - name: Clean all parameters from proxy for passive proxy mode for Zabbix version 6.0
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+        interface:
+          address: ''
+          port: ''
+        allowed_addresses: ''
+        tls_connect: ''
+        tls_accept: []
+        tls_psk_identity: ''
+        tls_psk: ''
+        tls_issuer: ''
+        tls_subject: ''
+        description: ''
+      register: zabbix_proxy_clean_passive
+
+    - name: Assert that proxy was cleaned
+      ansible.builtin.assert:
+        that: zabbix_proxy_clean_passive is changed
+
+    - name: Delete proxy
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      register: zabbix_proxy_delete_passive
+
+    - name: Assert that proxy was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_delete_passive is changed
