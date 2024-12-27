@@ -1,9 +1,4 @@
 ---
-
-# TODO create proxy group:
-# My proxy group 
-# My proxy group 2
-
 - name: Proxy group
   block:
     - name: Check proxy group for new proxy

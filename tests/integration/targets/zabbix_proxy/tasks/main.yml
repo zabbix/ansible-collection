@@ -14,10 +14,20 @@
     - name: Proxy group, local_address, local_port
       ansible.builtin.include_tasks: zabbix_proxy_proxy_group.yml
 
+    - name: Proxy allowed addresses
+      ansible.builtin.include_tasks: zabbix_proxy_allowed_addresses.yml
+
+    - name: Proxy custom timeouts
+      ansible.builtin.include_tasks: zabbix_proxy_custom_timeouts.yml
+
+    - name: Proxy interface
+      ansible.builtin.include_tasks: zabbix_proxy_interface.yml
+
+    - name: Proxy encryption
+      ansible.builtin.include_tasks: zabbix_proxy_encryption.yml
+
   always:
     - name: Remove test proxy
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         state: absent
-
-

@@ -1,7 +1,4 @@
 ---
-
-# TODO create proxy group 'My proxy group'
-
 - name: Create and update proxy for Zabbix version 7.0 +
   when: zabbix_version == 7
   block:
