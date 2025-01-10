@@ -35,14 +35,14 @@ options:
             - Failover period for each proxy in the group to have online/offline state.
             - Time suffixes are supported, e.g. 30s, 1m.
             - User macros are supported.
-            - Possible values: 10s-15m.
+            - Possible values beetween 10s-15m.
             - Set empty to reset to the default value.
         type: str
     min_online:
         description:
             - Minimum number of online proxies required for the group to be online.
             - User macros are supported.
-            - Possible values range: 1-1000.
+            - Possible values range 1-1000.
             - Set empty to reset to the default value.
         type: str
     description:
@@ -147,7 +147,7 @@ RETURN = r""" # """
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.zabbix.zabbix.plugins.module_utils.zabbix_api import ZabbixApi
 from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
-    default_values)
+    Zabbix_version, default_values)
 
 
 class Proxy_group(object):
@@ -156,6 +156,11 @@ class Proxy_group(object):
         self.module = module
         self.zapi = ZabbixApi(module)
         self.zbx_api_version = self.zapi.api_version()
+
+        # Check Zabbix version
+        if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
+            self.module.fail_json(
+                msg="Proxy groups are not supported in Zabbix versions below 7.0.")
 
     def get_zabbix_proxy_group(self, proxy_groupid):
         """
@@ -358,6 +363,7 @@ def main():
             module.exit_json(
                 changed=False,
                 result="No need to delete proxy group: {0}".format(proxy_group_name))
+
 
 if __name__ == '__main__':
     main()

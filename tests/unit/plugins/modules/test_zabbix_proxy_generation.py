@@ -178,7 +178,7 @@ class TestWOProcessing(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -279,7 +279,7 @@ class TestWOProcessing(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -366,7 +366,7 @@ class TestOperatingMode(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -468,7 +468,7 @@ class TestOperatingMode(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -520,7 +520,7 @@ class TestProxyGroup(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -649,7 +649,7 @@ class TestLocalAddress(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -723,7 +723,7 @@ class TestLocalAddress(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -870,7 +870,7 @@ class TestLocalPort(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -927,7 +927,7 @@ class TestLocalPort(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1008,7 +1008,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1194,7 +1194,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1276,7 +1276,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1321,7 +1321,7 @@ class TestInterface(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1405,7 +1405,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1611,7 +1611,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1707,7 +1707,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1890,7 +1890,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -1961,7 +1961,7 @@ class TestInterface(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2006,7 +2006,7 @@ class TestInterface(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2089,7 +2089,7 @@ class TestAllowedAddresses(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2176,7 +2176,7 @@ class TestAllowedAddresses(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2215,7 +2215,7 @@ class TestAllowedAddresses(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2259,7 +2259,7 @@ class TestAllowedAddresses(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2341,7 +2341,7 @@ class TestEncryption(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2379,7 +2379,7 @@ class TestEncryption(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2422,8 +2422,7 @@ class TestEncryption(TestModules):
                 'expected': 'Missing TLS PSK params'},
             {
                 'number': 4,
-                'input': {'tls_accept': ['psk'], 'tls_psk_identity': '123', 'tls_psk': '123', 'mode': 'passive',
-                          'mode': 'passive'},
+                'input': {'tls_accept': ['psk'], 'tls_psk_identity': '123', 'tls_psk': '123', 'mode': 'passive'},
                 'exist_proxy': None,
                 'expected': 'Available only in active proxy mode'},
             {
@@ -2465,7 +2464,7 @@ class TestEncryption(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2485,7 +2484,7 @@ class TestEncryption(TestModules):
         Test cases:
         1. Unencrypted for new proxy
         2. PSK for new proxy
-        3. Cert for new proxy    
+        3. Cert for new proxy
         """
         test_cases = [
             {
@@ -2514,7 +2513,7 @@ class TestEncryption(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2552,7 +2551,7 @@ class TestEncryption(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2591,8 +2590,7 @@ class TestEncryption(TestModules):
                 'expected': 'Missing TLS PSK params'},
             {
                 'number': 4,
-                'input': {'tls_connect': 'psk', 'tls_psk_identity': '123', 'tls_psk': '123', 'mode': 'active',
-                          'mode': 'active'},
+                'input': {'tls_connect': 'psk', 'tls_psk_identity': '123', 'tls_psk': '123', 'mode': 'active'},
                 'exist_proxy': None,
                 'expected': 'Available only in passive proxy mode'},
             {
@@ -2612,7 +2610,7 @@ class TestEncryption(TestModules):
                     'state': 'present',
                     'name': 'test_proxy'}
 
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2666,7 +2664,7 @@ class TestEncryption(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -2796,7 +2794,7 @@ class TestCustomTimeouts(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 

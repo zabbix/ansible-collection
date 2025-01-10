@@ -36,8 +36,6 @@ class TestWOProcessing(TestModules):
             'tls_accept': '1',
             'tls_issuer': '123',
             'tls_subject': '123',
-            'tls_issuer': '123',
-            'tls_subject': '123',
             'tls_connect': '2',
             'custom_timeouts': '1',
             'timeout_zabbix_agent': '3s',
@@ -78,7 +76,7 @@ class TestWOProcessing(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 
@@ -141,7 +139,7 @@ class TestWOProcessing(TestModules):
                 input_param = {
                     'state': 'present',
                     'name': 'test_proxy'}
-                input_param = {**input_param, **case['input']}
+                input_param.update(case['input'])
                 self.mock_module_functions.params = input_param
                 proxy = self.module.Proxy(self.mock_module_functions)
 

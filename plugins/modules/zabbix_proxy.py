@@ -376,7 +376,7 @@ class Proxy(object):
 
         return True
 
-    def check_interface_param(self, param, proxy_mode, default_pname = None):
+    def check_interface_param(self, param, proxy_mode, default_pname=None):
         """
         This function checks that the current interface settings can be used
         with the specified proxy mode.
@@ -400,7 +400,8 @@ class Proxy(object):
 
         elif (proxy_mode in ['0', '5']
                 and self.module.params['interface'][param] != default_values[default_pname]):
-            self.module.fail_json(msg="Incorrect argument: {}. Available only in passive proxy mode. "\
+            self.module.fail_json(
+                msg="Incorrect argument: {}. Available only in passive proxy mode. "
                 "In active proxy mode value must be empty or '{}'.".format(
                     param,
                     default_values[default_pname]))
@@ -503,7 +504,7 @@ class Proxy(object):
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
                 # Proxy group will be used on proxy (in task or already exist on proxy)
                 if feature_proxy_group is True:
-                    if len(self.module.params['local_address']) > 0: 
+                    if len(self.module.params['local_address']) > 0:
                         proxy_params['local_address'] = self.module.params['local_address']
                     else:
                         self.module.fail_json(
@@ -534,7 +535,7 @@ class Proxy(object):
                 elif self.module.params['local_port'] != default_values['proxy_port']:
                     if feature_proxy_group is False:
                         self.module.fail_json(
-                            msg="Incorrect argument: local_port. Can be used only with proxy group. "\
+                            msg="Incorrect argument: local_port. Can be used only with proxy group. "
                             "Without proxy group value must be '{}' or empty.".format(default_values['proxy_port']))
             else:
                 self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: local_port.")
@@ -561,7 +562,7 @@ class Proxy(object):
                 # Useip
                 if self.module.params['interface'].get('useip') is not None:
                     # Use value from task
-                    proxy_useip =  self.module.params['interface']['useip']
+                    proxy_useip = self.module.params['interface']['useip']
                 elif exist_proxy is not None and len(exist_proxy['interface']) > 0:
                     # Use value from existing proxy
                     proxy_useip = True if exist_proxy['interface']['useip'] == '1' else False
@@ -644,9 +645,9 @@ class Proxy(object):
             if (proxy_params[proxy_fnames['mode']] in ['1', '6']
                     and self.module.params['allowed_addresses'] != ''):
                 self.module.fail_json(
-                    msg="Incorrect argument: {}. Available only in active proxy mode. "\
+                    msg="Incorrect argument: {}. Available only in active proxy mode. "
                         "In passive proxy mode value must be empty.".format(
-                        proxy_fnames['allowed_addresses']))
+                            proxy_fnames['allowed_addresses']))
 
         # Check the current encryption settings if the proxy exists.
         # If the proxy exists and already has PSK encryption,
@@ -909,6 +910,7 @@ def main():
             module.exit_json(
                 changed=False,
                 result="No need to delete proxy: {0}".format(proxy_name))
+
 
 if __name__ == '__main__':
     main()
