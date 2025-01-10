@@ -1,0 +1,70 @@
+---
+- name: Creating proxy group
+  when: zabbix_version == 7
+  block:
+    - name: Creating proxy group with minimum parameters
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+      register: zabbix_proxy_group_create_min
+
+    - name: Assert that proxy group was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_create_min is changed
+
+    - name: Delete proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+        name: My proxy group
+
+    - name: Creating proxy group with maximum parameters
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+        failover_delay: '1m'
+        min_online: '10'
+        description: Proxy group description
+      register: zabbix_proxy_group_create_max
+
+    - name: Assert that proxy group was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_create_max is changed
+
+- name: Updating proxy group
+  when: zabbix_version == 7
+  block:
+    - name: Clean all parameters from proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+        failover_delay: ''
+        min_online: ''
+        description: ''
+      register: zabbix_proxy_group_clean
+
+    - name: Assert that proxy group was created
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_clean is changed
+
+    - name: Update only one parameter
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        description: Description of my proxy group
+      register: zabbix_proxy_group_update
+
+    - name: Assert that proxy group was updated
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_update is changed
+
+- name: Deleting proxy group
+  when: zabbix_version == 7
+  block:
+    - name: Delete proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+        name: My proxy group
+      register: zabbix_proxy_group_delete
+
+    - name: Assert that proxy group was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_delete is changed

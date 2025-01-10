@@ -1,0 +1,19 @@
+---
+- name: Integration tests for the proxy group module
+  block:
+
+    - name: Documentation example tests
+      ansible.builtin.include_tasks: zabbix_proxy_group_doc.yml
+
+    - name: Basic functionality check
+      ansible.builtin.include_tasks: zabbix_proxy_group_basic_check.yml
+    
+    - name: Parameters check (description, failover_delay, min_online)
+      ansible.builtin.include_tasks: zabbix_proxy_group_params.yml
+
+  always:
+    - name: Remove test proxy group
+      when: zabbix_version == 7
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        state: absent
