@@ -1,4 +1,25 @@
 ---
+- name: Prepare proxy group for Zabbix version 7.0 +
+  when: zabbix_version == 7
+  block:
+    - name: Prepare proxy group 'My proxy group'
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+      register: prepare_proxy_group_1
+
+    - name: Prepare proxy group 'My proxy group 2'
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group 2
+      register: prepare_proxy_group_2
+
+    - name: Assert that proxy groups was created
+      ansible.builtin.assert:
+        that:
+          - prepare_proxy_group_1 is changed
+          - prepare_proxy_group_2 is changed
+
 - name: Create and update proxy for Zabbix version 7.0 +
   when: zabbix_version == 7
   block:
