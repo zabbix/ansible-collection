@@ -10,6 +10,8 @@ The following plugins are supported:
 The following modules are supported:
 - [zabbix_host](#host-module)
 - [zabbix_hostgroups](#hostgroups-module)
+- [zabbix_proxy](#proxy-module)
+- [zabbix_proxy_group](#proxy-group-module)
 
 
 **Note**: This plugin is still in active development. There may be unidentified issues and the plugin and module arguments may change as development continues.
@@ -35,6 +37,10 @@ Table of contents
     * [Overview](#proxy-module-overview)
     * [Parameters](#proxy-module-parameters)
     * [Examples](#proxy-module-examples)
+  * [Proxy group module](#proxy-group-module)
+    * [Overview](#proxy-group-module-overview)
+    * [Parameters](#proxy-group-module-parameters)
+    * [Examples](#proxy-group-module-examples)
   * [Inventory plugin](#inventory-plugin)
     * [Overview](#inventory-plugin-overview)
     * [Parameters](#inventory-plugin-parameters)
@@ -63,14 +69,15 @@ HTTP API plugin
 ## HTTP API plugin overview:
 HTTP API plugin provides an interface for working with Zabbix API. Using the available modules, you can create, update and delete entities in Zabbix.
 
+**Note**: Basic HTTP authentication is not supported since version 7.2.0 of Zabbix API.
+
 ## HTTP API plugin parameters:
 | Parameter | Type | Default | Description |
 |--|--|--|--|
 | zabbix_api_token | `string` || Token for authorization in Zabbix API. Available environment variables: `ZABBIX_API_TOKEN`.
 | zabbix_api_url | `string` | '' | Path to access Zabbix API. Available environment variables: `ZABBIX_API_URL`.
-| http_login | `string` || Username for basic HTTP authorization to Zabbix API.
-| http_password | `string` || Password for basic HTTP authorization to Zabbix API.
-
+| http_login | `string` || Username for basic HTTP authentication to Zabbix API. Basic HTTP authentication is not supported since version 7.2.0 of Zabbix API.
+| http_password | `string` || Password for basic HTTP authentication to Zabbix API. Basic HTTP authentication is not supported since version 7.2.0 of Zabbix API.
 
 ## HTTP API plugin examples:
 
@@ -679,13 +686,13 @@ This module provides functionality to create, update, and delete proxy in Zabbix
             <td colspan=2 align="left">state</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left">present</td>
-            <td colspan=1 align="left">Perform actions with host: <code>present</code> to add proxy (update, in case the proxy is already created) and <code>absent</code> to delete it.</td>
+            <td colspan=1 align="left">Perform actions with proxy: <code>present</code> to add proxy (update, in case the proxy is already created) and <code>absent</code> to delete it.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">name</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Proxy name to create. The name of an existing proxy in case of an update. You can use the aliases <code>host_name</code> to refer to the host name.</td>
+            <td colspan=1 align="left">Proxy name to create. The name of an existing proxy in case of an update.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">mode</td>
@@ -697,7 +704,7 @@ This module provides functionality to create, update, and delete proxy in Zabbix
             <td colspan=2 align="left">proxy_group</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">The name of the proxy group to which this proxy belongs. Used only for Zabbix versions above 7.0.Set the value to empty to exclude the proxy from the proxy group <code>proxy_group=''</code>.</td>
+            <td colspan=1 align="left">The name of the proxy group to which this proxy belongs. Used only for Zabbix versions above 7.0. Set the value to empty to exclude the proxy from the proxy group <code>proxy_group=''</code>.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">local_address</td>
@@ -962,6 +969,133 @@ To remove a proxy, you can use:
   zabbix.zabbix.zabbix_proxy:
     state: absent
     name: My Zabbix proxy
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+Proxy group module
+------------
+## Proxy group module overview:
+This module provides functionality to create, update, and delete proxy group in Zabbix. If the specified proxy group already exists, its settings will be updated based on the provided input parameters. Only the specified settings will be updated, while any settings not included in the task will remain unchanged. Supported only for Zabbix versions above 7.0.
+
+## Proxy group module parameters:
+<table>
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan=1 align="left">state</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left">present</td>
+            <td colspan=1 align="left">Perform actions with proxy group: <code>present</code> to add proxy group (update, in case the proxy group is already created) and <code>absent</code> to delete it.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">name</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Proxy group name to create. The name of an existing proxy group in case of an update.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">failover_delay</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Failover period for each proxy in the group to have online/offline state. Time suffixes are supported, e.g. 30s, 1m. User macros are supported. Possible values beetween 10s-15m. Set empty to reset to the default value.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">min_online</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Minimum number of online proxies required for the group to be online. User macros are supported. Possible values range 1-1000. Set empty to reset to the default value.</td>
+        </tr>
+        <tr>
+            <td colspan=1 align="left">description</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Description of the proxy group.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Proxy module examples:
+
+### Example 1
+To create proxy group with minimum parameters, you can use this example.
+```yaml
+- name: Create proxy group
+  zabbix.zabbix.zabbix_proxy_group:
+    state: present
+    name: My proxy group
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 2
+To create proxy group with maximum parameters, you can use this example.
+```yaml
+- name: Create proxy group with maximum parameters
+  zabbix.zabbix.zabbix_proxy_group:
+    state: present
+    name: My proxy group
+    failover_delay: '1m'
+    min_online: '10'
+    description: Proxy group description
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 3
+To update proxy group to empty parameters, you can use this example.
+```yaml
+- name: Clean all parameters from proxy group
+  zabbix.zabbix.zabbix_proxy_group:
+    state: present
+    name: My proxy group
+    failover_delay: ''
+    min_online: ''
+    description: ''
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 4
+To update only one parameter, you can specify just the proxy group name (used for searching) and the desired parameter. The rest of the proxy group parameters will not be changed. For example, if you want to update proxy group description you can use the following example.
+```yaml
+- name: Update proxy group description
+  zabbix.zabbix.zabbix_proxy_group:
+    name: My proxy group
+    description: Description of my proxy group
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+```
+
+### Example 5
+To remove a proxy group, you can use:
+```yaml
+- name: Delete proxy group
+  zabbix.zabbix.zabbix_proxy_group:
+    state: absent
+    name: My proxy group
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
