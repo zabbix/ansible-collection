@@ -89,6 +89,7 @@ from uuid import uuid4
 from ansible.plugins.httpapi import HttpApiBase
 from ansible.module_utils.basic import to_text
 from ansible.module_utils.connection import ConnectionError
+from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import Zabbix_version
 
 
 class HttpApi(HttpApiBase):
@@ -128,6 +129,7 @@ class HttpApi(HttpApiBase):
         self.auth_token = self.get_option('zabbix_api_token')
         self.http_login = self.get_option('http_login')
         self.http_password = self.get_option('http_password')
+        self.methods_wo_auth = ['apiinfo.version', 'user.login']
 
         self.url_path = ''
         if self.get_option("zabbix_api_url"):
@@ -137,6 +139,16 @@ class HttpApi(HttpApiBase):
 
         return
 
+    def set_api_version(self, zbx_api_version):
+        """
+        Function for setup version of Zabbix API
+
+        :return: None
+        """
+        self.zbx_api_version = zbx_api_version
+        
+        return
+        
     def login(self, username, password):
         """
         Function for login in Zabbix.
@@ -201,12 +213,14 @@ class HttpApi(HttpApiBase):
         :return: response code and response text
         :rtype: tuple
         """
+        headers = self.build_headers(data['method'])
+
         # add auth
-        methods_wo_auth = [
-            'apiinfo.version',
-            'user.login']
-        if self.connection._auth and data['method'] not in methods_wo_auth:
-            data['auth'] = self.connection._auth['auth']
+        if self.connection._auth and data['method'] not in self.methods_wo_auth:
+            if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.2.0'):
+                data['auth'] = self.connection._auth['auth']
+            else:
+                headers['Authorization'] = 'Bearer {0}'.format(self.connection._auth['auth'])
 
         path = self.url_path + path
         self._display_request(request_method, path)
@@ -215,7 +229,7 @@ class HttpApi(HttpApiBase):
             path,
             json.dumps(data),
             method=request_method,
-            headers=self.build_headers())
+            headers=headers)
 
         value = to_text(response_data.getvalue())
         result_json = self._response_to_json(value)
@@ -283,7 +297,7 @@ class HttpApi(HttpApiBase):
 
         return req
 
-    def build_headers(self):
+    def build_headers(self, method):
         """
         Function for build headers
 
@@ -295,6 +309,13 @@ class HttpApi(HttpApiBase):
             'Accept': 'application/json'}
 
         if self.http_login is not None and self.http_password is not None:
+            # Check Zabbix API version
+            if method not in self.methods_wo_auth:
+                if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.2.0'):
+                    raise ConnectionError(
+                        'Basic HTTP authentication is not supported for Zabbix API version: {0}'.format(
+                            self.zbx_api_version))
+
             auth = base64.b64encode("{0}:{1}".format(
                 self.http_login, self.http_password).encode('ascii'))
             headers['Authorization'] = 'Basic {0}'.format(auth.decode('ascii'))

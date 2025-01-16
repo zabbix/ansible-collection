@@ -40,6 +40,7 @@ class ZabbixApi(object):
         self.jsonrpc_version = '2.0'
         self.zbx_api_version = None
         self.global_setting = None
+        self.connection.set_api_version(self.api_version())
 
     def api_version(self):
         """
