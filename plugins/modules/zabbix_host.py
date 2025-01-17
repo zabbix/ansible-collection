@@ -477,7 +477,6 @@ class Host(object):
         host = {}
         params = {
             'output': 'extend',
-            'selectGroups': ['groupid', 'name'],
             'selectParentTemplates': ['templateid', 'name'],
             'selectTags': ['tag', 'value'],
             'selectMacros': ['macro', 'value', 'type', 'description'],
@@ -485,6 +484,11 @@ class Host(object):
                 'interfaceid', 'main', 'type', 'useip',
                 'ip', 'dns', 'port', 'details'],
             'hostids': hostid}
+
+        if Zabbix_version(self.zbx_api_version) < Zabbix_version('6.2'):
+            params['selectGroups'] = ['groupid', 'name']
+        else:
+            params['selectHostGroups'] = ['groupid', 'name']
 
         if self.module.params.get('inventory') is not None:
             params['selectItems'] = ['name', 'inventory_link']
@@ -914,9 +918,10 @@ class Host(object):
 
         # hostgroups
         if new_host.get('groups'):
+            exist_host_hgroups = exist_host.get('hostgroups') or exist_host.get('groups')
             diff_groups = list(
                 set([g['groupid'] for g in new_host['groups']]) ^
-                set([g['groupid'] for g in exist_host['groups']]))
+                set([g['groupid'] for g in exist_host_hgroups]))
             if diff_groups:
                 param_to_update['groups'] = new_host['groups']
 
