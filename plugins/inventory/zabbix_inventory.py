@@ -590,6 +590,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 - Error during parse response from Zabbix API. (Invalid JSON)
                 - Any error while parsing the response from the server.
                 - An 'error' field was found in the response from the server.
+            * AnsibleAuthenticationFailure: if Basic HTTP auth was used with Zabbix API version >= 7.2.0
         """
 
         # Build headers and default payload
@@ -597,11 +598,20 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         payload = {'jsonrpc': '2.0', 'method': method, 'id': reqid, 'params': params}
 
         # Add Zabbix auth
-        if hasattr(self, "auth"):
-            payload['auth'] = self.auth
+        if method not in ['apiinfo.version', 'user.login'] and hasattr(self, "auth"):
+            if Zabbix_version(self.zabbix_version) < Zabbix_version('7.2.0'):
+                payload['auth'] = self.auth
+            else:
+                headers['Authorization'] = 'Bearer {0}'.format(self.auth)
 
         # Add basic auth
         if self.args['http_login'] is not None and self.args['http_password'] is not None:
+            # Check Zabbix API version
+            if method not in ['apiinfo.version', 'user.login']:
+                if Zabbix_version(self.zabbix_version) >= Zabbix_version('7.2.0'):
+                    raise AnsibleAuthenticationFailure(
+                        'Basic HTTP authentication is not supported for Zabbix API version: {0}'.format(
+                            self.zabbix_version))
             auth = base64.b64encode("{0}:{1}".format(
                 self.args['http_login'], self.args['http_password']).encode('ascii'))
             headers['Authorization'] = 'Basic {0}'.format(auth.decode('ascii'))

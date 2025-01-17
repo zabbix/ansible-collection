@@ -1108,6 +1108,8 @@ Inventory plugin
 ## Inventory plugin overview:
 Inventory plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation. Using the available filtering methods, the user can specify the search criteria for hosts in Zabbix, as well as limit the set of returned fields.
 
+**Note**: Basic HTTP authentication is not supported since version 7.2.0 of Zabbix API.
+
 ## Inventory plugin parameters:
 <table>
     <thead>
