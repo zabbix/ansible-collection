@@ -196,28 +196,28 @@ EXAMPLES = r'''
     local_address: 10.10.10.10
     local_port: 10051
     interface:
-        address: 127.0.0.1
-        port: 10051
+      address: 127.0.0.1
+      port: 10051
     allowed_addresses: 10.10.10.10
     tls_connect: ''
     tls_accept:
-        - psk
-        - cert
+      - psk
+      - cert
     tls_psk_identity: my_psk
     tls_psk: 12345abcde...
     tls_issuer: my_tls_issuer
     tls_subject: my_tls_subject
     custom_timeouts:
-        timeout_zabbix_agent: 10s
-        timeout_simple_check: ''                    # To use value from Zabbix global setting
-        timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in the global macro)
-        timeout_external_check: 10s
-        timeout_db_monitor: 10s
-        timeout_http_agent: 10s
-        timeout_ssh_agent: 10s
-        timeout_telnet_agent: 10s
-        timeout_script: 10s
-        timeout_browser: 10s
+      timeout_zabbix_agent: 10s
+      timeout_simple_check: ''                    # To use value from Zabbix global setting
+      timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in the global macro)
+      timeout_external_check: 10s
+      timeout_db_monitor: 10s
+      timeout_http_agent: 10s
+      timeout_ssh_agent: 10s
+      timeout_telnet_agent: 10s
+      timeout_script: 10s
+      timeout_browser: 10s
     description: Description of my proxy
   vars:
     ansible_network_os: zabbix.zabbix.zabbix

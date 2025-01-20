@@ -6,451 +6,451 @@
     - name: Create proxy
       block:
 
-      - name: Create proxy with interface
-        block:
-          # Create proxy with address and port
-          - name: Test - Create proxy with address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-            register: zabbix_proxy_create_w_address_port
+        - name: Create proxy with interface
+          block:
+            # Create proxy with address and port
+            - name: Test - Create proxy with address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+              register: zabbix_proxy_create_w_address_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_address_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_address_port.result"
 
-          # Check proxy address and port
-          - name: Check - Create proxy with address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-            register: zabbix_proxy_create_w_address_port_again
+            # Check proxy address and port
+            - name: Check - Create proxy with address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+              register: zabbix_proxy_create_w_address_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address_port_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_address_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_address_port_again.result"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
-      - name: Create proxy with empty interface
-        block:
-          # Create proxy with empty address and port
-          - name: Test - Create proxy with empty address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: ''
-                port: ''
-            register: zabbix_proxy_create_w_empty_address_port
+        - name: Create proxy with empty interface
+          block:
+            # Create proxy with empty address and port
+            - name: Test - Create proxy with empty address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: ''
+                  port: ''
+              register: zabbix_proxy_create_w_empty_address_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_empty_address_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_empty_address_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_empty_address_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_empty_address_port.result"
 
-          # Check proxy address and port
-          - name: Check - Create proxy with empty address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10051'
-            register: zabbix_proxy_create_w_empty_address_port_again
+            # Check proxy address and port
+            - name: Check - Create proxy with empty address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10051'
+              register: zabbix_proxy_create_w_empty_address_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_empty_address_port_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_empty_address_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_empty_address_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_empty_address_port_again.result"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
-      - name: Create proxy with only address
-        block:
-          # Create proxy with only address
-          - name: Test - Create proxy with only address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-            register: zabbix_proxy_create_w_address
+        - name: Create proxy with only address
+          block:
+            # Create proxy with only address
+            - name: Test - Create proxy with only address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+              register: zabbix_proxy_create_w_address
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_address.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_address.result"
 
-          # Check proxy with only address
-          - name: Check - Create proxy with only address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-            register: zabbix_proxy_create_w_address_again
+            # Check proxy with only address
+            - name: Check - Create proxy with only address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+              register: zabbix_proxy_create_w_address_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_address_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_address_again.result"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
-      - name: Create proxy with only port
-        block:
-          # Create proxy with only port
-          - name: Test - Create proxy with only port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: '10055'
-            register: zabbix_proxy_create_w_port
+        - name: Create proxy with only port
+          block:
+            # Create proxy with only port
+            - name: Test - Create proxy with only port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: '10055'
+              register: zabbix_proxy_create_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_port.result"
 
-          # Check proxy with only port
-          - name: Check - Create proxy with only port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10055'
-            register: zabbix_proxy_create_w_port_again
+            # Check proxy with only port
+            - name: Check - Create proxy with only port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10055'
+              register: zabbix_proxy_create_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_port_again.result"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
-      - name: Create proxy with DNS and default port
-        block:
-          # Create proxy with DNS and default port
-          - name: Test - Create proxy with DNS and default port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: test.com
-                port: ''
-            register: zabbix_proxy_create_w_dns_port
+        - name: Create proxy with DNS and default port
+          block:
+            # Create proxy with DNS and default port
+            - name: Test - Create proxy with DNS and default port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: test.com
+                  port: ''
+              register: zabbix_proxy_create_w_dns_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_dns_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_dns_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_dns_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_dns_port.result"
 
-          # Check proxy with DNS and default port
-          - name: Check - Create proxy with DNS and default port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                port: '10051'
-            register: zabbix_proxy_create_w_port_again
+            # Check proxy with DNS and default port
+            - name: Check - Create proxy with DNS and default port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  port: '10051'
+              register: zabbix_proxy_create_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_port_again.result"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
     - name: Update proxy
       block:
 
-      - name: Create proxy with interface
-        block:
-          # Create proxy with address and port
-          - name: Test - Create proxy with address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-            register: zabbix_proxy_create_w_address_port
+        - name: Create proxy with interface
+          block:
+            # Create proxy with address and port
+            - name: Test - Create proxy with address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+              register: zabbix_proxy_create_w_address_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_address_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_address_port.result"
 
-      - name: Update proxy address and port
-        block:
-          # Update proxy address and port
-          - name: Test - Update proxy address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.11'
-                port: '10052'
-            register: zabbix_proxy_update_w_address_port
+        - name: Update proxy address and port
+          block:
+            # Update proxy address and port
+            - name: Test - Update proxy address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.11'
+                  port: '10052'
+              register: zabbix_proxy_update_w_address_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_port is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_address_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_port is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_address_port.result"
 
-          # Check proxy address and port
-          - name: Check - Update proxy address and port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.11'
-                port: '10052'
-            register: zabbix_proxy_update_w_address_port_again
+            # Check proxy address and port
+            - name: Check - Update proxy address and port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.11'
+                  port: '10052'
+              register: zabbix_proxy_update_w_address_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_port_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_address_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_address_port_again.result"
 
-      - name: Update proxy address
-        block:
-          # Update proxy addres
-          - name: Test - Update proxy address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.12'
-            register: zabbix_proxy_update_w_address
+        - name: Update proxy address
+          block:
+            # Update proxy addres
+            - name: Test - Update proxy address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.12'
+              register: zabbix_proxy_update_w_address
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_address.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_address.result"
 
-          # Check proxy address
-          - name: Check - Update proxy address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.12'
-                port: '10052'
-            register: zabbix_proxy_update_w_address_again
+            # Check proxy address
+            - name: Check - Update proxy address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.12'
+                  port: '10052'
+              register: zabbix_proxy_update_w_address_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_address_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_address_again.result"
 
-      - name: Update proxy port
-        block:
-          # Update proxy port
-          - name: Test - Update proxy port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: '10053'
-            register: zabbix_proxy_update_w_port
+        - name: Update proxy port
+          block:
+            # Update proxy port
+            - name: Test - Update proxy port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: '10053'
+              register: zabbix_proxy_update_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
 
-          # Check proxy port
-          - name: Check - Update proxy port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.12'
-                port: '10053'
-            register: zabbix_proxy_update_w_port_again
+            # Check proxy port
+            - name: Check - Update proxy port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.12'
+                  port: '10053'
+              register: zabbix_proxy_update_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
-      - name: Update proxy address to defaul
-        block:
-          # Update proxy addres to defaul
-          - name: Test - Update proxy address to defaul
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: ''
-            register: zabbix_proxy_update_w_address_default
+        - name: Update proxy address to defaul
+          block:
+            # Update proxy addres to defaul
+            - name: Test - Update proxy address to defaul
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: ''
+              register: zabbix_proxy_update_w_address_default
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_default is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_address_default.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_default is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_address_default.result"
 
-          # Check proxy address to defaul
-          - name: Check - Update proxy address to defaul
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10053'
-            register: zabbix_proxy_update_w_address_default_again
+            # Check proxy address to defaul
+            - name: Check - Update proxy address to defaul
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10053'
+              register: zabbix_proxy_update_w_address_default_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_default_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_address_default_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_default_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_address_default_again.result"
 
-      - name: Update proxy port to defaul
-        block:
-          # Update proxy port to defaul
-          - name: Test - Update proxy port to defaul
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: ''
-            register: zabbix_proxy_update_w_port_to_default
+        - name: Update proxy port to defaul
+          block:
+            # Update proxy port to defaul
+            - name: Test - Update proxy port to defaul
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: ''
+              register: zabbix_proxy_update_w_port_to_default
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_to_default is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_port_to_default.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_to_default is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_port_to_default.result"
 
-          # Check proxy port to defaul
-          - name: Check - Update proxy port to defaul
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10051'
-            register: zabbix_proxy_update_w_port_to_default_again
+            # Check proxy port to defaul
+            - name: Check - Update proxy port to defaul
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10051'
+              register: zabbix_proxy_update_w_port_to_default_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_to_default_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_port_to_default_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_to_default_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_port_to_default_again.result"
 
-      - name: Update proxy address from ip to dns
-        block:
-          # Update proxy address from ip to dns
-          - name: Test - Update proxy address from ip to dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-            register: zabbix_proxy_update_from_ip_to_dns
+        - name: Update proxy address from ip to dns
+          block:
+            # Update proxy address from ip to dns
+            - name: Test - Update proxy address from ip to dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+              register: zabbix_proxy_update_from_ip_to_dns
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_from_ip_to_dns is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_from_ip_to_dns.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_from_ip_to_dns is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_from_ip_to_dns.result"
 
-          # Check proxy address from ip to dns
-          - name: Check - Update proxy address from ip to dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                port: '10051'
-            register: zabbix_proxy_update_from_ip_to_dns_again
+            # Check proxy address from ip to dns
+            - name: Check - Update proxy address from ip to dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  port: '10051'
+              register: zabbix_proxy_update_from_ip_to_dns_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_from_ip_to_dns_again is not changed
-                - "'No need to update' in zabbix_proxy_update_from_ip_to_dns_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_from_ip_to_dns_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_from_ip_to_dns_again.result"
 
-      - name: Update proxy address from dns to ip
-        block:
-          # Update proxy address from dns to ip
-          - name: Test - Update proxy address from dns to ip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-            register: zabbix_proxy_update_from_dns_to_ip
+        - name: Update proxy address from dns to ip
+          block:
+            # Update proxy address from dns to ip
+            - name: Test - Update proxy address from dns to ip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+              register: zabbix_proxy_update_from_dns_to_ip
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_from_dns_to_ip is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_from_dns_to_ip.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_from_dns_to_ip is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_from_dns_to_ip.result"
 
-          # Check proxy address from dns to ip
-          - name: Check - Update proxy address from dns to ip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-            register: zabbix_proxy_update_from_dns_to_ip_again
+            # Check proxy address from dns to ip
+            - name: Check - Update proxy address from dns to ip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+              register: zabbix_proxy_update_from_dns_to_ip_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_from_dns_to_ip_again is not changed
-                - "'No need to update' in zabbix_proxy_update_from_dns_to_ip_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_from_dns_to_ip_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_from_dns_to_ip_again.result"
 
     - name: Clean environment
       zabbix.zabbix.zabbix_proxy:
@@ -460,119 +460,119 @@
     - name: Create proxy in active mode
       block:
 
-      - name: Create proxy in active mode
-        block:
-          # Create proxy in active mode
-          - name: Test - Create proxy in active mode
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: active
-              interface:
-                address: ''
-                port: ''
-            register: zabbix_proxy_create_active_empty
+        - name: Create proxy in active mode
+          block:
+            # Create proxy in active mode
+            - name: Test - Create proxy in active mode
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: active
+                interface:
+                  address: ''
+                  port: ''
+              register: zabbix_proxy_create_active_empty
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_active_empty is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_active_empty.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_active_empty is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_active_empty.result"
 
-          # Check proxy in active mode
-          - name: Check - Create proxy in active mode
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: active
-              interface:
-                address: '127.0.0.1'
-                port: '10051'
-            register: zabbix_proxy_create_active_empty_again
+            # Check proxy in active mode
+            - name: Check - Create proxy in active mode
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: active
+                interface:
+                  address: '127.0.0.1'
+                  port: '10051'
+              register: zabbix_proxy_create_active_empty_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_active_empty_again is not changed
-                - "'No need to update' in zabbix_proxy_create_active_empty_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_active_empty_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_active_empty_again.result"
 
-          # Update proxy with active mode with non defailt values
-          - name: Test - Update proxy with active mode with non defailt values
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: active
-              interface:
-                address: '192.168.0.10'
-                port: '10052'
-            register: zabbix_proxy_update_active_non_default
-            ignore_errors: true
+            # Update proxy with active mode with non defailt values
+            - name: Test - Update proxy with active mode with non defailt values
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: active
+                interface:
+                  address: '192.168.0.10'
+                  port: '10052'
+              register: zabbix_proxy_update_active_non_default
+              ignore_errors: true
 
-          - name: Assert that task was failed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_active_non_default is failed
-                - "'Available only in passive proxy mode' in zabbix_proxy_update_active_non_default.msg"
+            - name: Assert that task was failed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_active_non_default is failed
+                  - "'Available only in passive proxy mode' in zabbix_proxy_update_active_non_default.msg"
 
-      - name: Clean environment
-        zabbix.zabbix.zabbix_proxy:
-          state: absent
-          name: My Zabbix proxy
+        - name: Clean environment
+          zabbix.zabbix.zabbix_proxy:
+            state: absent
+            name: My Zabbix proxy
 
-      - name: Create proxy in active mode with non defailt values
-        block:
-          # Create proxy in active mode with non defailt values
-          - name: Test - Create proxy in active mode with non defailt values
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: active
-              interface:
-                address: '192.168.0.10'
-                port: '10052'
-            register: zabbix_proxy_create_active_non_default
-            ignore_errors: true
+        - name: Create proxy in active mode with non defailt values
+          block:
+            # Create proxy in active mode with non defailt values
+            - name: Test - Create proxy in active mode with non defailt values
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: active
+                interface:
+                  address: '192.168.0.10'
+                  port: '10052'
+              register: zabbix_proxy_create_active_non_default
+              ignore_errors: true
 
-          - name: Assert that task was failed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_active_non_default is failed
-                - "'Available only in passive proxy mode' in zabbix_proxy_create_active_non_default.msg"
+            - name: Assert that task was failed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_active_non_default is failed
+                  - "'Available only in passive proxy mode' in zabbix_proxy_create_active_non_default.msg"
 
     - name: Check useip parameter
       block:
 
-      - name: Create proxy with useip parameter
-        block:
-          # Create proxy with useip parameter
-          - name: Test - Create proxy with useip parameter
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10053'
-                useip: true
-            register: zabbix_proxy_create_w_useip
+        - name: Create proxy with useip parameter
+          block:
+            # Create proxy with useip parameter
+            - name: Test - Create proxy with useip parameter
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10053'
+                  useip: true
+              register: zabbix_proxy_create_w_useip
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_useip.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_useip.result"
 
-          # Check proxy with useip parameter
-          - name: Check - Check proxy with useip parameter
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10053'
-                useip: false
-            register: zabbix_proxy_create_w_useip_again
+            # Check proxy with useip parameter
+            - name: Check - Check proxy with useip parameter
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10053'
+                  useip: false
+              register: zabbix_proxy_create_w_useip_again
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_useip_again.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_useip_again.result"
 
     - name: Clean environment
       zabbix.zabbix.zabbix_proxy:
@@ -586,145 +586,145 @@
     - name: Useip
       block:
 
-      - name: Create proxy with useip
-        block:
-          # Create proxy with useip
-          - name: Test - Create proxy with useip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                useip: true
-            register: zabbix_proxy_create_w_useip_true
+        - name: Create proxy with useip
+          block:
+            # Create proxy with useip
+            - name: Test - Create proxy with useip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  useip: true
+              register: zabbix_proxy_create_w_useip_true
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip_true is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_useip_true.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip_true is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_useip_true.result"
 
-          # Check proxy useip
-          - name: Check - Create proxy with useip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10051'
-                useip: true
-            register: zabbix_proxy_create_w_useip_true_again
+            # Check proxy useip
+            - name: Check - Create proxy with useip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10051'
+                  useip: true
+              register: zabbix_proxy_create_w_useip_true_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip_true_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_useip_true_again.result"
-                
-          - name: Clean environment
-            zabbix.zabbix.zabbix_proxy:
-              state: absent
-              name: My Zabbix proxy
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip_true_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_useip_true_again.result"
 
-          # Create proxy with useip==false
-          - name: Test - Create proxy with useip==false
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                useip: false
-            register: zabbix_proxy_create_w_useip_false
+            - name: Clean environment
+              zabbix.zabbix.zabbix_proxy:
+                state: absent
+                name: My Zabbix proxy
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip_false is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_useip_false.result"
+            # Create proxy with useip==false
+            - name: Test - Create proxy with useip==false
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  useip: false
+              register: zabbix_proxy_create_w_useip_false
 
-          # Check proxy useip==false
-          - name: Check - Create proxy with useip==false
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'localhost'
-                port: '10051'
-                useip: false
-            register: zabbix_proxy_create_w_useip_false_again
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip_false is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_useip_false.result"
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_useip_false_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_useip_false_again.result"
+            # Check proxy useip==false
+            - name: Check - Create proxy with useip==false
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'localhost'
+                  port: '10051'
+                  useip: false
+              register: zabbix_proxy_create_w_useip_false_again
 
-          # Update proxy with useip==false (from existing proxy)
-          - name: Test - Update proxy with useip==false (from existing proxy)
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-            register: zabbix_proxy_update_w_useip_false
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_useip_false_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_useip_false_again.result"
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_useip_false is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_useip_false.result"
+            # Update proxy with useip==false (from existing proxy)
+            - name: Test - Update proxy with useip==false (from existing proxy)
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+              register: zabbix_proxy_update_w_useip_false
 
-          # Check proxy useip==false
-          - name: Check - Update proxy with useip==false
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                port: '10051'
-                useip: false
-            register: zabbix_proxy_update_w_useip_false_again
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_useip_false is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_useip_false.result"
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_useip_false_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_useip_false_again.result"
+            # Check proxy useip==false
+            - name: Check - Update proxy with useip==false
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  port: '10051'
+                  useip: false
+              register: zabbix_proxy_update_w_useip_false_again
 
-          - name: Clean environment
-            zabbix.zabbix.zabbix_proxy:
-              state: absent
-              name: My Zabbix proxy
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_useip_false_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_useip_false_again.result"
 
-          # Create proxy without useip
-          - name: Test - Create proxy without useip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10053'
-            register: zabbix_proxy_create_wo_useip
+            - name: Clean environment
+              zabbix.zabbix.zabbix_proxy:
+                state: absent
+                name: My Zabbix proxy
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_wo_useip is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_wo_useip.result"
+            # Create proxy without useip
+            - name: Test - Create proxy without useip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10053'
+              register: zabbix_proxy_create_wo_useip
 
-          - name: Check - Create proxy without useip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10053'
-                useip: true
-            register: zabbix_proxy_create_wo_useip_again
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_wo_useip is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_wo_useip.result"
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_wo_useip_again is not changed
-                - "'No need to update' in zabbix_proxy_create_wo_useip_again.result"
+            - name: Check - Create proxy without useip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10053'
+                  useip: true
+              register: zabbix_proxy_create_wo_useip_again
+
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_wo_useip_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_wo_useip_again.result"
 
     - name: Clean environment
       zabbix.zabbix.zabbix_proxy:
@@ -734,195 +734,195 @@
     - name: Address
       block:
 
-      - name: Create proxy with address
-        block:
-          # Create proxy with useip
-          - name: Test - Create proxy with address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-            register: zabbix_proxy_create_w_address
+        - name: Create proxy with address
+          block:
+            # Create proxy with useip
+            - name: Test - Create proxy with address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+              register: zabbix_proxy_create_w_address
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_address.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_address.result"
 
-          - name: Check - Create proxy with address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.10'
-                port: '10051'
-                useip: true
-            register: zabbix_proxy_create_w_address_again
+            - name: Check - Create proxy with address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.10'
+                  port: '10051'
+                  useip: true
+              register: zabbix_proxy_create_w_address_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_address_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_address_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_address_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_address_again.result"
 
-          # Update proxy with address
-          - name: Test - Update proxy with address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.11'
-            register: zabbix_proxy_update_w_address
+            # Update proxy with address
+            - name: Test - Update proxy with address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.11'
+              register: zabbix_proxy_update_w_address
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_address.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_address.result"
 
-          - name: Check - Update proxy with address
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.11'
-                port: '10051'
-                useip: true
-            register: zabbix_proxy_update_w_address_again
+            - name: Check - Update proxy with address
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.11'
+                  port: '10051'
+                  useip: true
+              register: zabbix_proxy_update_w_address_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_address_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_address_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_address_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_address_again.result"
 
-          # Update proxy with port (check that address was not changed)
-          - name: Test - Update proxy with port 
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: '10052'
-            register: zabbix_proxy_update_w_port
+            # Update proxy with port (check that address was not changed)
+            - name: Test - Update proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: '10052'
+              register: zabbix_proxy_update_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
 
-          - name: Check - Update proxy with port 
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '192.168.0.11'
-                port: '10052'
-                useip: true
-            register: zabbix_proxy_update_w_port_again
+            - name: Check - Update proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '192.168.0.11'
+                  port: '10052'
+                  useip: true
+              register: zabbix_proxy_update_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
-          # Update proxy address to the dns
-          - name: Test - Update proxy address to the dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                useip: false
-            register: zabbix_proxy_update_w_dns
+            # Update proxy address to the dns
+            - name: Test - Update proxy address to the dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  useip: false
+              register: zabbix_proxy_update_w_dns
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_dns is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_dns.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_dns is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_dns.result"
 
-          - name: Check - Update proxy address to the dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                port: '10052'
-                useip: false
-            register: zabbix_proxy_update_w_dns_again
+            - name: Check - Update proxy address to the dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  port: '10052'
+                  useip: false
+              register: zabbix_proxy_update_w_dns_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_dns_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_dns_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_dns_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_dns_again.result"
 
-          # Reset to default dns
-          - name: Test - Reset to default dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: ''
-            register: zabbix_proxy_update_w_empty_dns
+            # Reset to default dns
+            - name: Test - Reset to default dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: ''
+              register: zabbix_proxy_update_w_empty_dns
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_empty_dns is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_empty_dns.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_empty_dns is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_empty_dns.result"
 
-          - name: Check - Reset to default dns
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'localhost'
-                port: '10052'
-                useip: false
-            register: zabbix_proxy_update_w_empty_dns_again
+            - name: Check - Reset to default dns
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'localhost'
+                  port: '10052'
+                  useip: false
+              register: zabbix_proxy_update_w_empty_dns_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_empty_dns_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_empty_dns_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_empty_dns_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_empty_dns_again.result"
 
-          # Reset to default ip
-          - name: Test - Reset to default ip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: ''
-                useip: true
-            register: zabbix_proxy_update_w_empty_ip
+            # Reset to default ip
+            - name: Test - Reset to default ip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: ''
+                  useip: true
+              register: zabbix_proxy_update_w_empty_ip
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_empty_ip is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_empty_ip.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_empty_ip is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_empty_ip.result"
 
-          - name: Check - Reset to default ip
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10052'
-                useip: true
-            register: zabbix_proxy_update_w_empty_ip_again
+            - name: Check - Reset to default ip
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10052'
+                  useip: true
+              register: zabbix_proxy_update_w_empty_ip_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_empty_ip_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_empty_ip_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_empty_ip_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_empty_ip_again.result"
 
     - name: Clean environment
       zabbix.zabbix.zabbix_proxy:
@@ -932,101 +932,101 @@
     - name: Port
       block:
 
-      - name: Create proxy with port
-        block:
-          # Create proxy with port
-          - name: Test - Create proxy with port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: '10052'
-            register: zabbix_proxy_create_w_port
+        - name: Create proxy with port
+          block:
+            # Create proxy with port
+            - name: Test - Create proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: '10052'
+              register: zabbix_proxy_create_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_port is changed
-                - "'Successfully created proxy' in zabbix_proxy_create_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_port is changed
+                  - "'Successfully created proxy' in zabbix_proxy_create_w_port.result"
 
-          - name: Check - Create proxy with port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10052'
-                useip: true
-            register: zabbix_proxy_create_w_port_again
+            - name: Check - Create proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10052'
+                  useip: true
+              register: zabbix_proxy_create_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_create_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_create_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_create_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_create_w_port_again.result"
 
-          # Update proxy with port
-          - name: Test - Update proxy with port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                port: '10053'
-            register: zabbix_proxy_update_w_port
+            # Update proxy with port
+            - name: Test - Update proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  port: '10053'
+              register: zabbix_proxy_update_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
 
-          - name: Check - Update proxy with port
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: '127.0.0.1'
-                port: '10053'
-                useip: true
-            register: zabbix_proxy_update_w_port_again
+            - name: Check - Update proxy with port
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: '127.0.0.1'
+                  port: '10053'
+                  useip: true
+              register: zabbix_proxy_update_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
-          # Update proxy with other parameter (port from existing proxy)
-          - name: Test - Update proxy with other parameter
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                useip: false
-            register: zabbix_proxy_update_w_port
+            # Update proxy with other parameter (port from existing proxy)
+            - name: Test - Update proxy with other parameter
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  useip: false
+              register: zabbix_proxy_update_w_port
 
-          - name: Assert that task was changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port is changed
-                - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
+            - name: Assert that task was changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port is changed
+                  - "'Successfully updated proxy' in zabbix_proxy_update_w_port.result"
 
-          - name: Check - Update proxy with other parameter
-            zabbix.zabbix.zabbix_proxy:
-              name: My Zabbix proxy
-              mode: passive
-              interface:
-                address: 'test.com'
-                port: '10053'
-                useip: false
-            register: zabbix_proxy_update_w_port_again
+            - name: Check - Update proxy with other parameter
+              zabbix.zabbix.zabbix_proxy:
+                name: My Zabbix proxy
+                mode: passive
+                interface:
+                  address: 'test.com'
+                  port: '10053'
+                  useip: false
+              register: zabbix_proxy_update_w_port_again
 
-          - name: Assert that task was not changed
-            ansible.builtin.assert:
-              that:
-                - zabbix_proxy_update_w_port_again is not changed
-                - "'No need to update' in zabbix_proxy_update_w_port_again.result"
+            - name: Assert that task was not changed
+              ansible.builtin.assert:
+                that:
+                  - zabbix_proxy_update_w_port_again is not changed
+                  - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
     - name: Clean environment
       zabbix.zabbix.zabbix_proxy:

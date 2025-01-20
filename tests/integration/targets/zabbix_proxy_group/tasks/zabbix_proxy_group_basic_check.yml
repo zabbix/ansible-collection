@@ -30,7 +30,7 @@
         that:
           - zabbix_proxy_group_create_empty is failed
           - "'missing required arguments: name' in zabbix_proxy_group_create_empty.msg"
-          
+
     # Try to create with empty name ("")
     - name: Test - Creating proxy group without name
       zabbix.zabbix.zabbix_proxy_group:

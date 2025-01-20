@@ -7,7 +7,7 @@
 
     - name: Basic functionality check
       ansible.builtin.include_tasks: zabbix_proxy_basic_check.yml
-    
+
     - name: Proxy mode
       ansible.builtin.include_tasks: zabbix_proxy_mode.yml
 

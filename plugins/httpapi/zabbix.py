@@ -146,9 +146,9 @@ class HttpApi(HttpApiBase):
         :return: None
         """
         self.zbx_api_version = zbx_api_version
-        
+
         return
-        
+
     def login(self, username, password):
         """
         Function for login in Zabbix.

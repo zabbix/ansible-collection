@@ -43,7 +43,6 @@
       zabbix.zabbix.zabbix_host:
         state: absent
         host: zabbix_test_host
-      ignore_errors: true
 
 - name: 'Variables: Generate PSK keys'
   block:

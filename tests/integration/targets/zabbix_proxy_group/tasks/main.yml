@@ -7,7 +7,7 @@
 
     - name: Basic functionality check
       ansible.builtin.include_tasks: zabbix_proxy_group_basic_check.yml
-    
+
     - name: Parameters check (description, failover_delay, min_online)
       ansible.builtin.include_tasks: zabbix_proxy_group_params.yml
 

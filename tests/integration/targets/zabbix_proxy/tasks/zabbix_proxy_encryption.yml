@@ -19,7 +19,7 @@
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         mode: active
-        tls_accept: 
+        tls_accept:
           - cert
       register: zabbix_proxy_create_w_tls_accept_list
 
@@ -39,7 +39,7 @@
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         mode: active
-        tls_accept: 
+        tls_accept:
           - psk
           - cert
           - unencrypted
@@ -95,7 +95,7 @@
         that:
           - zabbix_proxy_update_passive_error is failed
           - "'Available only in active proxy mode' in zabbix_proxy_update_passive_error.msg"
-    
+
     # Update proxy to passive mode with empty (unencrypted) encryption
     - name: Test - Update proxy to passive mode with empty (unencrypted) encryption
       zabbix.zabbix.zabbix_proxy:
@@ -420,7 +420,7 @@
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         mode: active
-        tls_accept: 
+        tls_accept:
           - psk
           - cert
       register: zabbix_proxy_update_w_tls_accept_change
@@ -434,7 +434,7 @@
     - name: Check - Updating proxy with encryption tls_connect psk
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
-        tls_accept: 
+        tls_accept:
           - psk
           - cert
       register: zabbix_proxy_update_w_tls_accept_change_again

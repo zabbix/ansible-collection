@@ -13,7 +13,7 @@
         that:
           - zabbix_proxy_create_empty is failed
           - "'missing required arguments: name' in zabbix_proxy_create_empty.msg"
-          
+
     # Try to create with empty name ("")
     - name: Test - Creating proxy without name
       zabbix.zabbix.zabbix_proxy:
@@ -129,7 +129,7 @@
         that: zabbix_proxy_delete is changed
 
     # Check idempotence of deleting proxy
-    - name: Check deleting proxy 
+    - name: Check deleting proxy
       zabbix.zabbix.zabbix_proxy:
         state: absent
         name: My Zabbix proxy
