@@ -592,13 +592,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 - An 'error' field was found in the response from the server.
             * AnsibleAuthenticationFailure: if Basic HTTP auth was used with Zabbix API version >= 7.2.0
         """
+        methods_wo_auth = ['apiinfo.version', 'user.login']
 
         # Build headers and default payload
         headers = {'Content-Type': 'application/json-rpc', 'Accept': 'application/json'}
         payload = {'jsonrpc': '2.0', 'method': method, 'id': reqid, 'params': params}
 
         # Add Zabbix auth
-        if method not in ['apiinfo.version', 'user.login'] and hasattr(self, "auth"):
+        if method not in methods_wo_auth and hasattr(self, "auth"):
             if Zabbix_version(self.zabbix_version) < Zabbix_version('7.2.0'):
                 payload['auth'] = self.auth
             else:
@@ -607,7 +608,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # Add basic auth
         if self.args['http_login'] is not None and self.args['http_password'] is not None:
             # Check Zabbix API version
-            if method not in ['apiinfo.version', 'user.login']:
+            if method not in methods_wo_auth:
                 if Zabbix_version(self.zabbix_version) >= Zabbix_version('7.2.0'):
                     raise AnsibleAuthenticationFailure(
                         'Basic HTTP authentication is not supported for Zabbix API version: {0}'.format(

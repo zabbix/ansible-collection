@@ -515,7 +515,7 @@ class Proxy(object):
                         self.module.fail_json(
                             msg="Incorrect argument: local_address. Can be used only with proxy group.")
             else:
-                self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: local_port.")
+                self.module.fail_json(msg="Incorrect arguments for Zabbix version < 7.0.0: local_address.")
         else:
             if feature_proxy_group is True and configured_proxy_group is False:
                 self.module.fail_json(msg="Not found required argument: local_address")
