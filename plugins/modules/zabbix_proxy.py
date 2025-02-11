@@ -125,6 +125,7 @@ options:
         description:
             - Whether to override global item timeouts on the proxy level.
             - Set '{}' to clear value and use global timeouts.
+            - Used only for Zabbix versions above 7.0.
         type: dict
         aliases: [ timeouts ]
         suboptions:

@@ -747,7 +747,7 @@ This module provides functionality to create, update, and delete proxy in Zabbix
             <td colspan=2 align="left">allowed_addresses</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Comma-delimited IP addresses or DNS names of active Zabbix proxy. Supported only in active proxy mode. Set <code>allowed_addresses=''</code> to clean.</td>
+            <td colspan=1 align="left">Comma-delimited IP addresses or DNS names of active Zabbix proxy. Supported only in active proxy mode. You can use the aliases <code>proxy_address</code>. Set <code>allowed_addresses=''</code> to clean.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">tls_connect</td>
@@ -789,7 +789,7 @@ This module provides functionality to create, update, and delete proxy in Zabbix
             <td colspan=2 align="left">custom_timeouts</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
-            <td colspan=1 align="left">Whether to override global item timeouts on the proxy level. You can use the aliases <code>timeouts</code>. Has additional options. Set <code>custom_timeouts={}</code> to clear all configured timeouts and use global ones.</td>
+            <td colspan=1 align="left">Whether to override global item timeouts on the proxy level. You can use the aliases <code>timeouts</code>. Has additional options. Set <code>custom_timeouts={}</code> to clear all configured timeouts and use global ones. Used only for Zabbix versions above 7.0.</td>
         </tr>
         <tr>
             <td rowspan=10></td>
@@ -1025,7 +1025,7 @@ This module provides functionality to create, update, and delete proxy group in 
     </tbody>
 </table>
 
-## Proxy module examples:
+## Proxy group module examples:
 
 ### Example 1
 To create proxy group with minimum parameters, you can use this example.
