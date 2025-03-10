@@ -21,15 +21,15 @@ def mock_api_version(self):
 
 
 class TestDeleting(TestModules):
-    """Class for testing deletion of a proxy"""
+    """Class for testing proxy deletion"""
     module = zabbix_proxy
 
     def test_delete_not_exist_proxy(self):
         """
-        Testing the proxy deletion function in case the specified proxy
+        Testing proxy deletion function in case specified proxy
         does not exist.
 
-        Expected result: the task has not been changed and the proxy
+        Expected result: task has not been changed and proxy
         has not been deleted.
         """
 
@@ -55,9 +55,9 @@ class TestDeleting(TestModules):
 
     def test_deleting_proxy(self):
         """
-        Testing the proxy deletion function if the specified proxy exists.
+        Testing proxy deletion function if specified proxy exists.
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been updated successfully.
         """
 
@@ -87,10 +87,10 @@ class TestDeleting(TestModules):
 
     def test_deleting_proxy_error(self):
         """
-        Testing the proxy deletion function in case of encountering an error
-        during the deletion.
+        Testing proxy deletion function in case of encountering error
+        during deletion.
 
-        Expected result: the task has been failed.
+        Expected result: task has been failed.
         """
 
         def mock_send_request(self, method, params):

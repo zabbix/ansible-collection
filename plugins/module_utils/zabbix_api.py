@@ -44,7 +44,7 @@ class ZabbixApi(object):
 
     def api_version(self):
         """
-        Function for getting API version
+        Function for getting the API version
 
         :return: API version
         :rtype: str
@@ -61,7 +61,7 @@ class ZabbixApi(object):
 
     def send_api_request(self, method, params):
         """
-        Function for sending request via HTTP API plugin
+        Function for sending a request via HTTP API plugin
 
         :param method: required Zabbix API method
         :type method: str
@@ -316,8 +316,8 @@ class ZabbixApi(object):
         return self.find_zabbix_templates(search_filter)
 
     # #########################################################
-    # ZABBIX PROXYS
-    def find_zabbix_proxys(self, search_filter):
+    # ZABBIX PROXIES
+    def find_zabbix_proxies(self, search_filter):
         """
         Function to search for a proxy in Zabbix by a given filter
 
@@ -331,13 +331,13 @@ class ZabbixApi(object):
         if Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0'):
             output_list = ['host', 'proxyid']
 
-        existing_proxys = self.send_api_request(
+        existing_proxies = self.send_api_request(
             method='proxy.get',
             params={
                 'output': output_list,
                 'filter': search_filter})
 
-        return existing_proxys
+        return existing_proxies
 
     def find_zabbix_proxy_by_names(self, proxy_names):
         """
@@ -360,7 +360,7 @@ class ZabbixApi(object):
             raise NoParametersForSearch(
                 "No parameters for searching for Zabbix proxy")
 
-        return self.find_zabbix_proxys(search_filter)
+        return self.find_zabbix_proxies(search_filter)
 
     def find_zabbix_proxy_by_ids(self, proxy_ids):
         """
@@ -369,7 +369,7 @@ class ZabbixApi(object):
         :param proxy_ids: proxy IDs for search
         :type proxy_ids: list
 
-        :return: found proxys
+        :return: found proxies
         :rtype: list
 
         :raise:

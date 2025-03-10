@@ -90,8 +90,8 @@
               - zabbix_proxy_update_w_custom_timeouts_again is not changed
               - "'No need to update' in zabbix_proxy_update_w_custom_timeouts_again.result"
 
-        # Update timeout_zabbix_agent to the value from default setting
-        - name: Test - Update timeout_zabbix_agent to the value from default setting
+        # Update timeout_zabbix_agent to value from default setting
+        - name: Test - Update timeout_zabbix_agent to value from default setting
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
             custom_timeouts:
@@ -104,8 +104,8 @@
               - zabbix_proxy_update_w_custom_timeouts_to_default is changed
               - "'Successfully updated proxy' in zabbix_proxy_update_w_custom_timeouts_to_default.result"
 
-        # Update timeout_zabbix_agent to the value from default setting (Check)
-        - name: Test - Update timeout_zabbix_agent to the value from default setting (Check)
+        # Update timeout_zabbix_agent to value from default setting (Check)
+        - name: Test - Update timeout_zabbix_agent to value from default setting (Check)
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
             custom_timeouts:
@@ -130,8 +130,8 @@
     - name: Clean custom_timeouts for proxy
       when: zabbix_version == 7
       block:
-        # Clean custom_timeouts from the proxy
-        - name: Test - Clean custom_timeouts from the proxy
+        # Clean custom_timeouts from proxy
+        - name: Test - Clean custom_timeouts from proxy
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
             custom_timeouts: {}
@@ -143,8 +143,8 @@
               - zabbix_proxy_clean_custom_timeouts is changed
               - "'Successfully updated proxy' in zabbix_proxy_clean_custom_timeouts.result"
 
-        # Clean custom_timeouts from the proxy
-        - name: Test - Clean custom_timeouts from the proxy (Check)
+        # Clean custom_timeouts from proxy
+        - name: Test - Clean custom_timeouts from proxy (Check)
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
             custom_timeouts: {}

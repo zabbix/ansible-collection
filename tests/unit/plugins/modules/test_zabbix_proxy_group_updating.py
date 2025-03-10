@@ -20,15 +20,15 @@ def mock_api_version_70(self):
 
 
 class TestUpdating(TestModules):
-    """Class for testing the update of the proxy"""
+    """Class for testing update of proxy"""
     module = zabbix_proxy_group
 
     def test_update_proxy_group_wo_parameters(self):
         """
-        Testing the proxy group update function without additional parameters.
+        Testing proxy group update function without additional parameters.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy group
+        Expected result: task has been changed and proxy group
         has been updated successfully.
         """
 
@@ -68,10 +68,10 @@ class TestUpdating(TestModules):
 
     def test_update_proxy_group_no_need_update(self):
         """
-        Testing the proxy group update function in case nothing needs to be updated.
+        Testing proxy group update function in case nothing needs to be updated.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has not been changed and the proxy group
+        Expected result: task has not been changed and proxy group
         has not been updated.
         """
 
@@ -107,10 +107,10 @@ class TestUpdating(TestModules):
 
     def test_update_proxy_group_w_all_parameters(self):
         """
-        Testing the proxy group update function with all possible options.
+        Testing proxy group update function with all possible options.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy group
+        Expected result: task has been changed and proxy group
         has been updated successfully.
         """
 
@@ -152,11 +152,11 @@ class TestUpdating(TestModules):
 
     def test_update_proxy_error(self):
         """
-        Testing the proxy update function in case of encountering an error
-        during the update.
+        Testing proxy update function in case of encountering error
+        during update.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been failed.
+        Expected result: task has been failed.
         """
 
         def mock_send_request(self, method, params):

@@ -23,14 +23,14 @@ def mock_api_version_70(self):
 
 
 class TestProxyGroupName(TestModules):
-    """Class for testing name of the proxy group"""
+    """Class for testing name of proxy group"""
     module = zabbix_proxy_group
 
     def test_proxy_group_name_param(self):
         """
-        Testing proxy group name. Result depends on the Zabbix API version.
+        Testing proxy group name. Result depends on Zabbix API version.
 
-        Expected result: name parameter will be added to the correct output field.
+        Expected result: name parameter will be added to correct output field.
         """
         with patch.multiple(
                 self.zabbix_api_module_path,
@@ -47,7 +47,7 @@ class TestProxyGroupName(TestModules):
 
 
 class TestProxyGroupDescription(TestModules):
-    """Class for testing description of the proxy group"""
+    """Class for testing description of proxy group"""
     module = zabbix_proxy_group
 
     def test_proxy_group_description_param(self):
@@ -55,7 +55,7 @@ class TestProxyGroupDescription(TestModules):
         Testing description parameter.
 
         Expected result: description parameter will be added
-        to the correct output field.
+        to correct output field.
 
         Test cases:
         1. Empty description field
@@ -68,10 +68,10 @@ class TestProxyGroupDescription(TestModules):
                 'expected': {'name': 'test_proxy_group'}},
             {
                 'number': 2,
-                'input': {'description': 'Description of the proxy group'},
+                'input': {'description': 'Description of proxy group'},
                 'expected': {
                     'name': 'test_proxy_group',
-                    'description': 'Description of the proxy group'}}
+                    'description': 'Description of proxy group'}}
         ]
 
         with patch.multiple(
@@ -91,7 +91,7 @@ class TestProxyGroupDescription(TestModules):
 
 
 class TestProxyGroupFailoverDelay(TestModules):
-    """Class for testing fileover delay of the proxy group"""
+    """Class for testing fileover delay of proxy group"""
     module = zabbix_proxy_group
 
     def test_proxy_group_fileover_delay_param(self):
@@ -99,11 +99,11 @@ class TestProxyGroupFailoverDelay(TestModules):
         Testing fileover delay parameter.
 
         Expected result: fileover delay parameter will be added
-        to the correct output field.
+        to correct output field.
 
         Test cases:
         1. New fileover delay
-        2. Fileover delay == 0 (default falue)
+        2. Fileover delay == 0 (default value)
         """
         test_cases = [
             {
@@ -135,19 +135,19 @@ class TestProxyGroupFailoverDelay(TestModules):
 
 
 class TestProxyGroupMinOnline(TestModules):
-    """Class for testing min online parameter of the proxy group"""
+    """Class for testing min_online parameter of proxy group"""
     module = zabbix_proxy_group
 
     def test_proxy_group_fileover_delay_param(self):
         """
-        Testing min online parameter.
+        Testing min_online parameter.
 
-        Expected result: min online parameter will be added
-        to the correct output field.
+        Expected result: min_online parameter will be added
+        to correct output field.
 
         Test cases:
-        1. New min online
-        2. min online == 0 (default falue)
+        1. New min_online
+        2. min_online == 0 (default value)
         """
         test_cases = [
             {

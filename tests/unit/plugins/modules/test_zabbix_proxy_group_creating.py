@@ -20,14 +20,14 @@ def mock_api_version_70(self):
 
 
 class TestCreating(TestModules):
-    """Class for testing creation of a proxy"""
+    """Class for testing creation of proxy"""
     module = zabbix_proxy_group
 
     def test_create_proxy_wo_parameters(self):
         """
-        Testing the proxy group creation function without additional parameters.
+        Testing proxy group creation function without additional parameters.
 
-        Expected result: the task has been changed and the proxy group
+        Expected result: task has been changed and proxy group
         has been created successfully.
         """
 
@@ -57,11 +57,11 @@ class TestCreating(TestModules):
 
     def test_create_active_proxy_w_all_parameters(self):
         """
-        Testing the active proxy creation function with all supported proxy options.
-        Unsupported for active proxy parameters must be empty.
+        Testing active proxy creation function with all supported proxy options.
+        Unsupported active proxy parameters must be empty.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -94,10 +94,10 @@ class TestCreating(TestModules):
 
     def test_create_proxy_error(self):
         """
-        Testing the proxy group creation function in case of encountering an error
-        during the creation.
+        Testing proxy group creation function in case of encountering error
+        during creation.
 
-        Expected result: the task has been failed.
+        Expected result: task has been failed.
         """
 
         def mock_send_request(self, method, params):

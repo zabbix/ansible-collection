@@ -21,14 +21,14 @@ def mock_api_version_70(self):
 
 
 class TestWOProcessing(TestModules):
-    """Class for testing comparing parameters without processing"""
+    """Class for testing parameter comparison without processing"""
     module = zabbix_proxy_group
 
     def test_params_wo_processing(self):
         """
-        Testing comparing all params.
+        Testing comparison of all parameters.
 
-        Expected result: all parameters will be added to the correct output field.
+        Expected result: all parameters will be added to correct output field.
         """
         exist_proxy_group = {
             "proxy_groupid": "4",

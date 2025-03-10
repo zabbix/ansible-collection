@@ -64,7 +64,7 @@
     - name: Clear proxy group for existing proxy
       when: zabbix_version == 7
       block:
-        # Update proxy proxy group to the default value ('')
+        # Update proxy group of proxy to default value ('')
         - name: Test - Clean proxy group from proxy
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
@@ -90,11 +90,11 @@
               - zabbix_proxy_clear_proxy_group_again is not changed
               - "'No need to update' in zabbix_proxy_clear_proxy_group_again.result"
 
-    - name: Try to set non existed proxy group
+    - name: Try to set non-existing proxy group
       when: zabbix_version == 7
       block:
-        # Update proxy group to the non exist value
-        - name: Test - Set non existing proxy group name
+        # Update proxy group to non-existing value
+        - name: Test - Set non-existing proxy group name
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
             proxy_group: 'UNKNOWN proxy group'
@@ -472,7 +472,7 @@
       when: zabbix_version == 7
       block:
         # Set empty local port. Must use default value
-        # Check by the same task + check by task with the default value
+        # Check by same task + check by task with default value
         - name: Test - Set empty local port
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy
@@ -510,7 +510,7 @@
               - "'No need to update' in zabbix_proxy_clean_empty_local_port_again_2.result"
 
         # Set empty local port, but with proxy group. Must use default value
-        # Check by the same task + check by task with the default value
+        # Check by same task + check by task with default value
         - name: Test - Set empty local port 2
           zabbix.zabbix.zabbix_proxy:
             name: My Zabbix proxy

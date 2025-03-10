@@ -10,9 +10,9 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: zabbix_proxy_group
-short_description: Module for creating, deleting and updating existing proxy groups.
+short_description: Module for creating and deleting proxy groups, and updating existing ones.
 description:
-    - The module is designed to create, update or delete a proxy group in Zabbix.
+    - The module is designed to create, update, or delete a proxy group in Zabbix.
     - In case of updating an existing proxy group, only the specified parameters will be updated.
     - Supported only for Zabbix versions above 7.0.
 author:
@@ -21,7 +21,7 @@ requirements:
     - "python >= 2.6"
 options:
     state:
-        description: Create or delete proxy group.
+        description: Create or delete a proxy group.
         required: false
         type: str
         default: present
@@ -32,17 +32,17 @@ options:
         required: true
     failover_delay:
         description:
-            - Failover period for each proxy in the group to have online/offline state.
+            - Failover period for each proxy in the group to have the online/offline state.
             - Time suffixes are supported, e.g. 30s, 1m.
             - User macros are supported.
-            - Possible values beetween 10s-15m.
+            - Possible values between 10s-15m.
             - Set empty to reset to the default value.
         type: str
     min_online:
         description:
             - Minimum number of online proxies required for the group to be online.
             - User macros are supported.
-            - Possible values range 1-1000.
+            - Possible value range 1-1000.
             - Set empty to reset to the default value.
         type: str
     description:
@@ -51,7 +51,7 @@ options:
 '''
 
 EXAMPLES = r'''
-# To create proxy group with minimum parameters
+# To create a proxy group with minimum parameters
 - name: Create proxy group
   zabbix.zabbix.zabbix_proxy_group:
     state: present
@@ -62,7 +62,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To create proxy group with maximum parameters
+# To create a proxy group with maximum parameters
 - name: Create proxy group with maximum parameters
   zabbix.zabbix.zabbix_proxy_group:
     state: present
@@ -93,8 +93,8 @@ EXAMPLES = r'''
 # To update only one parameter, you can specify just
 # the proxy group name (used for searching) and the desired parameter.
 # The rest of the proxy group parameters will not be changed.
-# For example, if you want to update proxy group description
-# you can use the following example
+# For example, if you want to update the proxy group description,
+# you can use the following example:
 - name: Update proxy group description
   zabbix.zabbix.zabbix_proxy_group:
     name: My proxy group
@@ -123,12 +123,12 @@ EXAMPLES = r'''
     name: My proxy group
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
-    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
-    ansible_httpapi_use_ssl: false              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: false       # Specifying certificate validation.
+    ansible_host: zabbix-api.com                # Specify Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specify to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specify which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specify the port for connecting to Zabbix API.
+    ansible_httpapi_use_ssl: false              # Specify the type of connection. True for https, False for http (by default).
+    ansible_httpapi_validate_certs: false       # Specify certificate validation.
     # User parameters for connecting to Zabbix API
     ansible_user: Admin                         # Username to connect to Zabbix API.
     ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
@@ -311,7 +311,7 @@ def main():
                 new_proxy_group_params)
 
             if compare_result:
-                # Update proxy group
+                # Update a proxy group
                 compare_result['proxy_groupid'] = result[0]['proxy_groupid']
 
                 update_result = proxy_group.api_request(
@@ -332,7 +332,7 @@ def main():
                     changed=False,
                     result="No need to update proxy group: {0}".format(proxy_group_name))
         else:
-            # Create proxy group
+            # Create a proxy group
             new_proxy_group_params = proxy_group.generate_zabbix_proxy_group()
 
             result = proxy_group.api_request(
@@ -347,7 +347,7 @@ def main():
                     msg="Failed to create proxy group: {0}".format(proxy_group_name))
     else:
         if len(result) > 0:
-            # delete proxy group
+            # Delete the proxy group
             delete_result = proxy_group.api_request(
                 method='proxygroup.delete',
                 params=[result[0]['proxy_groupid']])
@@ -359,7 +359,7 @@ def main():
                 module.fail_json(
                     msg="Failed to delete proxy group: {0}".format(proxy_group_name))
         else:
-            # No need to delete proxy group
+            # No need to delete the proxy group
             module.exit_json(
                 changed=False,
                 result="No need to delete proxy group: {0}".format(proxy_group_name))

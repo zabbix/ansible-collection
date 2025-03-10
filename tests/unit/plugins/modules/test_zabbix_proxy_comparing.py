@@ -26,9 +26,9 @@ class TestWOProcessing(TestModules):
 
     def test_params_wo_processing(self):
         """
-        Testing proxy name. Result depends on the Zabbix API version.
+        Testing proxy name. Result depends on Zabbix API version.
 
-        Expected result: name parameter will be added to the correct output field.
+        Expected result: name parameter will be added to correct output field.
 
         Test for Zabbix version 7.0 +
         """
@@ -85,9 +85,9 @@ class TestWOProcessing(TestModules):
 
     def test_params_interface(self):
         """
-        Testing comparing proxy interface.
+        Testing proxy interface comparison.
 
-        Expected result: interface parameter will be added to the correct output field.
+        Expected result: interface parameter will be added to correct output field.
 
         Test for Zabbix version 6.0
 

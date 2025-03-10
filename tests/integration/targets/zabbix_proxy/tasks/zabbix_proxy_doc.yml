@@ -46,7 +46,7 @@
         custom_timeouts:
           timeout_zabbix_agent: 10s
           timeout_simple_check: ''                    # To use value from Zabbix global setting
-          timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in the global macro)
+          timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in global macro)
           timeout_external_check: 10s
           timeout_db_monitor: 10s
           timeout_http_agent: 10s

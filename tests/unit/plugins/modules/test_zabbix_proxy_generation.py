@@ -31,14 +31,14 @@ def mock_api_version_70(self):
 
 
 class TestProxyName(TestModules):
-    """Class for testing name of the proxy depends on Zabbix version"""
+    """Class for testing name of proxy depends on Zabbix version"""
     module = zabbix_proxy
 
     def test_proxy_name_param_70(self):
         """
-        Testing proxy name. Result depends on the Zabbix API version.
+        Testing proxy name. Result depends on Zabbix API version.
 
-        Expected result: name parameter will be added to the correct output field.
+        Expected result: name parameter will be added to correct output field.
 
         Test for Zabbix version 7.0 +
         """
@@ -57,9 +57,9 @@ class TestProxyName(TestModules):
 
     def test_proxy_name_param_60(self):
         """
-        Testing proxy name. Result depends on the Zabbix API version.
+        Testing proxy name. Result depends on Zabbix API version.
 
-        Expected result: name parameter will be added to the correct output field.
+        Expected result: name parameter will be added to correct output field.
 
         Test for Zabbix version 6.0
         """
@@ -85,14 +85,14 @@ class TestWOProcessing(TestModules):
         """
         Testing parameters that do not require preprocessing.
 
-        Expected result: all parameters will be added in the
-        same form as in the input data.
+        Expected result: all parameters will be added in
+        same form as in input data.
 
         Test for Zabbix version 7.0 +
 
         Test cases:
-        1. Without params and without existing proxy
-        2. Without params but with existing proxy
+        1. Without parameters and without existing proxy
+        2. Without parameters but with existing proxy
         3. One parameter in input without existing proxy
         4. One parameter in input with existing proxy
         5. All parameters without existing proxy
@@ -189,14 +189,14 @@ class TestWOProcessing(TestModules):
         """
         Testing parameters that do not require preprocessing.
 
-        Expected result: all parameters will be added in the
-        same form as in the input data.
+        Expected result: all parameters will be added in
+        same form as in input data.
 
         Test for Zabbix version 6.0
 
         Test cases:
-        1. Without params and without existing proxy
-        2. Without params but with existing proxy
+        1. Without parameters and without existing proxy
+        2. Without parameters but with existing proxy
         3. One parameter in input without existing proxy
         4. One parameter in input with existing proxy
         5. All parameters without existing proxy
@@ -593,12 +593,12 @@ class TestLocalAddress(TestModules):
         Expected result: all parameters will be added in correct form.
 
         Test cases:
-        1. Empty value suring creation proxy wiout proxy group
+        1. Empty value during creation of proxy without proxy group
         2. Empty value during cleaning proxy group from proxy
         3. Empty value in case of not configured proxy in task and on existing proxy
         4. Correct value with configuring proxy group
         5. Correct value for already configured proxy group
-        6. Change proxy group without specifying local address (already has on the exist proxy)
+        6. Change proxy group without specifying local address (already there on existing proxy)
         """
 
         def find_zabbix_proxy_groups_by_names(self, proxy_group_names):
@@ -663,12 +663,12 @@ class TestLocalAddress(TestModules):
         Expected result: raised error.
 
         Test cases:
-        1. Clean proxy group with non empty local_address
+        1. Clean proxy group with non-empty local_address
         2. Set local_address without proxy group
-        3. Set local_address during creation proxy
+        3. Set local_address during creation of proxy
         4. Empty local_address with proxy group
         5. Empty local_address with proxy group configured on proxy
-        6. Proxy group without local_address during creation proxy
+        6. Proxy group without local_address during creation of proxy
         6. Proxy group without local_address during updating proxy
         """
 
@@ -1034,11 +1034,11 @@ class TestInterface(TestModules):
         10. Set default value of port field
         11. Set default value of both address and port field
 
-        useip - must be ignored in any cases for Zabbix version 7.0 +
-        12. Set ip address and set the value of useip to True
-        13. Set dns name and set the value of useip to True
-        14. Set ip address and set the value of useip to False
-        15. Set dns name and set the value of useip to False
+        useip - must be ignored in all cases for Zabbix versions 7.0 +
+        12. Set ip address and set value of useip to True
+        13. Set dns name and set value of useip to True
+        14. Set ip address and set value of useip to False
+        15. Set dns name and set value of useip to False
         """
         test_cases = [
             {
@@ -1334,7 +1334,7 @@ class TestInterface(TestModules):
 
     def test_param_interface_60_useip(self):
         """
-        Testing interface useip parameter. For 6.0 interface parameters DEPENDS ON
+        Testing interface useip parameter. For Zabbix 6.0, interface parameters DEPEND ON
         existing proxy.
 
         Expected result: all parameters will be added in correct form.
@@ -1344,9 +1344,9 @@ class TestInterface(TestModules):
         2. Set useip=False for new proxy
         3. Set useip=True for updating existing proxy (no need to update)
         4. Set useip=False for updating existing proxy (no need to update)
-        5. Use value from the existing proxy (True)
-        6. Use value from the existing proxy (False)
-        7. Use default value (set only one different paramater, e.g. address)
+        5. Use value from existing proxy (True)
+        6. Use value from existing proxy (False)
+        7. Use default value (set only one different parameter, e.g. address)
         """
         test_cases = [
             {
@@ -1414,29 +1414,29 @@ class TestInterface(TestModules):
 
     def test_param_interface_60_address(self):
         """
-        Testing interface address parameter. For 6.0 interface parameters DEPENDS ON
+        Testing interface address parameter. For Zabbix 6.0, interface parameters DEPEND ON
         existing proxy.
 
         Expected result: all parameters will be added in correct form.
 
         Test cases:
-        1. Set ip address for the value of address field for new proxy
-        2. Set ip address for the value of address field for updating existing proxy
-        3. Set ip address for the value of address field and set useip=True for new proxy
-        4. Set ip address for the value of address field and set useip=True for updating existing proxy
-        5. Set dns for the value of address field and set useip=False for new proxy
-        6. Set dns for the value of address field and set useip=False for updating existing proxy
-        7. Change from the ip to dns for updating exising proxy
-        8. Change from the dns to ip for updating exising proxy
-        9. Use the correct value (ip) from existing proxy
-        10. Use the correct value (dns) from existing proxy
-        11. Try to use the correct value (ip) from existing proxy (empty interface) (use default)
-        12. Use the correct value (ip) from existing proxy + set useip=True
-        13. Use the correct value (dns) from existing proxy + set useip=False
-        14. Use the correct value (ip) from existing proxy (exist only dns) + set useip=True
-        15. Use the correct value (dns) from existing proxy (exist only ip) + set useip=False
-        16. Try to use the correct value (ip) from existing proxy (empty interface) (use default) + set useip=True
-        17. Try to use the correct value (dns) from existing proxy (empty interface) (use default) + set useip=True
+        1. Set ip address to value of address field for new proxy
+        2. Set ip address to value of address field for updating existing proxy
+        3. Set ip address to value of address field and set useip=True for new proxy
+        4. Set ip address to value of address field and set useip=True for updating existing proxy
+        5. Set dns for value of address field and set useip=False for new proxy
+        6. Set dns for value of address field and set useip=False for updating existing proxy
+        7. Change from ip to dns for updating existing proxy
+        8. Change from dns to ip for updating existing proxy
+        9. Use correct value (ip) from existing proxy
+        10. Use correct value (dns) from existing proxy
+        11. Try to use correct value (ip) from existing proxy (empty interface) (use default)
+        12. Use correct value (ip) from existing proxy + set useip=True
+        13. Use correct value (dns) from existing proxy + set useip=False
+        14. Use correct value (ip) from existing proxy (exist only dns) + set useip=True
+        15. Use correct value (dns) from existing proxy (exist only ip) + set useip=False
+        16. Try to use correct value (ip) from existing proxy (empty interface) (use default) + set useip=True
+        17. Try to use correct value (dns) from existing proxy (empty interface) (use default) + set useip=True
         18. Set empty address for new proxy
         19. Set empty address for existing proxy (exist ip)
         20. Set empty address for existing proxy (exist dns)
@@ -1620,20 +1620,20 @@ class TestInterface(TestModules):
 
     def test_param_interface_60_port(self):
         """
-        Testing interface port parameter. For 6.0 interface parameters DEPENDS ON
+        Testing interface port parameter. For Zabbix 6.0, interface parameters DEPEND ON
         existing proxy.
 
         Expected result: all parameters will be added in correct form.
 
         Test cases:
         1. Set port for new proxy
-        2. Set port for updating exist proxy (no need to update)
-        3. Set port for updating exist proxy (need to update)
+        2. Set port for updating existing proxy (no need to update)
+        3. Set port for updating existing proxy (need to update)
         4. Set empty for new proxy
-        5. Set empty for updating exist proxy
-        6. Use the value from existing proxy
-        7. Use the value from existing proxy (empty interface)
-        8. Use default value (Set any other parameter) for new proxy
+        5. Set empty for updating existing proxy
+        6. Use value from existing proxy
+        7. Use value from existing proxy (empty interface)
+        8. Use default value (set any other parameter) for new proxy
         """
         test_cases = [
             {
@@ -1716,30 +1716,30 @@ class TestInterface(TestModules):
 
     def test_param_interface_60_active_mode(self):
         """
-        Testing interface parameters in case of active mode. For 6.0 interface parameters DEPENDS ON
+        Testing interface parameters in case of active mode. For Zabbix 6.0, interface parameters DEPEND ON
         existing proxy.
 
         Expected result: all parameters will be added in correct form.
 
         Test cases:
         1. Set empty for new proxy
-        2. Set empty for updating exist proxy from active mode
-        3. Set empty for updating exist proxy from passive mode
+        2. Set empty for updating existing proxy from active mode
+        3. Set empty for updating existing proxy from passive mode
         4. Set empty for new proxy + useip=True
-        5. Set empty for updating exist proxy from active mode + useip=True
-        6. Set empty for updating exist proxy from passive mode + useip=True
+        5. Set empty for updating existing proxy from active mode + useip=True
+        6. Set empty for updating existing proxy from passive mode + useip=True
         7. Set empty for new proxy + useip=False
-        8. Set empty for updating exist proxy from active mode + useip=False
-        9. Set empty for updating exist proxy from passive mode + useip=False
+        8. Set empty for updating existing proxy from active mode + useip=False
+        9. Set empty for updating existing proxy from passive mode + useip=False
         10. Set default for new proxy
-        11. Set default for updating exist proxy from active mode
-        12. Set default for updating exist proxy from passive mode
+        11. Set default for updating existing proxy from active mode
+        12. Set default for updating existing proxy from passive mode
         13. Set default for new proxy + useip=True
-        14. Set default for updating exist proxy from active mode + useip=True
-        15. Set default for updating exist proxy from passive mode + useip=True
+        14. Set default for updating existing proxy from active mode + useip=True
+        15. Set default for updating existing proxy from passive mode + useip=True
         16. Set default for new proxy + useip=False
-        17. Set default for updating exist proxy from active mode + useip=False
-        18. Set default for updating exist proxy from passive mode + useip=False
+        17. Set default for updating existing proxy from active mode + useip=False
+        18. Set default for updating existing proxy from passive mode + useip=False
         19. Set empty interface ({}) for new proxy
         20. Set empty interface ({}) for updating existing proxy with existing interface
         21. Set empty interface ({}) for updating existing proxy with empty interface
@@ -1900,7 +1900,7 @@ class TestInterface(TestModules):
     def test_param_interface_60_empty_interface(self):
         """
         Testing interface parameters in case of passive mode and empty interface.
-        For 6.0 interface parameters DEPENDS ON existing proxy.
+        For Zabbix 6.0, interface parameters DEPEND ON existing proxy.
 
         Expected result: all parameters will be added in correct form.
 
@@ -2030,10 +2030,10 @@ class TestAllowedAddresses(TestModules):
 
         Test cases
         1. Set value for new proxy
-        2. Set value for updating existing proxy (no need update)
+        2. Set value for updating existing proxy (no need to update)
         3. Set value for updating existing proxy (need update)
         4. Set empty value for new proxy
-        5. Set empty value for updating existing proxy (no need update)
+        5. Set empty value for updating existing proxy (no need to update)
         6. Set empty value for updating existing proxy (need update)
         7. Set empty value for new proxy with passive mode
         8. Set empty value for updating existing proxy with passive mode
@@ -2104,10 +2104,10 @@ class TestAllowedAddresses(TestModules):
 
         Test cases
         1. Set value for new proxy
-        2. Set value for updating existing proxy (no need update)
+        2. Set value for updating existing proxy (no need to update)
         3. Set value for updating existing proxy (need update)
         4. Set empty value for new proxy
-        5. Set empty value for updating existing proxy (no need update)
+        5. Set empty value for updating existing proxy (no need to update)
         6. Set empty value for updating existing proxy (need update)
         7. Set empty value for new proxy with passive mode
         8. Set empty value for updating existing proxy with passive mode
@@ -2277,7 +2277,7 @@ class TestEncryption(TestModules):
 
     def test_param_tls_accept(self):
         """
-        Testing tls_accept parameter. Test for both Zabbix version.
+        Testing tls_accept parameter. Test for both Zabbix versions.
 
         Expected result: all parameters will be added in correct form.
 
@@ -2350,13 +2350,13 @@ class TestEncryption(TestModules):
 
     def test_param_tls_accept_with_passive_mode(self):
         """
-        Testing tls_accept parameter with passive proxy mode. Test for both Zabbix version.
+        Testing tls_accept parameter with passive proxy mode. Test for both Zabbix versions.
 
         Expected result: all parameters will be added in correct form.
 
         Test cases:
         1. Empty with passive mode
-        2. Unecrypted with passive mode
+        2. Unencrypted with passive mode
         """
         test_cases = [
             {
@@ -2388,7 +2388,7 @@ class TestEncryption(TestModules):
 
     def test_param_tls_accept_error(self):
         """
-        Testing tls_accept parameter for both Zabbix version in case of error
+        Testing tls_accept parameter for both Zabbix versions in case of error.
 
         Expected result: raised error.
 
@@ -2477,7 +2477,7 @@ class TestEncryption(TestModules):
 
     def test_param_tls_connect(self):
         """
-        Testing tls_connect parameter. Test for both Zabbix version.
+        Testing tls_connect parameter. Test for both Zabbix versions.
 
         Expected result: all parameters will be added in correct form.
 
@@ -2522,13 +2522,13 @@ class TestEncryption(TestModules):
 
     def test_param_tls_connect_with_active_mode(self):
         """
-        Testing tls_connect parameter with passive proxy mode. Test for both Zabbix version.
+        Testing tls_connect parameter with passive proxy mode. Test for both Zabbix versions.
 
         Expected result: all parameters will be added in correct form.
 
         Test cases:
         1. Empty with passive mode
-        2. Unecrypted with passive mode
+        2. Unencrypted with passive mode
         """
         test_cases = [
             {
@@ -2560,7 +2560,7 @@ class TestEncryption(TestModules):
 
     def test_param_tls_connect_error(self):
         """
-        Testing tls_connect parameter for both Zabbix version in case of error
+        Testing tls_connect parameter for both Zabbix versions in case of error.
 
         Expected result: raised error.
 
@@ -2623,7 +2623,7 @@ class TestEncryption(TestModules):
 
     def test_param_psk_updating(self):
         """
-        Testing parameter in case of updating psk. Test for both Zabbix version.
+        Testing parameter in case of updating psk. Test for both Zabbix versions.
 
         Expected result: all parameters will be added in correct form.
 
@@ -2803,7 +2803,7 @@ class TestCustomTimeouts(TestModules):
 
     def test_param_custom_timeouts_error(self):
         """
-        Testing custom_timeouts parameter for Zabbix version 6.0 in case of error
+        Testing custom_timeouts parameter for Zabbix version 6.0 in case of error.
 
         Expected result: raised error.
         """

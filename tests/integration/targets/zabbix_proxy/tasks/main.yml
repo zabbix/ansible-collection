@@ -1,8 +1,8 @@
 ---
-- name: Integration tests for the module for creating proxy
+- name: Integration tests for the module for creating proxies
   block:
 
-    - name: Documentation example tests
+    - name: Documentation, sample tests
       ansible.builtin.include_tasks: zabbix_proxy_doc.yml
 
     - name: Basic functionality check

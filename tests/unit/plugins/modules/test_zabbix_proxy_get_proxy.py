@@ -33,10 +33,10 @@ class TestGetZabbixProxy(TestModules):
 
     def test_get_zabbix_proxy_70(self):
         """
-        Testing the function of getting data by proxy from Zabbix.
+        Testing function of getting data by proxy from Zabbix.
         Test for Zabbix version 7.0 +
 
-        Expected result: all executions of the function returned
+        Expected result: all executions of function returned
         empty inventory data.
         """
 
@@ -66,10 +66,10 @@ class TestGetZabbixProxy(TestModules):
 
     def test_get_zabbix_proxy_60(self):
         """
-        Testing the function of getting data by proxy from Zabbix.
+        Testing function of getting data by proxy from Zabbix.
         Test for Zabbix version 6.0
 
-        Expected result: all executions of the function returned
+        Expected result: all executions of function returned
         empty inventory data.
         """
 
@@ -134,7 +134,7 @@ class TestGetZabbixProxy(TestModules):
 
     def test_get_zabbix_proxy_error(self):
         """
-        Testing the function of getting data by proxy from Zabbix
+        Testing function of getting data by proxy from Zabbix
         with error during request.
 
         Expected result: Exception.

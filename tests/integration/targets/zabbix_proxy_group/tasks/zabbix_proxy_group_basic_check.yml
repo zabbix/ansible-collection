@@ -18,7 +18,7 @@
 - name: Check minimal parameters
   when: zabbix_version == 7
   block:
-    # Check the required parameter 'name'
+    # Check required parameter 'name'
     - name: Test - Creating proxy group without name
       zabbix.zabbix.zabbix_proxy_group:
         state: present
@@ -58,7 +58,7 @@
           - "'Successfully created proxy group' in zabbix_proxy_group_create.result"
 
     # Check idempotence
-    - name: Test - Creating proxy group with the same parameters
+    - name: Test - Creating proxy group with same parameters
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group
       register: zabbix_proxy_group_create_again
@@ -68,53 +68,53 @@
         that:
           - zabbix_proxy_group_create_again is not changed
 
-- name: Check updating
+- name: Check updating parameters
   when: zabbix_version == 7
   block:
-    # Check the updating parameters
-    - name: Test - Update one parameter on the proxy group
+    # Check updating parameters
+    - name: Test - Update one parameter on proxy group
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group
-        description: Description of the proxy group
+        description: Description of proxy group
       register: zabbix_proxy_group_update_description
 
-    - name: Assert that task was changes
+    - name: Assert that task was changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_group_update_description is changed
           - "'Successfully updated proxy group' in zabbix_proxy_group_update_description.result"
 
-    - name: Test - Update second parameter on the proxy group
+    - name: Test - Update second parameter on proxy group
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group
         failover_delay: 2m
       register: zabbix_proxy_group_update_failover_delay
 
-    - name: Assert that task was changes
+    - name: Assert that task was changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_group_update_failover_delay is changed
           - "'Successfully updated proxy group' in zabbix_proxy_group_update_failover_delay.result"
 
-    # We check that the parameters are independent of each other when updated.
-    # Changing one parameter does not affect the others.
-    - name: Test - Update proxy group with the same description and failover_delay
+    # A check to see that parameters are independent from each other when updated.
+    # Changing one parameter does not affect others.
+    - name: Test - Update proxy group with same description and failover_delay
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group
         failover_delay: 2m
-        description: Description of the proxy group
+        description: Description of proxy group
       register: zabbix_proxy_group_update_check
 
-    - name: Assert that task was not changes
+    - name: Assert that task was not changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_group_update_check is not changed
           - "'No need to update proxy group' in zabbix_proxy_group_update_check.result"
 
-- name: Check deleting of proxy group
+- name: Check deletion of proxy group
   when: zabbix_version == 7
   block:
-    # Check the required parameter 'name'
+    # Check required parameter 'name'
     - name: Test - Deleting proxy group without name
       zabbix.zabbix.zabbix_proxy_group:
         state: absent
@@ -148,7 +148,7 @@
         that: zabbix_proxy_group_delete is changed
 
     # Check idempotence of deleting proxy group
-    - name: Check deleting proxy group
+    - name: Check deletion of proxy group
       zabbix.zabbix.zabbix_proxy_group:
         state: absent
         name: My proxy group

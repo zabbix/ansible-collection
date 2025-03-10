@@ -1,7 +1,7 @@
 ---
 - name: Check minimal parameters
   block:
-    # Check the required parameter 'name'
+    # Check required parameter 'name'
     - name: Test - Creating proxy without name
       zabbix.zabbix.zabbix_proxy:
         state: present
@@ -41,7 +41,7 @@
           - "'Successfully created proxy: My Zabbix proxy' == zabbix_proxy_create.result"
 
     # Check idempotence
-    - name: Test - Creating proxy with default 'state' and the same parameters
+    - name: Test - Creating proxy with default 'state' and same parameters
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
       register: zabbix_proxy_create_again
@@ -53,41 +53,41 @@
 
 - name: Check updating
   block:
-    # Check the updating parameters
-    - name: Test - Update one parameter on the proxy
+    # Check parameter update
+    - name: Test - Update one parameter on proxy
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
-        description: Description of the proxy
+        description: Description of proxy
       register: zabbix_proxy_update_description
 
-    - name: Assert that task was changes
+    - name: Assert that task was changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_update_description is changed
           - "'Successfully updated proxy: My Zabbix proxy' == zabbix_proxy_update_description.result"
 
-    - name: Test - Update second parameter on the proxy
+    - name: Test - Update second parameter on proxy
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         mode: passive
       register: zabbix_proxy_update_mode
 
-    - name: Assert that task was changes
+    - name: Assert that task was changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_update_mode is changed
           - "'Successfully updated proxy: My Zabbix proxy' == zabbix_proxy_update_mode.result"
 
-    # We check that the parameters are independent of each other when updated.
-    # Changing one parameter does not affect the others.
-    - name: Test - Update proxy with the same description and mode
+    # A check to see that parameters are independent of each other when updated.
+    # Changing one parameter does not affect others.
+    - name: Test - Update proxy with same description and mode
       zabbix.zabbix.zabbix_proxy:
         name: My Zabbix proxy
         mode: passive
-        description: Description of the proxy
+        description: Description of proxy
       register: zabbix_proxy_update_check
 
-    - name: Assert that task was not changes
+    - name: Assert that task was not changed
       ansible.builtin.assert:
         that:
           - zabbix_proxy_update_check is not changed
@@ -95,7 +95,7 @@
 
 - name: Check deleting of proxy
   block:
-    # Check the required parameter 'name'
+    # Check required parameter 'name'
     - name: Test - Deleting proxy without name
       zabbix.zabbix.zabbix_proxy:
         state: absent

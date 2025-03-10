@@ -256,7 +256,7 @@
 
         - name: Update proxy address
           block:
-            # Update proxy addres
+            # Update proxy address
             - name: Test - Update proxy address
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
@@ -320,10 +320,10 @@
                   - zabbix_proxy_update_w_port_again is not changed
                   - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
-        - name: Update proxy address to defaul
+        - name: Update proxy address to default
           block:
-            # Update proxy addres to defaul
-            - name: Test - Update proxy address to defaul
+            # Update proxy address to default
+            - name: Test - Update proxy address to default
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive
@@ -337,8 +337,8 @@
                   - zabbix_proxy_update_w_address_default is changed
                   - "'Successfully updated proxy' in zabbix_proxy_update_w_address_default.result"
 
-            # Check proxy address to defaul
-            - name: Check - Update proxy address to defaul
+            # Check proxy address to default
+            - name: Check - Update proxy address to default
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive
@@ -353,10 +353,10 @@
                   - zabbix_proxy_update_w_address_default_again is not changed
                   - "'No need to update' in zabbix_proxy_update_w_address_default_again.result"
 
-        - name: Update proxy port to defaul
+        - name: Update proxy port to default
           block:
-            # Update proxy port to defaul
-            - name: Test - Update proxy port to defaul
+            # Update proxy port to default
+            - name: Test - Update proxy port to default
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive
@@ -370,8 +370,8 @@
                   - zabbix_proxy_update_w_port_to_default is changed
                   - "'Successfully updated proxy' in zabbix_proxy_update_w_port_to_default.result"
 
-            # Check proxy port to defaul
-            - name: Check - Update proxy port to defaul
+            # Check proxy port to default
+            - name: Check - Update proxy port to default
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive
@@ -494,8 +494,8 @@
                   - zabbix_proxy_create_active_empty_again is not changed
                   - "'No need to update' in zabbix_proxy_create_active_empty_again.result"
 
-            # Update proxy with active mode with non defailt values
-            - name: Test - Update proxy with active mode with non defailt values
+            # Update proxy with active mode with non-default values
+            - name: Test - Update proxy with active mode with non-default values
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: active
@@ -516,10 +516,10 @@
             state: absent
             name: My Zabbix proxy
 
-        - name: Create proxy in active mode with non defailt values
+        - name: Create proxy in active mode with non-default values
           block:
-            # Create proxy in active mode with non defailt values
-            - name: Test - Create proxy in active mode with non defailt values
+            # Create proxy in active mode with non-default values
+            - name: Test - Create proxy in active mode with non-default values
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: active
@@ -829,8 +829,8 @@
                   - zabbix_proxy_update_w_port_again is not changed
                   - "'No need to update' in zabbix_proxy_update_w_port_again.result"
 
-            # Update proxy address to the dns
-            - name: Test - Update proxy address to the dns
+            # Update proxy address to dns
+            - name: Test - Update proxy address to dns
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive
@@ -845,7 +845,7 @@
                   - zabbix_proxy_update_w_dns is changed
                   - "'Successfully updated proxy' in zabbix_proxy_update_w_dns.result"
 
-            - name: Check - Update proxy address to the dns
+            - name: Check - Update proxy address to dns
               zabbix.zabbix.zabbix_proxy:
                 name: My Zabbix proxy
                 mode: passive

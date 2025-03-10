@@ -28,14 +28,14 @@ def mock_api_version_70(self):
 
 
 class TestCreating(TestModules):
-    """Class for testing creation of a proxy"""
+    """Class for testing proxy creation"""
     module = zabbix_proxy
 
     def test_create_proxy_wo_parameters(self):
         """
-        Testing the proxy creation function without additional parameters.
+        Testing proxy creation function without additional parameters.
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -65,10 +65,10 @@ class TestCreating(TestModules):
 
     def test_create_active_proxy_w_active_parameters_70(self):
         """
-        Testing the active proxy creation function with all supported for active proxy options.
+        Testing active proxy creation function with all supported active proxy options.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -132,10 +132,10 @@ class TestCreating(TestModules):
 
     def test_create_active_proxy_w_active_parameters_60(self):
         """
-        Testing the active proxy creation function with all supported for active proxy options.
+        Testing active proxy creation function with all supported active proxy options.
         Test for Zabbix version 6.0
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -173,11 +173,11 @@ class TestCreating(TestModules):
 
     def test_create_active_proxy_w_all_parameters_70(self):
         """
-        Testing the active proxy creation function with all supported proxy options.
-        Unsupported for active proxy parameters must be empty.
+        Testing active proxy creation function with all supported proxy options.
+        Unsupported active proxy parameters must be empty.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -246,11 +246,11 @@ class TestCreating(TestModules):
 
     def test_create_active_proxy_w_all_parameters_60(self):
         """
-        Testing the active proxy creation function with all supported proxy options.
-        Unsupported for active proxy parameters must be empty.
+        Testing active proxy creation function with all supported proxy options.
+        Unsupported active proxy parameters must be empty.
         Test for Zabbix version 6.0
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -293,10 +293,10 @@ class TestCreating(TestModules):
 
     def test_create_passive_proxy_w_passive_parameters_70(self):
         """
-        Testing the passive proxy creation function with all supported for passive proxy options.
+        Testing passive proxy creation function with all supported passive proxy options.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -363,10 +363,10 @@ class TestCreating(TestModules):
 
     def test_create_passive_proxy_w_passive_parameters_60(self):
         """
-        Testing the passive proxy creation function with all supported for passive proxy options.
+        Testing passive proxy creation function with all supported passive proxy options.
         Test for Zabbix version 6.0
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -407,11 +407,11 @@ class TestCreating(TestModules):
 
     def test_create_passive_proxy_w_all_parameters_70(self):
         """
-        Testing the passive proxy creation function with all supported proxy options.
-        Unsupported for passive proxy parameters must be empty.
+        Testing passive proxy creation function with all supported proxy options.
+        Unsupported passive proxy parameters must be empty.
         Test for Zabbix version 7.0 +
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -480,11 +480,11 @@ class TestCreating(TestModules):
 
     def test_create_passive_proxy_w_all_parameters_60(self):
         """
-        Testing the passive proxy creation function with all supported proxy options.
-        Unsupported for passive proxy parameters must be empty.
+        Testing passive proxy creation function with all supported proxy options.
+        Unsupported passive proxy parameters must be empty.
         Test for Zabbix version 6.0
 
-        Expected result: the task has been changed and the proxy
+        Expected result: task has been changed and proxy
         has been created successfully.
         """
 
@@ -527,10 +527,10 @@ class TestCreating(TestModules):
 
     def test_create_proxy_error(self):
         """
-        Testing the proxy creation function in case of encountering an error
-        during the creation.
+        Testing proxy creation function in case of encountering error
+        during creation.
 
-        Expected result: the task has been failed.
+        Expected result: task has been failed.
         """
 
         def mock_send_request(self, method, params):

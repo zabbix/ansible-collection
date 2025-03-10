@@ -1,5 +1,5 @@
 ---
-- name: Integration tests for the proxy group module
+- name: Integration tests for proxy group module
   block:
 
     - name: Documentation example tests
@@ -8,7 +8,7 @@
     - name: Basic functionality check
       ansible.builtin.include_tasks: zabbix_proxy_group_basic_check.yml
 
-    - name: Parameters check (description, failover_delay, min_online)
+    - name: Parameter check (description, failover_delay, min_online)
       ansible.builtin.include_tasks: zabbix_proxy_group_params.yml
 
   always:

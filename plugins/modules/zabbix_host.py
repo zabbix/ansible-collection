@@ -10,9 +10,9 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: zabbix_host
-short_description: Module for creating hosts, deleting and updating existing hosts.
+short_description: Module for creating and deleting hosts, and updating existing ones.
 description:
-    - The module is designed to create, update or delete a host in Zabbix.
+    - The module is designed to create, update, or delete a host in Zabbix.
     - In case of updating an existing host, only the specified parameters will be updated.
 author:
     - Zabbix Ltd (@zabbix)
@@ -96,7 +96,7 @@ options:
                 type: str
                 default: ''
             type:
-                description: Type of the macro.
+                description: Type of macro.
                 type: str
                 default: text
                 choices: [ text, secret, vault_secret ]
@@ -129,16 +129,16 @@ options:
             - PSK identity.
             - Required if I(tls_connect=psk) , or I(tls_accept) contains the 'psk'.
             - In case of updating an existing host, if the host already has PSK enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the host,
-              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
+            - If the parameter is defined, then every launch of the task will update the host
+              because Zabbix API does not have access to an existing PSK key and it is not possible to compare the specified key with the existing one.
         type: str
     tls_psk:
         description:
             - The pre-shared key, at least 32 hex digits.
             - Required if I(tls_connect=psk), or I(tls_accept) contains the 'psk'.
             - In case of updating an existing host, if the host already has PSK enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the host,
-              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
+            - If the parameter is defined, then every launch of the task will update the host
+              because Zabbix API does not have access to an existing PSK key and it is not possible to compare the specified key with the existing one.
         type: str
     tls_issuer:
         description: Certificate issuer.
@@ -210,7 +210,7 @@ options:
                     - Can contain user macros.
             details:
                 description:
-                    - Additional details object for interface.
+                    - Additional detail object for interface.
                     - Required if I(type=snmp).
                 type: dict
                 suboptions:
@@ -271,13 +271,14 @@ options:
                             - Used only if I(version=3).
                         type: str
 notes:
-    - If I(tls_psk_identity) or I(tls_psk) is defined or macro I(type=secret), then every launch of the task will update the host,
-      because Zabbix API does not have access to an existing PSK key or secret macros and we cannot compare the specified value with the existing one.
+    - If I(tls_psk_identity) or I(tls_psk) is defined or macro I(type=secret), then every launch of the task will update the host
+      because Zabbix API does not have access to an existing PSK key or secret macros, and it is not possible to compare
+      the specified value with the existing one.
     - Only one interface of each type is supported.
 '''
 
 EXAMPLES = r'''
-# To create host with minimum parameters
+# To create a host with minimum parameters
 # Host group is required
 - name: Create host
   zabbix.zabbix.zabbix_host:
@@ -291,7 +292,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To create host with maximum parameters
+# To create a host with maximum parameters
 - name: Create host with maximum parameters
   zabbix.zabbix.zabbix_host:
     state: present
@@ -359,12 +360,12 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To update host to empty parameters
+# To update the host to empty parameters
 - name: Clean all parameters from host
   zabbix.zabbix.zabbix_host:
     state: present
     host: Example host
-    hostgroups:    # Host group must be not empty
+    hostgroups:    # Host group must not be empty
       - Linux servers
     templates: []
     status: enabled
@@ -391,9 +392,9 @@ EXAMPLES = r'''
     ansible_httpapi_pass: zabbix
 
 # To update only one parameter, you can specify just
-# the hostname (used for searching) and the desired parameter.
+# the host name (used for searching) and the desired parameter.
 # The rest of the host parameters will not be changed.
-# For example, you want to turn off a host
+# For example, if you want to turn off a host:
 - name: Update host status
   zabbix.zabbix.zabbix_host:
     host: Example host
@@ -424,12 +425,12 @@ EXAMPLES = r'''
       - Linux servers
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
-    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
-    ansible_httpapi_use_ssl: false              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: false       # Specifying certificate validation.
+    ansible_host: zabbix-api.com                # Specify Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specify to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specify which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specify the port for connecting to Zabbix API.
+    ansible_httpapi_use_ssl: false              # Specify the type of connection. True for https, False for http (by default).
+    ansible_httpapi_validate_certs: false       # Specify certificate validation.
     # User parameters for connecting to Zabbix API
     ansible_user: Admin                         # Username to connect to Zabbix API.
     ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
@@ -587,8 +588,8 @@ class Host(object):
         """
         The function generates the desired host parameters based on the module
         parameters.
-        The returned dictionary can be used to create a host, as well as to
-        compare with an existing host.
+        The returned dictionary can be used to create a host as well as to
+        be compared with an existing host.
 
         :param exist_host: parameters of existing Zabbix host
         :type exist_host: dict
@@ -598,7 +599,7 @@ class Host(object):
 
         note::
             *  The 'exist_host' parameter is used to determine the current
-               encryption, inventory, and host group settings on existing host.
+               encryption, inventory, and host group settings on an existing host.
         """
         host_params = {}
 
@@ -614,7 +615,7 @@ class Host(object):
 
         # host groups
         if self.module.params.get('hostgroups') is not None:
-            # Check host groups for empty
+            # Check host groups for empty values
             if len(self.module.params.get('hostgroups')) == 0:
                 self.module.fail_json(
                     msg="Cannot remove all host groups from a host")
@@ -827,8 +828,8 @@ class Host(object):
                             self.module.fail_json(msg="Required parameter not found: securitylevel")
                         req_parameters = snmp_parameters[each['details']['version']][each['details']['securitylevel']]
 
-                    # If additional fields need to be added and some logic is required, then this can be done here.
-                    # If the new field only depends on the version, then it must be added to the helper.
+                    # If additional fields need to be added and some logic is required, it can be done here.
+                    # If the new field only depends on the version, it must be added to the helper.
                     if each['details']['version'] in ['2', '3'] and (Zabbix_version(self.zbx_api_version) >= Zabbix_version('6.4.0')):
                         req_parameters.append('max_repetitions')
 
@@ -876,12 +877,12 @@ class Host(object):
 
                 interface_by_type[each['type']].append(interface)
 
-            # Check count of interfaces
+            # Check number of interfaces
             for interface in interface_by_type:
                 if len(interface_by_type[interface]) == 0:
                     continue
                 if len(interface_by_type[interface]) > 1:
-                    # If more than 1 interface of any type is specified in task
+                    # If more than 1 interface of any type is specified in the task
                     self.module.fail_json(
                         msg="{0} {1} interfaces defined in the task. Module supports only 1 interface of each type.".format(
                             len(interface_by_type[interface]), interface))
@@ -1205,7 +1206,7 @@ def main():
 
     else:
         if len(result) > 0:
-            # delete host
+            # Delete host
             delete_result = host.host_api_request(
                 method='host.delete',
                 params=[result[0]['hostid']])

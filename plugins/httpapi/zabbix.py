@@ -49,12 +49,12 @@ EXAMPLES = r'''
      - Group 1
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
-    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
-    ansible_httpapi_use_ssl: False              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: False       # Specifying certificate validation.
+    ansible_host: zabbix-api.com                # Specify Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specify to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specify which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specify the port for connecting to Zabbix API.
+    ansible_httpapi_use_ssl: False              # Specify the type of connection. True for https, False for http (by default).
+    ansible_httpapi_validate_certs: False       # Specify certificate validation.
     # User parameters for connecting to Zabbix API
     ansible_user: Admin                         # Username to connect to Zabbix API.
     ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
@@ -187,7 +187,7 @@ class HttpApi(HttpApiBase):
 
     def logout(self):
         """
-        Function for logout from zabbix.
+        Function for logout from zabbix
 
         :return: None
         """

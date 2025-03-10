@@ -21,15 +21,15 @@ def mock_api_version_70(self):
 
 
 class TestDeleting(TestModules):
-    """Class for testing deletion of a proxy group"""
+    """Class for testing deletion of proxy group"""
     module = zabbix_proxy_group
 
     def test_delete_not_exist_proxy_group(self):
         """
-        Testing the proxy deletion function in case the specified proxy group
+        Testing proxy deletion function in case specified proxy group
         does not exist.
 
-        Expected result: the task has not been changed and the proxy group
+        Expected result: task has not been changed and proxy group
         has not been deleted.
         """
 
@@ -55,9 +55,9 @@ class TestDeleting(TestModules):
 
     def test_deleting_proxy_group(self):
         """
-        Testing the proxy group deletion function if the specified proxy group exists.
+        Testing proxy group deletion function if specified proxy group exists.
 
-        Expected result: the task has been changed and the proxy group
+        Expected result: task has been changed and proxy group
         has been updated successfully.
         """
 
@@ -87,10 +87,10 @@ class TestDeleting(TestModules):
 
     def test_deleting_proxy_group_error(self):
         """
-        Testing the proxy group deletion function in case of encountering an error
-        during the deletion.
+        Testing proxy group deletion function in case of encountering error
+        during deletion.
 
-        Expected result: the task has been failed.
+        Expected result: task has been failed.
         """
 
         def mock_send_request(self, method, params):

@@ -30,7 +30,7 @@
     - name: Assert that both hosts were given
       ansible.builtin.assert:
         that:
-          - vars.hostvars | length == 2
+          - vars.hostvars | length == 3
           - vars.hostvars['Integration test host 1'] is defined
           - vars.hostvars['Integration test host 2'] is defined
           - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
@@ -51,7 +51,7 @@
     - name: Assert that both hosts were given
       ansible.builtin.assert:
         that:
-          - vars.hostvars | length == 2
+          - vars.hostvars | length == 3
           - vars.hostvars['Integration test host 1'] is defined
           - vars.hostvars['Integration test host 2'] is defined
           - vars.hostvars['Integration test host 1']['zabbix_proxy_name'] is defined
@@ -112,7 +112,7 @@
         - name: Assert that both hosts were given
           ansible.builtin.assert:
             that:
-              - vars.hostvars | length == 2
+              - vars.hostvars | length == 3
               - vars.hostvars['Integration test host 1'] is defined
               - vars.hostvars['Integration test host 2'] is defined
               - vars.hostvars['Integration test host 1']['zabbix_proxy_group_name'] is defined

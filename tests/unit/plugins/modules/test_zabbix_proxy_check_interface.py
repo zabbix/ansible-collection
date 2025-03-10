@@ -28,10 +28,10 @@ class TestCheckInterfaceZabbixProxy(TestModules):
 
     def test_check_interface_param_passive_proxy(self):
         """
-        Testing the function of checking interface setting for passive proxy.
+        Testing function of checking interface settings for passive proxy.
         Test for both Zabbix version 6.0 and 7.0 +
 
-        Expected result: all executions of the function returned
+        Expected result: all executions of function returned
         expected data.
 
         Test cases:
@@ -167,10 +167,10 @@ class TestCheckInterfaceZabbixProxy(TestModules):
 
     def test_check_interface_param_active_proxy(self):
         """
-        Testing the function of checking interface setting for active proxy.
-        Test for both Zabbix version 6.0 and 7.0 +
+        Testing function of checking interface settings for active proxy.
+        Test for both Zabbix versions 6.0 and 7.0 +
 
-        Expected result: all executions of the function returned
+        Expected result: all executions of function returned
         expected data.
 
         Test cases:
@@ -306,19 +306,19 @@ class TestCheckInterfaceZabbixProxy(TestModules):
 
     def test_check_interface_param_active_proxy_error(self):
         """
-        Testing the function of checking interface setting for active proxy.
-        Test for both Zabbix version 6.0 and 7.0 +
+        Testing function of checking interface settings for active proxy.
+        Test for both Zabbix versions 6.0 and 7.0 +
 
-        Expected result: all executions of the function returned error.
+        Expected result: all executions of function returned error.
 
         Test cases:
-        # Non default value for active proxy. Must return Exception.
-        1. Non default value of address field as IP for active proxy for Zabbix version 7.0 +
-        2. Non default value of address field as IP for active proxy for Zabbix version 6.0
-        3. Non default value of address field as DNS for active proxy for Zabbix version 7.0 +
-        4. Non default value of address field as DNS for active proxy for Zabbix version 6.0
-        5. Non default value of port field for active proxy for Zabbix version 7.0 +
-        6. Non default value of port field for active proxy for Zabbix version 6.0
+        # Non-default value for active proxy. Must return Exception.
+        1. Non-default value of address field as IP for active proxy for Zabbix version 7.0 +
+        2. Non-default value of address field as IP for active proxy for Zabbix version 6.0
+        3. Non-default value of address field as DNS for active proxy for Zabbix version 7.0 +
+        4. Non-default value of address field as DNS for active proxy for Zabbix version 6.0
+        5. Non-default value of port field for active proxy for Zabbix version 7.0 +
+        6. Non-default value of port field for active proxy for Zabbix version 6.0
         """
         test_cases = [
             {

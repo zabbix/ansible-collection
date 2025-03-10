@@ -29,7 +29,7 @@
                 else omit }}'
   tags: [never, debug]
   vars:
-    agent_internal_ip_version: '{{ 6 if agent_firewall_allow_from | ansible.utils.ipv6 else 4 }}'
+    agent_internal_ip_version: '{{ 6 if agent_firewall_allow_from is defined and agent_firewall_allow_from | ansible.utils.ipv6 else 4 }}'
 
 - name: 'Firewalld : Apply rule'
   become: true

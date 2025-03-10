@@ -10,7 +10,7 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: zabbix_proxy
-short_description: Module for creating, deleting and updating existing proxyes.
+short_description: Module for creating and deleting proxies, and updating existing ones.
 description:
     - The module is designed to create, update or delete a proxy in Zabbix.
     - In case of updating an existing proxy, only the specified parameters will be updated.
@@ -75,11 +75,11 @@ options:
             useip:
                 description:
                     - Whether the connection should be made through IP or DNS.
-                    - In Zabbix versions higher than 7.0 the parameter will be ignored!
+                    - In Zabbix versions higher than 7.0, the parameter will be ignored!
                 type: bool
     allowed_addresses:
         description:
-            - Comma-delimited IP addresses or DNS names of active Zabbix proxy.
+            - Comma-delimited IP addresses or DNS names of an active Zabbix proxy.
             - Supported if I(proxy_mode) is active.
             - Set empty to clean.
         type: str
@@ -101,19 +101,19 @@ options:
         description:
             - PSK identity.
             - Required if I(tls_connect=psk), or I(tls_accept) contains the 'psk'.
-            - If you are creating a new proxy and you have PSK mode (tls_accept or tls_connect), then this parameter is required.
+            - If you are creating a new proxy and have the PSK mode (tls_accept or tls_connect), then this parameter is required.
             - In case of updating an existing proxy, if the proxy already has PSK enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the proxy,
-              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
+            - If the parameter is defined, then every launch of the task will update the proxy
+              because Zabbix API does not have access to an existing PSK key and it is not possible to compare the specified key with the existing one.
         type: str
     tls_psk:
         description:
             - The pre-shared key, at least 32 hex digits.
             - Required if I(tls_connect=psk), or I(tls_accept) contains the 'psk'.
-            - If you are creating a new proxy and you have PSK mode (tls_accept or tls_connect), then this parameter is required.
+            - If you are creating a new proxy and have the PSK mode (tls_accept or tls_connect), then this parameter is required.
             - In case of updating an existing proxy, if the proxy already has PSK enabled, the parameter is not required.
-            - If the parameter is defined, then every launch of the task will update the proxy,
-              because Zabbix API does not have access to an existing PSK key and we cannot compare the specified key with the existing one.
+            - If the parameter is defined, then every launch of the task will update the proxy
+              because Zabbix API does not have access to an existing PSK key and it is not possible to compare the specified key with the existing one.
         type: str
     tls_issuer:
         description: Certificate issuer.
@@ -124,49 +124,49 @@ options:
     custom_timeouts:
         description:
             - Whether to override global item timeouts on the proxy level.
-            - Set '{}' to clear value and use global timeouts.
+            - Set '{}' to clear the value and use global timeouts.
             - Used only for Zabbix versions above 7.0.
         type: dict
         aliases: [ timeouts ]
         suboptions:
             timeout_zabbix_agent:
-                description: Spend no more than specified seconds on processing of Zabbix agent checks.
+                description: Spend no more than the time specified (in seconds) on processing Zabbix agent checks.
                 type: str
                 aliases: [ zabbix_agent ]
             timeout_simple_check:
-                description: Spend no more than specified seconds on processing of simple checks.
+                description: Spend no more than the time specified (in seconds) on processing simple checks.
                 type: str
                 aliases: [ simple_check ]
             timeout_snmp_agent:
-                description: Spend no more than specified seconds on processing of SNMP checks.
+                description: Spend no more than the time specified (in seconds) on processing SNMP checks.
                 type: str
                 aliases: [ snmp_agent ]
             timeout_external_check:
-                description: Spend no more than specified seconds on processing of external checks.
+                description: Spend no more than the time specified (in seconds) on processing external checks.
                 type: str
                 aliases: [ external_check ]
             timeout_db_monitor:
-                description: Spend no more than specified seconds on processing of database checks.
+                description: Spend no more than the time specified (in seconds) on processing database checks.
                 type: str
                 aliases: [ db_monitor ]
             timeout_http_agent:
-                description: Spend no more than specified seconds on processing of HTTP agent checks.
+                description: Spend no more than the time specified (in seconds) on processing HTTP agent checks.
                 type: str
                 aliases: [ http_agent ]
             timeout_ssh_agent:
-                description: Spend no more than specified seconds on processing of SSH agent checks.
+                description: Spend no more than the time specified (in seconds) on processing SSH agent checks.
                 type: str
                 aliases: [ ssh_agent ]
             timeout_telnet_agent:
-                description: Spend no more than specified seconds on processing of Telnet checks.
+                description: Spend no more than the time specified (in seconds) on processing Telnet checks.
                 type: str
                 aliases: [ telnet_agent ]
             timeout_script:
-                description: Spend no more than specified seconds on processing of script checks.
+                description: Spend no more than the time specified (in seconds) on processing script checks.
                 type: str
                 aliases: [ script ]
             timeout_browser:
-                description: Spend no more than specified seconds on processing of browser checks.
+                description: Spend no more than the time specified (in seconds) on processing browser checks.
                 type: str
                 aliases: [ browser ]
     description:
@@ -175,7 +175,7 @@ options:
 '''
 
 EXAMPLES = r'''
-# To create proxy with minimum parameters
+# To create a proxy with minimum parameters
 - name: Create proxy
   zabbix.zabbix.zabbix_proxy:
     state: present
@@ -186,7 +186,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To create proxy with maximum parameters
+# To create a proxy with maximum parameters
 # Part of the parameters depend on the proxy operating mode: active or passive
 - name: Create proxy with maximum parameters
   zabbix.zabbix.zabbix_proxy:
@@ -210,8 +210,8 @@ EXAMPLES = r'''
     tls_subject: my_tls_subject
     custom_timeouts:
       timeout_zabbix_agent: 10s
-      timeout_simple_check: ''                    # To use value from Zabbix global setting
-      timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use global macro (this macro must exist in the global macro)
+      timeout_simple_check: ''                    # To use a value from Zabbix global settings
+      timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'    # To use a global macro (this macro must exist in the global macro)
       timeout_external_check: 10s
       timeout_db_monitor: 10s
       timeout_http_agent: 10s
@@ -226,7 +226,7 @@ EXAMPLES = r'''
     ansible_user: Admin
     ansible_httpapi_pass: zabbix
 
-# To update proxy to empty parameters
+# To update the proxy to empty parameters
 - name: Clean all parameters from proxy
   zabbix.zabbix.zabbix_proxy:
     name: My Zabbix proxy
@@ -255,8 +255,8 @@ EXAMPLES = r'''
 # To update only one parameter, you can specify just
 # the proxy name (used for searching) and the desired parameter.
 # The rest of the proxy parameters will not be changed.
-# For example, if you want to update proxy description
-# you can use the following example
+# For example, if you want to update the proxy description,
+# you can use the following example:
 - name: Update proxy description
   zabbix.zabbix.zabbix_proxy:
     name: My Zabbix proxy
@@ -285,12 +285,12 @@ EXAMPLES = r'''
     name: My Zabbix proxy
   vars:
     # Connection parameters
-    ansible_host: zabbix-api.com                # Specifying Zabbix API address. You can also use 'delegate_to'.
-    ansible_connection: httpapi                 # Specifying to use HTTP API plugin.
-    ansible_network_os: zabbix.zabbix.zabbix    # Specifying which HTTP API plugin to use.
-    ansible_httpapi_port: 80                    # Specifying the port for connecting to Zabbix API.
-    ansible_httpapi_use_ssl: false              # Specifying the type of connection. True for https, False for http (by default).
-    ansible_httpapi_validate_certs: false       # Specifying certificate validation.
+    ansible_host: zabbix-api.com                # Specify Zabbix API address. You can also use 'delegate_to'.
+    ansible_connection: httpapi                 # Specify to use HTTP API plugin.
+    ansible_network_os: zabbix.zabbix.zabbix    # Specify which HTTP API plugin to use.
+    ansible_httpapi_port: 80                    # Specify the port for connecting to Zabbix API.
+    ansible_httpapi_use_ssl: false              # Specify the type of connection. True for https, False for http (by default).
+    ansible_httpapi_validate_certs: false       # Specify certificate validation.
     # User parameters for connecting to Zabbix API
     ansible_user: Admin                         # Username to connect to Zabbix API.
     ansible_httpapi_pass: zabbix                # Password to connect to Zabbix API.
@@ -381,7 +381,7 @@ class Proxy(object):
         """
         This function checks that the current interface settings can be used
         with the specified proxy mode.
-        The function also returns default settings when an empty parameter is specified.
+        The function also returns the default settings when an empty parameter is specified.
 
         :param param: name of the parameter
         :type param: str
@@ -413,18 +413,18 @@ class Proxy(object):
         """
         The function generates the desired proxy parameters based on the module
         parameters.
-        The returned dictionary can be used to create a proxy, as well as to
+        The returned dictionary can be used to create a proxy as well as to
         compare with an existing proxy.
 
-        :param exist_proxy: parameters of existing Zabbix proxy
+        :param exist_proxy: parameters of an existing Zabbix proxy
         :type exist_proxy: dict
 
         :rtype: dict
-        :return: parameters of desired proxy
+        :return: parameters of the desired proxy
 
         note::
             *  The 'exist_proxy' parameter is used to determine the current
-               operational mode and all dependent settings on existing proxy.
+               operational mode and all dependent settings on an existing proxy.
         """
         # Proxy field names for compatibility beetwen 6.0 and 7.0+
         proxy_fnames = {}
@@ -458,11 +458,11 @@ class Proxy(object):
             else:
                 proxy_params[proxy_fnames['mode']] = '5' if self.module.params['mode'] == 'active' else '6'
         else:
-            # Set proxy mode based on existing proxy
+            # Set the proxy mode based on the existing proxy
             if exist_proxy is not None:
                 proxy_params[proxy_fnames['mode']] = exist_proxy[proxy_fnames['mode']]
             else:
-                # Set proxy mode based on default value
+                # Set the proxy mode based on the default value
                 if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
                     proxy_params[proxy_fnames['mode']] = default_values['proxy_mode']['7']
                 else:
@@ -485,7 +485,7 @@ class Proxy(object):
                     proxy_params['proxy_groupid'] = '0'
                     feature_proxy_group = False
 
-                # Find proxy group by name and set it's id
+                # Find proxy group by name and set its ID
                 else:
                     proxy_groups = self.zapi.find_zabbix_proxy_groups_by_names(
                         self.module.params['proxy_group'])
@@ -503,14 +503,14 @@ class Proxy(object):
         # Only for Zabbix version 7.0 +
         if self.module.params.get('local_address') is not None:
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
-                # Proxy group will be used on proxy (in task or already exist on proxy)
+                # Proxy group will be used on the proxy (in the task or already exist on the proxy)
                 if feature_proxy_group is True:
                     if len(self.module.params['local_address']) > 0:
                         proxy_params['local_address'] = self.module.params['local_address']
                     else:
                         self.module.fail_json(
                             msg="Incorrect argument: local_address. Can not be empty with configured proxy group.")
-                # Proxy group will NOT be used on proxy
+                # Proxy group will NOT be used on the proxy
                 else:
                     if len(self.module.params['local_address']) > 0:
                         self.module.fail_json(
@@ -523,7 +523,7 @@ class Proxy(object):
 
         # local_port
         #
-        # Only for Zabbix verion 7.0 +
+        # Only for Zabbix version 7.0 +
         if self.module.params.get('local_port') is not None:
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
                 proxy_params['local_port'] = self.module.params['local_port']
@@ -543,8 +543,8 @@ class Proxy(object):
 
         # Interface
         #
-        # Versions 6.0 and 7.0+ have different structure and therefore
-        # this block is divided based on the Zabbox version.
+        # Versions 6.0 and 7.0+ have different structures and therefore
+        # this block is divided based on the Zabbix version.
         if self.module.params.get('interface') is not None:
             # Zabbix version >= 7.0
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
@@ -562,31 +562,31 @@ class Proxy(object):
             else:
                 # Useip
                 if self.module.params['interface'].get('useip') is not None:
-                    # Use value from task
+                    # Use the value from the task
                     proxy_useip = self.module.params['interface']['useip']
                 elif exist_proxy is not None and len(exist_proxy['interface']) > 0:
-                    # Use value from existing proxy
+                    # Use the value from an existing proxy
                     proxy_useip = True if exist_proxy['interface']['useip'] == '1' else False
                 else:
-                    # Use default value
+                    # Use the default value
                     proxy_useip = default_values['proxy_useip']
 
                 # Address
                 if self.module.params['interface'].get('address') is not None:
-                    # Use value from task
+                    # Use the value from task
                     if proxy_useip is True:
                         proxy_address = self.check_interface_param('address', proxy_params[proxy_fnames['mode']])
                     else:
                         proxy_address = self.check_interface_param(
                             'address', proxy_params[proxy_fnames['mode']], 'proxy_dns')
                 elif exist_proxy is not None and len(exist_proxy['interface']) > 0:
-                    # Use value from existing proxy
+                    # Use the value from an existing proxy
                     if proxy_useip is True:
                         proxy_address = exist_proxy['interface']['ip'] or default_values['proxy_address']
                     else:
                         proxy_address = exist_proxy['interface']['dns'] or default_values['proxy_dns']
                 else:
-                    # Use default value
+                    # Use the default value
                     if proxy_useip is True:
                         proxy_address = default_values['proxy_address']
                     else:
@@ -594,16 +594,16 @@ class Proxy(object):
 
                 # Port
                 if self.module.params['interface'].get('port') is not None:
-                    # Use value from task
+                    # Use the value from task
                     proxy_port = self.check_interface_param('port', proxy_params[proxy_fnames['mode']])
                 elif exist_proxy is not None and len(exist_proxy['interface']) > 0:
-                    # Use value from existing proxy
+                    # Use the value from an existing proxy
                     proxy_port = exist_proxy['interface']['port']
                 else:
-                    # Use default value
+                    # Use the default value
                     proxy_port = default_values['proxy_port']
 
-                # Set interface structure
+                # Set the interface structure
                 if proxy_params[proxy_fnames['mode']] in ['0', '5']:
                     proxy_params['interface'] = []
                 else:
@@ -621,14 +621,14 @@ class Proxy(object):
             if (proxy_params[proxy_fnames['mode']] == '6' and
                     Zabbix_version(self.zbx_api_version) < Zabbix_version('7.0.0')):
                 if exist_proxy is not None and isinstance(exist_proxy['interface'], dict):
-                    # Set interface based on existing proxy interface
+                    # Set the interface based on existing proxy interface
                     proxy_params['interface'] = {
                         'port': exist_proxy['interface']['port'],
                         'ip': exist_proxy['interface']['ip'],
                         'useip': exist_proxy['interface']['useip'],
                         'dns': exist_proxy['interface']['dns']}
                 else:
-                    # Set interface by default
+                    # Set the interface by default
                     proxy_params['interface'] = {
                         'port': default_values['proxy_port'],
                         'ip': default_values['proxy_address'],
@@ -637,12 +637,12 @@ class Proxy(object):
 
         # allowed_addresses
         #
-        # 'allowed_addresses' for Zabbix verion 7.0 +
-        # 'proxy_address' for Zabbix verion 6.0
+        # 'allowed_addresses' for Zabbix version 7.0 +
+        # 'proxy_address' for Zabbix version 6.0
         if self.module.params.get('allowed_addresses') is not None:
             proxy_params[proxy_fnames['allowed_addresses']] = self.module.params['allowed_addresses']
 
-            # Check for error
+            # Check for errors
             if (proxy_params[proxy_fnames['mode']] in ['1', '6']
                     and self.module.params['allowed_addresses'] != ''):
                 self.module.fail_json(
@@ -702,30 +702,30 @@ class Proxy(object):
 
         # custom_timeouts
         #
-        # Only for Zabbix verion 7.0 +
+        # Only for Zabbix version 7.0 +
         if self.module.params.get('custom_timeouts') is not None:
             if Zabbix_version(self.zbx_api_version) >= Zabbix_version('7.0.0'):
 
-                # Check that needs to update custom timeouts
+                # Check that custom timeouts need to be updated
                 use_global_timeout = True
                 for timeout in proxy_timeouts:
                     if self.module.params['custom_timeouts'].get(timeout) is not None:
                         use_global_timeout = False
                         proxy_params[timeout] = self.module.params['custom_timeouts'][timeout]
 
-                # Get global timeouts and add it or exist timeout to the params to update
+                # Get global timeouts and add it (or an existing timeout) to the params to update
                 if use_global_timeout is False:
                     proxy_params['custom_timeouts'] = '1'
                     global_setting = self.zapi.get_global_setting()
                     for setting in global_setting:
                         if setting.startswith('timeout_') and setting not in proxy_params:
                             if exist_proxy is not None and exist_proxy.get(setting) != '':
-                                # Use value from existing proxy
+                                # Use the value from an existing proxy
                                 proxy_params[setting] = exist_proxy[setting]
                             else:
-                                # Use global timeout
+                                # Use the global timeout
                                 proxy_params[setting] = global_setting[setting]
-                        # Reset to the global timeouts
+                        # Reset to global timeouts
                         elif setting.startswith('timeout_') and proxy_params.get(setting) == '':
                             proxy_params[setting] = global_setting[setting]
                 else:
@@ -742,9 +742,9 @@ class Proxy(object):
         The function compares the parameters of an existing proxy with the
         desired new proxy parameters.
 
-        :param exist_proxy: parameters of existing Zabbix proxy
+        :param exist_proxy: parameters of an existing Zabbix proxy
         :type exist_proxy: dict
-        :param new_proxy: parameters of desired (generated) proxy
+        :param new_proxy: parameters of the desired (generated) proxy
         :type new_proxy: dict
 
         :rtype: dict
@@ -768,7 +768,7 @@ class Proxy(object):
 
         # Interface
         #
-        # Only for 6.0
+        # Only for Zabbix version 6.0
         if new_proxy.get('interface') is not None:
             if isinstance(exist_proxy['interface'], list) or isinstance(new_proxy['interface'], list):
                 if exist_proxy['interface'] != new_proxy['interface']:
@@ -859,7 +859,7 @@ def main():
                 new_proxy_params)
 
             if compare_result:
-                # Update host
+                # Update the host
                 compare_result['proxyid'] = result[0]['proxyid']
 
                 update_result = proxy.api_request(
@@ -880,7 +880,7 @@ def main():
                     changed=False,
                     result="No need to update proxy: {0}".format(proxy_name))
         else:
-            # Create proxy
+            # Create a proxy
             new_proxy_params = proxy.generate_zabbix_proxy()
 
             result = proxy.api_request(
@@ -895,7 +895,7 @@ def main():
                     msg="Failed to create proxy: {0}".format(proxy_name))
     else:
         if len(result) > 0:
-            # delete proxy
+            # Delete a proxy
             delete_result = proxy.api_request(
                 method='proxy.delete',
                 params=[result[0]['proxyid']])
@@ -907,7 +907,7 @@ def main():
                 module.fail_json(
                     msg="Failed to delete proxy: {0}".format(proxy_name))
         else:
-            # No need to delete proxy
+            # No need to delete the proxy
             module.exit_json(
                 changed=False,
                 result="No need to delete proxy: {0}".format(proxy_name))
