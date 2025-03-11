@@ -37,7 +37,7 @@ For self-hosted repository mirrors, override URL for [`repository_url`](#role-va
 
 Tasks require `superuser` privileges (sudo).
 
-Ansible core >= 2.15
+Ansible core >= 2.16
 
 Zabbix agent role relies on [**Jinja2**](https://pypi.org/project/Jinja2/) heavily and requires version >= 3.1.2
 

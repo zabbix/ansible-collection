@@ -1,3 +1,13 @@
+# v1.4.0
+
+## Feature
+
+- `Modules`: Added zabbix_proxy module
+- `Modules`: Added zabbix_proxy_group module
+- `Modules`: added Zabbix 7.2 support
+- `zabbix_inventory plugin`: added function for resolving extra-vars
+- moved supported ansible-core range to 2.16-2.18
+
 # v1.3.12
 
 ## BUG
