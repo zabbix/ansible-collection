@@ -3,3 +3,5 @@ plugins/httpapi/zabbix.py validate-modules:missing-gplv3-license
 plugins/inventory/zabbix_inventory.py validate-modules:missing-gplv3-license
 plugins/modules/zabbix_host.py validate-modules:missing-gplv3-license
 plugins/modules/zabbix_event.py validate-modules:missing-gplv3-license
+plugins/modules/zabbix_proxy.py validate-modules:missing-gplv3-license
+plugins/modules/zabbix_proxy_group.py validate-modules:missing-gplv3-license

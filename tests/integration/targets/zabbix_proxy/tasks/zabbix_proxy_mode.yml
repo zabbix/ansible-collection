@@ -1,0 +1,152 @@
+---
+- name: Check active proxy mode
+  block:
+    # Create proxy with active mode
+    - name: Test - Creating proxy with active mode
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+      register: zabbix_proxy_create_active_mode
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_active_mode is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_active_mode.result"
+
+    # Check idempotence
+    - name: Test - Check idempotence
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+      register: zabbix_proxy_create_active_mode_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_active_mode_again is not changed
+          - "'No need to update proxy' in zabbix_proxy_create_active_mode_again.result"
+
+    - name: Test - Check without 'mode' in task
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+      register: zabbix_proxy_create_active_mode_again_2
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_active_mode_again_2 is not changed
+          - "'No need to update proxy' in zabbix_proxy_create_active_mode_again_2.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Check passive proxy mode
+  block:
+    # Create proxy with passive mode
+    - name: Test - Creating proxy with passive mode
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+      register: zabbix_proxy_create_passive_mode
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_passive_mode is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_passive_mode.result"
+
+    # Check idempotence
+    - name: Test - Check idempotence
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+      register: zabbix_proxy_create_passive_mode_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_passive_mode_again is not changed
+          - "'No need to update proxy' in zabbix_proxy_create_passive_mode_again.result"
+
+    - name: Test - Check without 'mode' in task
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+      register: zabbix_proxy_create_passive_mode_again_2
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_passive_mode_again_2 is not changed
+          - "'No need to update proxy' in zabbix_proxy_create_passive_mode_again_2.result"
+
+- name: Check changing proxy mode
+  block:
+    # Change proxy mode from passive to active
+    - name: Test - Changing proxy mode form passive to active
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+      register: zabbix_proxy_change_mode_passive_active
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_change_mode_passive_active is changed
+          - "'Successfully updated proxy' in zabbix_proxy_change_mode_passive_active.result"
+
+    # Check that mode is active
+    - name: Test - Changing proxy mode form passive to active (check)
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: active
+      register: zabbix_proxy_change_mode_passive_active_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_change_mode_passive_active_again is not changed
+          - "'No need to update proxy' in zabbix_proxy_change_mode_passive_active_again.result"
+
+    # Change proxy mode back to passive from active
+    - name: Test - Changing proxy mode to passive from active
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+      register: zabbix_proxy_change_mode_active_passive
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_change_mode_active_passive is changed
+          - "'Successfully updated proxy' in zabbix_proxy_change_mode_active_passive.result"
+
+    # Check that mode is active
+    - name: Test - Changing proxy mode to passive from active (check)
+      zabbix.zabbix.zabbix_proxy:
+        state: present
+        name: My Zabbix proxy
+        mode: passive
+      register: zabbix_proxy_change_mode_active_passive_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_change_mode_active_passive_again is not changed
+          - "'No need to update proxy' in zabbix_proxy_change_mode_active_passive_again.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy

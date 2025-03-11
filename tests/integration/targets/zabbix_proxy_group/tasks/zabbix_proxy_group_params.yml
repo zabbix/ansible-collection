@@ -1,0 +1,273 @@
+---
+- name: Failover delay
+  when: zabbix_version == 7
+  block:
+    - name: Check failover_delay for new proxy group
+      block:
+        # Create proxy group with failover_delay
+        - name: Test - Create proxy group with failover_delay
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: 2m
+          register: zabbix_proxy_group_create_w_failover_delay
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_failover_delay is changed
+              - "'Successfully created proxy group' in zabbix_proxy_group_create_w_failover_delay.result"
+
+        # Check failover_delay
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: 2m
+          register: zabbix_proxy_group_create_w_failover_delay_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_failover_delay_again is not changed
+              - "'No need to update' in zabbix_proxy_group_create_w_failover_delay_again.result"
+
+    - name: Check failover_delay for existing proxy group
+      block:
+        # Updating proxy group with failover_delay
+        - name: Test - Update proxy group with failover_delay
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: 3m
+          register: zabbix_proxy_group_update_w_failover_delay
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_failover_delay is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_update_w_failover_delay.result"
+
+        # Check failover_delay
+        - name: Test - Check updated proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: 3m
+          register: zabbix_proxy_group_update_w_failover_delay_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_failover_delay_again is not changed
+              - "'No need to update' in zabbix_proxy_group_update_w_failover_delay_again.result"
+
+    - name: Cleaning failover_delay for existing proxy group
+      block:
+        # Cleaning proxy group with failover_delay
+        - name: Test - Cleaning failover_delay for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: ''
+          register: zabbix_proxy_group_clear_failover_delay
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_failover_delay is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_clear_failover_delay.result"
+
+        # Check failover_delay
+        - name: Test - Check failover_delay for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            failover_delay: ''
+          register: zabbix_proxy_group_clear_failover_delay_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_failover_delay_again is not changed
+              - "'No need to update' in zabbix_proxy_group_clear_failover_delay_again.result"
+
+- name: Clean environment
+  when: zabbix_version == 7
+  zabbix.zabbix.zabbix_proxy_group:
+    state: absent
+    name: My proxy group
+
+- name: Min online
+  when: zabbix_version == 7
+  block:
+    - name: Check min_online for new proxy group
+      block:
+        # Create proxy group with min_online
+        - name: Test - Create proxy group with min_online
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: 2
+          register: zabbix_proxy_group_create_w_min_online
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_min_online is changed
+              - "'Successfully created proxy group' in zabbix_proxy_group_create_w_min_online.result"
+
+        # Check min_online
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: 2
+          register: zabbix_proxy_group_create_w_min_online_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_min_online_again is not changed
+              - "'No need to update' in zabbix_proxy_group_create_w_failover_delay_again.result"
+
+    - name: Check min_online for existing proxy group
+      block:
+        # Updating proxy group with min_online
+        - name: Test - Update proxy group with min_online
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: 3
+          register: zabbix_proxy_group_update_w_min_online
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_min_online is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_update_w_min_online.result"
+
+        # Check min_online
+        - name: Test - Check updated proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: 3
+          register: zabbix_proxy_group_update_w_min_online_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_min_online_again is not changed
+              - "'No need to update' in zabbix_proxy_group_update_w_min_online_again.result"
+
+    - name: Cleaning min_online for existing proxy group
+      block:
+        # Cleaning proxy group with min_online
+        - name: Test - Cleaning min_online for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: ''
+          register: zabbix_proxy_group_clear_min_online
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_min_online is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_clear_min_online.result"
+
+        # Check min_online
+        - name: Test - Check min_online for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            min_online: ''
+          register: zabbix_proxy_group_clear_min_online_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_min_online_again is not changed
+              - "'No need to update' in zabbix_proxy_group_clear_min_online_again.result"
+
+- name: Clean environment
+  when: zabbix_version == 7
+  zabbix.zabbix.zabbix_proxy_group:
+    state: absent
+    name: My proxy group
+
+- name: Description
+  when: zabbix_version == 7
+  block:
+    - name: Check description for new proxy group
+      block:
+        # Create proxy group with description
+        - name: Test - Create proxy group with description
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: My description
+          register: zabbix_proxy_group_create_w_description
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_description is changed
+              - "'Successfully created proxy group' in zabbix_proxy_group_create_w_description.result"
+
+        # Check description
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: My description
+          register: zabbix_proxy_group_create_w_description_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_create_w_description_again is not changed
+              - "'No need to update' in zabbix_proxy_group_create_w_description_again.result"
+
+    - name: Check description for existing proxy group
+      block:
+        # Updating proxy group with description
+        - name: Test - Update proxy group with description
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: My new description
+          register: zabbix_proxy_group_update_w_description
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_description is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_update_w_description.result"
+
+        # Check description
+        - name: Test - Check updated proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: My new description
+          register: zabbix_proxy_group_update_w_description_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_update_w_description_again is not changed
+              - "'No need to update' in zabbix_proxy_group_update_w_description_again.result"
+
+    - name: Cleaning description for existing proxy group
+      block:
+        # Cleaning proxy group with description
+        - name: Test - Cleaning description for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: ''
+          register: zabbix_proxy_group_clear_description
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_description is changed
+              - "'Successfully updated proxy group' in zabbix_proxy_group_clear_description.result"
+
+        # Check description
+        - name: Test - Check description for proxy group
+          zabbix.zabbix.zabbix_proxy_group:
+            name: My proxy group
+            description: ''
+          register: zabbix_proxy_group_clear_description_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_group_clear_description_again is not changed
+              - "'No need to update' in zabbix_proxy_group_clear_description_again.result"

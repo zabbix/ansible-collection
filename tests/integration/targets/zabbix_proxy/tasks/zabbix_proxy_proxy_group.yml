@@ -1,0 +1,679 @@
+---
+- name: Proxy group
+  block:
+    - name: Check proxy group for new proxy
+      when: zabbix_version == 7
+      block:
+        # Create proxy with proxy group
+        - name: Test - Create proxy with proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group is changed
+              - "'Successfully created proxy' in zabbix_proxy_create_w_proxy_group.result"
+
+        # Check proxy_group
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+          register: zabbix_proxy_create_w_proxy_group_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_create_w_proxy_group_again.result"
+
+    - name: Check proxy group for existing proxy
+      when: zabbix_version == 7
+      block:
+        # Update proxy with proxy group
+        # Updating can be without 'local_address' parameter
+        - name: Test - Update proxy with proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group 2
+          register: zabbix_proxy_update_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_w_proxy_group.result"
+
+        # Check proxy_group
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group 2
+          register: zabbix_proxy_update_w_proxy_group_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_update_w_proxy_group_again.result"
+
+    - name: Clear proxy group for existing proxy
+      when: zabbix_version == 7
+      block:
+        # Update proxy group of proxy to default value ('')
+        - name: Test - Clean proxy group from proxy
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+          register: zabbix_proxy_clear_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clear_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_clear_proxy_group.result"
+
+        # Check proxy_group
+        - name: Test - Check proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+          register: zabbix_proxy_clear_proxy_group_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clear_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_clear_proxy_group_again.result"
+
+    - name: Try to set non-existing proxy group
+      when: zabbix_version == 7
+      block:
+        # Update proxy group to non-existing value
+        - name: Test - Set non-existing proxy group name
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: 'UNKNOWN proxy group'
+          register: zabbix_proxy_non_exist_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_non_exist_proxy_group is failed
+              - "'Proxy group not found in Zabbix' in zabbix_proxy_non_exist_proxy_group.msg"
+
+    - name: Check for Zabbix version 6.0
+      when: zabbix_version == 6
+      block:
+        # Create proxy with proxy_group
+        - name: Test - Create proxy with proxy_group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: 'My proxy group'
+          register: zabbix_proxy_create_w_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group is failed
+              - "'Incorrect arguments' in zabbix_proxy_create_w_proxy_group.msg"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Local address
+  block:
+    - name: Check that local address is mandatory for adding proxy group
+      when: zabbix_version == 7
+      block:
+        # Create proxy with proxy group, but without local address
+        - name: Test - Create proxy with proxy group wo local address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+          register: zabbix_proxy_create_w_proxy_group_wo_local_address
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group_wo_local_address is failed
+              - "'Not found required argument' in zabbix_proxy_create_w_proxy_group_wo_local_address.msg"
+
+        # Create proxy with proxy group, but with empty local address
+        - name: Test - Create proxy with proxy group with empty local address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: ''
+          register: zabbix_proxy_create_w_proxy_group_w_empty_local_address
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group_w_empty_local_address is failed
+              - "'Can not be empty' in zabbix_proxy_create_w_proxy_group_w_empty_local_address.msg"
+
+        # Create proxy with local address, but without proxy group
+        - name: Test - Set local address wo proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_local_address_wo_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_address_wo_proxy_group is failed
+              - "'Can be used only with proxy group' in zabbix_proxy_create_w_local_address_wo_proxy_group.msg"
+
+        # Create proxy with proxy group and local address
+        - name: Test - Create proxy with proxy group and local address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_local_address_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_address_w_proxy_group is changed
+              - "'Successfully created proxy' in zabbix_proxy_create_w_local_address_w_proxy_group.result"
+
+    - name: Updating of local address
+      when: zabbix_version == 7
+      block:
+        # Update proxy with local address, but without proxy group
+        - name: Test - Update proxy with proxy group wo local address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: '192.168.0.11'
+          register: zabbix_proxy_local_address_wo_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_local_address_wo_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_local_address_wo_proxy_group.result"
+
+        - name: Test - Update proxy with proxy group wo local address (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: '192.168.0.11'
+          register: zabbix_proxy_local_address_wo_proxy_group_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_local_address_wo_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_local_address_wo_proxy_group_again.result"
+
+        # Update proxy with local address, but with proxy group
+        - name: Test - Create proxy with proxy group wo local address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.12'
+          register: zabbix_proxy_local_address_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_local_address_w_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_local_address_w_proxy_group.result"
+
+        - name: Test - Create proxy with proxy group w local address (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.12'
+          register: zabbix_proxy_local_address_w_proxy_group_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_local_address_w_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_local_address_w_proxy_group_again.result"
+
+        # Update proxy with empty local address, but without proxy group
+        - name: Test - Update proxy with empty local address, but without proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: ''
+          register: zabbix_proxy_update_local_address_wo_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_address_wo_proxy_group is failed
+              - "'Can not be empty' in zabbix_proxy_update_local_address_wo_proxy_group.msg"
+
+        # Update proxy with empty local address with proxy group
+        - name: Test - Update proxy with empty local address with proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: ''
+          register: zabbix_proxy_update_local_address_w_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_address_w_proxy_group is failed
+              - "'Can not be empty' in zabbix_proxy_update_local_address_w_proxy_group.msg"
+
+    - name: Cleaning of local address
+      when: zabbix_version == 7
+      block:
+        # Clean local address + proxy group
+        - name: Test - Clean local address + proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+            local_address: ''
+          register: zabbix_proxy_clean_local_address
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_local_address is changed
+              - "'Successfully updated proxy' in zabbix_proxy_clean_local_address.result"
+
+        # This test can check idempotence and cleaning of proxy group and local address
+        - name: Test - Clean local address + proxy group (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+            local_address: ''
+          register: zabbix_proxy_clean_local_address_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_local_address_again is not changed
+              - "'No need to update' in zabbix_proxy_clean_local_address_again.result"
+
+    - name: Updating of local address on existing proxy
+      when: zabbix_version == 7
+      block:
+        # Update proxy with local address, but without proxy group
+        - name: Test - Set local address wo proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_local_address_wo_proxy_group_existing
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_address_wo_proxy_group_existing is failed
+              - "'Can be used only with proxy group' in zabbix_proxy_create_w_local_address_wo_proxy_group_existing.msg"
+
+        # Update proxy with local address + proxy group
+        - name: Test - Update proxy with local address + proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_local_address_wo_proxy_group_existing
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_address_wo_proxy_group_existing is changed
+              - "'Successfully updated proxy' in zabbix_proxy_create_w_local_address_wo_proxy_group_existing.result"
+
+    - name: Check for Zabbix version 6.0
+      when: zabbix_version == 6
+      block:
+        # Create proxy with proxy_group & local_address
+        - name: Test - Create proxy with proxy_group & local_address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: 'My proxy group'
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_proxy_group_local_address
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group_local_address is failed
+              - "'Incorrect arguments' in zabbix_proxy_create_w_proxy_group_local_address.msg"
+
+        # Create proxy with local_address
+        - name: Test - Create proxy with local_address
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_address: '192.168.0.10'
+          register: zabbix_proxy_create_w_local_address
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_address is failed
+              - "'Incorrect arguments' in zabbix_proxy_create_w_local_address.msg"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Local port
+  block:
+    - name: Check that local port can be used only with proxy group
+      when: zabbix_version == 7
+      block:
+        # Create proxy with local port, but without proxy group
+        - name: Test - Set local port wo proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10052'
+          register: zabbix_proxy_create_w_local_port_wo_proxy_group
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port_wo_proxy_group is failed
+              - "'Can be used only with proxy group' in zabbix_proxy_create_w_local_port_wo_proxy_group.msg"
+
+        # Create proxy with proxy group and local port
+        - name: Test - Create proxy with proxy group and local port
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+            local_port: '10052'
+          register: zabbix_proxy_create_w_local_port_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port_w_proxy_group is changed
+              - "'Successfully created proxy' in zabbix_proxy_create_w_local_port_w_proxy_group.result"
+
+    - name: Updating of local port
+      when: zabbix_version == 7
+      block:
+        # Update proxy with local port, but without proxy group
+        - name: Test - Update proxy with local port wo proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10053'
+          register: zabbix_proxy_update_local_port_wo_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_port_wo_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_local_port_wo_proxy_group.result"
+
+        - name: Test - Update proxy with proxy group wo local address (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10053'
+          register: zabbix_proxy_update_local_port_wo_proxy_group_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_port_wo_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_update_local_port_wo_proxy_group_again.result"
+
+        # Update proxy with local port, but with proxy group
+        - name: Test - Update proxy with local port w proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_port: '10054'
+          register: zabbix_proxy_update_local_port_w_proxy_group
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_port_w_proxy_group is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_local_port_w_proxy_group.result"
+
+        - name: Test - Update proxy with proxy group w local address (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_port: '10054'
+          register: zabbix_proxy_update_local_port_w_proxy_group_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_local_port_w_proxy_group_again is not changed
+              - "'No need to update' in zabbix_proxy_update_local_port_w_proxy_group_again.result"
+
+    - name: Cleaning of local port
+      when: zabbix_version == 7
+      block:
+        # Set empty local port. Must use default value
+        # Check by same task + check by task with default value
+        - name: Test - Set empty local port
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: ''
+          register: zabbix_proxy_clean_empty_local_port
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port is changed
+              - "'Successfully updated proxy' in zabbix_proxy_clean_empty_local_port.result"
+
+        - name: Test - Set empty local port (check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: ''
+          register: zabbix_proxy_clean_empty_local_port_again
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port_again is not changed
+              - "'No need to update' in zabbix_proxy_clean_empty_local_port_again.result"
+
+        - name: Test - Set default local port (check 2)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10051'
+          register: zabbix_proxy_clean_empty_local_port_again_2
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port_again_2 is not changed
+              - "'No need to update' in zabbix_proxy_clean_empty_local_port_again_2.result"
+
+        # Set empty local port, but with proxy group. Must use default value
+        # Check by same task + check by task with default value
+        - name: Test - Set empty local port 2
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_port: ''
+          register: zabbix_proxy_clean_empty_local_port_2
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port_2 is not changed
+              - "'No need to update' in zabbix_proxy_clean_empty_local_port_2.result"
+
+        - name: Test - Set empty local port (check 3)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_port: ''
+          register: zabbix_proxy_clean_empty_local_port_again_3
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port_again_3 is not changed
+              - "'No need to update' in zabbix_proxy_clean_empty_local_port_again_3.result"
+
+        - name: Test - Set default local port (check 4)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_port: '10051'
+          register: zabbix_proxy_clean_empty_local_port_again_4
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_empty_local_port_again_4 is not changed
+              - "'No need to update' in zabbix_proxy_clean_empty_local_port_again_4.result"
+
+        # Clean proxy group and local port
+        - name: Test - Clean proxy group and local port
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+            local_port: ''
+          register: zabbix_proxy_clean_proxy_group_and_local_port
+
+        - name: Assert that task changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_proxy_group_and_local_port is changed
+              - "'Successfully updated proxy' in zabbix_proxy_clean_proxy_group_and_local_port.result"
+
+        # This test can check idempotence and cleaning of proxy group and local port
+        - name: Test - Clean proxy group and local port (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+            local_port: ''
+          register: zabbix_proxy_clean_proxy_group_and_local_port_again
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_proxy_group_and_local_port_again is not changed
+              - "'No need to update' in zabbix_proxy_clean_proxy_group_and_local_port_again.result"
+
+        # This test can check that it's possible to use default value with empty proxy group
+        - name: Test - Use default local port with empty proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: ''
+            local_port: '10051'
+          register: zabbix_proxy_empty_proxy_group_and_default_local_port
+          ignore_errors: true
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_empty_proxy_group_and_default_local_port is not changed
+              - "'No need to update' in zabbix_proxy_empty_proxy_group_and_default_local_port.result"
+
+    - name: Updating of local port on existing proxy
+      when: zabbix_version == 7
+      block:
+        # Update proxy with local port, but without proxy group
+        - name: Test - Set local port wo proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10052'
+          register: zabbix_proxy_create_w_local_port_wo_proxy_group_existing
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port_wo_proxy_group_existing is failed
+              - "'Can be used only with proxy group' in zabbix_proxy_create_w_local_port_wo_proxy_group_existing.msg"
+
+        # Update proxy with local port + proxy group
+        - name: Test - Update proxy with local port + proxy group
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+            local_port: '10052'
+          register: zabbix_proxy_create_w_local_port_w_proxy_group_existing
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port_w_proxy_group_existing is changed
+              - "'Successfully updated proxy' in zabbix_proxy_create_w_local_port_w_proxy_group_existing.result"
+
+        - name: Test - Update proxy with local port + proxy group (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: My proxy group
+            local_address: '192.168.0.10'
+            local_port: '10052'
+          register: zabbix_proxy_create_w_local_port_w_proxy_group_existing_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port_w_proxy_group_existing_again is not changed
+              - "'No need to update' in zabbix_proxy_create_w_local_port_w_proxy_group_existing_again.result"
+
+    - name: Check for Zabbix version 6.0
+      when: zabbix_version == 6
+      block:
+        # Create proxy with proxy_group & local_address & local port
+        - name: Test - Create proxy with proxy_group & local_address & local port
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            proxy_group: 'My proxy group'
+            local_address: '192.168.0.10'
+            local_port: '10051'
+          register: zabbix_proxy_create_w_proxy_group_local_address_local_port
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_proxy_group_local_address_local_port is failed
+              - "'Incorrect arguments' in zabbix_proxy_create_w_proxy_group_local_address_local_port.msg"
+
+        # Create proxy with local_address
+        - name: Test - Create proxy with port
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            local_port: '10051'
+          register: zabbix_proxy_create_w_local_port
+          ignore_errors: true
+
+        - name: Assert that task was failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_local_port is failed
+              - "'Incorrect arguments' in zabbix_proxy_create_w_local_port.msg"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy

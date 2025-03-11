@@ -1,0 +1,222 @@
+---
+- name: Custom timeouts
+  block:
+    - name: Check custom_timeouts for new proxy
+      when: zabbix_version == 7
+      block:
+        # Create proxy with custom_timeouts
+        - name: Test - Create proxy with custom_timeouts
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+              timeout_simple_check: 10s
+              timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+              timeout_external_check: 10s
+              timeout_db_monitor: 10s
+              timeout_http_agent: 10s
+              timeout_ssh_agent: 10s
+              timeout_telnet_agent: 10s
+              timeout_script: 10s
+              timeout_browser: 10s
+          register: zabbix_proxy_create_w_custom_timeouts
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_custom_timeouts is changed
+              - "'Successfully created proxy' in zabbix_proxy_create_w_custom_timeouts.result"
+
+        # Check proxy with custom_timeouts
+        - name: Test - Check proxy with custom_timeouts (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+              timeout_simple_check: 10s
+              timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+              timeout_external_check: 10s
+              timeout_db_monitor: 10s
+              timeout_http_agent: 10s
+              timeout_ssh_agent: 10s
+              timeout_telnet_agent: 10s
+              timeout_script: 10s
+              timeout_browser: 10s
+          register: zabbix_proxy_create_w_custom_timeouts_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_custom_timeouts_again is not changed
+              - "'No need to update' in zabbix_proxy_create_w_custom_timeouts_again.result"
+
+    - name: Update custom_timeouts for proxy
+      when: zabbix_version == 7
+      block:
+        # Update proxy with only one custom_timeouts
+        - name: Test - Update proxy with only one custom_timeouts
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 12s
+          register: zabbix_proxy_update_w_custom_timeouts
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_custom_timeouts is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_w_custom_timeouts.result"
+
+        # Update proxy with only one custom_timeouts (Check)
+        - name: Test - Update proxy with only one custom_timeouts (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 12s
+              timeout_simple_check: 10s
+              timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+              timeout_external_check: 10s
+              timeout_db_monitor: 10s
+              timeout_http_agent: 10s
+              timeout_ssh_agent: 10s
+              timeout_telnet_agent: 10s
+              timeout_script: 10s
+              timeout_browser: 10s
+          register: zabbix_proxy_update_w_custom_timeouts_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_custom_timeouts_again is not changed
+              - "'No need to update' in zabbix_proxy_update_w_custom_timeouts_again.result"
+
+        # Update timeout_zabbix_agent to value from default setting
+        - name: Test - Update timeout_zabbix_agent to value from default setting
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: ''
+          register: zabbix_proxy_update_w_custom_timeouts_to_default
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_custom_timeouts_to_default is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_w_custom_timeouts_to_default.result"
+
+        # Update timeout_zabbix_agent to value from default setting (Check)
+        - name: Test - Update timeout_zabbix_agent to value from default setting (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: ''
+              timeout_simple_check: 10s
+              timeout_snmp_agent: '{$MY_SNMP_TIMEOUT}'
+              timeout_external_check: 10s
+              timeout_db_monitor: 10s
+              timeout_http_agent: 10s
+              timeout_ssh_agent: 10s
+              timeout_telnet_agent: 10s
+              timeout_script: 10s
+              timeout_browser: 10s
+          register: zabbix_proxy_update_w_custom_timeouts_to_default_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_w_custom_timeouts_to_default_again is not changed
+              - "'No need to update' in zabbix_proxy_update_w_custom_timeouts_to_default_again.result"
+
+    - name: Clean custom_timeouts for proxy
+      when: zabbix_version == 7
+      block:
+        # Clean custom_timeouts from proxy
+        - name: Test - Clean custom_timeouts from proxy
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts: {}
+          register: zabbix_proxy_clean_custom_timeouts
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_custom_timeouts is changed
+              - "'Successfully updated proxy' in zabbix_proxy_clean_custom_timeouts.result"
+
+        # Clean custom_timeouts from proxy
+        - name: Test - Clean custom_timeouts from proxy (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts: {}
+          register: zabbix_proxy_clean_custom_timeouts_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_clean_custom_timeouts_again is not changed
+              - "'No need to update' in zabbix_proxy_clean_custom_timeouts_again.result"
+
+    - name: Clean environment
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+      when: zabbix_version == 7
+
+    - name: Check custom_timeouts for new proxy
+      when: zabbix_version == 7
+      block:
+        # Create proxy with one custom_timeouts
+        - name: Test - Create proxy with one custom_timeouts
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+          register: zabbix_proxy_create_w_one_custom_timeouts
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_one_custom_timeouts is changed
+              - "'Successfully created proxy' in zabbix_proxy_create_w_one_custom_timeouts.result"
+
+        # Check proxy with one custom_timeouts
+        - name: Test - Check proxy with one custom_timeouts (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+          register: zabbix_proxy_create_w_one_custom_timeouts_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_one_custom_timeouts_again is not changed
+              - "'No need to update' in zabbix_proxy_create_w_one_custom_timeouts_again.result"
+
+        # Check proxy with one custom_timeouts
+        - name: Test - Check proxy with one custom_timeouts (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+              timeout_simple_check: ''
+              timeout_snmp_agent: ''
+              timeout_external_check: ''
+              timeout_db_monitor: ''
+              timeout_http_agent: ''
+              timeout_ssh_agent: ''
+              timeout_telnet_agent: ''
+              timeout_script: ''
+              timeout_browser: ''
+          register: zabbix_proxy_create_w_one_custom_timeouts_again_2
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_create_w_one_custom_timeouts_again_2 is not changed
+              - "'No need to update' in zabbix_proxy_create_w_one_custom_timeouts_again_2.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy

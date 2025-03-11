@@ -13,7 +13,7 @@
     - name: Assert that only 'Integration test host 1' was given
       ansible.builtin.assert:
         that:
-          - vars.hostvars | length == 2
+          - vars.hostvars | length == 3
           - vars.hostvars['Integration test host 1'] is defined
           - vars.hostvars['Integration test host 2'] is defined
 

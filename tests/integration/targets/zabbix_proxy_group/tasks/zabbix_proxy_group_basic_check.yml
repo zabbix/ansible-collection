@@ -1,0 +1,159 @@
+---
+- name: Check error for Zabbix version 6.0
+  when: zabbix_version == 6
+  block:
+    - name: Test - Creating proxy group in Zabbix 6.0
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+      register: zabbix_proxy_group_create_60
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_create_60 is failed
+          - "'Proxy groups are not supported' in zabbix_proxy_group_create_60.msg"
+
+- name: Check minimal parameters
+  when: zabbix_version == 7
+  block:
+    # Check required parameter 'name'
+    - name: Test - Creating proxy group without name
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+      register: zabbix_proxy_group_create_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_create_empty is failed
+          - "'missing required arguments: name' in zabbix_proxy_group_create_empty.msg"
+
+    # Try to create with empty name ("")
+    - name: Test - Creating proxy group without name
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: ''
+      register: zabbix_proxy_group_create_empty_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_create_empty_2 is failed
+
+    # Try to create with correct name
+    - name: Test - Creating proxy group with correct name
+      zabbix.zabbix.zabbix_proxy_group:
+        state: present
+        name: My proxy group
+      register: zabbix_proxy_group_create
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_create is changed
+          - "'Successfully created proxy group' in zabbix_proxy_group_create.result"
+
+    # Check idempotence
+    - name: Test - Creating proxy group with same parameters
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+      register: zabbix_proxy_group_create_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_create_again is not changed
+
+- name: Check updating parameters
+  when: zabbix_version == 7
+  block:
+    # Check updating parameters
+    - name: Test - Update one parameter on proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        description: Description of proxy group
+      register: zabbix_proxy_group_update_description
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_update_description is changed
+          - "'Successfully updated proxy group' in zabbix_proxy_group_update_description.result"
+
+    - name: Test - Update second parameter on proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        failover_delay: 2m
+      register: zabbix_proxy_group_update_failover_delay
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_update_failover_delay is changed
+          - "'Successfully updated proxy group' in zabbix_proxy_group_update_failover_delay.result"
+
+    # A check to see that parameters are independent from each other when updated.
+    # Changing one parameter does not affect others.
+    - name: Test - Update proxy group with same description and failover_delay
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        failover_delay: 2m
+        description: Description of proxy group
+      register: zabbix_proxy_group_update_check
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_group_update_check is not changed
+          - "'No need to update proxy group' in zabbix_proxy_group_update_check.result"
+
+- name: Check deletion of proxy group
+  when: zabbix_version == 7
+  block:
+    # Check required parameter 'name'
+    - name: Test - Deleting proxy group without name
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+      register: zabbix_proxy_group_delete_empty
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_delete_empty is failed
+
+    - name: Test - Deleting proxy group with empty name
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+        name: ""
+      register: zabbix_proxy_group_delete_empty_2
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_delete_empty_2 is failed
+
+    # Delete proxy group
+    - name: Delete proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+        name: My proxy group
+      register: zabbix_proxy_group_delete
+
+    - name: Assert that proxy group was deleted
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_delete is changed
+
+    # Check idempotence of deleting proxy group
+    - name: Check deletion of proxy group
+      zabbix.zabbix.zabbix_proxy_group:
+        state: absent
+        name: My proxy group
+      register: zabbix_proxy_group_delete_again
+
+    - name: Assert that proxy group was not changed
+      ansible.builtin.assert:
+        that: zabbix_proxy_group_delete_again is not changed

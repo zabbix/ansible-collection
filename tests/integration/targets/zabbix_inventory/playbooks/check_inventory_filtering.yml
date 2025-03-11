@@ -13,7 +13,7 @@
     - name: Assert that only 'Integration test host 1' was given
       ansible.builtin.assert:
         that:
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
           - vars.hostvars['Integration test host 1'] is defined
 
     # We check that some field will be defined if we set output='extend'
@@ -41,7 +41,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change host groups for 'Integration test host 1' back
       zabbix.zabbix.zabbix_host:
@@ -57,7 +57,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change template for 'Integration test host 1' and try to get inventory again.
     # Check that our host in not defined in the inventory.
@@ -75,7 +75,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change templates for 'Integration test host 1' back
       zabbix.zabbix.zabbix_host:
@@ -91,7 +91,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change tags for 'Integration test host 1' and try to get inventory again.
     # Check that our host in not defined in the inventory.
@@ -111,7 +111,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change tags for 'Integration test host 1' back to original value
       zabbix.zabbix.zabbix_host:
@@ -128,7 +128,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change tag value to absolutely different value
     - name: Change tag for 'Integration test host 1' to absolutely different value
@@ -146,7 +146,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change tags for 'Integration test host 1' back to original value
       zabbix.zabbix.zabbix_host:
@@ -163,7 +163,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change tag name
     - name: Change tag name for 'Integration test host 1'
@@ -181,7 +181,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change tags for 'Integration test host 1' back to original value
       zabbix.zabbix.zabbix_host:
@@ -198,7 +198,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change visible name for 'Integration test host 1' and try to get inventory again.
     # Check that our host in not defined in the inventory.
@@ -216,7 +216,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change visible name for 'Integration test host 1' back to original value
       zabbix.zabbix.zabbix_host:
@@ -231,7 +231,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2
 
     # Change status for 'Integration test host 1' and try to get inventory again.
     # Check that our host in not defined in the inventory.
@@ -249,7 +249,7 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is not defined
-          - vars.hostvars | length == 0
+          - vars.hostvars | length == 1
 
     - name: Change status for 'Integration test host 1' back to original value
       zabbix.zabbix.zabbix_host:
@@ -264,4 +264,4 @@
       ansible.builtin.assert:
         that:
           - vars.hostvars['Integration test host 1'] is defined
-          - vars.hostvars | length == 1
+          - vars.hostvars | length == 2

@@ -1,0 +1,643 @@
+---
+- name: Check basic tls_accept encryption parameters
+  block:
+    # Check tls_accept
+    - name: Test - Creating proxy with encryption from str of parameters
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: cert
+      register: zabbix_proxy_create_w_tls_accept_str
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_tls_accept_str is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_w_tls_accept_str.result"
+
+    - name: Test - Creating proxy with encryption from list of parameters
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept:
+          - cert
+      register: zabbix_proxy_create_w_tls_accept_list
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_tls_accept_list is not changed
+          - "'No need to update' in zabbix_proxy_create_w_tls_accept_list.result"
+
+    - name: Clean environment
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+
+    # Creating proxy with all possible encryption
+    - name: Test - Creating proxy with all possible encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept:
+          - psk
+          - cert
+          - unencrypted
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_create_w_tls_accept_all
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_tls_accept_all is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_w_tls_accept_all.result"
+
+    # Clean proxy encryption
+    - name: Test - Clean proxy encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: []
+      register: zabbix_proxy_clean_encryption
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_clean_encryption is changed
+          - "'Successfully updated proxy' in zabbix_proxy_clean_encryption.result"
+
+    # Clean proxy encryption
+    - name: Check - Clean proxy encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: unencrypted
+      register: zabbix_proxy_clean_encryption_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_clean_encryption_again is not changed
+          - "'No need to update' in zabbix_proxy_clean_encryption_again.result"
+
+    # Update proxy to passive mode with non empty value of encryption
+    - name: Test - Update proxy to passive mode with non empty value of encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: cert
+      register: zabbix_proxy_update_passive_error
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_passive_error is failed
+          - "'Available only in active proxy mode' in zabbix_proxy_update_passive_error.msg"
+
+    # Update proxy to passive mode with empty (unencrypted) encryption
+    - name: Test - Update proxy to passive mode with empty (unencrypted) encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: unencrypted
+      register: zabbix_proxy_update_passive
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_passive is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_passive.result"
+
+    - name: Check - Update proxy to passive mode with empty (unencrypted) encryption
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: unencrypted
+      register: zabbix_proxy_update_passive_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_passive_again is not changed
+          - "'No need to update' in zabbix_proxy_update_passive_again.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Check basic tls_connect encryption parameters
+  block:
+    # Check tls_connect cert
+    - name: Test - Creating proxy with encryption tls_connect cert
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: cert
+      register: zabbix_proxy_create_w_tls_connect_cert
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_tls_connect_cert is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_w_tls_connect_cert.result"
+
+    - name: Check - Creating proxy with encryption tls_connect cert
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: cert
+      register: zabbix_proxy_update_w_tls_connect_cert_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_cert_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_cert_again.result"
+
+    # Check tls_connect psk
+    - name: Test - Updating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: psk
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_update_w_tls_connect_psk
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_psk is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_connect_psk.result"
+
+    - name: Check - Updating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: psk
+      register: zabbix_proxy_update_w_tls_connect_psk_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_psk_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_psk_again.result"
+
+    # Check tls_connect unencrypted
+    - name: Test - Updating proxy with encryption tls_connect unencrypted
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: unencrypted
+      register: zabbix_proxy_update_w_tls_connect_unencrypted
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_unencrypted is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_connect_unencrypted.result"
+
+    - name: Check - Updating proxy with encryption tls_connect unencrypted
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: unencrypted
+      register: zabbix_proxy_update_w_tls_connect_unencrypted_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_unencrypted_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_unencrypted_again.result"
+
+    # Check tls_connect with active mode
+    - name: Test - Updating proxy with encryption tls_connect cert and active mode
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_connect: cert
+      register: zabbix_proxy_update_w_tls_connect_error
+      ignore_errors: true
+
+    - name: Assert that task was failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_error is failed
+          - "'Available only in passive proxy mode' in zabbix_proxy_update_w_tls_connect_error.msg"
+
+    - name: Test - Updating proxy with encryption tls_connect unencrypted and active mode
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_connect: unencrypted
+      register: zabbix_proxy_update_w_tls_connect_unencrypted_active
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_unencrypted_active is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_connect_unencrypted_active.result"
+
+    - name: Check - Updating proxy with encryption tls_connect unencrypted and active mode
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_connect: unencrypted
+      register: zabbix_proxy_update_w_tls_connect_unencrypted_active_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_unencrypted_active_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_unencrypted_active_again.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Check tls_psk_identity and tls_psk encryption parameters
+  block:
+    # Creating proxy without tls_psk_identity and tls_psk
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: psk
+      register: zabbix_proxy_create_wo_psk_params_active
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_psk_params_active is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_psk_params_active.msg"
+
+    # Creating proxy without tls_psk_identity and tls_psk
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: psk
+      register: zabbix_proxy_create_wo_psk_params_passive
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_psk_params_passive is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_psk_params_passive.msg"
+
+    # Creating proxy without tls_psk_identity
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: psk
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_create_wo_tls_psk_identity_active
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_tls_psk_identity_active is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_tls_psk_identity_active.msg"
+
+    # Creating proxy without tls_psk_identity
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: psk
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_create_wo_tls_psk_identity_passive
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_tls_psk_identity_passive is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_tls_psk_identity_passive.msg"
+
+    # Creating proxy without tls_psk
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: psk
+        tls_psk_identity: my_tls_psk_identity
+      register: zabbix_proxy_create_wo_tls_psk_active
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_tls_psk_active is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_tls_psk_active.msg"
+
+    # Creating proxy without tls_psk
+    - name: Test - Creating proxy without tls_psk_identity and tls_psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_accept: psk
+        tls_psk_identity: my_tls_psk_identity
+      register: zabbix_proxy_create_wo_tls_psk_passive
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_wo_tls_psk_passive is failed
+          - "'Missing TLS PSK params' in zabbix_proxy_create_wo_tls_psk_passive.msg"
+
+    - name: Test - Creating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: psk
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_update_w_tls_connect_psk_passive
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_psk_passive is changed
+          - "'Successfully created proxy' in zabbix_proxy_update_w_tls_connect_psk_passive.result"
+
+    - name: Check - Creating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_connect: psk
+      register: zabbix_proxy_update_w_tls_connect_psk_passive_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_psk_passive_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_psk_passive_again.result"
+
+    - name: Clean environment
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+
+    - name: Test - Creating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: psk
+        tls_psk_identity: my_tls_psk_identity
+        tls_psk: '{{ zabbix_psk_value }}'
+      register: zabbix_proxy_update_w_tls_accept_psk_active
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_psk_active is changed
+          - "'Successfully created proxy' in zabbix_proxy_update_w_tls_accept_psk_active.result"
+
+    - name: Check - Creating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_accept: psk
+      register: zabbix_proxy_update_w_tls_accept_psk_active_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_psk_active_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_accept_psk_active_again.result"
+
+    # Change tls_accept without psk params
+    - name: Test - Updating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept:
+          - psk
+          - cert
+      register: zabbix_proxy_update_w_tls_accept_change
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_change is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_accept_change.result"
+
+    - name: Check - Updating proxy with encryption tls_connect psk
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_accept:
+          - psk
+          - cert
+      register: zabbix_proxy_update_w_tls_accept_change_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_change_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_accept_change_again.result"
+
+    # Change from tls_accept to tls_connect without psk params
+    - name: Test - Updating proxy encryption from tls_accept to tls_connect
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: psk
+      register: zabbix_proxy_update_w_tls_connect_change
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_change is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_connect_change.result"
+
+    - name: Check - Updating proxy encryption from tls_accept to tls_connect
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_connect: psk
+      register: zabbix_proxy_update_w_tls_connect_change_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_connect_change_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_connect_change_again.result"
+
+    # Change from tls_connect to tls_accept without psk params
+    - name: Test - Updating proxy encryption from tls_connect to tls_accept
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: psk
+      register: zabbix_proxy_update_w_tls_accept_change
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_change is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_tls_accept_change.result"
+
+    - name: Check - Updating proxy encryption from tls_connect to tls_accept
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_accept: psk
+      register: zabbix_proxy_update_w_tls_accept_change_again
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_tls_accept_change_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_tls_accept_change_again.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy
+
+- name: Check tls_issuer and tls_subject encryption parameters
+  block:
+    # Creating proxy with tls_issuer and tls_subject
+    - name: Test - Creating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: cert
+        tls_issuer: test_tls_issuer
+        tls_subject: test_tls_subject
+      register: zabbix_proxy_create_w_cert_params
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_cert_params is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_w_cert_params.result"
+
+    - name: Check - Creating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_accept: cert
+        tls_issuer: test_tls_issuer
+        tls_subject: test_tls_subject
+      register: zabbix_proxy_create_w_cert_params_again
+      ignore_errors: true
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_cert_params_again is not changed
+          - "'No need to update' in zabbix_proxy_create_w_cert_params_again.result"
+
+    # Updating proxy with tls_issuer and tls_subject
+    - name: Test - Updating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: active
+        tls_accept: cert
+        tls_issuer: test_tls_issuer_2
+        tls_subject: test_tls_subject_2
+      register: zabbix_proxy_update_w_cert_params
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_cert_params is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_cert_params.result"
+
+    - name: Check - Updating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_accept: cert
+        tls_issuer: test_tls_issuer_2
+        tls_subject: test_tls_subject_2
+      register: zabbix_proxy_update_w_cert_params_again
+      ignore_errors: true
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_cert_params_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_cert_params_again.result"
+
+    - name: Clean environment
+      zabbix.zabbix.zabbix_proxy:
+        state: absent
+        name: My Zabbix proxy
+
+    # Creating proxy with tls_issuer and tls_subject
+    - name: Test - Creating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: cert
+        tls_issuer: test_tls_issuer
+        tls_subject: test_tls_subject
+      register: zabbix_proxy_create_w_cert_params_passive
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_cert_params_passive is changed
+          - "'Successfully created proxy' in zabbix_proxy_create_w_cert_params_passive.result"
+
+    - name: Check - Creating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_connect: cert
+        tls_issuer: test_tls_issuer
+        tls_subject: test_tls_subject
+      register: zabbix_proxy_create_w_cert_params_passive_again
+      ignore_errors: true
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_create_w_cert_params_passive_again is not changed
+          - "'No need to update' in zabbix_proxy_create_w_cert_params_passive_again.result"
+
+    # Updating proxy with tls_issuer and tls_subject
+    - name: Test - Updating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        mode: passive
+        tls_connect: cert
+        tls_issuer: test_tls_issuer_2
+        tls_subject: test_tls_subject_2
+      register: zabbix_proxy_update_w_cert_params_passive
+      ignore_errors: true
+
+    - name: Assert that task was changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_cert_params_passive is changed
+          - "'Successfully updated proxy' in zabbix_proxy_update_w_cert_params_passive.result"
+
+    - name: Check - Updating proxy with tls_issuer and tls_subject
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        tls_connect: cert
+        tls_issuer: test_tls_issuer_2
+        tls_subject: test_tls_subject_2
+      register: zabbix_proxy_update_w_cert_params_passive_again
+      ignore_errors: true
+
+    - name: Assert that task was not changed
+      ansible.builtin.assert:
+        that:
+          - zabbix_proxy_update_w_cert_params_passive_again is not changed
+          - "'No need to update' in zabbix_proxy_update_w_cert_params_passive_again.result"
+
+- name: Clean environment
+  zabbix.zabbix.zabbix_proxy:
+    state: absent
+    name: My Zabbix proxy

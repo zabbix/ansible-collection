@@ -116,7 +116,14 @@ default_values = {
         'snmp': '161',
         'ipmi': '623',
         'jmx': '12345'
-    }
+    },
+    'proxy_port': '10051',
+    'proxy_address': '127.0.0.1',
+    'proxy_dns': 'localhost',
+    'proxy_useip': True,
+    'proxy_mode': {'6.0': '5', '7': '0'},
+    'proxy_group_failover_delay': '1m',
+    'proxy_group_min_online': '1'
 }
 
 # Dictionary for converting macro types to a numeric value
@@ -138,7 +145,7 @@ ipmi_authtype_type = {
     'rmcp+': '6'
 }
 
-# Dictionary for converting IPMI privilege to a numeric value
+# Dictionary for converting an IPMI privilege to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 ipmi_privilege_type = {
     'callback': '1',
@@ -148,7 +155,7 @@ ipmi_privilege_type = {
     'oem': '5'
 }
 
-# Dictionary for converting TLS type to a numeric value
+# Dictionary for converting a TLS type to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 tls_type = {
     'unencrypted': 1,
@@ -156,7 +163,7 @@ tls_type = {
     'cert': 4
 }
 
-# Dictionary for converting inventory mode to a numeric value
+# Dictionary for converting an inventory mode to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/host/object#host)
 inventory_mode_types = {
     'automatic': '1',
@@ -190,7 +197,7 @@ inventory_fields = {
     '67': 'poc_2_phone_b', '68': 'poc_2_cell', '69': 'poc_2_screen',
     '70': 'poc_2_notes'}
 
-# Dictionary for converting interface type to a numeric value
+# Dictionary for converting an interface type to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object#host-interface)
 interface_types = {
     'agent': '1',
@@ -198,7 +205,7 @@ interface_types = {
     'ipmi': '3',
     'jmx': '4'}
 
-# Dictionary for converting security level type to a numeric value
+# Dictionary for converting a security level type to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_securitylevel_types = {
     'noAuthNoPriv': '0',
@@ -206,13 +213,13 @@ snmp_securitylevel_types = {
     'authPriv': '2'
 }
 
-# Dictionary for converting authprotocol type to a numeric value
+# Dictionary for converting an authprotocol type to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_authprotocol_types = {
     'md5': '0', 'sha1': '1', 'sha224': '2',
     'sha256': '3', 'sha384': '4', 'sha512': '5'}
 
-# Dictionary for converting privprotocol type to a numeric value
+# Dictionary for converting a privprotocol type to a numeric value
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_privprotocol_types = {
     'des': '0', 'aes128': '1', 'aes192': '2',
@@ -220,7 +227,7 @@ snmp_privprotocol_types = {
 
 # Dictionary for SNMP parameters
 # If the new field only depends on the version, then it must be added here.
-# If the new field needs some logic, then it must be added in file zabbix_host.py in section with SNMP checks.
+# If the new field needs some logic, then it must be added in the file zabbix_host.py in the section with SNMP checks.
 # (See also: https://www.zabbix.com/documentation/current/manual/api/reference/hostinterface/object)
 snmp_parameters = {
     '1': ['version', 'bulk', 'community'],
@@ -257,3 +264,11 @@ filter_params_depends_on_version = {
     'query': [],
     'output': [],
     'filter': ['proxy_group']}
+
+# Dictionary with proxy timeout types
+proxy_timeouts = [
+    'timeout_zabbix_agent', 'timeout_simple_check', 'timeout_snmp_agent',
+    'timeout_external_check', 'timeout_db_monitor', 'timeout_http_agent',
+    'timeout_ssh_agent', 'timeout_telnet_agent', 'timeout_script',
+    'timeout_browser'
+]

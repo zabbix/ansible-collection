@@ -1,0 +1,45 @@
+---
+- name: Integration tests for the module for creating proxies
+  block:
+
+    - name: Documentation, sample tests
+      ansible.builtin.include_tasks: zabbix_proxy_doc.yml
+
+    - name: Basic functionality check
+      ansible.builtin.include_tasks: zabbix_proxy_basic_check.yml
+
+    - name: Proxy mode
+      ansible.builtin.include_tasks: zabbix_proxy_mode.yml
+
+    - name: Proxy group, local_address, local_port
+      ansible.builtin.include_tasks: zabbix_proxy_proxy_group.yml
+
+    - name: Proxy allowed addresses
+      ansible.builtin.include_tasks: zabbix_proxy_allowed_addresses.yml
+
+    - name: Proxy custom timeouts
+      ansible.builtin.include_tasks: zabbix_proxy_custom_timeouts.yml
+
+    - name: Proxy interface
+      ansible.builtin.include_tasks: zabbix_proxy_interface.yml
+
+    - name: Proxy encryption
+      ansible.builtin.include_tasks: zabbix_proxy_encryption.yml
+
+  always:
+    - name: Remove test proxy
+      zabbix.zabbix.zabbix_proxy:
+        name: My Zabbix proxy
+        state: absent
+
+    - name: Remove test proxy group
+      when: zabbix_version == 7
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group
+        state: absent
+
+    - name: Remove test proxy group 2
+      when: zabbix_version == 7
+      zabbix.zabbix.zabbix_proxy_group:
+        name: My proxy group 2
+        state: absent

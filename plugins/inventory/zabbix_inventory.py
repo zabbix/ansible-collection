@@ -13,7 +13,7 @@ author:
 short_description: Zabbix inventory plugin
 description:
     - This plugin is designed to work with Zabbix API.
-    - This inventory plugin allows Ansible users to generate a dynamic inventory based on data from Zabbix installation.
+    - This inventory plugin allows Ansible users to generate a dynamic inventory based on data from the Zabbix installation.
     - Using the available filtering methods, the user can specify the search criteria for hosts in Zabbix, as well as limit the set of returned fields.
 options:
     zabbix_user:
@@ -64,7 +64,7 @@ options:
         elements: str
         description:
             - Object properties to be returned.
-            - List of available fields depends on Zabbix version.
+            - List of available fields depends on the Zabbix version.
             - See also U(https://www.zabbix.com/documentation/6.0/en/manual/api/reference/host/object)
             - See also U(https://www.zabbix.com/documentation/current/en/manual/api/reference/host/object)
             - Fields 'hostid' and 'host' will always be given from Zabbix.
@@ -178,10 +178,10 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
-# Minimal set of parameters for searching.
-# You need to specify the name of plugin, URL and credentials (login and password or API token).
-# IMPORTANT: Keep in mind that with these parameters all hosts with all host parameters will be returned from Zabbix.
-# This can create excessive load on Zabbix server. For selecting host and fields, use the filter and output options.
+# Minimum set of parameters for searching.
+# You need to specify the name of plugin, URL, and credentials (login and password or API token).
+# IMPORTANT: Keep in mind that with these parameters, all hosts with all host parameters will be returned from Zabbix.
+# This can create an excessive load on Zabbix server. For selecting host and fields, use the filter and output options.
 ---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
@@ -191,8 +191,8 @@ zabbix_password: zabbix
 
 # FILTER EXAMPLES
 
-# To select hosts by host groups name, you can use the following example.
-# In this example, all hosts linked to any host groups the names of which start with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
+# To select hosts by host group name, you can use the following example.
+# In this example, all hosts linked to any host group starting with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -200,8 +200,8 @@ zabbix_password: zabbix
 filter:
   hostgroups: 'Linux*'
 
-# To select hosts by certain host group name, you can use the following example.
-# In this example, all hosts linked only to host group 'Linux' will be returned.
+# To select hosts from a particular host group, you can use the following example.
+# In this example, only hosts linked to the host group 'Linux' will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -210,7 +210,7 @@ filter:
   hostgroups: Linux
 
 # To select hosts from several host groups, you can use the following example.
-# In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups the names of which start with 'Windows' will be returned.
+# In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups starting with 'Windows' will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -222,9 +222,9 @@ filter:
     - 'Windows*'
 
 # You can use all available filter options to search for hosts in Zabbix.
-# You can use wildcard search for: host groups, templates, proxy, name (visible name), host (technical name).
-# Also, you can use 'status' for filtering and search only for enabled or disabled hosts.
-# Also, you can use tags for searching by tag name or tag value.
+# You can use the wildcard search for: host groups, templates, proxy, name (visible name), host (technical name).
+# Additionally, you can use 'status' for filtering and search only for enabled or disabled hosts.
+# You can use tags for searching by tag name or tag value.
 # In this example, all hosts linked to the host group 'Linux' and to any of the '*http*' or '*agent*' templates as well as
 # containing 'sql' or 'SQL' in their visible names will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
@@ -239,8 +239,8 @@ filter:
 
 # OUTPUT EXAMPLES
 
-# To limit fields in output, you can specify the list of fields in output options.
-# In this example, only name and two mandatory fields (hostid and host) will be returned.
+# To limit fields in the output, specify the list of fields in output options.
+# In this example, only the name and two mandatory fields (hostid and host) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -249,8 +249,8 @@ filter:
   hostgroups: Linux
 output: name
 
-# To have several output fields, you need to specify those in the list format.
-# In this example, name, status and two mandatory fields (hostid and host) will be returned.
+# To have several output fields, you need to specify them in list format.
+# In this example, name, status, and two mandatory fields (hostid and host) will be returned.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -269,13 +269,13 @@ output:
 # - groups
 # - compose
 
-# To convert digit status to verbose, you can use 'compose' from next example.
-# To group by status (enabled, disabled) from output, you can use 'groups' from next example.
-# To group by Zabbix host groups, you can use 'keyed_groups' from next example.
-# IMPORTANT: Make sure that necessary data will be present in output. For this example, 'groups' must be present for
+# To convert the digit status to verbose, you can use 'compose' from the next example.
+# To group by status (enabled, disabled) from the output, you can use 'groups' from the next example.
+# To group by Zabbix host group, you can use 'keyed_groups' from the next example.
+# IMPORTANT: Make sure that the necessary data is present in the output. For this example, 'groups' must be present for
 # grouping with 'keyed_groups'.
-# IMPORTANT: Keep in mind that all parameters from Zabbix will have prefix (by default, 'zabbix_').
-# And you need to specify it in postprocessing (zabbix_groups, zabbix_status, etc.).
+# IMPORTANT: Keep in mind that all parameters from Zabbix will have a prefix (by default, 'zabbix_')
+# that you need to specify in postprocessing (zabbix_groups, zabbix_status, etc.).
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -293,14 +293,14 @@ keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
 
-# For grouping by template names. Other parameters (credentials, URL, etc.) were skipped in this example.
+# For grouping by template name. Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectParentTemplates: ['name']
 keyed_groups:
   - key: zabbix_parentTemplates | map(attribute='name')
     separator: ""
 
-# For searching by 'Location' tag and grouping by tag names. Other parameters (credentials, URL, etc.) were skipped in this example.
+# For searching by the 'Location' tag and grouping by tag name. Other parameters (credentials, URL, etc.) were skipped in this example.
 query:
   selectTags: 'extend'
 filter:
@@ -310,7 +310,7 @@ keyed_groups:
   - key: zabbix_tags | map(attribute='tag')
     separator: ""
 
-# For searching by 'Location' tag and grouping by tag values. Other parameters (credentials, URL, etc.) were skipped in this example.
+# For searching by the 'Location' tag and grouping by tag values. Other parameters (credentials, URL, etc.) were skipped in this example.
 # In this example, hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
 # then the following groups will be created: Riga, Berlin.
 query:
@@ -356,7 +356,7 @@ cache_connection: /tmp/zabbix_inventory
 
 # COMPLEX EXAMPLES
 
-# In this example, you can use filtering by host groups, templates, proxy, tags, names, status.
+# In this example, you can use filtering by host group, template, proxy, tag, name, status.
 # Grouping by Zabbix host groups.
 # Transform IP addresses to the list of IP.
 plugin: "zabbix.zabbix.zabbix_inventory"
@@ -391,8 +391,8 @@ keyed_groups:
   - key: zabbix_groups | map(attribute='name')
     separator: ""
 
-# In this example, you can apply filtering by 'Location' tag with empty value and grouping by status (enabled, disabled).
-# In this example, status was transformed from digit value to verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
+# In this example, you can apply filtering by the 'Location' tag with an empty value and grouping by status (enabled, disabled).
+# In the example, the status was transformed from a digit value to a verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -413,14 +413,14 @@ compose:
 # USING 'extra-vars' EXAMPLES
 
 # For using extra-vars, you need to meet 3 conditions:
-# 1. add use_extra_vars: true to the inventory file or specify the use of extra-vars in the ansible configuration file;
+# 1. add use_extra_vars: true to the inventory file or specify the use of extra-vars in the Ansible configuration file;
 # 2. specify a variable in the inventory file in 'Jinja' format. (e.g., {{ url }});
 # 3. add --extra-vars or -e with the value in the command line. (e.g., --extra-vars url="http://localhost");
 
-# To use extra-vars in your inventory file, you can see the example below:
-# To pass a parameter as a list, you can use the following construct: -e macros="['macro','value']"
-# To pass a parameter as a dict, you can use the following construct: -e host_tag="{'tag':'My host test','value':'host 1'}"
-# To pass a parameter as a string, you can use the following construct: -e os_tag_value="Linux", -e inventory_field="Model", -e url="your-zabbix.com"
+# To use extra-vars in your inventory file, see the example below:
+# To pass a parameter as a list, use the following construct: -e macros="['macro','value']"
+# To pass a parameter as a dict, use the following construct: -e host_tag="{'tag':'My host test','value':'host 1'}"
+# To pass a parameter as a string, use the following construct: -e os_tag_value="Linux", -e inventory_field="Model", -e url="your-zabbix.com"
 
 # The final command for this example will look like this:
 # ansible-playbook -e macros="['macro','value']" \
@@ -474,7 +474,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def get_absolute_url(self):
         """
-        This function checks and creates URL for connection to Zabbix API.
+        This function checks and creates a URL for connection to Zabbix API.
         If there is no schema in the input, the default schema will be used (http://).
         If there is no 'api_jsonrpc.php' path in the input data, then this value will be automatically added.
         If the address is empty, the name 'localhost' will be used.
@@ -513,7 +513,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def login(self):
         """
-        Function for logging in to Zabbix.
+        Function for logging into Zabbix.
         If 'zabbix_api_token'option is set, use auth by token.
 
         :rtype: str
@@ -548,7 +548,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def logout(self):
         """
-        This function requests user.logout method.
+        This function requests the user.logout method.
         If login and password were used for authorization, a logout request will be sent.
         If a token was used for authorization, then the request will not be sent.
 
@@ -590,18 +590,29 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 - Error during parse response from Zabbix API. (Invalid JSON)
                 - Any error while parsing the response from the server.
                 - An 'error' field was found in the response from the server.
+            * AnsibleAuthenticationFailure: if Basic HTTP auth was used with Zabbix API version >= 7.2.0
         """
+        methods_wo_auth = ['apiinfo.version', 'user.login']
 
         # Build headers and default payload
         headers = {'Content-Type': 'application/json-rpc', 'Accept': 'application/json'}
         payload = {'jsonrpc': '2.0', 'method': method, 'id': reqid, 'params': params}
 
         # Add Zabbix auth
-        if hasattr(self, "auth"):
-            payload['auth'] = self.auth
+        if method not in methods_wo_auth and hasattr(self, "auth"):
+            if Zabbix_version(self.zabbix_version) < Zabbix_version('7.2.0'):
+                payload['auth'] = self.auth
+            else:
+                headers['Authorization'] = 'Bearer {0}'.format(self.auth)
 
         # Add basic auth
         if self.args['http_login'] is not None and self.args['http_password'] is not None:
+            # Check Zabbix API version
+            if method not in methods_wo_auth:
+                if Zabbix_version(self.zabbix_version) >= Zabbix_version('7.2.0'):
+                    raise AnsibleAuthenticationFailure(
+                        'Basic HTTP authentication is not supported for Zabbix API version: {0}'.format(
+                            self.zabbix_version))
             auth = base64.b64encode("{0}:{1}".format(
                 self.args['http_login'], self.args['http_password']).encode('ascii'))
             headers['Authorization'] = 'Basic {0}'.format(auth.decode('ascii'))
@@ -632,7 +643,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
     def validate_params(self):
         """
-        This function checks the input parameters for correct filling.
+        This function checks the input parameters for correctness.
         In case of minor problems (case, parameter type), the function automatically
         corrects the input data.
 
@@ -649,8 +660,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         """
 
         # Check depending on the Zabbix version
-        # If the arguments contain parameters which depends on the version,
-        # we need to get the version of the API.
+        # If the arguments contain parameters which depend on the version,
+        # it is necessary to get the version of the API.
         need_version = False
 
         for key in filter_params_depends_on_version:
@@ -987,7 +998,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 cache_needs_update = True
 
             # Check the data from the cache. If the data is received, compare the input parameters.
-            # If the filter, output or query parameters have changed, then we will request the data again.
+            # If the filter, output, or query parameters have changed, data will be requested again.
             if cached_data:
                 if 'input_args' not in cached_data:
                     cache_needs_update = True
@@ -1056,7 +1067,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     '{0}{1}'.format(self.args['prefix'], each),
                     host[each])
 
-            # added for compose vars, keyed-groups and composed groups
+            # added for compose vars, keyed-groups, and composed groups
             self._set_composite_vars(
                 self.args.get('compose'),
                 self.inventory.get_host(host['host']).get_vars(),
