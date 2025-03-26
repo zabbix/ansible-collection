@@ -41,6 +41,8 @@
     repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
                         + repository_url + "/zabbix/"
                         + repository_version | string + "/"
+                        + ("stable/" if (repository_version == "7.2")
+                            else "")
                         + ansible_distribution | lower
                         + ("" if (ansible_architecture == "x86_64"
                                   or ansible_distribution == "Raspbian")

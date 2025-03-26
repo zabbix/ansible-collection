@@ -51,6 +51,16 @@ agent_2_map_plugin_list:
     - oracle
     - redis
     - smart
+  '7.2':  # Starting with 6.4 loadable plugin dependency removed. Manage from inventory, using "agent_2_plugin_list" variable.
+    - ceph
+    - docker
+    - memcached
+    - modbus
+    - mqtt
+    - mysql
+    - oracle
+    - redis
+    - smart
 
 ### User and Group to run Zabbix agent under.
 agent_map_service_user:
