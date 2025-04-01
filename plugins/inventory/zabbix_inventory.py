@@ -167,7 +167,7 @@ options:
             tags_behavior:
                 type: str
                 default: 'and/or'
-                choices: ['and/or', 'or']
+                choices: ['and', 'and/or', 'or']
                 description:
                     - Desired logic for searching by tags.
                     - This parameter impacts the logic of searching by tags.
@@ -714,7 +714,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             # tags_behavior
             if self.args['filter'].get('tags_behavior') is not None:
                 if (isinstance(self.args['filter']['tags_behavior'], AnsibleUnicode) is False or
-                        self.args['filter']['tags_behavior'].lower() not in ['and/or', 'or']):
+                        self.args['filter']['tags_behavior'].lower() not in ['and', 'and/or', 'or']):
                     raise AnsibleParserError(
                         'Unknown tags_behavior filter: {0}. Available: and/or, or.'.format(self.args['filter']['tags_behavior']))
 
@@ -824,7 +824,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
         # tags_behavior
         if self.args['filter'].get('tags_behavior') is not None:
-            zabbix_filter['evaltype'] = '0' if self.args['filter']['tags_behavior'].lower() == 'and/or' else '2'
+            zabbix_filter['evaltype'] = '0' if 'and' in self.args['filter']['tags_behavior'].lower() else '2'
 
         return zabbix_filter
 
@@ -949,6 +949,71 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         if extra_vars and self.templar.is_template(self.args) and self.args.get('use_extra_vars') is True:
             self.args = self.templar.template(self.args)
 
+    def preload_data(self):
+        """
+        The function preloads data from Zabbix in order to perform
+        additional actions if required.
+
+        :return: None
+        """
+        # Resolve strict "AND" logic
+        #
+        # This part of the code will load hosts from Zabbix
+        # and apply strict "AND" filtering logic to them.
+        if (self.args['filter'].get('tags_behavior') is not None and
+            self.args['filter']['tags_behavior'].lower() == 'and'):
+
+                # replace the "output" field to receive only hostid and tags
+                preload_query = dict(self.query)
+                preload_query['output'] = ['hostid', 'tags']
+                zabbix_preload_hosts = self.api_request('host.get', params=preload_query)
+
+                # set of the resulting hostids
+                hostids = set([h['hostid'] for h in zabbix_preload_hosts])
+
+                # process tags from inventory file
+                for tag in self.args['filter']['tags']:
+                    for host in zabbix_preload_hosts:
+
+                        # Check that this host still in set
+                        if host['hostid'] not in hostids:
+                            continue
+
+                        if tag['operator'] == 'exists':
+                            if tag['tag'] not in [t['tag'] for t in host['tags']]:
+                                hostids.remove(host['hostid'])
+
+                        elif tag['operator'] == 'not exists':
+                            if tag['tag'] in [t['tag'] for t in host['tags']]:
+                                hostids.remove(host['hostid'])
+
+                        elif tag['operator'] == 'equals':
+                            for htag in host['tags']:
+                                if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
+                                    break
+                            else:
+                                hostids.remove(host['hostid'])
+
+                        elif tag['operator'] == 'contains':
+                            for htag in host['tags']:
+                                if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
+                                    break
+                            else:
+                                hostids.remove(host['hostid'])
+
+                        elif tag['operator'] == 'not equal':
+                            for htag in host['tags']:
+                                if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
+                                    hostids.remove(host['hostid'])
+
+                        elif tag['operator'] == 'not like':
+                            for htag in host['tags']:
+                                if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
+                                    hostids.remove(host['hostid'])
+
+                # add resulting hostids
+                self.query['hostids'] = list(hostids)
+
     def parse(self, inventory, loader, path, cache=True):
         """
         The function processes data about hosts in Zabbix.
@@ -1046,6 +1111,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                     self.query['output'] = list(self.args['output'])
                     if 'host' not in self.query['output']:
                         self.query['output'].append('host')
+
+            # preload data
+            self.preload_data()
 
             # getting result data
             self.zabbix_hosts = self.api_request('host.get', params=self.query)
