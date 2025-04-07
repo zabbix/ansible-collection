@@ -20,6 +20,9 @@ ansible-playbook playbooks/check_inventory_basic_and_query_64.yml -i inventories
 # Than we will revert necessary parameters for filtering conditions and will try to get inventory data again.
 ansible-playbook playbooks/check_inventory_filtering.yml -i inventories/zabbix_inventory_filtering.yml
 
+# Additional tests for strict "AND" logic.
+ansible-playbook playbooks/check_inventory_strics_and.yml -i inventories/zabbix_inventory_strics_and.yml
+
 # Testing group, keyed groups and compose.
 ansible-playbook playbooks/check_inventory_post_processing.yml -i inventories/zabbix_inventory_post_processing.yml
 

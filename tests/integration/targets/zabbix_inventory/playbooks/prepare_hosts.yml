@@ -15,6 +15,7 @@
         hostgroups:
           - Integration test group 1
           - Integration test group 2
+          - Integration test group 3
 
     - name: Create host 'Integration test host 1'
       zabbix.zabbix.zabbix_host:
@@ -50,3 +51,17 @@
         tags:
           - tag: integration test
             value: host 2
+
+    - name: Create host 'Tags test host'
+      zabbix.zabbix.zabbix_host:
+        state: present
+        host: Tags test host
+        hostgroups:
+          - Integration test group 3
+        name: Tags test host (visible)
+        tags:
+          - tag: port
+            value: 22
+          - tag: port
+            value: 80
+          - tag: service

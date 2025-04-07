@@ -1,0 +1,36 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Filtering by host group names, templates, tags, status, visible and technical names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group 3'
+  TAGS:
+    - TAG: port
+      value: 22
+      operator: equals
+    - TAG: port
+      value: 80
+      operator: equals
+    - TAG: integration test
+      value: host 1
+      operator: not equal
+    - TAG: port
+      value: 2
+      operator: contains
+    - TAG: port
+      value: 10
+      operator: not like
+    - TAG: service
+      operator: exists
+    - TAG: integration test
+      operator: not exists
+  tags_behavior: and
+
+# Add output fields
+output: extend
