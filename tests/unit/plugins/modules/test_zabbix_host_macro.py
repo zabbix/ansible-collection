@@ -58,3 +58,34 @@ class TestMacro(TestModules):
             host = self.module.Host(self.mock_module_functions)
             with self.assertRaises(AnsibleFailJson):
                 host.check_macro_name('test test')
+
+    def test_check_macro_name_context(self):
+        """
+        Testing the conversion of macro names. This test verifies the
+        functionality of the function in case of using context macros.
+
+        Expected result: all macros from the list have been successfully
+        converted to the standard format.
+        """
+        test_cases = [
+            {'input': '{$IF:eth0}', 'expected': '{$IF:eth0}'},
+            {'input': '{$if:eth0}', 'expected': '{$IF:eth0}'},
+            {'input': '{$IF:ETH0}', 'expected': '{$IF:ETH0}'},
+            {'input': '{$if:ETH0}', 'expected': '{$IF:ETH0}'},
+            {'input': '{$IF:eth0:aa}', 'expected': '{$IF:eth0:aa}'},
+            {'input': '{$if:eth0:aa}', 'expected': '{$IF:eth0:aa}'},
+            {'input': '{$LOW_SPACE_LIMIT:regex:"^/tmp$"}', 'expected': '{$LOW_SPACE_LIMIT:regex:"^/tmp$"}'},
+            {'input': '{$low_space_limit:regex:"^/tmp$"}', 'expected': '{$LOW_SPACE_LIMIT:regex:"^/tmp$"}'},
+            {'input': '{$d:one:two:}', 'expected': '{$D:one:two:}'},
+            {'input': '{$d:one:two::}', 'expected': '{$D:one:two::}'},
+            {'input': '{$d:::one:::two:::}', 'expected': '{$D:::one:::two:::}'},
+            {'input': '{$d{one}', 'expected': '{$D{ONE}'},
+            {'input': '{$d:{one}', 'expected': '{$D:{one}'}]
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version):
+            host = self.module.Host(self.mock_module_functions)
+            for each in test_cases:
+                result = host.check_macro_name(each['input'])
+                self.assertEqual(result, each['expected'])

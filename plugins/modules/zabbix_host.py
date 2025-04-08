@@ -576,11 +576,20 @@ class Host(object):
             *  If spaces are found in the macro name,
             the module will be stopped.
         """
-        for element in ['{', '$', '}']:
-            macro = macro.replace(element, '')
+        if macro.endswith('}'):
+            macro = macro[:-1]
+        for element in ['{', '$']:
+            if macro.startswith(element):
+                macro = macro[1:]
+
         if ' ' in macro:
             self.module.fail_json(
                 msg="Invalid macro name: {0}".format(macro))
+
+        if ':' in macro:
+            macro_parts = macro.split(':')
+            macro_parts[0] = macro_parts[0].upper()
+            return '{$' + ':'.join(macro_parts) + '}'
 
         return '{$' + macro.upper() + '}'
 
