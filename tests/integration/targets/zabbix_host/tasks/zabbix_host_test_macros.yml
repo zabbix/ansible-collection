@@ -285,6 +285,70 @@
           - zabbix_host_macro_check_lower_name_check is not changed
           - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_lower_name_check.result"
 
+    # Сheck the context macros.
+    # We need to make sure that the context remains unchanged when created.
+    - name: Test - Check macro name with context
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1:context}'
+          - macro: '{$TEST_MACRO_2:CONTEXT}'
+          - macro: '{$TEST_MACRO_3:regex:"^/tmp$"}'
+      register: zabbix_host_macro_check_context
+
+    - name: Assert that macro was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_context is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_context.result"
+
+    - name: Test - Check macro name with context again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1:context}'
+          - macro: '{$TEST_MACRO_2:CONTEXT}'
+          - macro: '{$TEST_MACRO_3:regex:"^/tmp$"}'
+      register: zabbix_host_macro_check_context_again
+
+    - name: Assert that macro was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_context_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_context_again.result"
+
+    # We need to make sure that when we specify the same macros but in capital letters, there are changes.
+    # This means that before this, the host had macros with lowercase letters in the macro context.
+    - name: Test - Check macro name with context capital letter
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1:CONTEXT}'
+          - macro: '{$TEST_MACRO_2:CONTEXT}'
+          - macro: '{$TEST_MACRO_3:REGEX:"^/TMP$"}'
+      register: zabbix_host_macro_check_capital_context
+
+    - name: Assert that macro was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_capital_context is changed
+          - "'Successfully updated host: zabbix_test_host' == zabbix_host_macro_check_capital_context.result"
+
+    - name: Test - Check macro name with context capital letter again
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        macros:
+          - macro: '{$TEST_MACRO_1:CONTEXT}'
+          - macro: '{$TEST_MACRO_2:CONTEXT}'
+          - macro: '{$TEST_MACRO_3:REGEX:"^/TMP$"}'
+      register: zabbix_host_macro_check_capital_context_again
+
+    - name: Assert that macro was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_macro_check_capital_context_again is not changed
+          - "'No need to update host: zabbix_test_host' == zabbix_host_macro_check_capital_context_again.result"
+
     # Creating macro with spaces in the name
     - name: Test - Creating macro with spaces in the name
       zabbix.zabbix.zabbix_host:
