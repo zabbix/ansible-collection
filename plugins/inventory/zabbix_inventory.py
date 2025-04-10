@@ -818,8 +818,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             for tag in self.args['filter']['tags']:
                 zabbix_filter['tags'].append({
                     'tag': tag.get('tag'),
-                    'value': tag.get('value', ''),
-                    'operator': tags_compare_operators.get(str(tag.get('operator', '')), '0')
+                    'value': tag.setdefault('value', ''),
+                    'operator': tags_compare_operators.get(tag.setdefault('operator', 'contains'), '0')
                 })
 
         # tags_behavior
@@ -966,6 +966,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 # replace the "output" field to receive only hostid and tags
                 preload_query = dict(self.query)
                 preload_query['output'] = ['hostid', 'tags']
+                preload_query['selectTags'] = 'extend'
                 zabbix_preload_hosts = self.api_request('host.get', params=preload_query)
 
                 # set of the resulting hostids
