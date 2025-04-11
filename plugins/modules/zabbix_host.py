@@ -582,7 +582,7 @@ class Host(object):
             if macro.startswith(element):
                 macro = macro[1:]
 
-        if ' ' in macro:
+        if ' ' in macro.split(':')[0]:
             self.module.fail_json(
                 msg="Invalid macro name: {0}".format(macro))
 
