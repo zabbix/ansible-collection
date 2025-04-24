@@ -19,6 +19,3 @@
       zabbix.zabbix.zabbix_host:
         state: absent
         host: Tags test host
-
-
-    

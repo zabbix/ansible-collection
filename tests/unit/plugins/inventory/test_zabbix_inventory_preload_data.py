@@ -184,10 +184,12 @@ query = {
     ],
     "evaltype": "0"
 }
-    
+
+
 # mock for api_request
 def mock_api_request(self, method, params):
     return preloaded_data
+
 
 class TestPreloadData(unittest.TestCase):
 
@@ -254,7 +256,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10673', '10674', '10681']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -324,7 +326,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10680', '10677', '10676', '10675']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -385,7 +387,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10681', '10680', '10674', '10673']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -437,7 +439,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10677', '10676', '10675']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -480,7 +482,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10681', '10680', '10676', '10675', '10674', '10673']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -514,7 +516,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'service', 'operator': 'not exists'}],
                     'tags_behavior': 'and'}},
              'expected': ['10677']}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -557,7 +559,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'port', 'value': 22, 'operator': 'equals'}],
                     'tags_behavior': 'and'}},
              'expected': ['10674']},
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -620,7 +622,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'search', 'value': 'additional', 'operator': 'equals'}],
                     'tags_behavior': 'and'}},
              'expected': ['10674']},
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,
@@ -661,7 +663,7 @@ class TestPreloadData(unittest.TestCase):
                         {'tag': 'port', 'value': 22, 'operator': 'equals'},
                         {'tag': 'service', 'value': 'ssh', 'operator': 'not equal'}],
                     'tags_behavior': 'or'}}}
-            ]
+        ]
 
         with patch.multiple(
                 InventoryModule,

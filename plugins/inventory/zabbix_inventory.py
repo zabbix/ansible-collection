@@ -188,11 +188,11 @@ zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
 zabbix_password: zabbix
 
-
 # FILTER EXAMPLES
 
 # To select hosts by host group name, you can use the following example.
 # In this example, all hosts linked to any host group starting with 'Linux' (Linux, Linux servers, Linux Ubuntu, etc.) will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -202,6 +202,7 @@ filter:
 
 # To select hosts from a particular host group, you can use the following example.
 # In this example, only hosts linked to the host group 'Linux' will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -211,6 +212,7 @@ filter:
 
 # To select hosts from several host groups, you can use the following example.
 # In this example, all hosts linked to any of the host groups 'Linux', 'Linux Ubuntu' or host groups starting with 'Windows' will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -227,6 +229,7 @@ filter:
 # You can use tags for searching by tag name or tag value.
 # In this example, all hosts linked to the host group 'Linux' and to any of the '*http*' or '*agent*' templates as well as
 # containing 'sql' or 'SQL' in their visible names will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -241,6 +244,7 @@ filter:
 
 # To limit fields in the output, specify the list of fields in output options.
 # In this example, only the name and two mandatory fields (hostid and host) will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -251,6 +255,7 @@ output: name
 
 # To have several output fields, you need to specify them in list format.
 # In this example, name, status, and two mandatory fields (hostid and host) will be returned.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -276,6 +281,7 @@ output:
 # grouping with 'keyed_groups'.
 # IMPORTANT: Keep in mind that all parameters from Zabbix will have a prefix (by default, 'zabbix_')
 # that you need to specify in postprocessing (zabbix_groups, zabbix_status, etc.).
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -294,6 +300,7 @@ keyed_groups:
     separator: ""
 
 # For grouping by template name. Other parameters (credentials, URL, etc.) were skipped in this example.
+---
 query:
   selectParentTemplates: ['name']
 keyed_groups:
@@ -301,6 +308,7 @@ keyed_groups:
     separator: ""
 
 # For searching by the 'Location' tag and grouping by tag name. Other parameters (credentials, URL, etc.) were skipped in this example.
+---
 query:
   selectTags: 'extend'
 filter:
@@ -313,6 +321,7 @@ keyed_groups:
 # For searching by the 'Location' tag and grouping by tag values. Other parameters (credentials, URL, etc.) were skipped in this example.
 # In this example, hosts will be grouped by tag value. If you have tags: (Location: Riga, Location: Berlin),
 # then the following groups will be created: Riga, Berlin.
+---
 query:
   selectTags: 'extend'
 filter:
@@ -324,6 +333,7 @@ keyed_groups:
 
 # For transforming given host groups to the list, you can use 'compose' and the following example.
 # Other parameters (credentials, URL, etc.) were skipped in this example.
+---
 query:
   selectGroups: ['name']
 compose:
@@ -331,6 +341,7 @@ compose:
 
 # For transforming given interfaces to the list of IP addresses, you can use 'compose' and the following example.
 # Other parameters (credentials, URL, etc.) were skipped in this example.
+---
 query:
   selectInterfaces: ['ip']
 compose:
@@ -343,6 +354,7 @@ compose:
 # During the loading of cached data, the plugin will compare the input parameters. If any parameters impacting the given data
 # (login, password, API token, URL, output, filter, query) have been changed, then cached data will be skipped and new data will be requested from Zabbix.
 # For caching, you can use the following example:
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -359,6 +371,7 @@ cache_connection: /tmp/zabbix_inventory
 # In this example, you can use filtering by host group, template, proxy, tag, name, status.
 # Grouping by Zabbix host groups.
 # Transform IP addresses to the list of IP.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -393,6 +406,7 @@ keyed_groups:
 
 # In this example, you can apply filtering by the 'Location' tag with an empty value and grouping by status (enabled, disabled).
 # In the example, the status was transformed from a digit value to a verbose value and than used in 'keyed_groups' for grouping by verbose statuses.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: http://your-zabbix.com
 zabbix_user: Admin
@@ -434,6 +448,7 @@ compose:
 # For example, you cannot specify query: '{{ my_query }}' in the inventory file and pass all query fields as extra-vars.
 # The query field should accept a value of type dict, but it receives a value of type string ('{{ my_query }}').
 # In this case, you need to specify query parameters as in the example below.
+---
 plugin: "zabbix.zabbix.zabbix_inventory"
 zabbix_api_url: 'http://{{ url }}'
 zabbix_user: Admin
@@ -961,59 +976,59 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # This part of the code will load hosts from Zabbix
         # and apply strict "AND" filtering logic to them.
         if (self.args['filter'].get('tags_behavior') is not None and
-            self.args['filter']['tags_behavior'].lower() == 'and'):
+                self.args['filter']['tags_behavior'].lower() == 'and'):
 
-                # replace the "output" field to receive only hostid and tags
-                preload_query = dict(self.query)
-                preload_query['output'] = ['hostid', 'tags']
-                preload_query['selectTags'] = 'extend'
-                zabbix_preload_hosts = self.api_request('host.get', params=preload_query)
+            # replace the "output" field to receive only hostid and tags
+            preload_query = dict(self.query)
+            preload_query['output'] = ['hostid', 'tags']
+            preload_query['selectTags'] = 'extend'
+            zabbix_preload_hosts = self.api_request('host.get', params=preload_query)
 
-                # set of the resulting hostids
-                hostids = set([h['hostid'] for h in zabbix_preload_hosts])
+            # set of the resulting hostids
+            hostids = set([h['hostid'] for h in zabbix_preload_hosts])
 
-                # process tags from inventory file
-                for tag in self.args['filter']['tags']:
-                    for host in zabbix_preload_hosts:
+            # process tags from inventory file
+            for tag in self.args['filter']['tags']:
+                for host in zabbix_preload_hosts:
 
-                        # Check that this host still in set
-                        if host['hostid'] not in hostids:
-                            continue
+                    # Check that this host still in set
+                    if host['hostid'] not in hostids:
+                        continue
 
-                        if tag['operator'] == 'exists':
-                            if tag['tag'] not in [t['tag'] for t in host['tags']]:
+                    if tag['operator'] == 'exists':
+                        if tag['tag'] not in [t['tag'] for t in host['tags']]:
+                            hostids.remove(host['hostid'])
+
+                    elif tag['operator'] == 'not exists':
+                        if tag['tag'] in [t['tag'] for t in host['tags']]:
+                            hostids.remove(host['hostid'])
+
+                    elif tag['operator'] == 'equals':
+                        for htag in host['tags']:
+                            if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
+                                break
+                        else:
+                            hostids.remove(host['hostid'])
+
+                    elif tag['operator'] == 'contains':
+                        for htag in host['tags']:
+                            if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
+                                break
+                        else:
+                            hostids.remove(host['hostid'])
+
+                    elif tag['operator'] == 'not equal':
+                        for htag in host['tags']:
+                            if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
                                 hostids.remove(host['hostid'])
 
-                        elif tag['operator'] == 'not exists':
-                            if tag['tag'] in [t['tag'] for t in host['tags']]:
+                    elif tag['operator'] == 'not like':
+                        for htag in host['tags']:
+                            if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
                                 hostids.remove(host['hostid'])
 
-                        elif tag['operator'] == 'equals':
-                            for htag in host['tags']:
-                                if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
-                                    break
-                            else:
-                                hostids.remove(host['hostid'])
-
-                        elif tag['operator'] == 'contains':
-                            for htag in host['tags']:
-                                if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
-                                    break
-                            else:
-                                hostids.remove(host['hostid'])
-
-                        elif tag['operator'] == 'not equal':
-                            for htag in host['tags']:
-                                if htag['tag'] == tag['tag'] and htag['value'] == str(tag['value']):
-                                    hostids.remove(host['hostid'])
-
-                        elif tag['operator'] == 'not like':
-                            for htag in host['tags']:
-                                if htag['tag'] == tag['tag'] and str(tag['value']) in htag['value']:
-                                    hostids.remove(host['hostid'])
-
-                # add resulting hostids
-                self.query['hostids'] = list(hostids)
+            # add resulting hostids
+            self.query['hostids'] = list(hostids)
 
     def parse(self, inventory, loader, path, cache=True):
         """
