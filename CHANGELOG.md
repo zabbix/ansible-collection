@@ -1,3 +1,14 @@
+# v1.4.1
+
+## Feature
+
+- `zabbix_inventory plugin`: added strict `AND` logic for filtering by tags
+
+## BUG
+
+- `agent role`: fixed issue with installing of Zabbix agents for version 7.2
+- `zabbix_host module`: fixed issue of working with context macros
+
 # v1.4.0
 
 ## Feature
