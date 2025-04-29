@@ -1,0 +1,21 @@
+---
+- name: Check filtering by tags with the strict and logic
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+  tasks:
+    # We need to be sure that we have only one host
+    - name: Assert that only 'Tags test host' was given
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars['Tags test host'] is defined
+
+    - name: Delete host 'Tags test host'
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: Tags test host

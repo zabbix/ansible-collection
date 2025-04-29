@@ -54,6 +54,10 @@ Rulebooks:
 EDA helps with the automation of issue remediation and debugging tasks. Basically, EDA receives events sent from Zabbix and triggers different playbook execution, according to the conditions set.
 EDA integration is included in Zabbix out of the box and is available starting with Zabbix 6.0 version. Refer to the [EDA media type documentation](https://www.zabbix.com/integrations/ansible#event_driven_ansible) for more details on setup.
 
+## Release notes
+
+See [CHANGELOG](https://github.com/zabbix/ansible-collection/blob/main/CHANGELOG.md) for the release notes and release history of this collection.
+
 ## License
 
 Ansible Zabbix collection is released under the GNU Affero General Public License (AGPL) version 3. The formal terms of the GPL can be found at http://www.fsf.org/licenses/.

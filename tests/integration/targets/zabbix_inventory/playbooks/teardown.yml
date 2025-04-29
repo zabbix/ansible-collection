@@ -19,9 +19,15 @@
         state: absent
         host: Integration test host 2
 
+    - name: Delete host 'Tags test host'
+      zabbix.zabbix.zabbix_host:
+        state: absent
+        host: Tags test host
+
     - name: Delete host groups
       zabbix.zabbix.zabbix_hostgroup:
         state: absent
         hostgroups:
           - Integration test group 1
           - Integration test group 2
+          - Integration test group 3

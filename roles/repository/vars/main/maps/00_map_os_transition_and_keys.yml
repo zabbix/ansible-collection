@@ -78,3 +78,9 @@ repository_map_os_to_url:
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+  '7.2':
+    'RedHat': 'rhel'
+    'OracleLinux': 'oracle'
+    'AlmaLinux': 'alma'
+    'Rocky': 'rocky'
+    'CentOS': 'centos'

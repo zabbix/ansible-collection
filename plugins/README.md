@@ -1236,7 +1236,7 @@ The inventory plugin allows Ansible users to generate a dynamic inventory based 
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">and/or</td>
             <td colspan=1 align="left">Desired logic for searching by tags.
-            This parameter impacts the logic of searching by tags. Can be <code>and/or</code> or <code>or</code>.</td>
+            This parameter impacts the logic of searching by tags. Can be <code>and</code>, <code>and/or</code> or <code>or</code>.</td>
         </tr>
         <tr>
             <td colspan=3 align="left">templates</td>
