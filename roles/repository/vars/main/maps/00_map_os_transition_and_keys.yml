@@ -21,6 +21,8 @@ repository_map_os_transition:
   AlmaLinux:
     '8': '8'
     '9': '9'
+  CloudLinux:
+    '8': '8'
   Amazon:
     '2': '7'
     '2023': '9'
@@ -60,27 +62,32 @@ repository_map_os_to_url:
     'AlmaLinux': 'rhel'
     'Rocky': 'rhel'
     'CentOS': 'rhel'
+    'CloudLinux': 'rhel'
   '6.4':
     'RedHat': 'rhel'
     'OracleLinux': 'rhel'
     'AlmaLinux': 'rhel'
     'Rocky': 'rhel'
     'CentOS': 'rhel'
+    'CloudLinux': 'rhel'
   '6.5':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'CloudLinux': 'centos'
   '7.0':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'CloudLinux': 'centos'
   '7.2':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'CloudLinux': 'centos'
