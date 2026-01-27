@@ -495,7 +495,7 @@ from ansible.utils.vars import load_extra_vars
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     NAME = 'zabbix.zabbix.zabbix_inventory'
 
-    def _get_inventory_hostname(self, host):
+    def _get_inventory_hostname(self, host, strict=False):
         """
         Build the Ansible inventory hostname for a Zabbix host.
 
@@ -514,17 +514,21 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             for key, value in host.items():
                 templar_vars['{0}{1}'.format(prefix, key)] = value
 
-        self.templar.available_variables = templar_vars
-
+        errors = []
         for expr in hostnames:
-            template = expr if '{{' in expr else '{{ {0} }}'.format(expr)
             try:
-                rendered = self.templar.template(template)
+                stripped = expr.strip()
+                if stripped.startswith('{{') and stripped.endswith('}}'):
+                    stripped = stripped[2:-2].strip()
+                rendered = self._compose(stripped, templar_vars)
             except Exception as exc:
-                raise AnsibleParserError(
-                    'Failed to render hostname expression "{0}" for host "{1}": {2}'.format(
-                        expr, host.get('host', '<unknown>'), to_text(exc))
-                )
+                if strict:
+                    raise AnsibleParserError(
+                        'Failed to render hostname expression "{0}" for host "{1}": {2}'.format(
+                            expr, host.get('host', '<unknown>'), to_text(exc))
+                    )
+                errors.append((expr, to_text(exc)))
+                continue
 
             if rendered is None:
                 continue
@@ -532,6 +536,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             candidate = to_text(rendered).strip()
             if candidate:
                 return candidate
+
+        if errors:
+            raise AnsibleParserError(
+                'Could not template any hostname for host "{0}", errors for each preference: {1}'.format(
+                    host.get('host', '<unknown>'),
+                    ', '.join(['{0}: {1}'.format(pref, err) for pref, err in errors])
+                )
+            )
 
         return host['host']
 
@@ -1191,7 +1203,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         # Process data from Zabbix API / cached data
         seen_hostnames = {}
         for host in self.zabbix_hosts:
-            inventory_hostname = self._get_inventory_hostname(host)
+            inventory_hostname = self._get_inventory_hostname(host, strict=strict)
 
             if self.args.get('hostnames'):
                 hostid = host.get('hostid', host.get('host'))
