@@ -58,6 +58,14 @@ options:
         type: str
         default: 'zabbix_'
         description: Prefix to use for parameters given from Zabbix API.
+    hostnames:
+        type: list
+        elements: str
+        description:
+            - Optional list of Jinja2 expressions to construct the Ansible inventory hostname.
+            - The first non-empty rendered value will be used.
+            - When unset, the technical host name from Zabbix (C(host)) is used.
+            - If the rendered hostname is not unique, the plugin will raise an error.
     output:
         type: list
         default: ['extend']
@@ -486,6 +494,46 @@ from ansible.utils.vars import load_extra_vars
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     NAME = 'zabbix.zabbix.zabbix_inventory'
+
+    def _get_inventory_hostname(self, host):
+        """
+        Build the Ansible inventory hostname for a Zabbix host.
+
+        If the "hostnames" option is provided, it will be evaluated as a list of
+        Jinja2 expressions. The first non-empty value wins. Otherwise, fall back
+        to the technical host name from Zabbix.
+        """
+
+        hostnames = self.args.get('hostnames') or []
+        if not hostnames:
+            return host['host']
+
+        templar_vars = dict(host)
+        prefix = self.args.get('prefix', '')
+        if prefix:
+            for key, value in host.items():
+                templar_vars['{0}{1}'.format(prefix, key)] = value
+
+        self.templar.available_variables = templar_vars
+
+        for expr in hostnames:
+            template = expr if '{{' in expr else '{{ {0} }}'.format(expr)
+            try:
+                rendered = self.templar.template(template)
+            except Exception as exc:
+                raise AnsibleParserError(
+                    'Failed to render hostname expression "{0}" for host "{1}": {2}'.format(
+                        expr, host.get('host', '<unknown>'), to_text(exc))
+                )
+
+            if rendered is None:
+                continue
+
+            candidate = to_text(rendered).strip()
+            if candidate:
+                return candidate
+
+        return host['host']
 
     def get_absolute_url(self):
         """
@@ -1141,24 +1189,37 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             self.logout()
 
         # Process data from Zabbix API / cached data
+        seen_hostnames = {}
         for host in self.zabbix_hosts:
+            inventory_hostname = self._get_inventory_hostname(host)
+
+            if self.args.get('hostnames'):
+                hostid = host.get('hostid', host.get('host'))
+                existing = seen_hostnames.get(inventory_hostname)
+                if existing is not None and existing != hostid:
+                    raise AnsibleParserError(
+                        'Duplicate inventory hostname "{0}" derived from hostids "{1}" and "{2}". '
+                        'Adjust the "hostnames" expressions to ensure uniqueness.'.format(
+                            inventory_hostname, existing, hostid)
+                    )
+                seen_hostnames[inventory_hostname] = hostid
 
             # Add data about host to inventory
-            self.inventory.add_host(host['host'])
+            self.inventory.add_host(inventory_hostname)
             for each in host:
                 self.inventory.set_variable(
-                    host['host'],
+                    inventory_hostname,
                     '{0}{1}'.format(self.args['prefix'], each),
                     host[each])
 
             # added for compose vars, keyed-groups, and composed groups
             self._set_composite_vars(
                 self.args.get('compose'),
-                self.inventory.get_host(host['host']).get_vars(),
-                host['host'],
+                self.inventory.get_host(inventory_hostname).get_vars(),
+                inventory_hostname,
                 strict=strict)
-            self._add_host_to_composed_groups(groups, dict(), host['host'], strict=strict)
-            self._add_host_to_keyed_groups(keyed_groups, dict(), host['host'], strict=strict)
+            self._add_host_to_composed_groups(groups, dict(), inventory_hostname, strict=strict)
+            self._add_host_to_keyed_groups(keyed_groups, dict(), inventory_hostname, strict=strict)
 
         # Save new data to cache
         if cache_needs_update:
