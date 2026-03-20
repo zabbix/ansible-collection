@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - "`zabbix_inventory` plugin: added the `hostnames` option to build inventory hostnames from ordered Jinja2 expressions with fallback to the technical Zabbix host name; duplicate rendered hostnames raise an error."
+trivial:
+  - "Added `hostnames` examples to the `zabbix_inventory` plugin documentation and plugin README."

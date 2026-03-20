@@ -276,6 +276,34 @@ output:
   - status
 
 
+# HOSTNAME EXAMPLES
+
+# To prefer the visible host name and fall back to the technical host name, use 'hostnames'.
+# In this example, the first non-empty rendered value will be used as the Ansible inventory hostname.
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+hostnames:
+  - '{{ name }}'
+  - '{{ host }}'
+
+# To use the first non-empty interface DNS value and fall back to the technical host name,
+# you can use the following example.
+# IMPORTANT: Make sure that the interfaces data is requested from Zabbix API.
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+query:
+  selectInterfaces: ['dns']
+hostnames:
+  - '{{ zabbix_interfaces | map(attribute="dns") | select | first }}'
+  - '{{ host }}'
+
+
 # POSTPROCESSING EXAMPLES
 
 # For postprocessing, you can use:

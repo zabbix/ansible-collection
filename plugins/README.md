@@ -1533,13 +1533,58 @@ output:
   - status
 ```
 
+### Hostname examples
+
+### Example 8
+To prefer the visible host name and fall back to the technical host name, use `hostnames`.
+In this example, the first non-empty rendered value will be used as the Ansible inventory hostname.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials.
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add hostname preferences.
+hostnames:
+  - '{{ name }}'
+  - '{{ host }}'
+```
+
+### Example 9
+To use the first non-empty interface DNS value and fall back to the technical host name, you can use the following example.
+
+**IMPORTANT**: Make sure that the interfaces data is requested from Zabbix API.
+
+```yaml
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials.
+zabbix_api_url: http://your-zabbix.com
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Add query for selecting interfaces from hosts. This parameter will be used for hostname generation.
+query:
+  selectInterfaces: ['dns']
+
+# Add hostname preferences.
+hostnames:
+  - '{{ zabbix_interfaces | map(attribute="dns") | select | first }}'
+  - '{{ host }}'
+```
+
 ### Postprocessing examples
 For postprocessing, you can use:
 - keyed_groups
 - groups
 - compose
 
-### Example 8
+### Example 10
 To convert the digit status to verbose, you can use `compose` from the next example.
 To group by status (enabled, disabled) from the output, you can use `groups` from the next example.
 To group by Zabbix host group, you can use `keyed_groups` from the next example.
@@ -1583,7 +1628,7 @@ keyed_groups:
     separator: ""
 ```
 
-### Example 9
+### Example 11
 For grouping by template name.
 
 ```yaml
@@ -1610,7 +1655,7 @@ keyed_groups:
     separator: ""
 ```
 
-### Example 10
+### Example 12
 For searching by the `Location` tag and grouping by tag name.
 
 ```yaml
@@ -1638,7 +1683,7 @@ keyed_groups:
     separator: ""
 ```
 
-### Example 11
+### Example 13
 For searching by the `Location` tag and grouping by tag values.
 In this example, hosts will be grouped by tag value. If you have the tags: (Location: Riga, Location: Berlin),
 then the following groups will be created: Riga, Berlin.
@@ -1668,7 +1713,7 @@ keyed_groups:
     separator: ""
 ```
 
-### Example 12
+### Example 14
 For transforming given interfaces to the list of IP addresses, you can use `compose` and the following example.
 
 ```yaml
@@ -1693,7 +1738,7 @@ compose:
   zabbix_ip_list: zabbix_interfaces | map(attribute='ip')
 ```
 
-### Example 13
+### Example 15
 For transforming given host groups to the list, you can use 'compose' and the following example.
 
 ```yaml
@@ -1718,7 +1763,7 @@ compose:
   zabbix_groups_list: zabbix_groups | map(attribute='name')
 ```
 
-### Example 14
+### Example 16
 You can use cache for inventory.
 During the loading of cached data, the plugin will compare the input parameters. If any parameters impacting the given data
 (login, password, API token, URL, output, filter, query) have been changed, then cached data will be skipped and new data will be requested from Zabbix.
@@ -1746,7 +1791,7 @@ cache_connection: /tmp/zabbix_inventory
 
 ### Complex examples
 
-### Example 15
+### Example 17
 In this example, you can use filtering by host group, template, proxy, tag, name, status.
 Grouping by Zabbix host groups.
 Transforming IP addresses to the list of IP.
@@ -1792,7 +1837,7 @@ keyed_groups:
     separator: ""
 ```
 
-### Example 16
+### Example 18
 In this example, you can apply filtering by the `Location` tag with an empty value and grouping by status (enabled, disabled).
 In the example, the status was transformed from a digit value to a verbose value and then used in `keyed_groups` for grouping by verbose statuses.
 
@@ -1834,7 +1879,7 @@ For using extra-vars, you need to meet 3 conditions:
 - specify a variable in the inventory file in 'Jinja' format. (e.g., `{{ url }}`);
 - add `--extra-vars` or `-e` with the value in the command line. (e.g., `--extra-vars url="http://localhost"`);
 
-### Example 17
+### Example 19
 To use extra-vars in your inventory file, see the example below:
 - To pass a parameter as a `list`, use the following construct: `-e macros="['macro','value']"`
 - To pass a parameter as a `dict`, use the following construct: `-e host_tag="{'tag':'My host test','value':'host 1'}"`
