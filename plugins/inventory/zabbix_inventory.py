@@ -61,6 +61,7 @@ options:
     hostnames:
         type: list
         elements: str
+        version_added: '1.5.0'
         description:
             - Optional list of Jinja2 expressions to construct the Ansible inventory hostname.
             - The first non-empty rendered value will be used.
