@@ -44,9 +44,9 @@
       changed_when: true
       args:
         chdir: '{{ agent_semodules_path }}'
-      register: zabbix_agent_semodule_result
+      register: agent_semodule_result
     - name: 'SELinux module : Enable module'
-      when: (zabbix_agent_semodule_result.stdout + zabbix_agent_semodule_result.stderr) | regex_search("disabled", igonrecase=True) is not none
+      when: (agent_semodule_result.stdout + agent_semodule_result.stderr) | regex_search("disabled", ignorecase=True) is not none
       ansible.builtin.command: 'semodule -e {{ agent_internal_semodule }}'
       changed_when: true
     - name: 'SELinux module: Restore file context'

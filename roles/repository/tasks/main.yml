@@ -33,14 +33,14 @@
 #     ansible_distribution: Raspbian
 #   tags: [deploy, remove]
 
-- name: 'Override fact for RaspberryPIE devices: ansible_distribution'
-  when: >-
-    ansible_lsb is defined
-    and ansible_lsb.id is defined
-    and ansible_lsb.id == "Raspbian"
-  ansible.builtin.set_fact:
-    ansible_distribution: Raspbian
-  tags: [deploy, remove]
+# - name: 'Override fact for RaspberryPIE devices: ansible_distribution'
+#   when: >-
+#     ansible_lsb is defined
+#     and ansible_lsb.id is defined
+#     and ansible_lsb.id == "Raspbian"
+#   ansible.builtin.set_fact:
+#     ansible_distribution: Raspbian
+#   tags: [deploy, remove]
 
 - name: 'Assert : Supported version control'
   ansible.builtin.assert:

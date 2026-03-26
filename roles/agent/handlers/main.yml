@@ -14,7 +14,7 @@
     and
     "userparam" not in ansible_run_tags
   become: true
-  register: service_restarted
+  register: agent_service_restarted
   ansible.builtin.systemd:
     name: '{{ agent_service_name }}'
     state: restarted
@@ -24,15 +24,15 @@
   when: >-
     "remove" not in ansible_run_tags
     and
-    service_restarted is not defined
+    agent_service_restarted is not defined
   become: true
-  register: reload_user_parameters
+  register: agent_reload_user_parameters
   # Reload user parameters without restarting agent
   ansible.builtin.command: >-
       /usr/sbin/{{ agent_binary_name }}
       -R userparameter_reload
   changed_when: true
   failed_when: >-
-    (reload_user_parameters.stdout + reload_user_parameters.stderr)
+    (agent_reload_user_parameters.stdout + agent_reload_user_parameters.stderr)
     | regex_search("reloaded|success") is none
   tags: [userparam, deploy, config]

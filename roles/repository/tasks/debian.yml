@@ -44,8 +44,11 @@
                         + ("stable/" if (repository_version | float >= 7.2) else "")
                         + ansible_distribution | lower
                         + ("" if (ansible_architecture == "x86_64"
-                                  or ansible_distribution == "Raspbian")
-                            else ("-arm64" if ansible_architecture == "aarch64" else ""))
+                                  or ansible_distribution == "Raspbian"
+                                  or (ansible_lsb is defined
+                                    and ansible_lsb.id is defined
+                                    and ansible_lsb.id == "Raspbian"))
+                                  else ("-arm64" if ansible_architecture == "aarch64" else ""))
                         }}'
   environment:
     http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
