@@ -1,0 +1,39 @@
+ancestor: 1.3.12
+releases:
+  1.4.0:
+    changes:
+      major_changes:
+      - added support for Zabbix 7.2 for roles, plugins and modules
+      - moved supported ansible-core range to 2.16-2.18
+      minor_changes:
+      - '`zabbix_inventory` plugin - added function for resolving extra-vars'
+    modules:
+    - description: Module for creating and deleting proxies, and updating existing
+        ones.
+      name: zabbix_proxy
+      namespace: ''
+    - description: Module for creating and deleting proxy groups, and updating existing
+        ones.
+      name: zabbix_proxy_group
+      namespace: ''
+    release_date: '2025-03-11'
+  1.4.1:
+    changes:
+      bugfixes:
+      - agent role - fixed issue with installing of Zabbix agents for version 7.2
+      - zabbix_host module - fixed issue of working with context macros
+      major_changes:
+      - '`zabbix_inventory` plugin - added strict AND logic for filtering by tags'
+    release_date: '2025-04-29'
+  1.4.2:
+    changes:
+      major_changes:
+      - added support for Zabbix 7.4 for roles, plugins and modules
+      - agent role - added CentOs 10 Stream support
+      - agent role - added Nvidia-GPU plugin support for Zabbix-agent2
+      - agent role - added RHEL 10 support
+      - agent role - added advanced encryption parameters for Zabbix-agent2
+      - agent role - changed path to the executable files of plugins in different
+        version
+      - moved supported `ansible-core` range to 2.17-2.18
+    release_date: '2025-07-10'
