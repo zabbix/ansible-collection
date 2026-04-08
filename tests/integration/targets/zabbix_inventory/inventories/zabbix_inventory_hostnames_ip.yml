@@ -1,0 +1,28 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+query:
+  selectInterfaces: ['ip']
+
+# Use hostid option
+hostnames:
+  - '{{ interfaces | map(attribute="ip") | select | first }}'
+  - '{{ host }}'
+
+# Filtering by host group names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group *'
+
+# Add output fields
+output:
+  - zabbix_interfaces
+  - host
+
+# Add prefix for all values from Zabbix API
+prefix: 'zabbix_test_'

@@ -1,0 +1,28 @@
+---
+- name: Check inventory hostname resolution
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+    test_host_name: 'Integration test host 1 (visible)'
+    test_host_host: 'Integration test host 1'
+  tasks:
+    - name: Assert that zabbix_test_host is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars[test_host_name]['zabbix_test_host'] is defined
+
+    - name: Assert that zabbix_test_name is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars[test_host_name]['zabbix_test_name'] is defined
+
+    - name: Assert that inventory hostname matches visible name
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars[test_host_name]['zabbix_test_name'] == test_host_name
+          - vars.hostvars[test_host_name]['zabbix_test_host'] == test_host_host

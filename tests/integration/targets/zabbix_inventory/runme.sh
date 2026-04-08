@@ -20,6 +20,12 @@ ansible-playbook playbooks/check_inventory_basic_and_query_64.yml -i inventories
 # Than we will revert necessary parameters for filtering conditions and will try to get inventory data again.
 ansible-playbook playbooks/check_inventory_filtering.yml -i inventories/zabbix_inventory_filtering.yml
 
+# In this playbook we can check that inventory plugin can resolve hostnames and use them as inventory hostnames.
+ansible-playbook playbooks/check_inventory_hostnames.yml -i inventories/zabbix_inventory_hostnames.yml
+
+# In this playbook we can check that inventory plugin can resolve host ip and use them as inventory hostnames.
+ansible-playbook playbooks/check_inventory_hostnames_ip.yml -i inventories/zabbix_inventory_hostnames_ip.yml
+
 # Additional tests for strict "AND" logic.
 ansible-playbook playbooks/check_inventory_strics_and.yml -i inventories/zabbix_inventory_strics_and.yml
 

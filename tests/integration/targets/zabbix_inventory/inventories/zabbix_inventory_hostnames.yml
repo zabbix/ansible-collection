@@ -1,0 +1,25 @@
+---
+plugin: "zabbix.zabbix.zabbix_inventory"
+
+# Set credentials
+zabbix_api_url: testhost
+zabbix_user: Admin
+zabbix_password: zabbix
+
+# Use hostnames option
+hostnames:
+  - '{{ name }}'
+  - '{{ host }}'
+
+# Filtering by host group names
+filter:
+  HOSTGROUPS:
+    - 'Integration test group *'
+
+# Add output fields
+output:
+  - name
+  - host
+
+# Add prefix for all values from Zabbix API
+prefix: 'zabbix_test_'

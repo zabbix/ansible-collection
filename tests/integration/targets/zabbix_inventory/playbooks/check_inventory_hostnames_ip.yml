@@ -1,0 +1,21 @@
+---
+- name: Check inventory hostname resolution
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_network_os: zabbix.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: Admin
+    ansible_httpapi_pass: zabbix
+    ansible_host: testhost
+    test_hostip: '127.0.0.1'
+  tasks:
+    - name: Assert that 127.0.0.1 is defined
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars[test_hostip] is defined
+
+    - name: Assert that hostname matches the expected name
+      ansible.builtin.assert:
+        that:
+          - vars.hostvars[test_hostip]['zabbix_test_host'] == 'Integration test host 1'
