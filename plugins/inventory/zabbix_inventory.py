@@ -300,7 +300,7 @@ zabbix_password: zabbix
 query:
   selectInterfaces: ['dns']
 hostnames:
-  - '{{ zabbix_interfaces | map(attribute="dns") | select | first }}'
+  - '{{ interfaces | map(attribute="dns") | select | first }}'
   - '{{ host }}'
 
 

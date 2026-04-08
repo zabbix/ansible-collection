@@ -25,5 +25,5 @@ output:
   - status
   - name
 
-# # Add prefix for all values from Zabbix API
+# Add prefix for all values from Zabbix API
 prefix: 'zabbix_{{ prefix }}_'
