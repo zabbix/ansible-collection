@@ -608,7 +608,7 @@
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v2 or zabbix_host_interface_update_snmp_v2_64 is changed
+          - zabbix_host_interface_update_snmp_v2.changed or zabbix_host_interface_update_snmp_v2_64.changed
 
     # noAuthNoPriv
     - name: Test - Create SNMPv3 interface with noAuthNoPriv with parameters
@@ -647,7 +647,7 @@
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters_64 is changed
+          - zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters.changed or zabbix_host_interface_update_snmp_v3_noauthnopriv_w_parameters_64.changed
 
     # authNoPriv
     - name: Test - Create SNMPv3 interface with authNoPriv with parameters
@@ -690,7 +690,7 @@
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters or zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters_64 is changed
+          - zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters.changed or zabbix_host_interface_update_snmp_v3_authnopriv_w_parameters_64.changed
 
     # authPriv
     - name: Test - Create SNMPv3 interface with authPriv with parameters
@@ -737,7 +737,7 @@
     - name: Assert that host interface was updated
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters or zabbix_host_interface_update_snmp_v3_authpriv_w_parameters_64 is changed
+          - zabbix_host_interface_update_snmp_v3_authpriv_w_parameters.changed or zabbix_host_interface_update_snmp_v3_authpriv_w_parameters_64.changed
 
 - name: SNMP details
   block:
@@ -853,7 +853,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v2_wo_community and zabbix_host_interface_snmp_v2_wo_community_64 is failed
+          - zabbix_host_interface_snmp_v2_wo_community.failed and zabbix_host_interface_snmp_v2_wo_community_64.failed
 
     - name: Test - Create SNMPv2 interface without bulk and community
       zabbix.zabbix.zabbix_host:
@@ -885,7 +885,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v2_wo_bulk_community and zabbix_host_interface_snmp_v2_wo_bulk_community_64 is failed
+          - zabbix_host_interface_snmp_v2_wo_bulk_community.failed and zabbix_host_interface_snmp_v2_wo_bulk_community_64.failed
 
     - name: Test - Create SNMPv2 interface with additional parameter
       zabbix.zabbix.zabbix_host:
@@ -923,7 +923,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v2_w_contextname and zabbix_host_interface_snmp_v2_w_contextname_64 is failed
+          - zabbix_host_interface_snmp_v2_w_contextname.failed and zabbix_host_interface_snmp_v2_w_contextname_64.failed
 
     - name: Test - Create SNMPv2 interface with additional parameter and missing bulk
       zabbix.zabbix.zabbix_host:
@@ -959,7 +959,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v2_w_contextname_wo_bulk and zabbix_host_interface_snmp_v2_w_contextname_wo_bulk_64 is failed
+          - zabbix_host_interface_snmp_v2_w_contextname_wo_bulk.failed and zabbix_host_interface_snmp_v2_w_contextname_wo_bulk_64.failed
 
     # Check v3
     - name: Test - Create SNMPv3 interface without security level
@@ -1006,7 +1006,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_wo_securitylevel and zabbix_host_interface_snmp_v3_wo_securitylevel_64 is failed
+          - zabbix_host_interface_snmp_v3_wo_securitylevel.failed and zabbix_host_interface_snmp_v3_wo_securitylevel_64.failed
 
     - name: Test - Create SNMPv3 interface without bulk
       zabbix.zabbix.zabbix_host:
@@ -1052,7 +1052,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_wo_bulk and zabbix_host_interface_snmp_v3_wo_bulk_64 is failed
+          - zabbix_host_interface_snmp_v3_wo_bulk.failed and zabbix_host_interface_snmp_v3_wo_bulk_64.failed
 
     - name: Test - Create SNMPv3 interface with additional parameter 'community'
       zabbix.zabbix.zabbix_host:
@@ -1102,7 +1102,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_w_community and zabbix_host_interface_snmp_v3_w_community_64 is failed
+          - zabbix_host_interface_snmp_v3_w_community.failed and zabbix_host_interface_snmp_v3_w_community_64.failed
 
     - name: Test - Create SNMPv3 interface with authNoPriv without parameters
       zabbix.zabbix.zabbix_host:
@@ -1142,7 +1142,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_wo_auth_parameters.failed and zabbix_host_interface_snmp_v3_wo_auth_parameters_64.failed
 
     - name: Test - Create SNMPv3 interface with authNoPriv with all parameters
       zabbix.zabbix.zabbix_host:
@@ -1190,7 +1190,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_w_all_parameters and zabbix_host_interface_snmp_v3_w_all_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_w_all_parameters.failed and zabbix_host_interface_snmp_v3_w_all_parameters_64.failed
 
     - name: Test - Create SNMPv3 interface with authNoPriv with priv parameters
       zabbix.zabbix.zabbix_host:
@@ -1234,7 +1234,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_w_priv_parameters and zabbix_host_interface_snmp_v3_w_priv_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_w_priv_parameters.failed and zabbix_host_interface_snmp_v3_w_priv_parameters_64.failed
 
     - name: Test - Create SNMPv3 interface with authPriv without parameters
       zabbix.zabbix.zabbix_host:
@@ -1274,7 +1274,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_wo_auth_parameters and zabbix_host_interface_snmp_v3_wo_auth_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_wo_auth_parameters.failed and zabbix_host_interface_snmp_v3_wo_auth_parameters_64.failed
 
     - name: Test - Create SNMPv3 interface with authPriv with auth parameters
       zabbix.zabbix.zabbix_host:
@@ -1318,7 +1318,7 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_w_auth_parameters and zabbix_host_interface_snmp_v3_w_auth_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_w_auth_parameters.failed and zabbix_host_interface_snmp_v3_w_auth_parameters_64.failed
 
     - name: Test - Create SNMPv3 interface with authPriv with priv parameters
       zabbix.zabbix.zabbix_host:
@@ -1362,4 +1362,4 @@
     - name: Assert that task was failed
       ansible.builtin.assert:
         that:
-          - zabbix_host_interface_snmp_v3_w_priv_parameters and zabbix_host_interface_snmp_v3_w_priv_parameters_64 is failed
+          - zabbix_host_interface_snmp_v3_w_priv_parameters.failed and zabbix_host_interface_snmp_v3_w_priv_parameters_64.failed

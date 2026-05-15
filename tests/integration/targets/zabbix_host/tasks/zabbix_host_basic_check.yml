@@ -336,7 +336,7 @@
     - name: Assert that host with all parameters was created
       ansible.builtin.assert:
         that:
-          - zabbix_host_create or zabbix_host_create_64 is changed
+          - zabbix_host_create.changed or zabbix_host_create_64.changed
 
     - name: Clean all parameters from host
       zabbix.zabbix.zabbix_host:

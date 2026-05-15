@@ -94,8 +94,8 @@ class TestLogin(unittest.TestCase):
 
                 with self.assertRaises(AnsibleAuthenticationFailure) as ansible_result:
                     inventory.login()
-                self.assertEqual(str(ansible_result.exception), each['expected'],
-                                 'error with input data: {0}'.format(each['input']))
+                self.assertIn(each['expected'], str(ansible_result.exception),
+                              'error with input data: {0}'.format(each['input']))
 
 
 class TestLogout(unittest.TestCase):

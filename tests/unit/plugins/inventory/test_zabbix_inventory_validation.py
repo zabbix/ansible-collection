@@ -293,21 +293,25 @@ class TestValidation(unittest.TestCase):
         This test checks filter validation only with error cases.
 
         Test cases:
-            1. Filter 'status' option with not 'AnsibleUnicode' type.
-            2. Filter 'status' option with invalid value.
-            3. Filter 'tags_behavior' option with not 'AnsibleUnicode' type.
-            4. Filter 'tags_behavior' option with invalid value.
-            5. Filter 'tags' option without tag name.
-            6. Filter 'tags' option with invalid 'operator' value.
+            1. Validate 'status' filter option with a non-'AnsibleUnicode' type (e.g., integer).
+            2. Validate 'status' filter option with an invalid string value.
+            3. Validate 'tags_behavior' filter option with a non-'AnsibleUnicode' type (e.g., integer).
+            4. Validate 'tags_behavior' filter option with an invalid string value.
+            5. Validate 'tags' filter option missing the 'tag' name.
+            6. Validate 'tags' filter option with an invalid 'operator' value.
 
-        Expected result: all cases run successfully.
+        Additional cases (Python < 3.11):
+            7. Validate 'status' filter option with a non-'AnsibleUnicode' string value (of type str).
+            8. Validate 'tags_behavior' filter option with a non-'AnsibleUnicode' string value (of type str).
+
+        Expected result: All cases raise the appropriate validation error.
         """
         test_cases = [
-            {'input': {'filter': {'status': 'enabled'}},
+            {'input': {'filter': {'status': 1}},
              'expected': 'Unknown status filter'},
             {'input': {'filter': {'status': AnsibleUnicode('invalid status')}},
              'expected': 'Unknown status filter'},
-            {'input': {'filter': {'tags_behavior': 'or'}},
+            {'input': {'filter': {'tags_behavior': 2}},
              'expected': 'Unknown tags_behavior filter'},
             {'input': {'filter': {'tags_behavior': AnsibleUnicode('invalid tags_behavior')}},
              'expected': 'Unknown tags_behavior filter'},
@@ -315,6 +319,12 @@ class TestValidation(unittest.TestCase):
              'expected': 'Not found tag name'},
             {'input': {'filter': {'tags': [{'tag': 'TEST', 'operator': 'INVALID'}]}},
              'expected': 'Unknown tag operator filter'}]
+        if sys.version_info < (3, 11):
+            test_cases += [
+                {'input': {'filter': {'status': 'enabled'}},
+                 'expected': 'Unknown status filter'},
+                {'input': {'filter': {'tags_behavior': 'or'}},
+                 'expected': 'Unknown tags_behavior filter'}]
 
         for each in test_cases:
             inventory = InventoryModule()

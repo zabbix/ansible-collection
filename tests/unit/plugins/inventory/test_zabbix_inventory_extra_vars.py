@@ -24,6 +24,16 @@ else:
     except ImportError:
         print("Error import unittest library for Python 2")
 
+try:
+    from ansible._internal._datatag._tags import TrustedAsTemplate
+except ImportError:
+    # TODO: remove this workaround after ansible 2.18 support will be dropped
+    class TrustedAsTemplate:
+        def __init__(self):
+            self.tag = lambda x: x
+
+TRUST = TrustedAsTemplate()
+
 
 class TestExtraVars(unittest.TestCase):
 
@@ -54,7 +64,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 1,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {}
                 },
                 'expected': {
@@ -66,7 +76,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 2,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -78,7 +88,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 3,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 123}
                 },
                 'expected': {
@@ -90,7 +100,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 4,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': {'a': 123}}
                 },
                 'expected': {
@@ -102,7 +112,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 5,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': [1, 2, 3]}
                 },
                 'expected': {
@@ -114,7 +124,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 6,
                 'input': {
-                    'args': {'password': 'my pass {{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('my pass {{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -126,7 +136,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 7,
                 'input': {
-                    'args': {'password': 'my pass {{pass}}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('my pass {{pass}}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -138,7 +148,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 8,
                 'input': {
-                    'args': {'password': 'my pass{{pass}}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('my pass{{pass}}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -202,7 +212,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 1,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': False},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': False},
                     'extra_vars': {}
                 },
                 'expected': {
@@ -214,7 +224,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 2,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {}
                 },
                 'expected': {
@@ -226,7 +236,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 3,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': False},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': False},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -238,7 +248,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 4,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'pass': 'test_value'}
                 },
                 'expected': {
@@ -250,7 +260,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 5,
                 'input': {
-                    'args': {'password': 'test_value', 'use_extra_vars': False},
+                    'args': {'password': TRUST.tag('test_value'), 'use_extra_vars': False},
                     'extra_vars': {}
                 },
                 'expected': {
@@ -333,7 +343,7 @@ class TestExtraVars(unittest.TestCase):
             {
                 'number': 1,
                 'input': {
-                    'args': {'password': '{{ pass }}', 'use_extra_vars': True},
+                    'args': {'password': TRUST.tag('{{ pass }}'), 'use_extra_vars': True},
                     'extra_vars': {'test': 'test_value'}
                 },
                 'expected': {
@@ -352,7 +362,7 @@ class TestExtraVars(unittest.TestCase):
             load_extra_vars.extra_vars = each['input']['extra_vars']
             inventory.args = each['input']['args']
             self.assertEqual(
-                inventory.templar.is_template(inventory.args),
+                inventory.templar.is_template(inventory.args['password']),
                 each['expected']['is_template'],
                 'error with input case: {0}'.format(each['number']))
 

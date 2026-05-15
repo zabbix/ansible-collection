@@ -520,6 +520,16 @@ from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
     host_subquery, tags_compare_operators, Zabbix_version, filter_params_depends_on_version)
 from ansible.utils.vars import load_extra_vars
 
+try:
+    from ansible._internal._datatag._tags import TrustedAsTemplate
+except ImportError:
+    # TODO: remove this workaround after ansible 2.18 support will be dropped
+    class TrustedAsTemplate:
+        def __init__(self):
+            self.tag = lambda x: x
+
+TRUST = TrustedAsTemplate()
+
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     NAME = 'zabbix.zabbix.zabbix_inventory'
@@ -548,7 +558,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             try:
                 stripped = expr.strip()
                 if stripped.startswith('{{') and stripped.endswith('}}'):
-                    stripped = stripped[2:-2].strip()
+                    stripped = TRUST.tag(stripped[2:-2].strip())
                 rendered = self._compose(stripped, templar_vars)
             except Exception as exc:
                 if strict:
@@ -789,7 +799,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
             # Check type
             for each in self.args['query']:
-                if isinstance(self.args['query'][each], AnsibleUnicode):
+                if isinstance(self.args['query'][each], AnsibleUnicode) or isinstance(self.args['query'][each], str):
                     new_subquery[available_fields[each.lower()]] = [self.args['query'][each].lower()]
                 else:
                     new_subquery[available_fields[each.lower()]] = [e.lower() for e in self.args['query'][each]]
@@ -810,15 +820,19 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
 
             # Status
             if self.args['filter'].get('status') is not None:
-                if (isinstance(self.args['filter']['status'], AnsibleUnicode) is False or
-                        self.args['filter']['status'].lower() not in ['enabled', 'disabled']):
+                expected_statuses = tuple({AnsibleUnicode(x) for x in ['enabled', 'disabled']} | {'enabled', 'disabled'})
+                if ((isinstance(self.args['filter']['status'], AnsibleUnicode) is False and
+                        isinstance(self.args['filter']['status'], str) is False) or
+                        self.args['filter']['status'].lower() not in expected_statuses):
                     raise AnsibleParserError(
                         'Unknown status filter: {0}. Available: enabled, disabled.'.format(self.args['filter']['status']))
 
             # tags_behavior
             if self.args['filter'].get('tags_behavior') is not None:
-                if (isinstance(self.args['filter']['tags_behavior'], AnsibleUnicode) is False or
-                        self.args['filter']['tags_behavior'].lower() not in ['and', 'and/or', 'or']):
+                expected_values = tuple({AnsibleUnicode(x) for x in ['and', 'and/or', 'or']} | {'and', 'and/or', 'or'})
+                if ((isinstance(self.args['filter']['tags_behavior'], AnsibleUnicode) is False and
+                        isinstance(self.args['filter']['tags_behavior'], str) is False) or
+                        self.args['filter']['tags_behavior'].lower() not in expected_values):
                     raise AnsibleParserError(
                         'Unknown tags_behavior filter: {0}. Available: and/or, or.'.format(self.args['filter']['tags_behavior']))
 
@@ -1038,6 +1052,34 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             if 'proxy_groupid' in host:
                 self.zabbix_hosts[i]['proxy_group_name'] = self.ids['proxy_group'].get(host['proxy_groupid'], '')
 
+    def _parse_template_result(self, args):
+        """
+        Parse template results and restore Ansible 2.18 type coercion for 2.19+.
+
+        In Ansible 2.19+, the Templar returns template results with strict typing.
+        Strings resolved from extra vars stay as raw strings even when they contain
+        YAML collection literals. This method:
+        - Parses strings starting with '[' or '{' as YAML into Python objects
+        - Tags all strings for Ansible 2.19's template trust model (no-op on < 2.19)
+        - Applies recursively to dicts and lists
+
+        :param args: A configuration value (str, dict, list, or other)
+        :return: Same object with YAML strings parsed and strings tagged
+        """
+        if isinstance(args, str):
+            stripped = args.strip()
+            if stripped.startswith(('[', '{')):
+                try:
+                    return self.loader.load(stripped)
+                except Exception:
+                    pass
+            return TRUST.tag(args)
+        if isinstance(args, dict):
+            return {k: self._parse_template_result(v) for k, v in args.items()}
+        if isinstance(args, list):
+            return [self._parse_template_result(i) for i in args]
+        return args
+
     def resolve_extra_vars(self):
         """
         The function reads the value of variables from extra-vars.
@@ -1051,7 +1093,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         self.templar.available_variables = extra_vars
 
         if extra_vars and self.templar.is_template(self.args) and self.args.get('use_extra_vars') is True:
-            self.args = self.templar.template(self.args)
+            self.args = self._parse_template_result(self.templar.template(self.args))
 
     def preload_data(self):
         """

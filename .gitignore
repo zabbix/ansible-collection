@@ -2,8 +2,11 @@
 *~
 *.swp
 *.swo
-# Ignore vscode/ium
+# Ignore vscode/ium/idea
 .vscode
+.idea
+# Ignore pycache
+__pycache__
 # Ignore tests
 tests/output
 # Ignore builds
