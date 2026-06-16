@@ -1,0 +1,370 @@
+name: Collection Tests
+run-name: "${{ inputs.test_type || 'all' }} / ${{ github.head_ref || github.ref_name }} / zbx ${{ inputs.zabbix_version || '7.0' }}"
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/*
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Test type'
+        required: true
+        default: 'lint'
+        type: choice
+        options:
+          - lint
+          - sanity
+          - unit
+          - integration
+          - all
+      ansible_lint_version:
+        description: 'ansible-lint version to use for lint/all (empty = latest)'
+        required: false
+        default: ''
+        type: string
+      ansible_core:
+        description: 'ansible-core version(s), as a JSON array, e.g. ["2.20"] or ["2.18","2.19"]'
+        required: false
+        default: '["2.17"]'
+        type: string
+      zabbix_version:
+        description: 'Zabbix version (for integration tests)'
+        required: false
+        default: '7.0'
+        type: choice
+        options:
+          - '7.0'
+          - '7.4'
+
+permissions:
+  contents: read
+
+env:
+  TEST_TYPE: ${{ inputs.test_type || 'all' }}
+  ZABBIX_VERSION: ${{ inputs.zabbix_version || '7.0' }}
+  SRC_DIR: ${{ github.workspace }}
+  COLLECTIONS_PATH: /home/runner/.ansible/collections
+  COLLECTION_DIR: /home/runner/.ansible/collections/ansible_collections/zabbix/zabbix
+
+jobs:
+  test:
+    name: "ansible-core ${{ matrix.ansible_version }}"
+    runs-on: ansible-test-collection
+    timeout-minutes: 180
+
+    # cancel-in-progress only on pull_request; preserve scheduled and dispatch runs.
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.test_type || 'all' }}-${{ matrix.ansible_version }}
+      cancel-in-progress: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible_version: ${{ inputs.ansible_core && fromJSON(inputs.ansible_core) || fromJSON('["2.17"]') }}
+
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      COMPOSE_FILE: .github/docker-compose.yml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f9e715a95fcd1f9253f77dd28f11e88d2d6460c7 # v6.0.3
+
+      # shellcheck is not needed on the host: "ansible-test sanity --docker" ships its own toolchain.
+      - name: Set up system dependencies
+        env:
+          COMPOSE_VERSION: v5.1.4
+        run: |
+          # Set up system dependencies
+          echo "::group::Install locales"
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends locales
+          sudo locale-gen en_US.UTF-8
+          sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+          echo "::endgroup::"
+
+          if ! docker compose version >/dev/null 2>&1; then
+            echo "::group::Install Docker Compose plugin"
+            arch=$(uname -m)
+            case "$arch" in
+              x86_64)  arch=x86_64 ;;
+              aarch64) arch=aarch64 ;;
+              *) echo "Unsupported arch for docker compose plugin: $arch"; exit 1 ;;
+            esac
+            mkdir -p ~/.docker/cli-plugins
+            curl -sSL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-${arch}" \
+              -o ~/.docker/cli-plugins/docker-compose
+            chmod +x ~/.docker/cli-plugins/docker-compose
+            echo "::endgroup::"
+          fi
+
+      # Reads CONTROLLER_PYTHON_VERSIONS from ansible-test's constants on stable-{ver};
+      # picks the highest supported Python. Falls back to 3.13 on any error.
+      - name: Resolve controller Python for ansible-core ${{ matrix.ansible_version }}
+        id: pyver
+        env:
+          ANSIBLE_CORE_VERSION: ${{ matrix.ansible_version }}
+        run: |
+          # Resolve controller Python for ansible-core
+          if ! [[ "$ANSIBLE_CORE_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            echo "Unexpected ansible-core version format: ${ANSIBLE_CORE_VERSION}" >&2
+            echo "python-version=3.13" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          pyver=$(curl -fsSL \
+            "https://raw.githubusercontent.com/ansible/ansible/stable-${ANSIBLE_CORE_VERSION}/test/lib/ansible_test/_util/target/common/constants.py" \
+            | python3 -c "
+          import sys, re
+          m = re.search(r'CONTROLLER_PYTHON_VERSIONS\s*=\s*\(([^)]+)\)', sys.stdin.read())
+          if m:
+              vs = sorted([v.strip().strip(\"'\\\"\") for v in m.group(1).split(',')
+                           if re.match(r'^[0-9]+\.[0-9]+$', v.strip().strip(\"'\\\"\"))],
+                          key=lambda v: tuple(int(x) for x in v.split('.')))
+              print(vs[-1] if vs else '3.13')
+          else:
+              print('3.13')
+          " 2>/dev/null || echo '3.13')
+          echo "Resolved Python: ${pyver}"
+          echo "python-version=${pyver}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python ${{ steps.pyver.outputs.python-version }}
+        uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v6.2.0
+        with:
+          python-version: ${{ steps.pyver.outputs.python-version }}
+          cache-dependency-path: requirements.txt
+          cache: pip
+
+      # Free-form inputs passed via env to avoid shell injection on self-hosted runner.
+      - name: Install ansible-core ${{ matrix.ansible_version }} and tools
+        env:
+          ANSIBLE_CORE_VERSION: ${{ matrix.ansible_version }}
+          ANSIBLE_LINT_VERSION: ${{ inputs.ansible_lint_version || '25.5.0' }} # TODO: remove default once 25.5.0 is the minimum supported version
+        run: |
+          # Install ansible-core
+          lint_req="ansible-lint"
+          [ -n "$ANSIBLE_LINT_VERSION" ] && lint_req="ansible-lint==${ANSIBLE_LINT_VERSION}"
+          echo "::group::Install ansible-core and tools"
+          pip install \
+            "ansible-core~=${ANSIBLE_CORE_VERSION}.0" \
+            "$lint_req" \
+            antsibull-changelog \
+            "netaddr>=0.8" \
+            "Jinja2>=3.1.2" \
+            pytest pytest-xdist pytest-mock
+          echo "::endgroup::"
+
+          echo "::group::Installed Python requirements"
+          pip install -r "$SRC_DIR/requirements.txt"
+          echo "::endgroup::"
+
+      # --no-deps: Galaxy dependencies are handled by the next dedicated step.
+      - name: Install collection
+        working-directory: ${{ env.SRC_DIR }}
+        run: |
+          # Install collection
+          ansible-galaxy collection install ./ -p "$COLLECTIONS_PATH" -f --no-deps
+
+      # --upgrade: always installs latest Galaxy versions to catch dependency drift early.
+      - name: Install Galaxy dependencies
+        run: |
+          # Install Galaxy dependencies
+          ansible-galaxy collection install \
+            ansible.utils \
+            ansible.posix \
+            ansible.netcommon \
+            oracle.oci \
+            -p "$COLLECTIONS_PATH" --upgrade
+
+      - name: Show test environment
+        run: |
+          # Show test environment
+          echo "::group::Test environment"
+          echo "commit       : $(git log --oneline -1)"
+          echo "ansible-core : $(ansible --version | head -1)"
+          echo "python       : $(python --version)"
+          echo "test type    : $TEST_TYPE"
+          echo "ref          : ${{ github.ref_name }} (${{ github.sha }})"
+          echo "zabbix       : $ZABBIX_VERSION"
+          echo "::endgroup::"
+
+      - name: Validate collection structure
+        working-directory: ${{ env.COLLECTION_DIR }}
+        run: |
+          # Validate collection structure
+          [ -f MANIFEST.json ] || { echo "MANIFEST.json not found"; exit 1; }
+          [ -d roles ]         || { echo "roles directory not found"; exit 1; }
+          [ -d plugins ]       || { echo "plugins directory not found"; exit 1; }
+
+      # - name: Validate changelog
+      #   working-directory: ${{ env.SRC_DIR }}
+      #   if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
+      #   run: antsibull-changelog lint
+
+      # ZABBIX_VERSION (workflow-level env) is interpolated by compose into image tags.
+      - name: Start Zabbix stack
+        id: start_zabbix
+        if: env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        run: |
+          # --wait ensures containers pass healthchecks; API readiness (incl. DB upgrade)
+          # is verified separately by "Wait for Zabbix API".
+          docker compose -f "$COMPOSE_FILE" up -d --wait --wait-timeout 120 postgres zabbix-server zabbix-web
+
+      # Tests connect to "testhost" on port 80 (httpapi/inventory default).
+      - name: Configure testhost
+        if: env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all'
+        run: |
+          # Configure testhost
+          grep -q testhost /etc/hosts || echo "127.0.0.1 testhost" | sudo tee -a /etc/hosts
+
+      # Lint runs from SRC_DIR (full source tree), not the installed collection.
+      - name: Lint (ansible-lint)
+        id: test_lint
+        if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 15
+        working-directory: ${{ env.SRC_DIR }}
+        run: |
+          # Run ansible-lint
+          echo "::group::Running ansible-lint"
+          ansible-lint -v
+          echo "::endgroup::"
+
+      # ansible-test < 2.18 can't locate its K8s pod container via Docker
+      # (ContainerNotFoundError); fall back to --python for those versions.
+      - name: Sanity tests
+        id: test_sanity
+        if: env.TEST_TYPE == 'sanity' || env.TEST_TYPE == 'all'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 30
+        working-directory: ${{ env.COLLECTION_DIR }}
+        env:
+          ANSIBLE_CORE_VERSION: ${{ matrix.ansible_version }}
+          CONTROLLER_PYTHON: ${{ steps.pyver.outputs.python-version }}
+        run: |
+          # Sanity tests
+          echo "::group::Running sanity tests"
+          IFS='.' read -r _maj _min <<< "$ANSIBLE_CORE_VERSION"
+          if (( _maj == 2 && _min < 18 )); then
+            ansible-test sanity --python "$CONTROLLER_PYTHON" -v
+          else
+            ansible-test sanity --docker -v
+          fi
+          echo "::endgroup::"
+
+      # Same --docker / --python split as sanity.
+      - name: Unit tests
+        id: test_unit
+        if: env.TEST_TYPE == 'unit' || env.TEST_TYPE == 'all'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 30
+        working-directory: ${{ env.COLLECTION_DIR }}
+        env:
+          ANSIBLE_CORE_VERSION: ${{ matrix.ansible_version }}
+          CONTROLLER_PYTHON: ${{ steps.pyver.outputs.python-version }}
+        run: |
+          # Unit tests
+          echo "::group::Running unit tests"
+          IFS='.' read -r _maj _min <<< "$ANSIBLE_CORE_VERSION"
+          if (( _maj == 2 && _min < 18 )); then
+            ansible-test units --python "$CONTROLLER_PYTHON" -v
+          else
+            ansible-test units --docker -v
+          fi
+          echo "::endgroup::"
+
+      - name: Wait for Zabbix API
+        id: wait_zabbix
+        if: env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 7
+        run: |
+          # Wait for Zabbix API
+          echo "Waiting for Zabbix API to be ready (incl. DB upgrade)..."
+
+          echo "::group::Polling Zabbix API for readiness"
+          for i in $(seq 1 60); do
+            response=$(curl -sf --connect-timeout 5 http://localhost:8080/api_jsonrpc.php \
+              -H "Content-Type: application/json" \
+              -d '{"jsonrpc":"2.0","method":"user.login","params":{"username":"Admin","password":"zabbix"},"id":1}' || true)
+            if echo "$response" | grep -q '"result"'; then
+              echo "::notice::Zabbix API is ready (login OK)"
+              docker compose -f "$COMPOSE_FILE" logs zabbix-server | tail -10
+              echo "::endgroup::"
+              exit 0
+            fi
+            if [ $((i % 6)) -eq 0 ]; then
+              echo "attempt $i/60 - last response: $response"
+              docker compose -f "$COMPOSE_FILE" ps
+            fi
+            sleep 5
+          done
+          echo "::endgroup::"
+
+          echo "::error::Zabbix API not responding after 5 minutes"
+          echo "::group::Zabbix Server Logs"
+          docker compose -f "$COMPOSE_FILE" logs zabbix-server | tail -50
+          echo "::endgroup::"
+
+          echo "::group::Zabbix Web Logs"
+          docker compose -f "$COMPOSE_FILE" logs zabbix-web | tail -30
+          echo "::endgroup::"
+          exit 1
+
+      # Skip if Zabbix never became ready — avoids burning the 60-minute test timeout.
+      - name: Integration tests
+        id: test_integration
+        if: >-
+          (env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all') &&
+          steps.wait_zabbix.outcome == 'success'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 60
+        working-directory: ${{ env.COLLECTION_DIR }}
+        run: |
+          # Integration tests
+          echo "::group::Running integration tests"
+          ansible-test integration -v
+          echo "::endgroup::"
+
+      # Single gate: in 'all' mode each test step has continue-on-error; this step fails the job if any did.
+      - name: Check test results
+        if: always() && env.TEST_TYPE == 'all'
+        run: |
+          # Check test results
+          echo "::group::Checking test results"
+          failed=()
+          [ "${{ steps.test_lint.outcome }}"        = "failure" ] && failed+=("lint")
+          [ "${{ steps.test_sanity.outcome }}"      = "failure" ] && failed+=("sanity")
+          [ "${{ steps.test_unit.outcome }}"        = "failure" ] && failed+=("unit")
+          [ "${{ steps.start_zabbix.outcome }}"     = "failure" ] && failed+=("integration (stack start)")
+          [ "${{ steps.wait_zabbix.outcome }}"      = "failure" ] && failed+=("integration (zabbix api)")
+          [ "${{ steps.test_integration.outcome }}" = "failure" ] && failed+=("integration")
+          if (( ${#failed[@]} > 0 )); then
+            echo "Failed test types: ${failed[*]}"
+            exit 1
+          fi
+          echo "::endgroup::"
+          echo "::notice::All test types passed."
+
+      - name: Collect logs on failure
+        if: failure() && (env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all')
+        run: |
+          # Collect logs on failure
+          echo "::group::Docker Containers"
+          docker ps -a
+          echo "::endgroup::"
+
+          echo "::group::Zabbix Server Logs"
+          docker compose -f "$COMPOSE_FILE" logs zabbix-server | tail -100
+          echo "::endgroup::"
+
+          echo "::group::Zabbix Web Logs"
+          docker compose -f "$COMPOSE_FILE" logs zabbix-web | tail -50
+          echo "::endgroup::"
+
+          echo "::group::PostgreSQL Logs"
+          docker compose -f "$COMPOSE_FILE" logs postgres | tail -30
+          echo "::endgroup::"
