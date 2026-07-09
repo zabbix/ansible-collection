@@ -1,0 +1,107 @@
+name: Create Release Branch
+run-name: "Create release branch (bump ${{ inputs.bump_type }})"
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version component to bump'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - major
+          - fix
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: "Bump ${{ inputs.bump_type }} version"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@f9e715a95fcd1f9253f77dd28f11e88d2d6460c7 # v6.0.3
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Calculate next version
+        id: version
+        run: |
+          # Calculate the next version based on the bump type (minor or major)
+          echo "::group::Calculating next version"
+          current=$(python3 -c "
+          import re
+          m = re.search(r'^version:\s*(\S+)', open('galaxy.yml').read(), re.MULTILINE)
+          print(m.group(1))
+          ")
+
+          next=$(python3 -c "
+          major, minor, patch = (int(x) for x in '${current}'.split('.'))
+          if '${{ inputs.bump_type }}' == 'major':
+              print(f'{major+1}.0.0')
+          elif '${{ inputs.bump_type }}' == 'minor':
+              print(f'{major}.{minor+1}.0')
+          else:
+              print(f'{major}.{minor}.{patch+1}')
+          ")
+
+          echo "current=${current}"     >> "$GITHUB_OUTPUT"
+          echo "next=${next}"           >> "$GITHUB_OUTPUT"
+          echo "branch=release/${next}" >> "$GITHUB_OUTPUT"
+          echo "::endgroup::"
+
+          echo "Current : ${current}"
+          echo "Next    : ${next}"
+          echo "Branch  : release/${next}"
+
+      - name: Abort if branch already exists
+        run: |
+          # Check if the release branch already exists on origin
+          branch="${{ steps.version.outputs.branch }}"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+            echo "ERROR: $branch already exists on origin"
+            exit 1
+          fi
+
+      - name: Configure git identity
+        run: |
+          # Configure git identity for GitHub Actions bot
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release branch
+        run: git checkout -b "${{ steps.version.outputs.branch }}"
+
+      - name: Create changelog summary
+        env:
+          NEXT_VERSION: ${{ steps.version.outputs.next }}
+        run: |
+          # Create an empty changelog summary file for the new version
+          SUMMARY_FILE="changelogs/fragments/v${NEXT_VERSION}_summary.yaml"
+          echo -e "release_summary: ''" > ${SUMMARY_FILE}
+          git add ${SUMMARY_FILE}
+
+      - name: Commit and push release branch
+        run: |
+          # Commit and push the release branch to origin
+          git commit -m "Create release branch"
+          git push origin "${{ steps.version.outputs.branch }}"
+
+      - name: Job summary
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ### Release branch created
+
+          | Type | Value |
+          |------|-------|
+          | Previous version | \`${{ steps.version.outputs.current }}\` |
+          | New version      | \`${{ steps.version.outputs.next }}\`    |
+          | Branch           | \`${{ steps.version.outputs.branch }}\`  |
+
+          **Next step:** trigger the [Release workflow](../workflows/release.yml) with version \`${{ steps.version.outputs.next }}\`.
+          EOF
