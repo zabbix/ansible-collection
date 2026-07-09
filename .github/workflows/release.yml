@@ -1,0 +1,256 @@
+name: Release Collection
+run-name: "Release: ${{ github.head_ref || github.ref_name }}"
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release branch version (e.g. "1.5.0")'
+        required: true #TO DO false
+        type: string
+      ansible_latest:
+        description: 'Latest ansible-core version (e.g. "2.20")'
+        required: false
+        default: '2.20'
+        type: string
+      ansible_min:
+        description: 'Minimum ansible-core version (e.g. "2.18")'
+        required: false
+        default: '2.18'
+        type: string
+      prerelease:
+        description: 'Mark as pre-release on GitHub'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write       # push branch/tag, create release
+  pull-requests: write  # open PR to main
+
+env:
+  NAMESPACE: zabbix
+  NAME: zabbix
+
+jobs:
+  init:
+    name: "Initialize workflow"
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ inputs.version || steps.version.outputs.version }}
+      ansible_latest: ${{ inputs.ansible_latest || '2.20'}}
+      ansible_min: ${{ inputs.ansible_min || '2.18'}}
+      prerelease: ${{ inputs.prerelease || true }}
+    steps:
+      - name: Find release version
+        id: version
+        run: |
+          # Extract version from the PR head branch name (e.g. "release/1.5.0" → "1.5.0").
+          # For workflow_dispatch this step outputs an empty string — inputs.version takes priority
+          # via the job outputs expression above.
+          branch="${{ github.event.pull_request.head.ref }}"
+          echo "version=${branch#release/}" >> "$GITHUB_OUTPUT"
+
+  release:
+    name: "Release v${{ needs.init.outputs.version }}"
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/') && github.event.pull_request.base.ref == 'main')
+    runs-on: ansible-test-env
+    needs: init
+
+    steps:
+
+      - name: Validate version format
+        run: |
+          # Validate version format
+          if ! [[ "${{ needs.init.outputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ERROR: version must be X.Y.Z — got: ${{ needs.init.outputs.version }}"
+            exit 1
+          fi
+
+      - name: Checkout main
+        uses: actions/checkout@f9e715a95fcd1f9253f77dd28f11e88d2d6460c7 # v6.0.3
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Python 3.13 avoids pydantic-core binary incompatibility
+      - name: Set up Python
+        uses: actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234 # v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Install tools
+        env:
+          ANSIBLE_LATEST: ${{ needs.init.outputs.ansible_latest }}
+        run: pip install antsibull-changelog "ansible-core>=${ANSIBLE_LATEST}"
+
+      - name: Configure git identity
+        run: |
+          # Configure git identity for GitHub Actions bot
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create or switch to release branch
+        # For PR-merge trigger main already has the release content — work directly on main.
+        # For workflow_dispatch the release branch must exist and is checked out here.
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Create or switch to the release branch
+          echo "::group::Creating or switching to release branch"
+          branch="release/${{ needs.init.outputs.version }}"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+            echo "Branch $branch already exists - checking it out"
+            git fetch origin "$branch"
+            git checkout "$branch"
+          else
+            echo "::error::Branch $branch does not exist"
+            exit 1
+          fi
+          echo "::endgroup::"
+
+      - name: Update version and ansible-core references
+        env:
+          VERSION:        ${{ needs.init.outputs.version }}
+          ANSIBLE_MIN:    ${{ needs.init.outputs.ansible_min }}
+          ANSIBLE_LATEST: ${{ needs.init.outputs.ansible_latest }}
+        run: |
+          # galaxy.yml — collection version
+          sed -i "s/^version:.*$/version: ${VERSION}/" galaxy.yml
+
+          # meta/runtime.yml — requires_ansible
+          sed -i -E "s/requires_ansible: '>=.+'/requires_ansible: '>=${ANSIBLE_MIN}.0'/" meta/runtime.yml
+
+          # roles/*/meta/main.yml — min_ansible_version
+          for f in roles/*/meta/main.yml; do
+            sed -i -E "s/min_ansible_version: '.+'/min_ansible_version: '${ANSIBLE_MIN}'/" "$f"
+          done
+
+          # execution-environment.yml — pinned ansible-core build
+          sed -i -E "s/package_pip: ansible-core==[0-9]+\.[0-9]+/package_pip: ansible-core==${ANSIBLE_MIN}/" execution-environment.yml
+
+          # plugins/README.md and roles/*/README.md — "Ansible core >= X.Y"
+          for f in plugins/README.md roles/*/README.md; do
+            sed -i -E "s/Ansible core >= [0-9]+\.[0-9]+/Ansible core >= ${ANSIBLE_MIN}/" "$f"
+          done
+
+          # README.md — "Tested with the Ansible Core"
+          ver_list=$(python3 -c "
+          maj, mn = map(int, '${ANSIBLE_MIN}'.split('.'))
+          mx = int('${ANSIBLE_LATEST}'.split('.')[1])
+          print(', '.join(f'{maj}.{m}' for m in range(mn, mx + 1)))
+          ")
+          sed -i -E "s/(Tested with the Ansible Core: )[0-9., ]+\./\1${ver_list}./" README.md
+
+          echo "::group::Verification"
+          grep "^version:"           galaxy.yml
+          grep "requires_ansible"    meta/runtime.yml
+          grep "min_ansible_version" roles/agent/meta/main.yml
+          grep "ansible-core=="      execution-environment.yml
+          grep "Ansible core >="     plugins/README.md
+          echo "::endgroup::"
+
+      - name: Generate changelog
+        run: antsibull-changelog release --version "${{ needs.init.outputs.version }}" -v
+
+      - name: Commit release changes
+        run: |
+          # Commit the updated galaxy.yml and generated changelog
+          git add galaxy.yml \
+                  meta/runtime.yml \
+                  roles/*/meta/main.yml \
+                  execution-environment.yml \
+                  README.md plugins/README.md roles/*/README.md \
+                  CHANGELOG.md changelogs/
+          git diff --cached --stat
+          git commit -m "Release version ${{ needs.init.outputs.version }}" || echo "::notice::No changes to commit"
+
+      - name: Push release branch
+        if: github.event_name == 'workflow_dispatch'
+        run: git push origin "release/${{ needs.init.outputs.version }}"
+
+      - name: Push changelog and version bump to main
+        # For PR-merge trigger: commit the generated changelog and consumed fragments
+        # back to main so they don't remain stale after the merge.
+        if: github.event_name == 'pull_request'
+        run: git push origin main
+
+      - name: Create and push release tag
+        run: |
+          # Create and push a tag for the release
+          git tag -a "v${{ needs.init.outputs.version }}" -m "Release version ${{ needs.init.outputs.version }}" || echo "::notice::Tag v${{ needs.init.outputs.version }} already exists"
+          git push origin "v${{ needs.init.outputs.version }}" || echo "::notice::No changes to tags"
+
+      - name: Build collection
+        run: ansible-galaxy collection build
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          # Extract the release notes from CHANGELOG.md
+          echo "::group::Extracting release notes for v${{ needs.init.outputs.version }}"
+          python3 - <<'PYEOF' > release_notes.md
+          import re
+
+          version = "${{ needs.init.outputs.version }}"
+          content = open("CHANGELOG.md").read()
+
+          # antsibull-changelog escapes dots in headings, e.g. "## v1\.5\.0".
+          ver_escaped = version.replace(".", r"\.")
+
+          # Match the "## v<version>" section up to the next "<a id="v<digit>...">"
+          # version anchor (next release) or EOF.
+          m = re.search(
+              rf'(?ms)^## v{re.escape(ver_escaped)}\b.*?(?=\n<a id="v[0-9]|\Z)',
+              content,
+          )
+          print(m.group(0).strip() if m else f"## v{version}\n\nNo changelog entries.")
+          PYEOF
+          echo "::endgroup::"
+
+          echo "::group::release_notes.md"
+          cat release_notes.md
+          echo "::endgroup::"
+
+      - name: Install GitHub CLI
+        run: |
+          # Self-hosted runners don't ship with gh preinstalled like GitHub-hosted ones do
+          type -p gh >/dev/null && exit 0
+          echo "::group::Installing GitHub CLI"
+          (type -p wget >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y wget)) \
+            && sudo mkdir -p -m 755 /etc/apt/keyrings \
+            && wget -nv -O /tmp/githubcli-archive-keyring.gpg https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+            && sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg < /tmp/githubcli-archive-keyring.gpg > /dev/null \
+            && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+            && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+              | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt-get update -qq \
+            && sudo apt-get install -y gh
+          echo "::endgroup::"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create a GitHub release draft
+          echo "::group::Creating GitHub release draft"
+          PRERELEASE_FLAG=""
+          [ "${{ needs.init.outputs.prerelease }}" = "true" ] && PRERELEASE_FLAG="--prerelease"
+
+          gh release create "v${{ needs.init.outputs.version }}" \
+            --title "v${{ needs.init.outputs.version }}" \
+            --draft \
+            $PRERELEASE_FLAG \
+            --notes-file release_notes.md \
+            "${{ env.NAMESPACE }}-${{ env.NAME }}-${{ needs.init.outputs.version }}.tar.gz"
+          echo "::endgroup::"
+
+      - name: Delete release branch
+        if: github.event_name == 'pull_request'
+        run: git push origin --delete "release/${{ needs.init.outputs.version }}"

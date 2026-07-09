@@ -1,5 +1,5 @@
 name: Collection Tests
-run-name: "${{ inputs.test_type || 'all' }} / ${{ github.head_ref || github.ref_name }} / zbx ${{ inputs.zabbix_version || '7.0' }}"
+run-name: "Release Tests: ${{ github.head_ref || github.ref_name }}"
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ on:
       ansible_core:
         description: 'ansible-core version(s), as a JSON array, e.g. ["2.20"] or ["2.18","2.19"]'
         required: false
-        default: '["2.17"]'
+        default: '["2.18","2.19","2.20"]'
         type: string
       zabbix_version:
         description: 'Zabbix version (for integration tests)'
@@ -41,33 +41,45 @@ on:
 permissions:
   contents: read
 
-env:
-  TEST_TYPE: ${{ inputs.test_type || 'all' }}
-  ZABBIX_VERSION: ${{ inputs.zabbix_version || '7.0' }}
-  SRC_DIR: ${{ github.workspace }}
-  COLLECTIONS_PATH: /home/runner/.ansible/collections
-  COLLECTION_DIR: /home/runner/.ansible/collections/ansible_collections/zabbix/zabbix
-
 jobs:
+  init:
+    name: "Initialize workflow"
+    runs-on: ubuntu-latest
+    outputs:
+      test_type: ${{ inputs.test_type || 'all' }}
+      ansible_lint_version: ${{ inputs.ansible_lint_version || ''}}
+      ansible_core: ${{ inputs.ansible_core || '["2.18","2.19","2.20"]'}}
+      zabbix_version: ${{ inputs.zabbix_version || '7.0' }}
+    steps:
+      - name: Init workflow
+        run: |
+          # Init workflow
+          echo "Workflow initialized"
   test:
-    name: "ansible-core ${{ matrix.ansible_version }}"
+    name: "${{ needs.init.outputs.test_type }} / ansible-core ${{ matrix.ansible_version }} / zbx ${{ needs.init.outputs.zabbix_version }}"
     runs-on: ansible-test-collection
     timeout-minutes: 180
+    needs: init
+
+    env:
+      TEST_TYPE: ${{ needs.init.outputs.test_type }}
+      ZABBIX_VERSION: ${{ needs.init.outputs.zabbix_version }}
+      SRC_DIR: ${{ github.workspace }}
+      COLLECTIONS_PATH: /home/runner/.ansible/collections
+      COLLECTION_DIR: /home/runner/.ansible/collections/ansible_collections/zabbix/zabbix
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      COMPOSE_FILE: .github/docker-compose.yml
 
     # cancel-in-progress only on pull_request; preserve scheduled and dispatch runs.
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.test_type || 'all' }}-${{ matrix.ansible_version }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ needs.init.outputs.test_type }}-${{ matrix.ansible_version }}
       cancel-in-progress: true
 
     strategy:
       fail-fast: false
       matrix:
-        ansible_version: ${{ inputs.ansible_core && fromJSON(inputs.ansible_core) || fromJSON('["2.17"]') }}
-
-    env:
-      LANG: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-      COMPOSE_FILE: .github/docker-compose.yml
+        ansible_version: ${{ needs.init.outputs.ansible_core && fromJSON(needs.init.outputs.ansible_core) }}
 
     steps:
       - name: Checkout
@@ -141,7 +153,7 @@ jobs:
       - name: Install ansible-core ${{ matrix.ansible_version }} and tools
         env:
           ANSIBLE_CORE_VERSION: ${{ matrix.ansible_version }}
-          ANSIBLE_LINT_VERSION: ${{ inputs.ansible_lint_version || '25.5.0' }} # TODO: remove default once 25.5.0 is the minimum supported version
+          ANSIBLE_LINT_VERSION: ${{ needs.init.outputs.ansible_lint_version }}
         run: |
           # Install ansible-core
           lint_req="ansible-lint"
@@ -198,10 +210,10 @@ jobs:
           [ -d roles ]         || { echo "roles directory not found"; exit 1; }
           [ -d plugins ]       || { echo "plugins directory not found"; exit 1; }
 
-      # - name: Validate changelog
-      #   working-directory: ${{ env.SRC_DIR }}
-      #   if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
-      #   run: antsibull-changelog lint
+      - name: Validate changelog
+        working-directory: ${{ env.SRC_DIR }}
+        if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
+        run: antsibull-changelog lint
 
       # ZABBIX_VERSION (workflow-level env) is interpolated by compose into image tags.
       - name: Start Zabbix stack
