@@ -1,5 +1,5 @@
-bugfixes:
+major_changes:
   - >-
-    `zabbix_inventory` plugin: fixed compatibility with Ansible 2.19+ by adding ``TrustedAsTemplate`` support
+    `zabbix_inventory` plugin: added compatibility with Ansible 2.19+ by updating ``TrustedAsTemplate`` support
     for Jinja2 template expressions and by accepting plain ``str`` values (in addition to
     ``AnsibleUnicode``) for the ``query``, ``filter.status``, and ``filter.tags_behavior`` options.

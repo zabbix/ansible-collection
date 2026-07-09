@@ -1,0 +1,4 @@
+release_summary: >-
+  This release adds compatibility with Ansible 2.19+ to the ``zabbix_inventory`` plugin and introduces
+  a new ``hostnames`` option for building inventory hostnames from ordered Jinja2 expressions, with
+  supporting documentation examples.
