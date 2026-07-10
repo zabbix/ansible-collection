@@ -5,6 +5,10 @@ ignore:
   - .github/
 
 rules:
+  indentation:
+    spaces: 2
+    indent-sequences: consistent  # antsibull-changelog emits sequences at parent-key indent; let each file choose its style
+    check-multi-line-strings: false
   comments:
     # https://github.com/prettier/prettier/issues/6780
     min-spaces-from-content: 1

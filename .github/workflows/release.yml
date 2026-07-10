@@ -45,7 +45,7 @@ jobs:
       version: ${{ inputs.version || steps.version.outputs.version }}
       ansible_latest: ${{ inputs.ansible_latest || '2.20'}}
       ansible_min: ${{ inputs.ansible_min || '2.18'}}
-      prerelease: ${{ inputs.prerelease || true }}
+      prerelease: ${{ inputs.prerelease }}
     steps:
       - name: Find release version
         id: version
@@ -241,7 +241,9 @@ jobs:
           # Create a GitHub release draft
           echo "::group::Creating GitHub release draft"
           PRERELEASE_FLAG=""
-          [ "${{ needs.init.outputs.prerelease }}" = "true" ] && PRERELEASE_FLAG="--prerelease"
+          # Default to --prerelease unless the input was explicitly set to "false".
+          # Empty string (PR-merge trigger, no inputs) → treat as prerelease.
+          [ "${{ needs.init.outputs.prerelease }}" != "false" ] && PRERELEASE_FLAG="--prerelease"
 
           gh release create "v${{ needs.init.outputs.version }}" \
             --title "v${{ needs.init.outputs.version }}" \
@@ -253,4 +255,6 @@ jobs:
 
       - name: Delete release branch
         if: github.event_name == 'pull_request'
-        run: git push origin --delete "release/${{ needs.init.outputs.version }}"
+        run: |
+          git push origin --delete "release/${{ needs.init.outputs.version }}" \
+            || echo "::notice::Branch release/${{ needs.init.outputs.version }} was already deleted"
