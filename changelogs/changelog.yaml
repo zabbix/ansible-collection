@@ -3,259 +3,276 @@ releases:
   1.0.2:
     changes:
       bugfixes:
-        - Zabbix agent parameter fixes.
+      - Zabbix agent parameter fixes.
     release_date: '2023-04-28'
   1.0.3:
     changes:
       major_changes:
-        - Zabbix agent role extended distribution support for Alma Linux 8,9, Rocky
-          Linux 8,9, and Oracle Linux 8,9
+      - Zabbix agent role extended distribution support for Alma Linux 8,9, Rocky
+        Linux 8,9, and Oracle Linux 8,9
     release_date: '2023-05-03'
   1.0.4:
     changes:
       major_changes:
-        - Zabbix agent role extended distribution support for CentOS Stream 8,9
+      - Zabbix agent role extended distribution support for CentOS Stream 8,9
     release_date: '2023-05-03'
   1.0.5:
     changes:
       major_changes:
-        - added `remove` tag to uninstall agent packages (e.g. `ansible-playbook -i
-          inventory play.yml -t remove`)
-        - added `userparam` tag to manage user parameters only (e.g. `ansible-playbook
-          -i inventory play.yml -t userparam`)
-        - added logrotate customization and extended new defaults with maxsize option.
-        - added self-managed repo mirror support
-        - added support of self-managed certificates for Zabbix agent connections.
-        - added support of self-managed certificates for Zabbix agent2 plugin sessions.
-        - added userparameter reload to Zabbix agent role. It will trigger if `param_userparamater`
-          was changed and no agent restart detected.
+      - added `remove` tag to uninstall agent packages (e.g. `ansible-playbook -i
+        inventory play.yml -t remove`)
+      - added `userparam` tag to manage user parameters only (e.g. `ansible-playbook
+        -i inventory play.yml -t userparam`)
+      - added logrotate customization and extended new defaults with maxsize option.
+      - added self-managed repo mirror support
+      - added support of self-managed certificates for Zabbix agent connections.
+      - added support of self-managed certificates for Zabbix agent2 plugin sessions.
+      - added userparameter reload to Zabbix agent role. It will trigger if `param_userparamater`
+        was changed and no agent restart detected.
     release_date: '2023-05-12'
   1.0.6:
     changes:
       bugfixes:
-        - Zabbix agent role - fixed default home folder path for RedHat like distributions
+      - Zabbix agent role - fixed default home folder path for RedHat like distributions
       major_changes:
-        - Zabbix agent role - added Debian support
-        - Zabbix agent role - added SELinux policy extension for Zabbix agent2
-        - Zabbix agent role - extended package deployment options with the repository_priority
-          and repository_disable variables. RedHat family only
+      - Zabbix agent role - added Debian support
+      - Zabbix agent role - added SELinux policy extension for Zabbix agent2
+      - Zabbix agent role - extended package deployment options with the repository_priority
+        and repository_disable variables. RedHat family only
     release_date: '2023-06-07'
   1.1.0:
     changes:
       bugfixes:
-        - removed support of EOL ansible version
-        - set Jinja2 dependency to =>3.1.2
+      - removed support of EOL ansible version
+      - set Jinja2 dependency to =>3.1.2
       major_changes:
-        - Zabbix agent role - added config and deploy tags
-        - Zabbix agent role - added host management using Zabbix API
+      - Zabbix agent role - added config and deploy tags
+      - Zabbix agent role - added host management using Zabbix API
     modules:
-      - description: Module for creating and deleting hosts, and updating existing
-          ones.
-        name: zabbix_host
-        namespace: ''
-      - description: Module for creating and deleting host groups
-        name: zabbix_hostgroup
-        namespace: ''
+    - description: Module for creating and deleting hosts, and updating existing ones.
+      name: zabbix_host
+      namespace: ''
+    - description: Module for creating and deleting host groups
+      name: zabbix_hostgroup
+      namespace: ''
     plugins:
       httpapi:
-        - description: Zabbix HTTP API plugin
-          name: zabbix
-          namespace: null
+      - description: Zabbix HTTP API plugin
+        name: zabbix
+        namespace: null
       inventory:
-        - description: Zabbix inventory plugin
-          name: zabbix_inventory
-          namespace: null
+      - description: Zabbix inventory plugin
+        name: zabbix_inventory
+        namespace: null
     release_date: '2023-09-18'
   1.1.1:
     changes:
       major_changes:
-        - Zabbix agent role - added Debian 12 support
+      - Zabbix agent role - added Debian 12 support
     release_date: '2023-09-27'
   1.2.0:
     changes:
       bugfixes:
-        - agent role - fixed custom user sequence to trigger path change when `agent_service_group`
-          stays unmodified.
+      - agent role - fixed custom user sequence to trigger path change when `agent_service_group`
+        stays unmodified.
       major_changes:
-        - decomposed `zabbix_agent` role to `agent` and `host` roles
-        - deprecated `zabbix_agent` role
-        - renamed all role variables to fit var_naming[role_prefix] requirement
+      - decomposed `zabbix_agent` role to `agent` and `host` roles
+      - deprecated `zabbix_agent` role
+      - renamed all role variables to fit var_naming[role_prefix] requirement
     release_date: '2023-10-19'
   1.2.1:
     changes:
       bugfixes:
-        - host role - fixed port inheritance from agent role
+      - host role - fixed port inheritance from agent role
     release_date: '2023-10-20'
   1.2.2:
     changes:
       major_changes:
-        - agent role - `agent_apply_firewalld_rule` defaults set to `false`
+      - agent role - `agent_apply_firewalld_rule` defaults set to `false`
     release_date: '2023-10-20'
   1.2.3:
     changes:
       bugfixes:
-        - host role - fixed token auth for api tasks
+      - host role - fixed token auth for api tasks
     release_date: '2023-10-30'
   1.2.4:
     changes:
       bugfixes:
-        - host role - fixed defaults of psk variables for independent role runs
+      - host role - fixed defaults of psk variables for independent role runs
     release_date: '2023-11-01'
   1.2.5:
     changes:
       bugfixes:
-        - host role - fixed psk generation skip
+      - host role - fixed psk generation skip
     release_date: '2023-11-03'
   1.3.0:
     changes:
       bugfixes:
-        - agent role - fixed repository mirror
+      - agent role - fixed repository mirror
       major_changes:
-        - agent role - apt cache update from package state task to `repository` role
-        - agent role - decomposed repository tasks to separate dependent role
-        - repository role - added dependent role for repository customization
+      - agent role - apt cache update from package state task to `repository` role
+      - agent role - decomposed repository tasks to separate dependent role
+      - repository role - added dependent role for repository customization
     release_date: '2023-11-28'
   1.3.1:
     changes:
       bugfixes:
-        - repository role - fixed repository conflict with official release package
-          repo by removing it.
+      - repository role - fixed repository conflict with official release package
+        repo by removing it.
     release_date: '2023-11-28'
   1.3.2:
     changes:
       bugfixes:
-        - agent role - removed wildcards from agent_disable_repository for yum
-        - repository role - added purge for Debian os family and rescue tasks to resolve
-          repository conflict
-        - repository role - fixed priority handling for yum
+      - agent role - removed wildcards from agent_disable_repository for yum
+      - repository role - added purge for Debian os family and rescue tasks to resolve
+        repository conflict
+      - repository role - fixed priority handling for yum
       major_changes:
-        - repository role - removed "allow_insecure" option from deb822
+      - repository role - removed "allow_insecure" option from deb822
     release_date: '2023-11-28'
   1.3.3:
     changes:
       major_changes:
-        - repository role - added 6.5 version
-        - repository role - added aarch support for multiple distros
-        - repository role - increased repository priority defaults
-        - repository role - moved and updated os version assert
+      - repository role - added 6.5 version
+      - repository role - added aarch support for multiple distros
+      - repository role - increased repository priority defaults
+      - repository role - moved and updated os version assert
     release_date: '2023-11-30'
   1.3.4:
     changes:
       bugfixes:
-        - agent role - fixed role dependency for ansible-core 2.13
+      - agent role - fixed role dependency for ansible-core 2.13
       major_changes:
-        - repository role - added raspberry pi support
+      - repository role - added raspberry pi support
     release_date: '2023-12-21'
   1.3.5:
     changes:
       major_changes:
-        - event update with message added to modules
-        - rulebook and playbook examples for Zabbix - EDA sequence
+      - event update with message added to modules
+      - rulebook and playbook examples for Zabbix - EDA sequence
     release_date: '2023-12-22'
   1.3.6:
     changes:
       bugfixes:
-        - agent role - changed system home folder of zabbix user for rhel-like os
-        - lint fixes
-        - molecule default scenario fixes
+      - agent role - changed system home folder of zabbix user for rhel-like os
+      - lint fixes
+      - molecule default scenario fixes
       major_changes:
-        - repository role - added sslverify option
+      - repository role - added sslverify option
     release_date: '2024-01-09'
   1.3.7:
     changes:
       bugfixes:
-        - fixed readme.md links
+      - fixed readme.md links
       major_changes:
-        - agent role - added minor version for debian-like distributions
+      - agent role - added minor version for debian-like distributions
     release_date: '2024-05-08'
   1.3.8:
     changes:
       major_changes:
-        - agent role - added default variables for agent2 plugins
-        - agent role - added mssql agent2 plugin
-        - agent role - added session name prefix to plugin certificate filenames on
-          target devices
-        - agent role - changed raspberry pi check to ansible_lsb
-        - molecule - updated agent2_cert scenario for plugin testing
-        - molecule - updated platforms with ubuntu24.04
-        - repository role - added ubuntu24.04 support
+      - agent role - added default variables for agent2 plugins
+      - agent role - added mssql agent2 plugin
+      - agent role - added session name prefix to plugin certificate filenames on
+        target devices
+      - agent role - changed raspberry pi check to ansible_lsb
+      - molecule - updated agent2_cert scenario for plugin testing
+      - molecule - updated platforms with ubuntu24.04
+      - repository role - added ubuntu24.04 support
     release_date: '2024-05-23'
   1.3.9:
     changes:
       major_changes:
-        - agent role - added Zabbix 7.0 support
-        - repository role - added Zabbix 7.0 support
+      - agent role - added Zabbix 7.0 support
+      - repository role - added Zabbix 7.0 support
     release_date: '2024-06-04'
   1.3.10:
     changes:
       bugfixes:
-        - zabbix_api module_utils - removed certificate error exception.
+      - zabbix_api module_utils - removed certificate error exception.
       major_changes:
-        - moved supported ansible-core range to 2.17-2.15
+      - moved supported ansible-core range to 2.17-2.15
     release_date: '2024-06-14'
   1.3.11:
     changes:
       major_changes:
-        - '`zabbix_inventory` plugin - added resolving proxyid and proxy_groupid to
-          names'
-        - agent role - Ansible rpm package management module change from `yum` to
-          `dnf`
-        - host role - added proxy group support
-        - host role - removed default value from host_proxy variable
-        - repository role - Ansible rpm package management module change from `yum`
-          to `dnf`
-        - zabbix_host module - added proxy group support
+      - '`zabbix_inventory` plugin - added resolving proxyid and proxy_groupid to
+        names'
+      - agent role - Ansible rpm package management module change from `yum` to `dnf`
+      - host role - added proxy group support
+      - host role - removed default value from host_proxy variable
+      - repository role - Ansible rpm package management module change from `yum`
+        to `dnf`
+      - zabbix_host module - added proxy group support
       removed_features:
-        - agent role - removed CentOS 8 Stream support (reached EOL)
-        - agent role - removed RHEL 7 support (reached EOM)
-        - repository role - removed CentOS 8 Stream support (reached EOL)
-        - repository role - removed RHEL 7 support (reached EOM)
-        - zabbix_agent role - removed previously deprecated role
+      - agent role - removed CentOS 8 Stream support (reached EOL)
+      - agent role - removed RHEL 7 support (reached EOM)
+      - repository role - removed CentOS 8 Stream support (reached EOL)
+      - repository role - removed RHEL 7 support (reached EOM)
+      - zabbix_agent role - removed previously deprecated role
     release_date: '2024-07-10'
   1.3.12:
     changes:
       bugfixes:
-        - agent role - added absolute path for verify task
+      - agent role - added absolute path for verify task
       removed_features:
-        - agent role - removed Debian 9 support (reached EOL)
-        - agent role - removed Ubuntu 18.04 support (reached EOM)
-        - repository role - removed Debian 9 support (reached EOL)
-        - repository role - removed Ubuntu 18.04 support (reached EOM)
+      - agent role - removed Debian 9 support (reached EOL)
+      - agent role - removed Ubuntu 18.04 support (reached EOM)
+      - repository role - removed Debian 9 support (reached EOL)
+      - repository role - removed Ubuntu 18.04 support (reached EOM)
     release_date: '2024-07-11'
   1.4.0:
     changes:
       major_changes:
-        - added support for Zabbix 7.2 for roles, plugins and modules
-        - moved supported ansible-core range to 2.16-2.18
+      - added support for Zabbix 7.2 for roles, plugins and modules
+      - moved supported ansible-core range to 2.16-2.18
       minor_changes:
-        - '`zabbix_inventory` plugin - added function for resolving extra-vars'
+      - '`zabbix_inventory` plugin - added function for resolving extra-vars'
     modules:
-      - description: Module for creating and deleting proxies, and updating existing
-          ones.
-        name: zabbix_proxy
-        namespace: ''
-      - description: Module for creating and deleting proxy groups, and updating existing
-          ones.
-        name: zabbix_proxy_group
-        namespace: ''
+    - description: Module for creating and deleting proxies, and updating existing
+        ones.
+      name: zabbix_proxy
+      namespace: ''
+    - description: Module for creating and deleting proxy groups, and updating existing
+        ones.
+      name: zabbix_proxy_group
+      namespace: ''
     release_date: '2025-03-11'
   1.4.1:
     changes:
       bugfixes:
-        - agent role - fixed issue with installing of Zabbix agents for version 7.2
-        - zabbix_host module - fixed issue of working with context macros
+      - agent role - fixed issue with installing of Zabbix agents for version 7.2
+      - zabbix_host module - fixed issue of working with context macros
       major_changes:
-        - '`zabbix_inventory` plugin - added strict AND logic for filtering by tags'
+      - '`zabbix_inventory` plugin - added strict AND logic for filtering by tags'
     release_date: '2025-04-29'
   1.4.2:
     changes:
       major_changes:
-        - added support for Zabbix 7.4 for roles, plugins and modules
-        - agent role - added CentOs 10 Stream support
-        - agent role - added Nvidia-GPU plugin support for Zabbix-agent2
-        - agent role - added RHEL 10 support
-        - agent role - added advanced encryption parameters for Zabbix-agent2
-        - agent role - changed path to the executable files of plugins in different
-          version
-        - moved supported `ansible-core` range to 2.17-2.18
+      - added support for Zabbix 7.4 for roles, plugins and modules
+      - agent role - added CentOs 10 Stream support
+      - agent role - added Nvidia-GPU plugin support for Zabbix-agent2
+      - agent role - added RHEL 10 support
+      - agent role - added advanced encryption parameters for Zabbix-agent2
+      - agent role - changed path to the executable files of plugins in different
+        version
+      - moved supported `ansible-core` range to 2.17-2.18
     release_date: '2025-07-10'
+  1.5.0:
+    changes:
+      major_changes:
+      - '`zabbix_inventory` plugin: added compatibility with Ansible 2.19+ by updating
+        ``TrustedAsTemplate`` support for Jinja2 template expressions and by accepting
+        plain ``str`` values (in addition to ``AnsibleUnicode``) for the ``query``,
+        ``filter.status``, and ``filter.tags_behavior`` options.'
+      minor_changes:
+      - '`zabbix_inventory` plugin: added the `hostnames` option to build inventory
+        hostnames from ordered Jinja2 expressions with fallback to the technical Zabbix
+        host name; duplicate rendered hostnames raise an error.'
+      release_summary: This release adds compatibility with Ansible 2.19+ to the ``zabbix_inventory``
+        plugin and introduces a new ``hostnames`` option for building inventory hostnames
+        from ordered Jinja2 expressions, with supporting documentation examples.
+    fragments:
+    - ansible-2.19-compatibility.yml
+    - v1.5.0_summary.yaml
+    - zabbix_inventory_hostnames_examples.yml
+    release_date: '2026-07-14'

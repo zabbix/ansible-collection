@@ -70,7 +70,7 @@ The role contains firewalld application rule to allow agent listen port. Firewal
 
 Multiple tasks require `superuser` privileges (sudo).
 
-Ansible core >= 2.17
+Ansible core >= 2.18
 
 Zabbix agent role requires additional tools from two Ansible certified collections:
 - ansible.posix >= 2.8

@@ -7,7 +7,7 @@ galaxy_info:
 
   license: AGPL-3.0-only
 
-  min_ansible_version: '2.17'
+  min_ansible_version: '2.18'
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:

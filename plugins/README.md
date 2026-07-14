@@ -51,7 +51,7 @@ Requirements
 ------------
 Plugins and modules are supported under the following conditions:
 - Zabbix API >= 6.0
-- Ansible core >= 2.17
+- Ansible core >= 2.18
 - Python >= 2.6
 
 Zabbix HTTP API plugin requires additional tools from two Ansible-certified collections:

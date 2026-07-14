@@ -1,0 +1,54 @@
+objects:
+  role: {}
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  filter: {}
+  httpapi:
+    zabbix:
+      description: Zabbix HTTP API plugin
+      name: zabbix
+      version_added: null
+  inventory:
+    zabbix_inventory:
+      description: Zabbix inventory plugin
+      name: zabbix_inventory
+      version_added: null
+  lookup: {}
+  module:
+    zabbix_event:
+      description: Module for event actions
+      name: zabbix_event
+      namespace: ''
+      version_added: null
+    zabbix_host:
+      description: Module for creating and deleting hosts, and updating existing ones.
+      name: zabbix_host
+      namespace: ''
+      version_added: null
+    zabbix_hostgroup:
+      description: Module for creating and deleting host groups
+      name: zabbix_hostgroup
+      namespace: ''
+      version_added: null
+    zabbix_proxy:
+      description: Module for creating and deleting proxies, and updating existing
+        ones.
+      name: zabbix_proxy
+      namespace: ''
+      version_added: null
+    zabbix_proxy_group:
+      description: Module for creating and deleting proxy groups, and updating existing
+        ones.
+      name: zabbix_proxy_group
+      namespace: ''
+      version_added: null
+  netconf: {}
+  shell: {}
+  strategy: {}
+  test: {}
+  vars: {}
+version: 1.5.0
