@@ -55,5 +55,5 @@ dependencies:
     repository_state: '{{ agent_package_state | default(None) }}'
     repository_url: '{{ agent_repository_mirror | default(None) }}'
     repository_priotity: '{{ agent_repository_priority | default(None) }}'
-    repository_http_proxy: '{{ agent_http_proxy | default(None) }}'
-    repository_https_proxy: '{{ agent_https_proxy | default(None) }}'
+    repository_http_proxy: '{{ agent_http_proxy | default(omit, true) }}'
+    repository_https_proxy: '{{ agent_https_proxy | default(omit, true) }}'

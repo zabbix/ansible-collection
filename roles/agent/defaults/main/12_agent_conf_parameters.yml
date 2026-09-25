@@ -90,5 +90,5 @@ agent_param_plugins_nvidia_system_path: /usr/libexec/zabbix/zabbix-agent2-plugin
 agent_param_plugins_postgresql_system_path: '{{ ("/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql"
                                             if (agent_major_version <= 7.0)
                                             else "/usr/libexec/zabbix/zabbix-agent2-plugin-postgresql") }}'
-agent_param_plugins_log_maxlinespersecond: '{{ agent_param_maxlinespersecond | default(None) | default(omit) }}'
-agent_param_plugins_systemrun_logremotecommands: '{{ agent_param_logremotecommands | default(None) | default(omit) }}'
+agent_param_plugins_log_maxlinespersecond: '{{ agent_param_maxlinespersecond | default(omit, true) }}'
+agent_param_plugins_systemrun_logremotecommands: '{{ agent_param_logremotecommands | default(omit, true) }}'
