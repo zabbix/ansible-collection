@@ -23,8 +23,8 @@
     enabled: true
     sslverify: '{{ repository_sslverify }}'
   environment:
-    http_proxy: '{{ repository_http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ repository_https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ repository_http_proxy | default(omit, true) }}'
+    https_proxy: '{{ repository_https_proxy | default(omit, true) }}'
   vars:
     repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
               + repository_url + "/zabbix/" + repository_version | string + "/"

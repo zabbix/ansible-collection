@@ -11,8 +11,8 @@
     state: present
   when: repository_state != "absent"
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [deploy]
 
 - name: 'DEB822 : Zabbix repository presence'
@@ -51,8 +51,8 @@
                                   else ("-arm64" if ansible_architecture == "aarch64" else ""))
                         }}'
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [deploy, remove]
 
 ### update cache separately fro install task to save time during consequential runs for deployed instances
@@ -64,6 +64,6 @@
   ansible.builtin.apt:
     update_cache: true
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [skip_ansible_lint, deploy, remove]

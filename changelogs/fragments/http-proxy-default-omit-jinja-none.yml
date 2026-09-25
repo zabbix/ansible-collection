@@ -1,0 +1,8 @@
+bugfixes:
+  - >-
+    ``agent`` and ``repository`` roles: fixed ``http_proxy``/``https_proxy`` environment
+    variables being rendered as the literal string ``"None"`` instead of being omitted
+    when no proxy was configured, which broke package installation and repository access
+    behind a proxy-less network. The ``default(None) | default(omit)`` filter chain never
+    reached ``omit`` because Jinja's ``default()`` filter only substitutes for undefined
+    values, not for ``None``; it now uses ``default(omit, true)``.

@@ -32,6 +32,6 @@
             else agent_package_list | map('regex_replace', '^(.*)$', '\\1=1:'
               + agent_internal_package_suffix) }}"
   environment:
-    http_proxy: '{{ agent_http_proxy | default(None) | default(omit) }}'
-    https_proxy: '{{ agent_https_proxy | default(None) | default(omit) }}'
+    http_proxy: '{{ agent_http_proxy | default(omit, true) }}'
+    https_proxy: '{{ agent_https_proxy | default(omit, true) }}'
   tags: [deploy]
