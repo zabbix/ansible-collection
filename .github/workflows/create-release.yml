@@ -82,9 +82,10 @@ jobs:
           NEXT_VERSION: ${{ steps.version.outputs.next }}
         run: |
           # Create an empty changelog summary file for the new version
+          mkdir -p changelogs/fragments
           SUMMARY_FILE="changelogs/fragments/v${NEXT_VERSION}_summary.yaml"
-          echo -e "release_summary: ''" > ${SUMMARY_FILE}
-          git add ${SUMMARY_FILE}
+          echo -e "release_summary: ''" > "${SUMMARY_FILE}"
+          git add "${SUMMARY_FILE}"
 
       - name: Commit and push release branch
         run: |
