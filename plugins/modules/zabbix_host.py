@@ -232,6 +232,13 @@ options:
                             - Used only if I(version=2) or I(version=3).
                             - Used only for Zabbix versions above 6.4.
                         type: str
+                    retries:
+                        description:
+                            - Number of retries for SNMP requests.
+                            - Used only for Zabbix versions 8.0 and above.
+                            - If not specified, the current value of an existing interface is kept,
+                              a new interface gets the Zabbix default value.
+                        type: str
                     contextname:
                         description:
                             - SNMPv3 context name.
@@ -830,19 +837,24 @@ class Host(object):
                         self.module.fail_json(msg="Required parameter for SNMP interface not found: details")
                     if each['details']['version'] is None:
                         self.module.fail_json(msg="Required parameter not found: version")
+                    # A copy: the list is extended below and must not change the shared helper value
                     if each['details']['version'] in ['1', '2']:
-                        req_parameters = snmp_parameters[each['details']['version']]
+                        req_parameters = list(snmp_parameters[each['details']['version']])
                     else:
                         if each['details']['securitylevel'] is None:
                             self.module.fail_json(msg="Required parameter not found: securitylevel")
-                        req_parameters = snmp_parameters[each['details']['version']][each['details']['securitylevel']]
+                        req_parameters = list(snmp_parameters[each['details']['version']][each['details']['securitylevel']])
 
                     # If additional fields need to be added and some logic is required, it can be done here.
                     # If the new field only depends on the version, it must be added to the helper.
                     if each['details']['version'] in ['2', '3'] and (Zabbix_version(self.zbx_api_version) >= Zabbix_version('6.4.0')):
                         req_parameters.append('max_repetitions')
 
-                    input_arguments = [e for e in each['details'] if each['details'][e] is not None]
+                    # Optional field, not checked against the required parameters
+                    if each['details'].get('retries') is not None and Zabbix_version(self.zbx_api_version) < Zabbix_version('8.0.0'):
+                        self.module.fail_json(msg="Incorrect arguments for Zabbix version < 8.0.0: retries")
+
+                    input_arguments = [e for e in each['details'] if each['details'][e] is not None and e != 'retries']
                     more_parameters = list(set(input_arguments) - set(req_parameters))
                     less_parameters = list(set(req_parameters) - set(input_arguments))
                     if more_parameters:
@@ -862,6 +874,9 @@ class Host(object):
                     if Zabbix_version(self.zbx_api_version) >= Zabbix_version('6.4.0'):
                         if details['version'] == '2' or details['version'] == '3':
                             details['max_repetitions'] = each['details']['max_repetitions']
+                    # Only for Zabbix versions 8.0 and above
+                    if each['details'].get('retries') is not None:
+                        details['retries'] = each['details']['retries']
                     # v3
                     if details['version'] == '3':
                         details['contextname'] = each['details']['contextname']
@@ -1028,6 +1043,10 @@ class Host(object):
                     if each['type'] == interface['type']:
                         total_interface = each
                         total_interface['interfaceid'] = interface['interfaceid']
+                        # SNMP retries (Zabbix 8.0+) is optional: keep the current value if not specified
+                        if (isinstance(total_interface['details'], dict) and isinstance(interface['details'], dict)
+                                and 'retries' not in total_interface['details'] and 'retries' in interface['details']):
+                            total_interface['details']['retries'] = interface['details']['retries']
                         new_interfaces.append(total_interface)
                         if total_interface != interface:
                             interface_updating_flag = True
@@ -1135,6 +1154,7 @@ def main():
                         'bulk': {'type': 'bool'},
                         'community': {'type': 'str'},
                         'max_repetitions': {'type': 'str'},
+                        'retries': {'type': 'str'},
                         'contextname': {'type': 'str'},
                         'securityname': {'type': 'str'},
                         'securitylevel': {

@@ -441,6 +441,12 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Required with SNMP interfaces. Used only with SNMP interface versions 2 and 3. Used only for Zabbix versions above 6.4.</td>
         </tr>
         <tr>
+            <td colspan=1 align="left">retries</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Number of retries for SNMP requests. Optional. Used only for Zabbix versions 8.0 and above. If not specified, the current value of an existing interface is kept, a new interface gets the Zabbix default value.</td>
+        </tr>
+        <tr>
             <td colspan=1 align="left">contextname</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
@@ -1907,13 +1913,13 @@ query:
 # Filtering by tags
 # You can specify the tag value as a variable or the tag as a dictionary.
 filter:
-  tags: 
+  tags:
     - tag: OS
       value: '{{ os_tag_value }}'
     - '{{ host_tag }}'
 
 # Add output fields
-output: 
+output:
   - status
   - name
 ```
