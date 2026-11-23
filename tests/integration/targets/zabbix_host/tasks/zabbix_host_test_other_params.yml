@@ -412,7 +412,7 @@
           - "'No need to update host: zabbix_test_host' == zabbix_host_clear_proxy_again.result"
 
 - name: Check proxy group parameters
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Prepare proxy group 'test proxy group'
       zabbix.zabbix.zabbix_proxy_group:
@@ -506,7 +506,7 @@
           - "'No need to update host' in zabbix_host_clear_proxy_group_again.result"
 
 - name: Check proxy group and proxy parameters
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Set proxy group and proxy in one task
     - name: Test - Set proxy group and proxy in one task
@@ -538,7 +538,7 @@
           - "'parameters are mutually exclusive' in zabbix_host_empty_proxy_and_empty_proxy_group.msg"
 
 - name: Check changing between proxy and proxy group
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Change proxy to proxy group
     - name: Test - Set proxy for monitoring via test proxy
@@ -582,7 +582,7 @@
           - "'No need to update host' in zabbix_host_proxy_group_change_again.result"
 
 - name: Check changing between proxy group and proxy
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Change proxy to proxy group
     - name: Test - Clean proxy before test

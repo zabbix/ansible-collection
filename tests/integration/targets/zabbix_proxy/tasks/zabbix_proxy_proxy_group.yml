@@ -2,7 +2,7 @@
 - name: Proxy group
   block:
     - name: Check proxy group for new proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with proxy group
         - name: Test - Create proxy with proxy group
@@ -32,7 +32,7 @@
               - "'No need to update' in zabbix_proxy_create_w_proxy_group_again.result"
 
     - name: Check proxy group for existing proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with proxy group
         # Updating can be without 'local_address' parameter
@@ -62,7 +62,7 @@
               - "'No need to update' in zabbix_proxy_update_w_proxy_group_again.result"
 
     - name: Clear proxy group for existing proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy group of proxy to default value ('')
         - name: Test - Clean proxy group from proxy
@@ -91,7 +91,7 @@
               - "'No need to update' in zabbix_proxy_clear_proxy_group_again.result"
 
     - name: Try to set non-existing proxy group
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy group to non-existing value
         - name: Test - Set non-existing proxy group name
@@ -108,7 +108,7 @@
               - "'Proxy group not found in Zabbix' in zabbix_proxy_non_exist_proxy_group.msg"
 
     - name: Check for Zabbix version 6.0
-      when: zabbix_version == 6
+      when: zabbix_version | int == 6
       block:
         # Create proxy with proxy_group
         - name: Test - Create proxy with proxy_group
@@ -132,7 +132,7 @@
 - name: Local address
   block:
     - name: Check that local address is mandatory for adding proxy group
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with proxy group, but without local address
         - name: Test - Create proxy with proxy group wo local address
@@ -192,7 +192,7 @@
               - "'Successfully created proxy' in zabbix_proxy_create_w_local_address_w_proxy_group.result"
 
     - name: Updating of local address
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with local address, but without proxy group
         - name: Test - Update proxy with proxy group wo local address
@@ -278,7 +278,7 @@
               - "'Can not be empty' in zabbix_proxy_update_local_address_w_proxy_group.msg"
 
     - name: Cleaning of local address
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Clean local address + proxy group
         - name: Test - Clean local address + proxy group
@@ -310,7 +310,7 @@
               - "'No need to update' in zabbix_proxy_clean_local_address_again.result"
 
     - name: Updating of local address on existing proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with local address, but without proxy group
         - name: Test - Set local address wo proxy group
@@ -341,7 +341,7 @@
               - "'Successfully updated proxy' in zabbix_proxy_create_w_local_address_wo_proxy_group_existing.result"
 
     - name: Check for Zabbix version 6.0
-      when: zabbix_version == 6
+      when: zabbix_version | int == 6
       block:
         # Create proxy with proxy_group & local_address
         - name: Test - Create proxy with proxy_group & local_address
@@ -380,7 +380,7 @@
 - name: Local port
   block:
     - name: Check that local port can be used only with proxy group
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with local port, but without proxy group
         - name: Test - Set local port wo proxy group
@@ -412,7 +412,7 @@
               - "'Successfully created proxy' in zabbix_proxy_create_w_local_port_w_proxy_group.result"
 
     - name: Updating of local port
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with local port, but without proxy group
         - name: Test - Update proxy with local port wo proxy group
@@ -469,7 +469,7 @@
               - "'No need to update' in zabbix_proxy_update_local_port_w_proxy_group_again.result"
 
     - name: Cleaning of local port
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Set empty local port. Must use default value
         # Check by same task + check by task with default value
@@ -595,7 +595,7 @@
               - "'No need to update' in zabbix_proxy_empty_proxy_group_and_default_local_port.result"
 
     - name: Updating of local port on existing proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with local port, but without proxy group
         - name: Test - Set local port wo proxy group
@@ -641,7 +641,7 @@
               - "'No need to update' in zabbix_proxy_create_w_local_port_w_proxy_group_existing_again.result"
 
     - name: Check for Zabbix version 6.0
-      when: zabbix_version == 6
+      when: zabbix_version | int == 6
       block:
         # Create proxy with proxy_group & local_address & local port
         - name: Test - Create proxy with proxy_group & local_address & local port

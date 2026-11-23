@@ -1,6 +1,6 @@
 ---
 - name: Creating proxy group
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Creating proxy group with minimum parameters
       zabbix.zabbix.zabbix_proxy_group:
@@ -31,7 +31,7 @@
         that: zabbix_proxy_group_create_max is changed
 
 - name: Updating proxy group
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Clean all parameters from proxy group
       zabbix.zabbix.zabbix_proxy_group:
@@ -57,7 +57,7 @@
         that: zabbix_proxy_group_update is changed
 
 - name: Deleting proxy group
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Delete proxy group
       zabbix.zabbix.zabbix_proxy_group:

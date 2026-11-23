@@ -2,7 +2,7 @@
 - name: Custom timeouts
   block:
     - name: Check custom_timeouts for new proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with custom_timeouts
         - name: Test - Create proxy with custom_timeouts
@@ -51,7 +51,7 @@
               - "'No need to update' in zabbix_proxy_create_w_custom_timeouts_again.result"
 
     - name: Update custom_timeouts for proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with only one custom_timeouts
         - name: Test - Update proxy with only one custom_timeouts
@@ -128,7 +128,7 @@
               - "'No need to update' in zabbix_proxy_update_w_custom_timeouts_to_default_again.result"
 
     - name: Clean custom_timeouts for proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Clean custom_timeouts from proxy
         - name: Test - Clean custom_timeouts from proxy
@@ -160,10 +160,10 @@
       zabbix.zabbix.zabbix_proxy:
         state: absent
         name: My Zabbix proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
 
     - name: Check custom_timeouts for new proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with one custom_timeouts
         - name: Test - Create proxy with one custom_timeouts

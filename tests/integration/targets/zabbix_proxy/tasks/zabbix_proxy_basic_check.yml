@@ -140,7 +140,7 @@
         that: zabbix_proxy_delete_again is not changed
 
 - name: Create and update proxy with maximum parameters for Zabbix version 7.0 +
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Active mode
     - name: Create proxy with maximum parameters for active proxy mode for Zabbix version 7.0 +
@@ -292,7 +292,7 @@
         that: zabbix_proxy_delete_passive is changed
 
 - name: Create and update proxy with maximum parameters for Zabbix version 6.0
-  when: zabbix_version == 6
+  when: zabbix_version | int == 6
   block:
     # Active mode
     - name: Create proxy with maximum parameters for active proxy mode for Zabbix version 6.0
