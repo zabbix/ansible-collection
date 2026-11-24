@@ -1,4 +1,7 @@
 ---
+### Add the Zabbix repository with the repository role.
+### Set to false if Zabbix packages are available from repositories already configured on the target (e.g. Foreman, Satellite, Pulp).
+agent_repository_manage: true
 ### Override repositrory URL for self hosted mirrors.
 agent_repository_mirror: "https://repo.zabbix.com/"
 ### Set priority for zabbix repository. Usefull for distributions with zabbix packages included(like fedora)

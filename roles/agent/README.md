@@ -67,6 +67,8 @@ This role uses official Zabbix packages and repository for component installatio
 
 For self-hosted repository mirrors, override URL for [`agent_repository_mirror`](#general-settings) variable.
 
+If Zabbix packages are available from repositories already configured on the target machines (for example, internal repositories managed by Foreman), set [`agent_repository_manage`](#general-settings) to `false` to skip the Zabbix repository configuration.
+
 The role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `agent_apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is a recommended method as it can work with both iptables and nftables. Firewalld can be installed on RHEL- and Debian-based distributions.
 
 Multiple tasks require `superuser` privileges (sudo).
@@ -123,8 +125,9 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent 2 plugins to configure and deploy (if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent 2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent 2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 | agent_http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | agent_https_proxy | `string` || Defines HTTPS proxy address for the packager.
+| agent_repository_manage | `boolean` | `true` | Whether to add the Zabbix repository (**zabbix-managed**) on the target machine. Set to `false` if Zabbix packages are available from repositories already configured on the target machine, for example internal mirrors managed by Foreman. The role then neither adds nor removes the Zabbix repository and does not remove the `zabbix-release` package. `agent_repository_mirror` and `agent_repository_priority` are not used.
 | agent_repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
-| agent_repository_priority | `int` | 99 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
+| agent_repository_priority | `int` | 98 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
 | agent_repository_disable | `string` | "epel" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
 
 ### User settings:
