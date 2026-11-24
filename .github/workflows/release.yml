@@ -40,7 +40,7 @@ env:
 jobs:
   init:
     name: "Initialize workflow"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       version: ${{ inputs.version || steps.version.outputs.version }}
       ansible_latest: ${{ inputs.ansible_latest || '2.20'}}

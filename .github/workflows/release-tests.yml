@@ -17,6 +17,7 @@ on:
           - lint
           - sanity
           - unit
+          - render
           - integration
           - all
       ansible_lint_version:
@@ -30,13 +31,16 @@ on:
         default: '["2.18","2.19","2.20"]'
         type: string
       zabbix_version:
-        description: 'Zabbix version (for integration tests)'
+        description: 'Zabbix version (for integration tests), "all" = every released version'
         required: false
-        default: '7.0'
+        default: 'all'
         type: choice
         options:
+          - 'all'
+          - '6.0'
           - '7.0'
-          - '7.4'
+          - '8.0'
+          - 'trunk'
 
 permissions:
   contents: read
@@ -44,26 +48,43 @@ permissions:
 jobs:
   init:
     name: "Initialize workflow"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       test_type: ${{ inputs.test_type || 'all' }}
       ansible_lint_version: ${{ inputs.ansible_lint_version || ''}}
       ansible_core: ${{ inputs.ansible_core || '["2.18","2.19","2.20"]'}}
-      zabbix_version: ${{ inputs.zabbix_version || '7.0' }}
+      zabbix_versions: ${{ steps.init.outputs.zabbix_versions }}
     steps:
       - name: Init workflow
+        id: init
+        env:
+          TEST_TYPE: ${{ inputs.test_type || 'all' }}
+          ZABBIX_VERSION: ${{ inputs.zabbix_version || 'all' }}
         run: |
           # Init workflow
-          echo "Workflow initialized"
+          release_versions='["6.0","7.0","8.0"]'
+          if [ "$TEST_TYPE" != "integration" ] && [ "$TEST_TYPE" != "all" ]; then
+            versions='["7.0"]'
+          elif [ "$ZABBIX_VERSION" = "all" ]; then
+            versions="$release_versions"
+          else
+            versions="[\"${ZABBIX_VERSION}\"]"
+          fi
+          echo "Zabbix versions: ${versions}"
+          echo "zabbix_versions=${versions}" >> "$GITHUB_OUTPUT"
   test:
-    name: "${{ needs.init.outputs.test_type }} / ansible-core ${{ matrix.ansible_version }} / zbx ${{ needs.init.outputs.zabbix_version }}"
+    name: "${{ needs.init.outputs.test_type }} / ansible-core ${{ matrix.ansible_version }} / zbx ${{ matrix.zabbix_version }}"
     runs-on: ansible-test-collection
     timeout-minutes: 180
     needs: init
 
     env:
       TEST_TYPE: ${{ needs.init.outputs.test_type }}
-      ZABBIX_VERSION: ${{ needs.init.outputs.zabbix_version }}
+      ZABBIX_VERSION: ${{ matrix.zabbix_version }}
+      # Image tag for docker-compose: release images have only "-latest" tags, trunk has its own.
+      ZABBIX_IMAGE_TAG: ${{ matrix.zabbix_version == 'trunk' && 'alpine-trunk' || format('alpine-{0}-latest', matrix.zabbix_version) }}
+      # Lint, sanity, unit and render tests do not depend on Zabbix: run them in one matrix job per ansible-core.
+      RUN_STATIC_TESTS: ${{ matrix.zabbix_version == fromJSON(needs.init.outputs.zabbix_versions)[0] }}
       SRC_DIR: ${{ github.workspace }}
       COLLECTIONS_PATH: /home/runner/.ansible/collections
       COLLECTION_DIR: /home/runner/.ansible/collections/ansible_collections/zabbix/zabbix
@@ -73,13 +94,14 @@ jobs:
 
     # cancel-in-progress only on pull_request; preserve scheduled and dispatch runs.
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ needs.init.outputs.test_type }}-${{ matrix.ansible_version }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ needs.init.outputs.test_type }}-${{ matrix.ansible_version }}-${{ matrix.zabbix_version }}
       cancel-in-progress: true
 
     strategy:
       fail-fast: false
       matrix:
         ansible_version: ${{ needs.init.outputs.ansible_core && fromJSON(needs.init.outputs.ansible_core) }}
+        zabbix_version: ${{ fromJSON(needs.init.outputs.zabbix_versions) }}
 
     steps:
       - name: Checkout
@@ -199,7 +221,7 @@ jobs:
           echo "python       : $(python --version)"
           echo "test type    : $TEST_TYPE"
           echo "ref          : ${{ github.ref_name }} (${{ github.sha }})"
-          echo "zabbix       : $ZABBIX_VERSION"
+          echo "zabbix       : $ZABBIX_VERSION (image tag: $ZABBIX_IMAGE_TAG)"
           echo "::endgroup::"
 
       - name: Validate collection structure
@@ -212,10 +234,10 @@ jobs:
 
       - name: Validate changelog
         working-directory: ${{ env.SRC_DIR }}
-        if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
+        if: (env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
         run: antsibull-changelog lint
 
-      # ZABBIX_VERSION (workflow-level env) is interpolated by compose into image tags.
+      # ZABBIX_IMAGE_TAG (job-level env) is interpolated by compose into image tags.
       - name: Start Zabbix stack
         id: start_zabbix
         if: env.TEST_TYPE == 'integration' || env.TEST_TYPE == 'all'
@@ -235,7 +257,7 @@ jobs:
       # Lint runs from SRC_DIR (full source tree), not the installed collection.
       - name: Lint (ansible-lint)
         id: test_lint
-        if: env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all'
+        if: (env.TEST_TYPE == 'lint' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
         continue-on-error: ${{ env.TEST_TYPE == 'all' }}
         timeout-minutes: 15
         working-directory: ${{ env.SRC_DIR }}
@@ -249,7 +271,7 @@ jobs:
       # (ContainerNotFoundError); fall back to --python for those versions.
       - name: Sanity tests
         id: test_sanity
-        if: env.TEST_TYPE == 'sanity' || env.TEST_TYPE == 'all'
+        if: (env.TEST_TYPE == 'sanity' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
         continue-on-error: ${{ env.TEST_TYPE == 'all' }}
         timeout-minutes: 30
         working-directory: ${{ env.COLLECTION_DIR }}
@@ -270,7 +292,7 @@ jobs:
       # Same --docker / --python split as sanity.
       - name: Unit tests
         id: test_unit
-        if: env.TEST_TYPE == 'unit' || env.TEST_TYPE == 'all'
+        if: (env.TEST_TYPE == 'unit' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
         continue-on-error: ${{ env.TEST_TYPE == 'all' }}
         timeout-minutes: 30
         working-directory: ${{ env.COLLECTION_DIR }}
@@ -287,6 +309,53 @@ jobs:
             ansible-test units --docker -v
           fi
           echo "::endgroup::"
+
+      # Renders every agent role template in scenarios generated from role defaults.
+      # New templates and parameters (e.g. a new Zabbix version) are picked up automatically.
+      - name: Role render tests
+        id: test_render
+        if: (env.TEST_TYPE == 'render' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 15
+        working-directory: ${{ env.SRC_DIR }}
+        env:
+          ANSIBLE_LOCALHOST_WARNING: 'false'
+          ANSIBLE_INVENTORY_UNPARSED_WARNING: 'false'
+        # Doc/template mismatches do not fail the step; they are shown as warning annotations.
+        run: |
+          # Role render tests
+          warnings_file="${RUNNER_TEMP}/render_warnings.txt"
+          echo "::group::Rendering role templates"
+          rc=0
+          ansible-playbook tests/render/templates.yml -e render_warnings_file="$warnings_file" || rc=$?
+          echo "::endgroup::"
+          if [ -s "$warnings_file" ]; then
+            while IFS= read -r line; do echo "::warning::${line}"; done < "$warnings_file"
+          fi
+          exit $rc
+
+      # Checks that the repository role builds existing repo.zabbix.com URLs for every supported
+      # distribution, Zabbix version and architecture. Versions not published yet are shown as warnings.
+      - name: Repository URL tests
+        id: test_repo_urls
+        if: (env.TEST_TYPE == 'render' || env.TEST_TYPE == 'all') && env.RUN_STATIC_TESTS == 'true'
+        continue-on-error: ${{ env.TEST_TYPE == 'all' }}
+        timeout-minutes: 10
+        working-directory: ${{ env.SRC_DIR }}
+        env:
+          ANSIBLE_LOCALHOST_WARNING: 'false'
+          ANSIBLE_INVENTORY_UNPARSED_WARNING: 'false'
+        run: |
+          # Repository URL tests
+          warnings_file="${RUNNER_TEMP}/repo_url_warnings.txt"
+          echo "::group::Checking repository URLs"
+          rc=0
+          ansible-playbook tests/repository/urls.yml -e repo_url_warnings_file="$warnings_file" || rc=$?
+          echo "::endgroup::"
+          if [ -s "$warnings_file" ]; then
+            echo "::warning::$(wc -l < "$warnings_file") repository URLs are not published yet, see the step log"
+          fi
+          exit $rc
 
       - name: Wait for Zabbix API
         id: wait_zabbix
@@ -351,6 +420,8 @@ jobs:
           [ "${{ steps.test_lint.outcome }}"        = "failure" ] && failed+=("lint")
           [ "${{ steps.test_sanity.outcome }}"      = "failure" ] && failed+=("sanity")
           [ "${{ steps.test_unit.outcome }}"        = "failure" ] && failed+=("unit")
+          [ "${{ steps.test_render.outcome }}"      = "failure" ] && failed+=("render")
+          [ "${{ steps.test_repo_urls.outcome }}"   = "failure" ] && failed+=("repository urls")
           [ "${{ steps.start_zabbix.outcome }}"     = "failure" ] && failed+=("integration (stack start)")
           [ "${{ steps.wait_zabbix.outcome }}"      = "failure" ] && failed+=("integration (zabbix api)")
           [ "${{ steps.test_integration.outcome }}" = "failure" ] && failed+=("integration")

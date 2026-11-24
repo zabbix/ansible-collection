@@ -20,7 +20,7 @@ permissions:
 jobs:
   create-release:
     name: "Bump ${{ inputs.bump_type }} version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     steps:
       - name: Checkout main
