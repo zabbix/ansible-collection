@@ -361,6 +361,7 @@ EXAMPLES = r'''
           authpassphrase: SET_YOUR_PWD
           privprotocol: des
           privpassphrase: SET_YOUR_PWD
+          retries: 3   # Only for Zabbix 8.0 and above
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi

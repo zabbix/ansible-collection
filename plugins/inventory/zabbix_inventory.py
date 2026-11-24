@@ -167,7 +167,7 @@ options:
                     value:
                         type: str
                         default: ''
-                        description: Tag value for host search in Zabbix.
+                        description: Tag value for host search in Zabbix. Numeric values are converted to strings.
                     operator:
                         type: str
                         description: Mode of searching by tags.
