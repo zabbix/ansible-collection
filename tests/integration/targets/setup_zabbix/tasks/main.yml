@@ -6,43 +6,34 @@
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
 
+# apiinfo.version does not require authentication.
+# zabbix_version is the major version (6, 7, 8) used by "zabbix_version | int >= 7" conditions,
+# zabbix_api_version is the full version for "zabbix_api_version is version('8.0', '>=')".
 - name: 'Variables: Set Zabbix version'
   block:
-    # Set proxy group
-    - name: Test - Set proxy group for monitoring via test proxy group
-      zabbix.zabbix.zabbix_host:
-        host: zabbix_test_host
-        hostgroups: 'Discovered hosts'
-        proxy_group: 'test proxy group'
-      register: zabbix_host_proxy_group
-      ignore_errors: true
+    - name: Get Zabbix API version
+      ansible.builtin.uri:
+        url: "http://{{ hostvars[inventory_hostname].ansible_host | default(inventory_hostname) }}:{{ ansible_httpapi_port | default(80) }}/api_jsonrpc.php"
+        method: POST
+        body_format: json
+        body:
+          jsonrpc: '2.0'
+          method: apiinfo.version
+          params: {}
+          id: 1
+      register: zabbix_apiinfo
+      delegate_to: localhost
 
-    - name: Get result true
-      when:
-        - zabbix_host_proxy_group is failed
-        - zabbix_host_proxy_group.msg is defined
-        - "'Proxy group not found in Zabbix' in zabbix_host_proxy_group.msg"
+    - name: Set Zabbix version facts
       ansible.builtin.set_fact:
-        zabbix_version: 7
-
-    - name: Get result false
-      when:
-        - zabbix_host_proxy_group is failed
-        - zabbix_host_proxy_group.msg is defined
-        - "'Incorrect arguments for Zabbix version < 7.0.0' in zabbix_host_proxy_group.msg"
-      ansible.builtin.set_fact:
-        zabbix_version: 6
+        zabbix_api_version: '{{ zabbix_apiinfo.json.result }}'
+        zabbix_version: '{{ zabbix_apiinfo.json.result.split(".")[0] | int }}'
 
     - name: Assert that zabbix version is defined
       ansible.builtin.assert:
         quiet: true
         that:
-          - zabbix_version is defined
-
-    - name: Test - Clean after test
-      zabbix.zabbix.zabbix_host:
-        state: absent
-        host: zabbix_test_host
+          - zabbix_api_version is version('6.0', '>=')
 
 - name: 'Variables: Generate PSK keys'
   block:

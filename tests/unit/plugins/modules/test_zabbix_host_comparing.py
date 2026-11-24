@@ -1461,3 +1461,56 @@ class TestInterfaces(TestModules):
                         self.assertIn(interface, case['expected']['interfaces'])
                 else:
                     self.assertEqual(result, case['expected'])
+
+    def test_interface_snmp_retries(self):
+        """
+        Testing SNMP retries (Zabbix 8.0+).
+        Test cases:
+        1. Retries is not specified: the current value is kept.
+        2. Retries is the same.
+        3. Retries is changed.
+
+        Expected result: all test cases run successfully.
+        """
+        def snmp_interface(details, interfaceid=None):
+            interface = {
+                'type': '2', 'useip': '1', 'ip': '127.0.0.1',
+                'port': '161', 'dns': '', 'main': '1',
+                'details': dict({'version': '2', 'bulk': '1', 'community': 'public',
+                                 'max_repetitions': '10'}, **details)}
+            if interfaceid is not None:
+                interface['interfaceid'] = interfaceid
+            return interface
+
+        test_cases = [
+            {
+                'new': {'host': 'test_host', 'interfaces': [snmp_interface({})]},
+                'exist': {'host': 'test_host', 'interfaces': [snmp_interface({'retries': '5'}, '1000')]},
+                'expected': {}
+            },
+            {
+                'new': {'host': 'test_host', 'interfaces': [snmp_interface({'retries': '5'})]},
+                'exist': {'host': 'test_host', 'interfaces': [snmp_interface({'retries': '5'}, '1000')]},
+                'expected': {}
+            },
+            {
+                'new': {'host': 'test_host', 'interfaces': [snmp_interface({'retries': '3'})]},
+                'exist': {'host': 'test_host', 'interfaces': [snmp_interface({'retries': '5'}, '1000')]},
+                'expected': {'interfaces': [snmp_interface({'retries': '3'}, '1000')]}
+            }
+        ]
+
+        def mock_api_version_80(self):
+            return '8.0.0'
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_80):
+
+            for case in test_cases:
+                host = self.module.Host(self.mock_module_functions)
+
+                result = host.compare_zabbix_host(
+                    case['exist'], case['new'])
+
+                self.assertEqual(result, case['expected'])

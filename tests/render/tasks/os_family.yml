@@ -1,0 +1,13 @@
+---
+# Loads vars/<render_os | lower>.yml of the role (as the role does) and renders all templates in all scenarios.
+- name: 'Load distribution specific vars : {{ render_role ~ " / " ~ render_os }}'
+  when: render_os | lower ~ '.yml' in render_os_vars_files
+  ansible.builtin.include_vars: '{{ render_role_dir }}/vars/{{ render_os | lower }}.yml'
+
+# Scenario order matters: markers is rendered before falsy and provides keys for its checks
+- name: 'Render and check templates : {{ render_role ~ " / " ~ render_os }}'
+  ansible.builtin.include_tasks: render_template.yml
+  loop: '{{ render_templates | product(render_scenario_list) | list }}'
+  loop_control:
+    loop_var: render_item
+    label: '{{ render_item | join(" / ") }}'

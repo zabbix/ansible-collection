@@ -1,0 +1,186 @@
+---
+# Prepares scenarios for one role (render_role) and renders its templates for each OS family.
+- name: 'Settings : {{ render_role }}'
+  vars:
+    render_cfg_default:
+      param_prefix: '{{ render_role }}_param_'
+      context: []
+      runtime_vars: {}
+      extra_vars_files: []
+      marker_overrides: {}
+      marker_exempt: {}
+  ansible.builtin.set_fact:
+    render_cfg: '{{ render_cfg_default | combine(render_role_config[render_role] | default({})) }}'
+    render_role_dir: '{{ render_roles_dir }}/{{ render_role }}'
+    render_markers: {}
+    render_marker_owner: {}
+    render_marker_strings: {}
+    render_contexts: {}
+    render_type_warnings: []
+
+- name: 'Find defaults and vars files : {{ render_role }}'
+  ansible.builtin.find:
+    paths: '{{ render_role_dir }}/{{ item }}'
+    patterns: ['*.yml', '*.yaml']
+    recurse: '{{ item == "defaults" }}'
+  loop: [defaults, vars]
+  register: render_found_files
+
+- name: 'Load role defaults : {{ render_role }}'
+  ansible.builtin.include_vars: '{{ item }}'
+  loop: '{{ render_found_files.results[0].files | map(attribute="path") | sort }}'
+
+- name: 'Read sources : {{ render_role }}'
+  vars:
+    render_template_paths: '{{ query("ansible.builtin.fileglob", render_role_dir ~ "/templates/*.j2") | sort }}'
+    render_vars_names: '{{ render_found_files.results[1].files | map(attribute="path") | map("basename") | sort }}'
+  ansible.builtin.set_fact:
+    render_sources: '{{ dict(render_template_paths | map("basename") | zip(query("ansible.builtin.file", *render_template_paths))) }}'
+    render_defaults_text: >-
+      {{ query('ansible.builtin.file', *(render_found_files.results[0].files | map(attribute='path') | sort)) | join(render_newline) }}
+    render_readme_text: "{{ lookup('ansible.builtin.file', render_role_dir ~ '/README.md', errors='ignore') | default('', true) }}"
+    render_vars_files: '{{ render_vars_names }}'
+    render_os_vars_files: '{{ render_os_families | map("lower") | map("regex_replace", "$", ".yml") | select("in", render_vars_names) | list }}'
+
+- name: 'Collect parameters : {{ render_role }}'
+  vars:
+    render_prefix: '{{ render_cfg.param_prefix }}'
+    render_type_map:
+      int: int
+      integer: int
+      string: str
+      str: str
+      list: list
+      dictionary: dict
+      dict: dict
+      list of dictionaries: listdict
+      boolean: bool
+      bool: bool
+    render_readme_types: >-
+      {{ dict(render_readme_text | regex_findall('(?m)^[|][ \t]*(' ~ render_prefix ~ '\w+)[ \t]*[|][ \t]*`([^`]+)`')) }}
+    render_template_params: >-
+      {{ render_sources.values() | map('regex_findall', render_prefix ~ '\w+') | flatten | unique | sort }}
+    # Parameters calculated in defaults: keep them, so their derivation from other parameters is tested
+    render_derived: >-
+      {{ render_defaults_text | regex_findall('(?m)^(' ~ render_prefix ~ '\w+):[ \t]*[\x27"]?[ \t]*[{][{]') }}
+    # Parameters with a value in defaults: the role relies on them, they are not set to falsy/null
+    render_with_default: >-
+      {{ render_defaults_text | regex_findall('(?m)^(' ~ render_prefix ~ '\w+):') }}
+  ansible.builtin.set_fact:
+    render_params: '{{ render_template_params | difference(render_derived) }}'
+    render_optional: '{{ render_template_params | difference(render_with_default) }}'
+    render_documented: '{{ render_readme_types.keys() | list }}'
+    render_types: >-
+      {{ dict(render_template_params | product(['str']))
+         | combine(dict(render_readme_types.keys()
+                        | zip(render_readme_types.values() | map('extract', render_type_map) | map('default', 'str')))) }}
+    render_examples: >-
+      {{ render_defaults_text
+         | regex_findall('(?m)^#[ \t]*(' ~ render_prefix ~ '\w+:[ \t]*\S.*)$')
+         | join(render_newline) | from_yaml | default({}, true)
+         | dict2items | rejectattr('value', 'none') | rejectattr('key', 'in', render_derived) | items2dict }}
+    render_number_params: >-
+      {{ render_sources.values() | map('regex_findall', '(' ~ render_prefix ~ '\w+) is number') | flatten | unique }}
+    render_doc_warnings: >-
+      {{ (render_template_params | reject('in', render_readme_types)
+          | map('regex_replace', '^', render_role ~ ': used in templates, not documented in README: ') | list)
+         + (render_readme_types.keys() | reject('in', render_template_params)
+            | map('regex_replace', '^', render_role ~ ': documented in README, not used in templates: ') | list) }}
+
+# The structure of dictionaries is taken from the templates: keys used as param.key / param["key"]
+# make a dictionary, keys of a loop variable (for x in param: x.key) make a list of dictionaries.
+- name: 'Build marker values : {{ render_role }}'
+  vars:
+    render_key_regex: '(?:^|[^\w])%s(?:[.](\w+)|\[[\x27"](\w+)[\x27"]\])'
+    render_key_methods: [keys, values, items, get]
+    render_direct_keys: >-
+      {{ render_sources.values() | map('regex_findall', render_key_regex % item) | flatten | select | unique
+         | reject('in', render_key_methods) | list }}
+    render_loop_var: >-
+      {{ render_sources.values() | map('regex_findall', '[{]%-?[ \t]*for[ \t]+(\w+)[ \t]+in[ \t]+' ~ item ~ '[^\w]') | flatten | first | default('') }}
+    render_loop_keys: >-
+      {{ (render_sources.values() | map('regex_findall', render_key_regex % render_loop_var) | flatten | select | unique
+          | reject('in', render_key_methods) | list) if render_loop_var else [] }}
+    render_doc_type: '{{ render_types[item] }}'
+    render_type: >-
+      {{ 'dict' if render_direct_keys else 'listdict' if render_loop_keys else render_doc_type }}
+    render_keys: '{{ render_direct_keys or render_loop_keys }}'
+    render_mk: 'mk_{{ item }}_mk'
+    render_int_mk: '{{ 987000 + ansible_loop.index }}'
+    render_key_values: '{{ dict(render_keys | zip(render_keys | map("regex_replace", "^(.*)$", render_mk ~ "_\1"))) }}'
+    render_value: >-
+      {{ render_int_mk | int if render_type == 'int'
+         else true if render_type == 'bool'
+         else [render_mk] if render_type == 'list'
+         else render_key_values if render_type == 'dict'
+         else [render_key_values | combine({'name': render_mk ~ '_name'})] if render_type == 'listdict'
+         else render_mk }}
+    render_value_strings: >-
+      {{ [] if render_type == 'bool'
+         else [render_int_mk | string] if render_type == 'int'
+         else render_key_values.values() | list + ([render_mk ~ '_name'] if render_type == 'listdict' else [])
+           if render_type in ['dict', 'listdict']
+         else [render_mk] }}
+  ansible.builtin.set_fact:
+    render_types: '{{ render_types | combine({item: render_type}) }}'
+    render_type_warnings: >-
+      {{ render_type_warnings
+         + ([render_role ~ ': README type of ' ~ item ~ ' is ' ~ render_doc_type ~ ', templates use it as ' ~ render_type]
+            if item in render_documented and render_type != render_doc_type
+               and 'dict' in [render_type, render_doc_type] | join else []) }}
+    render_markers: '{{ render_markers | combine({item: render_value}) }}'
+    render_marker_owner: '{{ render_marker_owner | combine(dict(render_value_strings | product([item]))) }}'
+    render_marker_strings: '{{ render_marker_strings | combine({item: render_value_strings}) }}'
+  loop: '{{ render_params }}'
+  loop_control:
+    extended: true
+
+- name: 'Build scenarios : {{ render_role }}'
+  vars:
+    render_falsy_map:
+      int: 0
+      str: ''
+      bool: false
+      list: []
+      listdict: []
+      dict: {}
+  ansible.builtin.set_fact:
+    render_scenarios:
+      defaults: {}
+      examples: '{{ render_examples }}'
+      # Overrides are switches other parameters depend on, e.g. TLS parameters are rendered only with TLS enabled
+      markers: '{{ render_markers | combine(render_cfg.marker_overrides) }}'
+      # Only optional parameters (not set in defaults): an empty value must mean "not set"
+      falsy: '{{ dict(render_optional | zip(render_optional | map("extract", render_types) | map("extract", render_falsy_map))) }}'
+      'null': '{{ dict(render_optional | product([None])) }}'
+    render_templates: '{{ render_sources.keys() | select("search", render_filter) | sort }}'
+    render_zero_expect: {}
+    # Values that cannot be told apart in the output: bool and overridden parameters
+    render_unchecked: >-
+      {{ render_marker_strings | dict2items | rejectattr('value') | map(attribute='key') | list
+         + render_cfg.marker_overrides.keys() | list }}
+    render_warnings: '{{ render_warnings + render_doc_warnings + render_type_warnings }}'
+    # Unknown vars files are neither loaded per OS family nor known as conditional: decide how to test them
+    render_problems: >-
+      {{ render_problems
+         + (render_vars_files | difference(render_os_vars_files + render_cfg.extra_vars_files)
+            | map('regex_replace', '^', render_role ~ ': vars file is not covered by render_os_families or extra_vars_files: ') | list) }}
+
+- name: 'Build template context : {{ render_role }}'
+  vars:
+    render_match: '{{ item.0 | regex_findall(item.1.pattern) | first | default(None) }}'
+    render_groups: '{{ [render_match] if render_match is string else render_match | list }}'
+  when: item.0 is search(item.1.pattern)
+  ansible.builtin.set_fact:
+    render_contexts: >-
+      {{ render_contexts
+         | combine({item.0: item.1.vars | default({}) | combine(dict(item.1.groups | default([]) | zip(render_groups)))}) }}
+  loop: '{{ render_templates | product(render_cfg.context) | list }}'
+  loop_control:
+    label: '{{ item.0 }}'
+
+- name: 'Render for each OS family : {{ render_role }}'
+  ansible.builtin.include_tasks: os_family.yml
+  loop: '{{ render_os_families }}'
+  loop_control:
+    loop_var: render_os

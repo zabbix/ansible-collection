@@ -1,0 +1,55 @@
+---
+- name: Render agent role templates
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    render_role_dir: '{{ playbook_dir }}/../../roles/agent'
+    render_filter: ''
+    render_newline: "\n"
+    ansible_system: Linux
+    ansible_os_family: RedHat
+    render_runtime_vars:
+      agent_tls_psk_value: 0123456789abcdef0123456789abcdef
+  tasks:
+    - name: Load role defaults
+      ansible.builtin.include_vars:
+        dir: '{{ render_role_dir }}/defaults/main'
+
+    - name: Load distribution specific vars
+      ansible.builtin.include_vars: '{{ render_role_dir }}/vars/redhat.yml'
+
+    - name: Collect commented parameter examples from defaults
+      ansible.builtin.set_fact:
+        render_examples: >-
+          {{ query('ansible.builtin.file', *query('ansible.builtin.fileglob', render_role_dir ~ '/defaults/main/*.yml'))
+             | map('regex_findall', '(?m)^#[ \t]*(agent_param_\w+:[ \t]*\S.*)$')
+             | flatten | join(render_newline) | from_yaml | default({}, true)
+             | dict2items | rejectattr('value', 'none') | items2dict }}
+
+    - name: Build scenarios
+      ansible.builtin.set_fact:
+        render_scenarios:
+          defaults: {}
+          examples: '{{ render_examples }}'
+          falsy: >-
+            {{ render_examples | dict2items | selectattr('value', 'integer')
+               | map('combine', {'value': 0}) | items2dict }}
+        render_templates: >-
+          {{ query('ansible.builtin.fileglob', render_role_dir ~ '/templates/*.j2')
+             | map('basename') | select('search', render_filter) | sort }}
+        render_problems: []
+
+    - name: Render and check templates
+      ansible.builtin.include_tasks: tasks/render_template.yml
+      loop: '{{ render_templates | product(render_scenarios | list) | list }}'
+      loop_control:
+        loop_var: render_item
+        label: '{{ render_item | join(" / ") }}'
+
+    - name: Report
+      ansible.builtin.assert:
+        that: render_problems | length == 0
+        fail_msg: '{{ render_problems }}'
+        success_msg: >-
+          {{ render_templates | length }} templates x {{ render_scenarios | length }} scenarios rendered without problems

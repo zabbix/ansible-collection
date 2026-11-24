@@ -20,6 +20,9 @@
     - name: Testing options to specify interfaces
       ansible.builtin.include_tasks: zabbix_host_test_interfaces.yml
 
+    - name: Testing SNMP retries
+      ansible.builtin.include_tasks: zabbix_host_test_snmp_retries.yml
+
     - name: Testing options to specify encryption
       ansible.builtin.include_tasks: zabbix_host_test_encryption.yml
 

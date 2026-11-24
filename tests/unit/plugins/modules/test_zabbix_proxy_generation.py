@@ -2824,3 +2824,83 @@ class TestCustomTimeouts(TestModules):
             self.assertIn(
                 'Incorrect arguments for Zabbix version',
                 ansible_result.exception.args[0]['msg'])
+
+    def test_param_custom_timeouts_telemetry_query(self):
+        """
+        Testing timeout_telemetry_query parameter. Test for Zabbix version 8.0 +.
+
+        Expected result: all parameters will be added in correct form.
+
+        Test cases:
+        1. Only timeout_telemetry_query for new proxy: other timeouts are taken from global settings
+        2. Reset timeout_telemetry_query to the global value for an existing proxy
+        """
+        def mock_api_version_80(self):
+            return '8.0.0'
+
+        global_timeouts = {
+            'timeout_zabbix_agent': '3s', 'timeout_simple_check': '3s',
+            'timeout_snmp_agent': '3s', 'timeout_external_check': '3s',
+            'timeout_db_monitor': '3s', 'timeout_http_agent': '3s',
+            'timeout_ssh_agent': '3s', 'timeout_telnet_agent': '3s',
+            'timeout_script': '3s', 'timeout_browser': '3s',
+            'timeout_telemetry_query': '30s'}
+
+        def get_global_setting(self):
+            return dict(global_timeouts)
+
+        test_cases = [
+            {
+                'number': 1,
+                'input': {'custom_timeouts': {'timeout_telemetry_query': '15s'}},
+                'exist_proxy': None,
+                'expected': dict(global_timeouts, name='test_proxy', operating_mode='0', custom_timeouts='1',
+                                 timeout_telemetry_query='15s')},
+            {
+                'number': 2,
+                'input': {'custom_timeouts': {'timeout_telemetry_query': ''}},
+                'exist_proxy': dict(global_timeouts, name='test_proxy', operating_mode='0', custom_timeouts='1',
+                                    timeout_zabbix_agent='10s', timeout_telemetry_query='15s'),
+                'expected': dict(global_timeouts, name='test_proxy', operating_mode='0', custom_timeouts='1',
+                                 timeout_zabbix_agent='10s')}
+        ]
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_80,
+                get_global_setting=get_global_setting):
+
+            for case in test_cases:
+                input_param = {
+                    'state': 'present',
+                    'name': 'test_proxy'}
+                input_param.update(case['input'])
+                self.mock_module_functions.params = input_param
+                proxy = self.module.Proxy(self.mock_module_functions)
+
+                result = proxy.generate_zabbix_proxy(exist_proxy=case['exist_proxy'])
+                self.assertEqual(result, case['expected'], 'Error in case number {}'.format(case['number']))
+
+    def test_param_custom_timeouts_telemetry_query_error(self):
+        """
+        Testing timeout_telemetry_query parameter for Zabbix version 7.0 in case of error.
+
+        Expected result: raised error.
+        """
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70):
+
+            input_param = {
+                'state': 'present',
+                'name': 'test_proxy',
+                'custom_timeouts': {'timeout_telemetry_query': '15s'}}
+            self.mock_module_functions.params = input_param
+            proxy = self.module.Proxy(self.mock_module_functions)
+
+            with self.assertRaises(AnsibleFailJson) as ansible_result:
+                proxy.generate_zabbix_proxy(exist_proxy=None)
+            self.assertTrue(ansible_result.exception.args[0]['failed'])
+            self.assertEqual(
+                'Incorrect arguments for Zabbix version < 8.0.0: timeout_telemetry_query.',
+                ansible_result.exception.args[0]['msg'])

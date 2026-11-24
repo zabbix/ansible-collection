@@ -1,0 +1,157 @@
+---
+# Checks that the repository role builds existing URLs for every
+# distribution / version / Zabbix version / architecture in repository_map_os_support.
+# URLs are built by the role variables (roles/repository/vars), so the test checks the role logic itself.
+#
+# Run: ansible-playbook tests/repository/urls.yml [-e repo_url_filter=8.0] [-e repo_url_warnings_file=<path>]
+- name: Repository URL tests
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    repo_role_dir: '{{ playbook_dir }}/../../roles/repository'
+    repo_url_filter: ''
+    # Zabbix versions added to the maps before their packages are published:
+    # missing URLs are reported as warnings. Remove a version once it is released.
+    repo_url_pending: ['8.0']
+    repo_url_warnings_file: ''
+    repository_url: "{{ (lookup('ansible.builtin.file', repo_role_dir ~ '/defaults/main/15_repository.yml') | from_yaml).repository_url }}"
+    # Codenames are needed for apt repositories: add new distribution versions here
+    repo_codenames:
+      Ubuntu: {'20.04': focal, '22.04': jammy, '24.04': noble, '26.04': resolute}
+      Debian: {'10': buster, '11': bullseye, '12': bookworm, '13': trixie}
+      Raspbian: {'10': buster, '11': bullseye, '12': bookworm, '13': trixie}
+    repo_deb_arch: {x86_64: amd64, aarch64: arm64, armv6l: armhf, armv7l: armhf}
+    repo_urls: []
+    repo_key_urls: >-
+      {{ (repository_map_gpg_key_list.values() | flatten | unique
+          | map('regex_replace', '^', repository_url ~ '/') | list)
+         + [repository_internal_debian_gpg_key] }}
+  tasks:
+    - name: Find role vars files
+      ansible.builtin.find:
+        paths: '{{ repo_role_dir }}/vars'
+        patterns: ['*.yml', '*.yaml']
+        recurse: true
+      register: repo_vars_files
+
+    - name: Load role vars
+      ansible.builtin.include_vars: '{{ item }}'
+      loop: '{{ repo_vars_files.files | map(attribute="path") | sort }}'
+
+    # One item per distribution / distribution version / Zabbix version / architecture
+    - name: Build test cases
+      ansible.builtin.set_fact:
+        repo_cases: >-
+          {%- set cases = [] -%}
+          {%- for distro, dversions in repository_map_os_support.items() -%}
+          {%- for dver, zversions in dversions.items() -%}
+          {%- for zver, archs in zversions.items() if repo_url_filter | string in zver -%}
+          {%- for arch in archs -%}
+          {%- set _ = cases.append({'distro': distro, 'dver': dver, 'zver': zver, 'arch': arch,
+                                    'family': 'Debian' if distro in repo_codenames else 'RedHat'}) -%}
+          {%- endfor -%}{%- endfor -%}{%- endfor -%}{%- endfor -%}
+          {{ cases }}
+
+    - name: Check that every Debian-based distribution version has a codename
+      ansible.builtin.assert:
+        quiet: true
+        that: repo_missing_codenames | length == 0
+        fail_msg: 'Add codenames to repo_codenames: {{ repo_missing_codenames | join(", ") }}'
+      vars:
+        repo_missing_codenames: >-
+          {%- set missing = [] -%}
+          {%- for case in repo_cases if case.family == 'Debian' and case.dver not in repo_codenames[case.distro] -%}
+          {%- set _ = missing.append(case.distro ~ ' ' ~ case.dver) -%}
+          {%- endfor -%}
+          {{ missing | unique }}
+
+    # The role variables are evaluated with the facts of each case.
+    # Files checked: rpm repository metadata and the apt Release file of the architecture.
+    - name: Build repository URLs
+      ansible.builtin.set_fact:
+        repo_urls: '{{ repo_urls + [{"case": item, "url": repo_check_url}] }}'
+      vars:
+        ansible_distribution: '{{ item.distro }}'
+        ansible_distribution_version: '{{ item.dver }}'
+        ansible_distribution_major_version: '{{ item.dver | regex_replace("[.].*$", "") }}'
+        ansible_distribution_release: '{{ repo_codenames[item.distro][item.dver] | default("unknown") }}'
+        ansible_architecture: '{{ item.arch }}'
+        ansible_lsb: {}
+        repository_version: '{{ item.zver }}'
+        repo_check_url: >-
+          {{ (repository_internal_redhat_baseurl | replace('$basearch', item.arch) ~ 'repodata/repomd.xml')
+             if item.family == 'RedHat' else
+             (repository_internal_debian_baseurl ~ '/dists/' ~ ansible_distribution_release
+              ~ '/main/binary-' ~ repo_deb_arch[item.arch] ~ '/Release') }}
+      loop: '{{ repo_cases }}'
+      loop_control:
+        label: '{{ item.distro }} {{ item.dver }} / {{ item.zver }} / {{ item.arch }}'
+
+    # One curl call checks all URLs in parallel: a module call per URL takes minutes
+    - name: Create curl config file
+      ansible.builtin.tempfile:
+        suffix: .curlrc
+      register: repo_curl_config
+
+    - name: Write curl config file
+      ansible.builtin.copy:
+        content: |
+          {% for url in repo_check_urls %}
+          url = "{{ url }}"
+          output = "/dev/null"
+          {% endfor %}
+        dest: '{{ repo_curl_config.path }}'
+        mode: '0600'
+      vars:
+        repo_check_urls: '{{ (repo_urls | map(attribute="url") | list + repo_key_urls) | unique }}'
+
+    - name: Check URLs
+      ansible.builtin.command:
+        argv: [curl, --parallel, --parallel-max, '16', --silent, --head, --max-time, '60',
+               --write-out, "%{http_code} %{url}\\n", --config, '{{ repo_curl_config.path }}']
+      register: repo_curl
+      changed_when: false
+      failed_when: false
+
+    - name: Remove curl config file
+      ansible.builtin.file:
+        path: '{{ repo_curl_config.path }}'
+        state: absent
+
+    - name: Report
+      vars:
+        repo_found: "{{ repo_curl.stdout_lines | select('match', '^200 ') | map('regex_replace', '^200 ', '') | list }}"
+        repo_missing: '{{ repo_urls | rejectattr("url", "in", repo_found) | list }}'
+        repo_missing_keys: '{{ repo_key_urls | reject("in", repo_found) | list }}'
+        repo_released_lines: >-
+          {{ repo_missing | rejectattr('case.zver', 'in', repo_url_pending) | map(attribute='url') | list }}
+        repo_pending_lines: >-
+          {{ repo_missing | selectattr('case.zver', 'in', repo_url_pending) | map(attribute='url') | unique
+             | map('regex_replace', '^', 'repository: not published yet: ') | list }}
+      block:
+        - name: Write warnings file
+          when: repo_url_warnings_file | length > 0
+          ansible.builtin.copy:
+            content: "{{ (repo_pending_lines | join('\n') ~ '\n') if repo_pending_lines else '' }}"
+            dest: '{{ repo_url_warnings_file }}'
+            mode: '0644'
+
+        - name: Warnings
+          when: repo_pending_lines | length > 0
+          ansible.builtin.debug:
+            msg: '{{ repo_pending_lines }}'
+
+        - name: Assert that all URLs exist
+          ansible.builtin.assert:
+            that:
+              - repo_curl.rc in [0, 22]
+              - repo_released_lines | length == 0
+              - repo_missing_keys | length == 0
+            fail_msg: >-
+              Missing repository URLs: {{ repo_released_lines }}.
+              Missing GPG keys: {{ repo_missing_keys }}.
+              curl: rc={{ repo_curl.rc }} {{ repo_curl.stderr }}
+            success_msg: >-
+              {{ repo_urls | length }} repository URLs checked ({{ repo_pending_lines | length }} not published yet),
+              GPG keys found

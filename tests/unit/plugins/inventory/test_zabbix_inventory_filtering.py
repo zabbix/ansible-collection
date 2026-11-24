@@ -432,12 +432,18 @@ class TestParserFilters(unittest.TestCase):
             3. Tag with name, value and operator.
             4. Tag with name, value and operator (usually unknown operator doesn't work on this level, because in
             validation function this incorrect value will be raised as error.)
+            5. Tag with numeric value (Zabbix 8.0+ accepts only strings).
+            6. Tag with null value.
 
         Expected result: all cases run successfully.
         """
 
         test_cases = [
             {'input': {'filter': {'tags': [{'tag': 'test'}]}},
+             'expected': {'tags': [{'tag': 'test', 'value': '', 'operator': '0'}]}},
+            {'input': {'filter': {'tags': [{'tag': 'test', 'value': 22}]}},
+             'expected': {'tags': [{'tag': 'test', 'value': '22', 'operator': '0'}]}},
+            {'input': {'filter': {'tags': [{'tag': 'test', 'value': None}]}},
              'expected': {'tags': [{'tag': 'test', 'value': '', 'operator': '0'}]}},
             {'input': {'filter': {'tags': [{'tag': 'test', 'value': 'test'}]}},
              'expected': {'tags': [{'tag': 'test', 'value': 'test', 'operator': '0'}]}},
