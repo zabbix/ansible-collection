@@ -56,6 +56,24 @@ Plugins.Redis.Sessions.{{ session["name"] }}.Password={{ session["password"] }}
 {% endfor %}
 {% endif %}
 
+### Option: Plugins.Redis.Sessions.*.ConnectionTimeout
+#	The maximum time in seconds for waiting when a connection has to be established.
+#   "*" should be replaced with a session name.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.Redis.Sessions.*.ConnectionTimeout=<Global timeout>
+{% if agent_param_plugins_redis_sessions is defined and agent_param_plugins_redis_sessions is iterable and agent_param_plugins_redis_sessions is not string and agent_param_plugins_redis_sessions is not mapping %}
+
+{% for session in agent_param_plugins_redis_sessions %}
+{% if session["connectiontimeout"] is defined and session["connectiontimeout"] %}
+Plugins.Redis.Sessions.{{ session["name"] }}.ConnectionTimeout={{ session["connectiontimeout"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 ### Option: Plugins.Redis.Default.Uri
 #	Uri to connect. Default value used if no other is specified.
 #
@@ -80,4 +98,18 @@ Plugins.Redis.Default.Uri={{ agent_param_plugins_redis_default.uri }}
 {% if agent_param_plugins_redis_default is defined and agent_param_plugins_redis_default.password is defined and agent_param_plugins_redis_default.password %}
 
 Plugins.Redis.Default.Password={{ agent_param_plugins_redis_default.password }}
+{% endif %}
+
+### Option: Plugins.Redis.Default.ConnectionTimeout
+#	The maximum time in seconds for waiting when a connection has to be established.
+#   This value is used if no other is specified.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Range: 1-30
+# Default:
+# Plugins.Redis.Default.ConnectionTimeout=<Global timeout>
+{% if agent_param_plugins_redis_default is defined and agent_param_plugins_redis_default.connectiontimeout is defined and agent_param_plugins_redis_default.connectiontimeout %}
+
+Plugins.Redis.Default.ConnectionTimeout={{ agent_param_plugins_redis_default.connectiontimeout }}
 {% endif %}

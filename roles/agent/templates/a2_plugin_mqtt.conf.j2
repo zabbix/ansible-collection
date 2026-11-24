@@ -117,6 +117,24 @@ Plugins.MQTT.Sessions.{{ tls_file["session_name"] }}.TLSKeyFile={{ tls_file["tar
 {% endfor %}
 {% endif %}
 
+### Option: Plugins.MQTT.Sessions.*.ConnectionTimeout
+#	The maximum time (in seconds) for connections, disconnections and subscriptions.
+#   "*" should be replaced with a session name.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Range: 1-30
+# Default: global timeout
+# Plugins.MQTT.Sessions.*.ConnectionTimeout=
+{% if agent_param_plugins_mqtt_sessions is defined and agent_param_plugins_mqtt_sessions is iterable and agent_param_plugins_mqtt_sessions is not string and agent_param_plugins_mqtt_sessions is not mapping %}
+
+{% for session in agent_param_plugins_mqtt_sessions %}
+{% if session["connectiontimeout"] is defined and session["connectiontimeout"] %}
+Plugins.MQTT.Sessions.{{ session["name"] }}.ConnectionTimeout={{ session["connectiontimeout"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 ### Option: Plugins.MQTT.Default.Url
 #	Default MQTT broker connection string; used if no value is specified in an item key or named session.
 #   Supported since version 6.4.4.
@@ -215,4 +233,18 @@ Plugins.MQTT.Default.TLSCertFile={{ tls_file["target"] }}
 Plugins.MQTT.Default.TLSKeyFile={{ tls_file["target"] }}
 {% endif %}
 {% endfor %}
+{% endif %}
+
+### Option: Plugins.MQTT.Default.ConnectionTimeout
+#	The maximum time (in seconds) for connections, disconnections and subscriptions.
+#   This value is used if no other is specified.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Range: 1-30
+# Default: global timeout
+# Plugins.MQTT.Default.ConnectionTimeout=
+{% if agent_param_plugins_mqtt_default is defined and agent_param_plugins_mqtt_default.connectiontimeout is defined and agent_param_plugins_mqtt_default.connectiontimeout %}
+
+Plugins.MQTT.Default.ConnectionTimeout={{ agent_param_plugins_mqtt_default.connectiontimeout }}
 {% endif %}

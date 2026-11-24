@@ -1,0 +1,14 @@
+---
+major_changes:
+  - agent role - added Zabbix agent and Zabbix agent 2 configuration templates for Zabbix 8.0.
+  - repository role - added Zabbix 8.0 repositories for all supported distributions.
+minor_changes:
+  - agent role - added the ``agent_param_allowkeyregexp`` and ``agent_param_denykeyregexp`` parameters (Zabbix 8.0 and above).
+  - agent role - added the ``connectiontimeout`` key to Memcached, MQTT and Redis plugin sessions and defaults,
+    and the ``agent_param_plugins_smart_connectiontimeout`` parameter (Zabbix 8.0 and above).
+  - agent role - the Ceph plugin is not configured for Zabbix 8.0, where it is no longer a built-in plugin.
+  - agent role - ``Plugins.Modbus.Timeout`` is not written for Zabbix 8.0, where the parameter was removed.
+bugfixes:
+  - repository role - fixed the repository URL for Debian and Ubuntu on aarch64 with Zabbix 7.2 and 7.4.
+    These versions keep all architectures in one directory, the role added a non-existent ``-arm64`` suffix.
+  - repository role - removed Zabbix 7.2 for CentOS Stream 10 on aarch64, the repository has no packages for it.

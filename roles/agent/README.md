@@ -4,13 +4,14 @@ Zabbix agent role
 You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
 Currently, the following OS of target machines are supported:
 - Redhat 8, 9, 10
-- Oracle Linux 8, 9
-- Alma Linux 8, 9
-- Rocky Linux 8, 9
+- Oracle Linux 8, 9, 10
+- Alma Linux 8, 9, 10
+- Rocky Linux 8, 9, 10
 - CentOS Stream 9, 10
-- Ubuntu 20.04, 22.04, 24.04
-- Debian 10, 11, 12
-- Raspberry Pi Os: 11, 12
+- Amazon Linux 2023
+- Ubuntu 20.04, 22.04, 24.04, 26.04
+- Debian 10, 11, 12, 13
+- Raspberry Pi Os: 10, 11, 12, 13
 
 Supported distribution list to be extended.
 
@@ -216,10 +217,12 @@ These parameters are common for both agent variants
 |--|--|--|--|--|
 | agent_param_alias | `list` || [**Alias**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#alias) |	Set an alias for the item key. Location of aliases on target machine: `/etc/zabbix/zabbix_agent[d|2].d/aliases.conf`
 | agent_param_allowkey | `list` || [**AllowKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowkey) | Allow execution of the item keys that match the pattern.
+| agent_param_allowkeyregexp | `list` || [**AllowKeyRegexp**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowkeyregexp) | Allow execution of the item keys that match the regular expression. Added in 8.0. Rules are written in this order: `AllowKey`, `AllowKeyRegexp`, `DenyKey`, `DenyKeyRegexp`; the first matching rule wins.
 | agent_param_buffersend | `int` || [**BufferSend**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersend) |	Do not keep data in the buffer longer than N seconds.
 | agent_param_buffersize | `int` || [**BufferSize**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersize) |	Maximum number of values in the memory buffer.
 | agent_param_debuglevel | `int` || [**DebugLevel**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#debuglevel) |	Debug level.
 | agent_param_denykey | `list` || [**DenyKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#denykey) |	Deny execution of the item keys that match the pattern.
+| agent_param_denykeyregexp | `list` || [**DenyKeyRegexp**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#denykeyregexp) | Deny execution of the item keys that match the regular expression. Added in 8.0.
 | agent_param_heartbeatfrequency | `int` || [**HeartbeatFrequency**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#heartbeatfrequency) | Frequency of the heartbeat messages in seconds. Added in 6.4.
 | agent_param_hostinterface | `string` || [**HostInterface**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#hostinterface) | Optional parameter that defines the host interface.
 | agent_param_hostinterfaceitem | `string` || [**HostInterfaceItem**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#hostinterfaceitem) | Optional parameter that defines the item used for getting the host interface.
@@ -318,8 +321,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
-| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: ""}`
+| agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: "", connectiontimeout: ""}`. `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: "", connectiontimeout: ""}`. `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -327,7 +330,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| agent_param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down). Removed in 8.0: not written to the configuration file for 8.0 and above.
 | agent_param_plugins_modbus_sessions | `list of dictionaries` | [**Plugins.Modbus.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", endpoint: "", slaveid: "", timeout: ""}`
 
 ### Zabbix **agent 2 MongoDB plugin** parameters:
@@ -363,8 +366,8 @@ Don't use both local path and final path to avoid unpredictable results!
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
 | agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
-| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", connectiontimeout: ""}` `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", connectiontimeout: ""}` `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 
@@ -459,8 +462,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "" }`
-| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "" }`
+| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "", connectiontimeout: "" }`. `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "", connectiontimeout: "" }`. `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Smart plugin** parameters:
 
@@ -470,6 +473,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
 | agent_param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_smart_connectiontimeout | `int` | [**Plugins.Smart.ConnectionTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | The maximum time in seconds for waiting before smartctl execution is terminated. Supported since 8.0.
 
 
 Hints & Tags
