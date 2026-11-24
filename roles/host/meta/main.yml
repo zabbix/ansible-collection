@@ -25,13 +25,18 @@ galaxy_info:
         - "10"
         - "9"
         - "8"
+    - name: Amazon Linux
+      versions:
+        - "2023"
     - name: Ubuntu
       versions:
+        - resolute  # 26.04
         - noble  # 24.04
         - jammy  # 22.04
         - focal  # 20.04
     - name: Debian
       versions:
+        - trixie  # 13
         - bookworm  # 12
         - bullseye  # 11
         - buster  # 10

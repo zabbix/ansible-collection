@@ -11,6 +11,7 @@ repository_map_os_transition:
     '7': '7'
     '8': '8'
     '9': '9'
+    '10': '10'
   CentOS:
     '6': '6'
     '7': '7'
@@ -20,12 +21,11 @@ repository_map_os_transition:
   Rocky:
     '8': '8'
     '9': '9'
+    '10': '10'
   AlmaLinux:
     '8': '8'
     '9': '9'
-  Amazon:
-    '2': '7'
-    '2023': '9'
+    '10': '10'
   Fedora:
     '19': '7'
     '20': '7'
@@ -54,6 +54,19 @@ repository_map_gpg_key_list:
   '8': ['RPM-GPG-KEY-ZABBIX-A14FE591', 'RPM-GPG-KEY-ZABBIX-B5333005']
   '9': ['RPM-GPG-KEY-ZABBIX-08EFA7DD', 'RPM-GPG-KEY-ZABBIX-B5333005']
   '10': ['RPM-GPG-KEY-ZABBIX-B5333005']
+  '2023': ['RPM-GPG-KEY-ZABBIX-B5333005']  # Amazon Linux 2023
+
+### Subdirectory after the Zabbix version in repository base url (none if not listed).
+repository_map_version_subdir:
+  '6.0': ''
+  '7.0': ''
+  '7.2': 'stable/'
+  '7.4': 'stable/'
+  '8.0': 'stable/'
+
+### Zabbix versions with Debian-based aarch64 packages in a separate "<distribution>-arm64" directory.
+### Other versions keep all architectures in one directory.
+repository_map_debian_arm64_dir: ['6.0', '6.4', '6.5', '7.0']
 
 ### used for repository base url
 repository_map_os_to_url:
@@ -63,6 +76,7 @@ repository_map_os_to_url:
     'AlmaLinux': 'rhel'
     'Rocky': 'rhel'
     'CentOS': 'rhel'
+    'Amazon': 'amazonlinux'
   '6.4':
     'RedHat': 'rhel'
     'OracleLinux': 'rhel'
@@ -75,21 +89,32 @@ repository_map_os_to_url:
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'Amazon': 'amazonlinux'
   '7.0':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'Amazon': 'amazonlinux'
   '7.2':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'Amazon': 'amazonlinux'
   '7.4':
     'RedHat': 'rhel'
     'OracleLinux': 'oracle'
     'AlmaLinux': 'alma'
     'Rocky': 'rocky'
     'CentOS': 'centos'
+    'Amazon': 'amazonlinux'
+  '8.0':
+    'RedHat': 'rhel'
+    'OracleLinux': 'oracle'
+    'AlmaLinux': 'alma'
+    'Rocky': 'rocky'
+    'CentOS': 'centos'
+    'Amazon': 'amazonlinux'

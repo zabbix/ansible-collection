@@ -13,7 +13,7 @@
     repo_url_filter: ''
     # Zabbix versions added to the maps before their packages are published:
     # missing URLs are reported as warnings. Remove a version once it is released.
-    repo_url_pending: ['8.0']
+    repo_url_pending: []
     repo_url_warnings_file: ''
     repository_url: "{{ (lookup('ansible.builtin.file', repo_role_dir ~ '/defaults/main/15_repository.yml') | from_yaml).repository_url }}"
     # Codenames are needed for apt repositories: add new distribution versions here

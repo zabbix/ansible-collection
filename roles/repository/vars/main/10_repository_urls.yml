@@ -1,0 +1,34 @@
+---
+### Repository and GPG key URLs, used by the tasks and by the repository URL test (tests/repository/urls.yml).
+
+repository_internal_url: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
+                             + repository_url }}'
+
+### RHEL based distributions
+repository_internal_redhat_baseurl: '{{ repository_internal_url + "/zabbix/" + repository_version | string + "/"
+              + repository_map_version_subdir[repository_version | string] | default("")
+              + repository_map_os_to_url[repository_version | string][ansible_distribution] + "/"
+              + (repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] | string
+                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                  else ansible_distribution_major_version | string)
+              + "/$basearch/" }}'
+repository_internal_redhat_gpg_key_list: '{{ repository_map_gpg_key_list[repository_map_os_transition[ansible_distribution][ansible_distribution_major_version]]
+                if repository_map_os_transition[ansible_distribution][ansible_distribution_major_version] is defined
+                  else repository_map_gpg_key_list[ansible_distribution_major_version] }}'
+repository_internal_gpg_key_url_list: "{{ repository_internal_redhat_gpg_key_list | map('regex_replace', '^(.*)$', repository_url + '/\\1') | list }}"
+
+### Debian based distributions
+repository_internal_debian_gpg_key: '{{ repository_internal_url + "/zabbix-official-repo.key" }}'
+repository_internal_debian_baseurl: '{{ repository_internal_url + "/zabbix/"
+                        + repository_version | string + "/"
+                        + repository_map_version_subdir[repository_version | string] | default("")
+                        + ansible_distribution | lower
+                        + ("" if (ansible_architecture == "x86_64"
+                                  or ansible_distribution == "Raspbian"
+                                  or (ansible_lsb is defined
+                                    and ansible_lsb.id is defined
+                                    and ansible_lsb.id == "Raspbian"))
+                                  else ("-arm64" if ansible_architecture == "aarch64"
+                                                    and repository_version | string in repository_map_debian_arm64_dir
+                                        else ""))
+                        }}'

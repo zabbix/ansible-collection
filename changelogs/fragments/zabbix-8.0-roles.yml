@@ -2,6 +2,7 @@
 major_changes:
   - agent role - added Zabbix agent and Zabbix agent 2 configuration templates for Zabbix 8.0.
   - repository role - added Zabbix 8.0 repositories for all supported distributions.
+    Raspberry Pi OS is supported only on aarch64, Zabbix 8.0 has no armhf packages and no packages for Raspberry Pi OS 10.
 minor_changes:
   - agent role - added the ``agent_param_allowkeyregexp`` and ``agent_param_denykeyregexp`` parameters (Zabbix 8.0 and above).
   - agent role - added the ``connectiontimeout`` key to Memcached, MQTT and Redis plugin sessions and defaults,
