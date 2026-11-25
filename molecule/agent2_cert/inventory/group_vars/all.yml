@@ -318,10 +318,9 @@ agent_param_plugins_mysql_default:
     source_tlskeyfile: "../default/files/certs/{{ inventory_hostname }}.key"
 
 ## agent2 Plugins.MSSQL:
-agent_param_plugins_mssql_calltimeout: 3
 agent_param_plugins_mssql_timeout: 3
 agent_param_plugins_mssql_keepalive: 300
-agent_param_plugins_mssql_customqueriespath: /some/path
+agent_param_plugins_mssql_customqueriesdir: /some/path
 agent_param_plugins_mssql_sessions:
   - name: "sessionname"
     uri: "someuri"
