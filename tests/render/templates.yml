@@ -21,6 +21,9 @@
     #   extra_vars_files - vars files the role includes conditionally (not per OS family)
     #   marker_overrides - fixed values in the markers scenario for parameters other parameters depend on
     #   marker_exempt    - {parameter: reason} for parameters whose value is not rendered by design
+    #   cases            - templates rendered with fixed vars (on top of runtime_vars and context) and checked for lines:
+    #                      [{name: <case>, template: <template name>, vars: {<vars>},
+    #                        present: [<whole lines that must be rendered>], absent: [<strings that must not be rendered>]}]
     render_role_config:
       agent:
         context:
@@ -43,6 +46,21 @@
           agent_param_tlsconnect: cert
           agent_param_tlsaccept: [cert, psk]
         marker_exempt: {}
+        # The SELinux module references xserver_misc_device_t only with the nvidia plugin:
+        # the type is not defined on every system and semodule -i fails on it
+        cases:
+          - name: nvidia plugin enabled
+            template: zabbix_agent_extend.cil.j2
+            vars:
+              agent_2_plugin_list: [docker, nvidia]
+            present:
+              - (typeattributeset cil_gen_require xserver_misc_device_t)
+              - (allow zabbix_agent_t xserver_misc_device_t (chr_file (read write open ioctl)))
+          - name: nvidia plugin disabled
+            template: zabbix_agent_extend.cil.j2
+            vars:
+              agent_2_plugin_list: [docker]
+            absent: [xserver_misc_device_t]
   tasks:
     - name: Find role templates
       ansible.builtin.find:

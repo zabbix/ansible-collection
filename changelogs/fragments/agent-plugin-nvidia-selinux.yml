@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - agent role - the SELinux module (``agent_apply_semodule``) allows Zabbix agent 2 to access NVIDIA devices (``xserver_misc_device_t``)
+    when the ``nvidia`` plugin is in ``agent_2_plugin_list``. Without the plugin the module does not reference this type,
+    so ``semodule`` does not fail on systems where it is not defined.

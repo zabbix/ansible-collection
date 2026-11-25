@@ -9,6 +9,7 @@
       extra_vars_files: []
       marker_overrides: {}
       marker_exempt: {}
+      cases: []
   ansible.builtin.set_fact:
     render_cfg: '{{ render_cfg_default | combine(render_role_config[render_role] | default({})) }}'
     render_role_dir: '{{ render_roles_dir }}/{{ render_role }}'
@@ -164,7 +165,9 @@
     render_problems: >-
       {{ render_problems
          + (render_vars_files | difference(render_os_vars_files + render_cfg.extra_vars_files)
-            | map('regex_replace', '^', render_role ~ ': vars file is not covered by render_os_families or extra_vars_files: ') | list) }}
+            | map('regex_replace', '^', render_role ~ ': vars file is not covered by render_os_families or extra_vars_files: ') | list)
+         + (render_cfg.cases | map(attribute='template') | reject('in', render_sources) | unique
+            | map('regex_replace', '^', render_role ~ ': case template does not exist: ') | list) }}
 
 - name: 'Build template context : {{ render_role }}'
   vars:

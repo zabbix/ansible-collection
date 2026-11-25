@@ -11,3 +11,10 @@
   loop_control:
     loop_var: render_item
     label: '{{ render_item | join(" / ") }}'
+
+- name: 'Render and check cases : {{ render_role ~ " / " ~ render_os }}'
+  ansible.builtin.include_tasks: case.yml
+  loop: '{{ render_cfg.cases | selectattr("template", "search", render_filter) | list }}'
+  loop_control:
+    loop_var: render_case
+    label: '{{ render_case.template }} / {{ render_case.name }}'
