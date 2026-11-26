@@ -6,6 +6,8 @@ plugins:
   callback: {}
   cliconf: {}
   connection: {}
+  eda_event_filter: {}
+  eda_event_source: {}
   filter: {}
   httpapi:
     zabbix:
@@ -51,4 +53,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 1.5.0
+version: 1.6.0

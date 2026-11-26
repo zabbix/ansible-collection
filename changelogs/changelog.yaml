@@ -276,3 +276,83 @@ releases:
     - v1.5.0_summary.yaml
     - zabbix_inventory_hostnames_examples.yml
     release_date: '2026-07-14'
+  1.6.0:
+    changes:
+      bugfixes:
+      - '``agent`` and ``repository`` roles: fixed ``http_proxy``/``https_proxy``
+        environment variables being rendered as the literal string ``"None"`` instead
+        of being omitted when no proxy was configured, which broke package installation
+        and repository access behind a proxy-less network. The ``default(None) | default(omit)``
+        filter chain never reached ``omit`` because Jinja''s ``default()`` filter
+        only substitutes for undefined values, not for ``None``; it now uses ``default(omit,
+        true)``.'
+      - agent role - README documented ``agent_param_plugins_mssql_customqueriespath``,
+        the role uses ``agent_param_plugins_mssql_customqueriesdir`` (``Plugins.MSSQL.CustomQueriesDir``).
+      - agent role - README documented ``agent_param_plugins_oracle_default`` as a
+        list of dictionaries, the role expects a dictionary.
+      - agent role - ``agent_repository_priority`` was not passed to the repository
+        role because of a typo in the role dependency.
+      - agent role - documented the ``agent_param_tlspskfile`` parameter in README.
+      - repository role - fixed the repository URL for Debian and Ubuntu on aarch64
+        with Zabbix 7.2 and 7.4. These versions keep all architectures in one directory,
+        the role added a non-existent ``-arm64`` suffix.
+      - repository role - removed Zabbix 7.2 for CentOS Stream 10 on aarch64, the
+        repository has no packages for it.
+      - zabbix_host module - fixed idempotence of SNMP interfaces with Zabbix 8.0,
+        which returns the new ``retries`` detail; the task reported a change on every
+        run.
+      - zabbix_inventory plugin - tag values in ``filter.tags`` are sent to Zabbix
+        API as strings. Zabbix 8.0 rejected numeric tag values with the ``a character
+        string is expected`` error.
+      major_changes:
+      - agent role - added Zabbix agent and Zabbix agent 2 configuration templates
+        for Zabbix 8.0.
+      - repository role - added Zabbix 8.0 repositories for all supported distributions.
+        Raspberry Pi OS is supported only on aarch64, Zabbix 8.0 has no armhf packages
+        and no packages for Raspberry Pi OS 10.
+      minor_changes:
+      - agent role - ``Plugins.Modbus.Timeout`` is not written for Zabbix 8.0, where
+        the parameter was removed.
+      - agent role - added the ``agent_param_allowkeyregexp`` and ``agent_param_denykeyregexp``
+        parameters (Zabbix 8.0 and above).
+      - agent role - added the ``agent_repository_manage`` parameter. Set it to ``false``
+        to skip the Zabbix repository configuration when Zabbix packages are available
+        from repositories already configured on the target (for example, managed by
+        Foreman).
+      - agent role - added the ``connectiontimeout`` key to Memcached, MQTT and Redis
+        plugin sessions and defaults, and the ``agent_param_plugins_smart_connectiontimeout``
+        parameter (Zabbix 8.0 and above).
+      - agent role - the Ceph plugin is not configured for Zabbix 8.0, where it is
+        no longer a built-in plugin.
+      - agent role - the SELinux module (``agent_apply_semodule``) allows Zabbix agent
+        2 to access NVIDIA devices (``xserver_misc_device_t``) when the ``nvidia``
+        plugin is in ``agent_2_plugin_list``. Without the plugin the module does not
+        reference this type, so ``semodule`` does not fail on systems where it is
+        not defined.
+      - repository role - added Amazon Linux 2023 (Zabbix 6.0, 6.5, 7.0, 7.2, 7.4
+        and 8.0).
+      - repository role - added Debian 13 (Zabbix 6.0, 7.0, 7.4 and 8.0).
+      - repository role - added Oracle Linux 10, AlmaLinux 10 and Rocky Linux 10 (Zabbix
+        6.0, 7.0, 7.4 and 8.0).
+      - repository role - added Ubuntu 26.04 (Zabbix 7.0, 7.4 and 8.0) and Raspberry
+        Pi OS 13 (Zabbix 7.0 and 7.4, Zabbix 8.0 on aarch64 only).
+      - repository role - added Zabbix 6.0 for RHEL 10 and CentOS Stream 10.
+      - zabbix_host module - added the ``retries`` option to SNMP interface ``details``
+        (Zabbix 8.0 and above).
+      - zabbix_proxy module - added the ``timeout_telemetry_query`` option to ``custom_timeouts``
+        (Zabbix 8.0 and above).
+      release_summary: ''
+    fragments:
+    - agent-plugin-nvidia-selinux.yml
+    - agent-readme-params.yml
+    - agent-repository-manage.yml
+    - http-proxy-default-omit-jinja-none.yml
+    - repository-new-os.yml
+    - tests-zabbix-version-conditions.yml
+    - v1.6.0_summary.yaml
+    - zabbix-8.0-roles.yml
+    - zabbix_event-docs-fix.yml
+    - zabbix_host-snmp-retries.yml
+    - zabbix_inventory-tag-value-string.yml
+    - zabbix_proxy-telemetry-query-timeout.yml
+    release_date: '2026-11-26'

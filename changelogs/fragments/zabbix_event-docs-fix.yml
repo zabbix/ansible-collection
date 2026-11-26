@@ -1,2 +1,0 @@
-trivial:
-  - zabbix_event - fix copy-pasted module documentation (example comment and ``ids`` option description).

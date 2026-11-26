@@ -1,6 +1,0 @@
----
-bugfixes:
-  - agent role - README documented ``agent_param_plugins_mssql_customqueriespath``, the role uses ``agent_param_plugins_mssql_customqueriesdir``
-    (``Plugins.MSSQL.CustomQueriesDir``).
-  - agent role - README documented ``agent_param_plugins_oracle_default`` as a list of dictionaries, the role expects a dictionary.
-  - agent role - documented the ``agent_param_tlspskfile`` parameter in README.

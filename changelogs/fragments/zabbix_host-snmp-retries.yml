@@ -1,6 +1,0 @@
----
-minor_changes:
-  - zabbix_host module - added the ``retries`` option to SNMP interface ``details`` (Zabbix 8.0 and above).
-bugfixes:
-  - zabbix_host module - fixed idempotence of SNMP interfaces with Zabbix 8.0, which returns the new ``retries`` detail;
-    the task reported a change on every run.

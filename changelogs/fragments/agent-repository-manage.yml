@@ -1,6 +1,0 @@
----
-minor_changes:
-  - agent role - added the ``agent_repository_manage`` parameter. Set it to ``false`` to skip the Zabbix repository configuration
-    when Zabbix packages are available from repositories already configured on the target (for example, managed by Foreman).
-bugfixes:
-  - agent role - ``agent_repository_priority`` was not passed to the repository role because of a typo in the role dependency.
