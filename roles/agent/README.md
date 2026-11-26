@@ -4,13 +4,14 @@ Zabbix agent role
 You can use this Ansible role to deploy and configure Zabbix agents on the target machines. Both agentd and agent2 variants are available.
 Currently, the following OS of target machines are supported:
 - Redhat 8, 9, 10
-- Oracle Linux 8, 9
-- Alma Linux 8, 9
-- Rocky Linux 8, 9
+- Oracle Linux 8, 9, 10
+- Alma Linux 8, 9, 10
+- Rocky Linux 8, 9, 10
 - CentOS Stream 9, 10
-- Ubuntu 20.04, 22.04, 24.04
-- Debian 10, 11, 12
-- Raspberry Pi Os: 11, 12
+- Amazon Linux 2023
+- Ubuntu 20.04, 22.04, 24.04, 26.04
+- Debian 10, 11, 12, 13
+- Raspberry Pi Os: 10, 11, 12, 13
 
 Supported distribution list to be extended.
 
@@ -65,6 +66,8 @@ Requirements
 This role uses official Zabbix packages and repository for component installation. Target machines require direct or [**HTTP proxy**](#playbook-9) internet access to Zabbix repository [**repo.zabbix.com**](https://repo.zabbix.com).
 
 For self-hosted repository mirrors, override URL for [`agent_repository_mirror`](#general-settings) variable.
+
+If Zabbix packages are available from repositories already configured on the target machines (for example, internal repositories managed by Foreman), set [`agent_repository_manage`](#general-settings) to `false` to skip the Zabbix repository configuration.
 
 The role contains firewalld application rule to allow agent listen port. Firewalld is required on the target machines for this rule to work. Automatic mode `agent_apply_firewalld_rule = auto` checks if firewalld is installed. Firewalld is a recommended method as it can work with both iptables and nftables. Firewalld can be installed on RHEL- and Debian-based distributions.
 
@@ -122,8 +125,9 @@ The default settings are aimed at the ease of installation. You can override tho
 | agent_2_plugin_list | `list` | [ceph, docker, memcached, modbus, mongodb, mqtt, mysql, oracle, postgresql, redis, smart] | List of Zabbix agent 2 plugins to configure and deploy (if the plugin is loadable). **Note** that loadable plugins for 6.0 version are installed as dependencies of Zabbix agent 2 package. Starting with 6.4, loadable plugin installation is allowed at your own discretion. Default plugin list for Zabbix agent 2 >= **6.4** is `[ceph, docker, memcached, modbus, mqtt, mysql, oracle, redis, smart]`.
 | agent_http_proxy | `string` || Defines [**HTTP proxy**](#playbook-9) address for the packager.
 | agent_https_proxy | `string` || Defines HTTPS proxy address for the packager.
+| agent_repository_manage | `boolean` | `true` | Whether to add the Zabbix repository (**zabbix-managed**) on the target machine. Set to `false` if Zabbix packages are available from repositories already configured on the target machine, for example internal mirrors managed by Foreman. The role then neither adds nor removes the Zabbix repository and does not remove the `zabbix-release` package. `agent_repository_mirror` and `agent_repository_priority` are not used.
 | agent_repository_mirror | `string` | "https://repo.zabbix.com/" | Defines repository mirror URL. You can override it to use self-hosted Zabbix repo mirror.
-| agent_repository_priority | `int` | 99 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
+| agent_repository_priority | `int` | 98 | **For RedHat family OS only.** Sets the priority of the Zabbix repository. Expects integer values from 1 to 99. Covers the cases with interfering packages from central distribution repositories.
 | agent_repository_disable | `string` | "epel" | **For RedHat family OS only.** Disables defined repository during package deployment. Disables EPEL by default.
 
 ### User settings:
@@ -216,10 +220,12 @@ These parameters are common for both agent variants
 |--|--|--|--|--|
 | agent_param_alias | `list` || [**Alias**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#alias) |	Set an alias for the item key. Location of aliases on target machine: `/etc/zabbix/zabbix_agent[d|2].d/aliases.conf`
 | agent_param_allowkey | `list` || [**AllowKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowkey) | Allow execution of the item keys that match the pattern.
+| agent_param_allowkeyregexp | `list` || [**AllowKeyRegexp**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#allowkeyregexp) | Allow execution of the item keys that match the regular expression. Added in 8.0. Rules are written in this order: `AllowKey`, `AllowKeyRegexp`, `DenyKey`, `DenyKeyRegexp`; the first matching rule wins.
 | agent_param_buffersend | `int` || [**BufferSend**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersend) |	Do not keep data in the buffer longer than N seconds.
 | agent_param_buffersize | `int` || [**BufferSize**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#buffersize) |	Maximum number of values in the memory buffer.
 | agent_param_debuglevel | `int` || [**DebugLevel**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#debuglevel) |	Debug level.
 | agent_param_denykey | `list` || [**DenyKey**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#denykey) |	Deny execution of the item keys that match the pattern.
+| agent_param_denykeyregexp | `list` || [**DenyKeyRegexp**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#denykeyregexp) | Deny execution of the item keys that match the regular expression. Added in 8.0.
 | agent_param_heartbeatfrequency | `int` || [**HeartbeatFrequency**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#heartbeatfrequency) | Frequency of the heartbeat messages in seconds. Added in 6.4.
 | agent_param_hostinterface | `string` || [**HostInterface**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#hostinterface) | Optional parameter that defines the host interface.
 | agent_param_hostinterfaceitem | `string` || [**HostInterfaceItem**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#hostinterfaceitem) | Optional parameter that defines the item used for getting the host interface.
@@ -252,6 +258,7 @@ These parameters are common for both agent variants
 | agent_param_tlscipherpsk13 | `string` || [**TLSCipherPSK13**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlscipherpsk13) | Override the default ciphersuite selection criteria for PSK-based encryption.
 | agent_param_tlskeyfile | `string` || [**TLSKeyFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlskeyfile) | Path to the agent private key. Use only when [`agent_source_tlskeyfile`](#local-paths-variables-table) is not defined!
 | agent_param_tlspskidentity | `string` | `PSK_ID_{{ inventory_hostname }}` | [**TLSPSKIdentity**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlspskidentity) | Pre-shared key identity string used for encrypted communications with Zabbix server. Default value uses prefixed hostname from inventory.
+| agent_param_tlspskfile | `string` | `{{ agent_service_user_home }}/{{ agent_binary_name \| upper }}/.PSK/psk_value` | [**TLSPSKFile**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlspskfile) | Path to the pre-shared key file on the target machine. Used when `agent_param_tlsconnect` or `agent_param_tlsaccept` is set to `psk`: the role places the key from [`agent_source_tlspskfile`](#local-paths-variables-table) to this path.
 | agent_param_tlsservercertissuer | `string` || [**TLSServerCertIssuer**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertissuer) | Allowed server (proxy) certificate issuer.
 | agent_param_tlsservercertsubject | `string` || [**TLSServerCertSubject**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#tlsservercertsubject) | Allowed server (proxy) certificate subject.
 | agent_param_unsafeuserparameters | `int` || [**UnsafeUserParameters**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agentd#unsafeuserparameters) | Allow all characters to be passed in arguments to user-defined parameters.
@@ -318,8 +325,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_memcached_keepalive | `int` | [**Plugins.Memcached.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_memcached_timeout | `int` | [**Plugins.Memcached.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: ""}`
-| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: ""}`
+| agent_param_plugins_memcached_sessions | `list of dictionaries` | [**Plugins.Memcached.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", password: "", user: "", uri: "", connectiontimeout: ""}`. `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_memcached_default| `dictionary` | [**Plugins.Memcached.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/memcached_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ password: "", user: "", uri: "", connectiontimeout: ""}`. `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Modbus plugin** parameters:
 
@@ -327,7 +334,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
-| agent_param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_modbus_timeout | `int` | [**Plugins.Modbus.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down). Removed in 8.0: not written to the configuration file for 8.0 and above.
 | agent_param_plugins_modbus_sessions | `list of dictionaries` | [**Plugins.Modbus.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/modbus_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", endpoint: "", slaveid: "", timeout: ""}`
 
 ### Zabbix **agent 2 MongoDB plugin** parameters:
@@ -363,8 +370,8 @@ Don't use both local path and final path to avoid unpredictable results!
 | Variable | Type | Parameter | Description |
 |--|--|--|--|
 | agent_param_plugins_mqtt_timeout | `int` | [**Plugins.MQTT.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
-| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: ""}`
+| agent_param_plugins_mqtt_sessions | `list of dictionaries` | [**Plugins.MQTT.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", connectiontimeout: ""}` `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_mqtt_default | `dictionary` | [**Plugins.MQTT.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mqtt_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ url: "", topic: "", user: "", password: "", source_tlscafile: "", source_tlscertfile: "", source_tlskeyfile: "", connectiontimeout: ""}` `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Oracle plugin** parameters:
 
@@ -377,7 +384,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 | agent_param_plugins_oracle_customqueriespath | `string` | [**Plugins.Oracle.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Full pathname of the directory containing .sql files with custom queries. Disabled by default. Example: /etc/zabbix/oracle/sql
 | agent_param_plugins_oracle_keepalive | `int` | [**Plugins.Oracle.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_oracle_sessions | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", service: "", user: "", password: "" }`
-| agent_param_plugins_oracle_default | `list of dictionaries` | [**Plugins.Oracle.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", service: "", user: "", password: "" }`
+| agent_param_plugins_oracle_default | `dictionary` | [**Plugins.Oracle.Default**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/oracle_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", service: "", user: "", password: "" }`
 
 ### Zabbix **agent 2 PostgreSQL plugin** parameters:
 
@@ -437,7 +444,7 @@ Don't use both local path and final path to avoid unpredictable results!
 |--|--|--|--|--|
 | agent_param_plugins_mssql_keepalive | `int` || [**Plugins.MSSQL.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Time of waiting (in seconds) before unused connections are closed.
 | agent_param_plugins_mssql_timeout | `int` || [**Plugins.MSSQL.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | The amount of time to wait for a server to respond when first connecting and on follow-up operations in the session.
-| agent_param_plugins_mssql_customqueriespath | `string` || [**Plugins.MSSQL.CustomQueriesPath**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Full pathname of a directory containing *.sql* files with custom queries. Changes requires Zabbix agent2 restart.
+| agent_param_plugins_mssql_customqueriesdir | `string` || [**Plugins.MSSQL.CustomQueriesDir**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Full pathname of a directory containing *.sql* files with custom queries. Changes requires Zabbix agent2 restart.
 | agent_param_plugins_mssql_system_path | `string` | **Zabbix version <=7.0:** /usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mssql **Zabbix version >= 7.2:** /usr/libexec/zabbix/zabbix-agent2-plugin-mssql | [**Plugins.MSSQL.System.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Path to the external plugin executable.
 | agent_param_plugins_mssql_sessions | `list of dictionaries` || [**Plugins.MSSQL.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
 | agent_param_plugins_mssql_default | `dictionary` || [**Plugins.MSSQL.Default.\***](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/mssql_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", user: "", password: "", source_cacertpath: "", trustservercertificate: "", hostnameincertificate: "", encrypt: "", tlsminversion: ""}`
@@ -459,8 +466,8 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_redis_keepalive | `int` | [**Plugins.Redis.KeepAlive**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Maximum time of waiting (in seconds) before unused plugin connections are closed.
 | agent_param_plugins_redis_timeout | `int` | [**Plugins.Redis.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
-| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "" }`
-| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "" }`
+| agent_param_plugins_redis_sessions | `list of dictionaries` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the list of connection credentials in dictionary form with the keys: `{ name: "", uri: "", password: "", connectiontimeout: "" }`. `connectiontimeout` is supported since 8.0.
+| agent_param_plugins_redis_default | `dictionary` | [**Plugins.Redis.Sessions**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/redis_plugin) | Holds the default connection credentials in dictionary form with the keys: `{ uri: "", password: "", connectiontimeout: "" }`. `connectiontimeout` is supported since 8.0.
 
 ### Zabbix **agent 2 Smart plugin** parameters:
 
@@ -470,6 +477,7 @@ For these settings to take effect, the plugin should be listed in [`agent_2_plug
 |--|--|--|--|
 | agent_param_plugins_smart_path | `string` | [**Plugins.Smart.Path**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Path to the smartctl executable.
 | agent_param_plugins_smart_timeout | `int` | [**Plugins.Smart.Timeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | Request execution timeout (how long to wait for a request to complete before shutting it down).
+| agent_param_plugins_smart_connectiontimeout | `int` | [**Plugins.Smart.ConnectionTimeout**](https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_agent2_plugins/smart_plugin) | The maximum time in seconds for waiting before smartctl execution is terminated. Supported since 8.0.
 
 
 Hints & Tags

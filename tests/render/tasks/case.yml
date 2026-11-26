@@ -1,0 +1,36 @@
+---
+# Renders one template with fixed vars (render_case) and checks lines that must and must not be in the output.
+- name: 'Case : {{ render_case_label }}'
+  vars:
+    render_case_label: '{{ render_role }} / {{ render_os }} / {{ render_case.template }} / {{ render_case.name }}'
+  block:
+    - name: 'Case render : {{ render_case_label }}'
+      ansible.builtin.set_fact:
+        render_result: >-
+          {{ lookup('ansible.builtin.template', render_role_dir ~ '/templates/' ~ render_case.template,
+                    template_vars=render_cfg.runtime_vars
+                                  | combine({'ansible_os_family': render_os},
+                                            render_contexts[render_case.template] | default({}),
+                                            render_case.vars | default({}))) }}
+        render_count: '{{ render_count | int + 1 }}'
+
+    - name: 'Case check : {{ render_case_label }}'
+      vars:
+        render_lines: '{{ render_result.splitlines() | map("trim") | list }}'
+        # present: whole lines that must be rendered, absent: strings that must not be anywhere in the output
+        render_missing: '{{ render_case.present | default([]) | reject("in", render_lines) | list }}'
+        render_unexpected: '{{ render_case.absent | default([]) | select("in", render_result) | list }}'
+      ansible.builtin.set_fact:
+        render_problems: >-
+          {{ render_problems
+             + ([render_case_label ~ ': lines not rendered ' ~ render_missing] if render_missing else [])
+             + ([render_case_label ~ ': rendered, but must not be ' ~ render_unexpected] if render_unexpected else []) }}
+
+  rescue:
+    - name: 'Record case error : {{ render_case_label }}'
+      vars:
+        render_error: >-
+          {{ ansible_failed_result.msg | default(ansible_failed_result.exception | default('unknown error'))
+             | regex_replace('(?s)^.*(?:original message|Error rendering template|[)]): ', '') | truncate(300) }}
+      ansible.builtin.set_fact:
+        render_problems: '{{ render_problems + [render_case_label ~ ": render error: " ~ render_error] }}'

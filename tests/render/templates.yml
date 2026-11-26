@@ -1,0 +1,105 @@
+---
+- name: Render role templates
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    render_roles_dir: '{{ playbook_dir }}/../../roles'
+    render_filter: ''
+    # Optional file to write warnings to, one per line (used by CI for annotations)
+    render_warnings_file: ''
+    render_newline: "\n"
+    ansible_system: Linux
+    # vars/<family | lower>.yml is loaded the same way the roles do it
+    render_os_families: [RedHat, Debian]
+    render_scenario_list: [defaults, examples, markers, falsy, 'null']
+    # Optional per role settings:
+    #   param_prefix     - prefix of user parameters (default: <role>_param_)
+    #   context          - per template variables, set by the role when deploying the template:
+    #                      [{pattern: <regex for template name>, groups: [<var per regex group>], vars: {<fixed vars>}}]
+    #   runtime_vars     - variables the role sets in tasks (not in defaults) before rendering templates
+    #   extra_vars_files - vars files the role includes conditionally (not per OS family)
+    #   marker_overrides - fixed values in the markers scenario for parameters other parameters depend on
+    #   marker_exempt    - {parameter: reason} for parameters whose value is not rendered by design
+    #   cases            - templates rendered with fixed vars (on top of runtime_vars and context) and checked for lines:
+    #                      [{name: <case>, template: <template name>, vars: {<vars>},
+    #                        present: [<whole lines that must be rendered>], absent: [<strings that must not be rendered>]}]
+    render_role_config:
+      agent:
+        context:
+          - pattern: '^zabbix_agent(\d)_(.+)\.conf\.j2$'
+            groups: [agent_variant, agent_major_version]
+          - pattern: '^a2_plugin_(\w+)\.conf\.j2$'
+            groups: [plugin_name_item]
+            vars:
+              agent_variant: '2'
+          - pattern: '^zabbix_agent_extend\.cil\.j2$'
+            vars:
+              agent_variant: '2'
+        runtime_vars:
+          agent_tls_psk_value: 0123456789abcdef0123456789abcdef
+        extra_vars_files:
+          - custom_user_overrides.yml
+          - tls_cert_parameters.yml
+        # TLS parameters are rendered only when TLSConnect/TLSAccept use psk or cert
+        marker_overrides:
+          agent_param_tlsconnect: cert
+          agent_param_tlsaccept: [cert, psk]
+        marker_exempt: {}
+        # The SELinux module references xserver_misc_device_t only with the nvidia plugin:
+        # the type is not defined on every system and semodule -i fails on it
+        cases:
+          - name: nvidia plugin enabled
+            template: zabbix_agent_extend.cil.j2
+            vars:
+              agent_2_plugin_list: [docker, nvidia]
+            present:
+              - (typeattributeset cil_gen_require xserver_misc_device_t)
+              - (allow zabbix_agent_t xserver_misc_device_t (chr_file (read write open ioctl)))
+          - name: nvidia plugin disabled
+            template: zabbix_agent_extend.cil.j2
+            vars:
+              agent_2_plugin_list: [docker]
+            absent: [xserver_misc_device_t]
+  tasks:
+    - name: Find role templates
+      ansible.builtin.find:
+        paths: '{{ render_roles_dir }}'
+        patterns: '*.j2'
+        recurse: true
+      register: render_found_templates
+
+    - name: Discover roles with templates
+      ansible.builtin.set_fact:
+        render_roles: >-
+          {{ render_found_templates.files | map(attribute='path') | map('dirname') | select('match', '.*/templates$')
+             | map('dirname') | map('basename') | unique | sort }}
+        render_problems: []
+        render_warnings: []
+        render_count: 0
+
+    - name: Render templates of each role
+      ansible.builtin.include_tasks: tasks/role.yml
+      loop: '{{ render_roles }}'
+      loop_control:
+        loop_var: render_role
+
+    - name: Warnings
+      when: render_warnings | length > 0
+      ansible.builtin.debug:
+        msg: '{{ render_warnings }}'
+
+    - name: Write warnings file
+      when: render_warnings_file | length > 0
+      ansible.builtin.copy:
+        content: "{{ render_warnings | map('regex_replace', '$', render_newline) | join }}"
+        dest: '{{ render_warnings_file }}'
+        mode: '0644'
+
+    - name: Report
+      ansible.builtin.assert:
+        that: render_problems | length == 0
+        fail_msg: '{{ render_problems }}'
+        success_msg: >-
+          {{ render_count }} renders ({{ render_roles | join(', ') }}; {{ render_os_families | join(', ') }};
+          {{ render_scenario_list | join(', ') }}) without problems

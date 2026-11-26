@@ -18,6 +18,8 @@ agent_param_logtype: file
 # agent_param_sourceip:
 # agent_param_allowkey: system.run[*]
 # agent_param_denykey: system.run[*]
+# agent_param_allowkeyregexp: 'system\.run\[(?:/usr)?/bin/hostname\]'
+# agent_param_denykeyregexp: 'system\.run\[.*\]'
 # agent_param_logremotecommands: 0
 agent_param_server: ::/0
 agent_param_listenport: 10050
@@ -80,15 +82,15 @@ agent_param_includeplugins: '{{ agent_map_param_includeplugins[ansible_system] }
 
 ### agent2 Plugins:
 agent_param_plugins_mongodb_system_path: '{{ ("/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mongodb"
-                                          if (agent_major_version <= 7.0)
+                                          if (agent_major_version | float <= 7.0)
                                           else "/usr/libexec/zabbix/zabbix-agent2-plugin-mongodb") }}'
 agent_param_plugins_mssql_system_path: '{{ ("/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-mssql"
-                                        if (agent_major_version <= 7.0)
+                                        if (agent_major_version | float <= 7.0)
                                         else "/usr/libexec/zabbix/zabbix-agent2-plugin-mssql") }}'
 agent_param_plugins_nvidia_system_path: /usr/libexec/zabbix/zabbix-agent2-plugin-nvidia-gpu
 ## agent2 Plugins.PostgreSQL:
 agent_param_plugins_postgresql_system_path: '{{ ("/usr/sbin/zabbix-agent2-plugin/zabbix-agent2-plugin-postgresql"
-                                            if (agent_major_version <= 7.0)
+                                            if (agent_major_version | float <= 7.0)
                                             else "/usr/libexec/zabbix/zabbix-agent2-plugin-postgresql") }}'
 agent_param_plugins_log_maxlinespersecond: '{{ agent_param_maxlinespersecond | default(None) | default(omit) }}'
 agent_param_plugins_systemrun_logremotecommands: '{{ agent_param_logremotecommands | default(None) | default(omit) }}'

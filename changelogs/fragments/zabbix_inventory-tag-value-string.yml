@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - zabbix_inventory plugin - tag values in ``filter.tags`` are sent to Zabbix API as strings.
+    Zabbix 8.0 rejected numeric tag values with the ``a character string is expected`` error.

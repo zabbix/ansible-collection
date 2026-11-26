@@ -11,8 +11,8 @@
     state: present
   when: repository_state != "absent"
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [deploy]
 
 - name: 'DEB822 : Zabbix repository presence'
@@ -28,31 +28,15 @@
     types: [deb, deb-src]
     # uris: '{{ [repository_baseurl]
     #           + ([repository_uri_old_agent2_plugins] if repository_version | string == "6.0" else []) }}'
-    uris: '{{ repository_baseurl }}'
+    uris: '{{ repository_internal_debian_baseurl }}'
     suites: '{{ ansible_distribution_release }}' # jammy etc
     components: main
     architectures: '{{ "arm64" if ansible_architecture == "aarch64" else omit }}'
-    signed_by: '{{ repository_gpg_key }}'
+    signed_by: '{{ repository_internal_debian_gpg_key }}'
     # allow_insecure: true
-  vars:
-    repository_gpg_key: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
-                            + repository_url
-                            + "/zabbix-official-repo.key" }}'
-    repository_baseurl: '{{ ("https://" if repository_url | regex_search("^http(|s):\/\/") is none else "")
-                        + repository_url + "/zabbix/"
-                        + repository_version | string + "/"
-                        + ("stable/" if (repository_version | float >= 7.2) else "")
-                        + ansible_distribution | lower
-                        + ("" if (ansible_architecture == "x86_64"
-                                  or ansible_distribution == "Raspbian"
-                                  or (ansible_lsb is defined
-                                    and ansible_lsb.id is defined
-                                    and ansible_lsb.id == "Raspbian"))
-                                  else ("-arm64" if ansible_architecture == "aarch64" else ""))
-                        }}'
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [deploy, remove]
 
 ### update cache separately fro install task to save time during consequential runs for deployed instances
@@ -64,6 +48,6 @@
   ansible.builtin.apt:
     update_cache: true
   environment:
-    http_proxy: "{{ repository_http_proxy | default(None) | default(omit) }}"
-    https_proxy: "{{ repository_https_proxy | default(None) | default(omit) }}"
+    http_proxy: "{{ repository_http_proxy | default(omit, true) }}"
+    https_proxy: "{{ repository_https_proxy | default(omit, true) }}"
   tags: [skip_ansible_lint, deploy, remove]

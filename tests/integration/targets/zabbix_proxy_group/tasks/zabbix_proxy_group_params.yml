@@ -1,6 +1,6 @@
 ---
 - name: Failover delay
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Check failover_delay for new proxy group
       block:
@@ -87,13 +87,13 @@
               - "'No need to update' in zabbix_proxy_group_clear_failover_delay_again.result"
 
 - name: Clean environment
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   zabbix.zabbix.zabbix_proxy_group:
     state: absent
     name: My proxy group
 
 - name: Min online
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Check min_online for new proxy group
       block:
@@ -180,13 +180,13 @@
               - "'No need to update' in zabbix_proxy_group_clear_min_online_again.result"
 
 - name: Clean environment
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   zabbix.zabbix.zabbix_proxy_group:
     state: absent
     name: My proxy group
 
 - name: Description
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Check description for new proxy group
       block:

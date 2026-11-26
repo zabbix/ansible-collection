@@ -441,6 +441,12 @@ This module provides functionality to create, update, and delete hosts in Zabbix
             <td colspan=1 align="left">Max repetition count is applicable to discovery and walk only. Required with SNMP interfaces. Used only with SNMP interface versions 2 and 3. Used only for Zabbix versions above 6.4.</td>
         </tr>
         <tr>
+            <td colspan=1 align="left">retries</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Number of retries for SNMP requests. Optional. Used only for Zabbix versions 8.0 and above. If not specified, the current value of an existing interface is kept, a new interface gets the Zabbix default value.</td>
+        </tr>
+        <tr>
             <td colspan=1 align="left">contextname</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
@@ -567,6 +573,7 @@ To create a host with maximum parameters, you can use this example.
           authpassphrase: SET_YOUR_PWD
           privprotocol: des
           privpassphrase: SET_YOUR_PWD
+          retries: 3                      # Only for Zabbix 8.0 and above
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
     ansible_connection: httpapi
@@ -853,6 +860,12 @@ This module provides the functionality to create, update, and delete a proxy in 
             <td colspan=1 align="left">Spend no more than the time specified (in seconds) on processing browser checks. You can use the aliases <code>browser</code>. Set <code>timeout_browser=''</code> to clear the value and use the global timeout for this type of checks.</td>
         </tr>
         <tr>
+            <td colspan=1 align="left">timeout_telemetry_query</td>
+            <td colspan=1 align="left"><code>string</code></td>
+            <td colspan=1 align="left"></td>
+            <td colspan=1 align="left">Spend no more than the time specified (in seconds) on processing telemetry queries. You can use the aliases <code>telemetry_query</code>. Set <code>timeout_telemetry_query=''</code> to clear the value and use the global timeout. Used only for Zabbix versions 8.0 and above.</td>
+        </tr>
+        <tr>
             <td colspan=2 align="left">description</td>
             <td colspan=1 align="left"><code>string</code></td>
             <td colspan=1 align="left"></td>
@@ -911,6 +924,7 @@ To create a proxy with maximum parameters, you can use this example. Note that s
         timeout_telnet_agent: 10s
         timeout_script: 10s
         timeout_browser: 10s
+        timeout_telemetry_query: 10s                # Only for Zabbix 8.0 and above
     description: Description of my proxy
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
@@ -1229,7 +1243,7 @@ The inventory plugin allows Ansible users to generate a dynamic inventory based 
             <td colspan=1 align="left">value</td>
             <td colspan=1 align="left"><code>str</code></td>
             <td colspan=1 align="left">''</td>
-            <td colspan=1 align="left">Tag value for host search in Zabbix.</td>
+            <td colspan=1 align="left">Tag value for host search in Zabbix. Numeric values are converted to strings.</td>
         </tr>
         <tr>
             <td colspan=2 align="left">tags_behavior</td>
@@ -1907,13 +1921,13 @@ query:
 # Filtering by tags
 # You can specify the tag value as a variable or the tag as a dictionary.
 filter:
-  tags: 
+  tags:
     - tag: OS
       value: '{{ os_tag_value }}'
     - '{{ host_tag }}'
 
 # Add output fields
-output: 
+output:
   - status
   - name
 ```

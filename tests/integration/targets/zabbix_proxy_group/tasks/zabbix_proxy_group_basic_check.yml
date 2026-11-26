@@ -1,6 +1,6 @@
 ---
 - name: Check error for Zabbix version 6.0
-  when: zabbix_version == 6
+  when: zabbix_version | int == 6
   block:
     - name: Test - Creating proxy group in Zabbix 6.0
       zabbix.zabbix.zabbix_proxy_group:
@@ -16,7 +16,7 @@
           - "'Proxy groups are not supported' in zabbix_proxy_group_create_60.msg"
 
 - name: Check minimal parameters
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Check required parameter 'name'
     - name: Test - Creating proxy group without name
@@ -69,7 +69,7 @@
           - zabbix_proxy_group_create_again is not changed
 
 - name: Check updating parameters
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Check updating parameters
     - name: Test - Update one parameter on proxy group
@@ -112,7 +112,7 @@
           - "'No need to update proxy group' in zabbix_proxy_group_update_check.result"
 
 - name: Check deletion of proxy group
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     # Check required parameter 'name'
     - name: Test - Deleting proxy group without name

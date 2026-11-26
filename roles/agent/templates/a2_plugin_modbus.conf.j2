@@ -1,5 +1,7 @@
+{% if agent_major_version | string is version('8.0', '<') %}
 ### Option: Plugins.Modbus.Timeout
 #	The maximum time (in seconds) for connections.
+#	Removed in version 8.0, use Plugins.Modbus.Sessions.*.Timeout.
 #
 # Mandatory: no
 # Range: 1-30
@@ -7,6 +9,7 @@
 {% if agent_param_plugins_modbus_timeout is defined and agent_param_plugins_modbus_timeout %}
 
 Plugins.Modbus.Timeout={{ agent_param_plugins_modbus_timeout }}
+{% endif %}
 {% endif %}
 
 ### Option: Plugins.Modbus.Sessions.*.Endpoint

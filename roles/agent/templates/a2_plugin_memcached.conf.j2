@@ -71,6 +71,24 @@ Plugins.Memcached.Sessions.{{ session["name"] }}.Password={{ session["password"]
 {% endfor %}
 {% endif %}
 
+### Option: Plugins.Memcached.Sessions.*.ConnectionTimeout
+#	The maximum time (in seconds) that the plugin will spend attempting to
+#   establish a connection to the memcached service.
+#   "*" should be replaced with a session name.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Sessions.*.ConnectionTimeout=<Global timeout>
+{% if agent_param_plugins_memcached_sessions is defined and agent_param_plugins_memcached_sessions is iterable and agent_param_plugins_memcached_sessions is not string and agent_param_plugins_memcached_sessions is not mapping %}
+
+{% for session in agent_param_plugins_memcached_sessions %}
+{% if session["connectiontimeout"] is defined and session["connectiontimeout"] %}
+Plugins.Memcached.Sessions.{{ session["name"] }}.ConnectionTimeout={{ session["connectiontimeout"] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 ### Option: Plugins.Memcached.Default.Uri
 #	Uri to connect. Default value used if no other is specified.
 #
@@ -106,4 +124,18 @@ Plugins.Memcached.Default.User={{ agent_param_plugins_memcached_default.user }}
 {% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.password is defined and agent_param_plugins_memcached_default.password %}
 
 Plugins.Memcached.Default.Password={{ agent_param_plugins_memcached_default.password }}
+{% endif %}
+
+### Option: Plugins.Memcached.Default.ConnectionTimeout
+#	The maximum time (in seconds) that the plugin will spend attempting to
+#   establish a connection to the memcached service.
+#   This value is used if no other is specified.
+#   Supported since version 8.0.
+#
+# Mandatory: no
+# Default:
+# Plugins.Memcached.Default.ConnectionTimeout=<Global timeout>
+{% if agent_param_plugins_memcached_default is defined and agent_param_plugins_memcached_default.connectiontimeout is defined and agent_param_plugins_memcached_default.connectiontimeout %}
+
+Plugins.Memcached.Default.ConnectionTimeout={{ agent_param_plugins_memcached_default.connectiontimeout }}
 {% endif %}

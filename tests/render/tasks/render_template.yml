@@ -1,0 +1,70 @@
+---
+# Renders one template (render_item[0]) in one scenario (render_item[1]) and appends problems to render_problems.
+- name: 'Render : {{ render_item | join(" / ") }}'
+  vars:
+    render_label: '{{ render_role }} / {{ render_os }} / {{ render_item | join(" / ") }}'
+    render_template: '{{ render_item[0] }}'
+    render_scenario: '{{ render_item[1] }}'
+    render_scenario_vars: '{{ render_scenarios[render_scenario] }}'
+    render_zero_key: '{{ render_os }}/{{ render_template }}'
+  block:
+    - name: 'Render : {{ render_label }}'
+      ansible.builtin.set_fact:
+        render_result: >-
+          {{ lookup('ansible.builtin.template', render_role_dir ~ '/templates/' ~ render_template,
+                    template_vars=render_cfg.runtime_vars
+                                  | combine(render_scenario_vars, {'ansible_os_family': render_os},
+                                            render_contexts[render_template] | default({}))) }}
+        render_count: '{{ render_count | int + 1 }}'
+
+    - name: 'Check : {{ render_label }}'
+      vars:
+        render_active: "{{ render_result | regex_findall('(?m)^[ \\t]*[^#\\s].*$') | join(render_newline) }}"
+        render_broken: >-
+          {{ render_active | regex_findall('(?m)^[A-Za-z0-9.]+=(?:[ \t]*|None[ \t]*|.*__omit_place_holder__.*)$') }}
+        # Parameters of this template set by the scenario
+        render_set: >-
+          {{ render_sources[render_template] | regex_findall(render_cfg.param_prefix ~ '\w+') | unique
+             | select('in', render_scenario_vars) | list }}
+        # markers: which parameter values reached the output
+        render_found: >-
+          {{ render_set | map('extract', render_marker_strings) | flatten | select('in', render_active)
+             | map('extract', render_marker_owner) | unique | list }}
+        render_not_rendered: >-
+          {{ render_set | reject('in', render_cfg.marker_exempt) | reject('in', render_unchecked)
+             | reject('in', render_found) | list }}
+        render_stale_exempt: '{{ render_found | select("in", render_cfg.marker_exempt) | list }}'
+        # markers: keys of `Key=<int marker>` lines for parameters the template treats as numbers
+        render_value_keys: '{{ dict(render_active | regex_findall("(?m)^([^=\s]+)=(.*)$") | map("reverse") | map("list")) }}'
+        render_zero_keys: >-
+          {{ render_set | select('in', render_number_params) | select('in', render_scenarios.falsy)
+             | select('in', render_types | dict2items | selectattr('value', 'eq', 'int') | map(attribute='key'))
+             | map('extract', render_marker_strings) | map('first') | select('in', render_value_keys)
+             | map('extract', render_value_keys) | unique | list }}
+        # falsy: these keys must be rendered with 0
+        render_zero_missing: >-
+          {{ render_zero_expect[render_zero_key] | default([]) | map('regex_replace', '$', '=0')
+             | difference(render_result.splitlines() | map('trim')) }}
+      ansible.builtin.set_fact:
+        render_problems: >-
+          {{ render_problems
+             + ([render_label ~ ': broken lines ' ~ render_broken] if render_broken else [])
+             + ([render_label ~ ': values not rendered for ' ~ render_not_rendered]
+                if render_scenario == 'markers' and render_not_rendered else [])
+             + ([render_label ~ ': 0 not rendered for ' ~ render_zero_missing]
+                if render_scenario == 'falsy' and render_zero_missing else []) }}
+        render_warnings: >-
+          {{ render_warnings
+             + ([render_label ~ ': marker_exempt is not needed for ' ~ render_stale_exempt]
+                if render_scenario == 'markers' and render_stale_exempt else []) }}
+        render_zero_expect: >-
+          {{ render_zero_expect | combine({render_zero_key: render_zero_keys} if render_scenario == 'markers' else {}) }}
+
+  rescue:
+    - name: 'Record render error : {{ render_label }}'
+      vars:
+        render_error: >-
+          {{ ansible_failed_result.msg | default(ansible_failed_result.exception | default('unknown error'))
+             | regex_replace('(?s)^.*(?:original message|Error rendering template|[)]): ', '') | truncate(300) }}
+      ansible.builtin.set_fact:
+        render_problems: '{{ render_problems + [render_label ~ ": render error: " ~ render_error] }}'

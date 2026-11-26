@@ -266,7 +266,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -336,7 +336,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -397,7 +397,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -449,7 +449,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -492,7 +492,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -526,7 +526,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -569,7 +569,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -632,7 +632,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 
@@ -673,7 +673,7 @@ class TestPreloadData(unittest.TestCase):
                 inventory = InventoryModule()
                 inventory.args = each['input']
                 inventory.zabbix_version = '7.0.0'
-                inventory.query = query
+                inventory.query = dict(query)
 
                 inventory.preload_data()
 

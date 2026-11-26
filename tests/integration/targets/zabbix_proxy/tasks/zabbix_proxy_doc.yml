@@ -1,6 +1,6 @@
 ---
 - name: Prepare proxy group for Zabbix version 7.0 +
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Prepare proxy group 'My proxy group'
       zabbix.zabbix.zabbix_proxy_group:
@@ -21,7 +21,7 @@
           - prepare_proxy_group_2 is changed
 
 - name: Create and update proxy for Zabbix version 7.0 +
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
     - name: Create proxy with maximum parameters for Zabbix version 7.0 +
       zabbix.zabbix.zabbix_proxy:
@@ -88,7 +88,7 @@
         that: zabbix_proxy_clean is changed
 
 - name: Create and update proxy for Zabbix version 6.0
-  when: zabbix_version == 6
+  when: zabbix_version | int == 6
   block:
     - name: Create proxy with maximum parameters for Zabbix version 6.0
       zabbix.zabbix.zabbix_proxy:

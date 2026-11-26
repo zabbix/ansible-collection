@@ -2,7 +2,7 @@
 - name: Custom timeouts
   block:
     - name: Check custom_timeouts for new proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with custom_timeouts
         - name: Test - Create proxy with custom_timeouts
@@ -51,7 +51,7 @@
               - "'No need to update' in zabbix_proxy_create_w_custom_timeouts_again.result"
 
     - name: Update custom_timeouts for proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Update proxy with only one custom_timeouts
         - name: Test - Update proxy with only one custom_timeouts
@@ -128,7 +128,7 @@
               - "'No need to update' in zabbix_proxy_update_w_custom_timeouts_to_default_again.result"
 
     - name: Clean custom_timeouts for proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Clean custom_timeouts from proxy
         - name: Test - Clean custom_timeouts from proxy
@@ -160,10 +160,10 @@
       zabbix.zabbix.zabbix_proxy:
         state: absent
         name: My Zabbix proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
 
     - name: Check custom_timeouts for new proxy
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       block:
         # Create proxy with one custom_timeouts
         - name: Test - Create proxy with one custom_timeouts
@@ -215,6 +215,85 @@
             that:
               - zabbix_proxy_create_w_one_custom_timeouts_again_2 is not changed
               - "'No need to update' in zabbix_proxy_create_w_one_custom_timeouts_again_2.result"
+
+    - name: Check timeout_telemetry_query
+      when: zabbix_api_version is version('8.0', '>=')
+      block:
+        # Update timeout_telemetry_query
+        - name: Test - Update timeout_telemetry_query
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_telemetry_query: 15s
+          register: zabbix_proxy_update_telemetry_query
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_telemetry_query is changed
+              - "'Successfully updated proxy' in zabbix_proxy_update_telemetry_query.result"
+
+        # Update timeout_telemetry_query (Check)
+        - name: Test - Update timeout_telemetry_query (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              telemetry_query: 15s
+          register: zabbix_proxy_update_telemetry_query_again
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_telemetry_query_again is not changed
+              - "'No need to update' in zabbix_proxy_update_telemetry_query_again.result"
+
+        # Other timeouts keep their values
+        - name: Test - Check other timeouts after timeout_telemetry_query update (Check)
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_zabbix_agent: 10s
+              timeout_telemetry_query: 15s
+          register: zabbix_proxy_update_telemetry_query_others
+
+        - name: Assert that task was not changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_update_telemetry_query_others is not changed
+              - "'No need to update' in zabbix_proxy_update_telemetry_query_others.result"
+
+        # Reset timeout_telemetry_query to the global value
+        - name: Test - Reset timeout_telemetry_query to value from default setting
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_telemetry_query: ''
+          register: zabbix_proxy_reset_telemetry_query
+
+        - name: Assert that task was changed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_reset_telemetry_query is changed
+              - "'Successfully updated proxy' in zabbix_proxy_reset_telemetry_query.result"
+
+    - name: Check timeout_telemetry_query for Zabbix < 8.0
+      when:
+        - zabbix_version | int >= 7
+        - zabbix_api_version is version('8.0', '<')
+      block:
+        - name: Test - Set timeout_telemetry_query
+          zabbix.zabbix.zabbix_proxy:
+            name: My Zabbix proxy
+            custom_timeouts:
+              timeout_telemetry_query: 15s
+          register: zabbix_proxy_telemetry_query_old
+          ignore_errors: true
+
+        - name: Assert that task failed
+          ansible.builtin.assert:
+            that:
+              - zabbix_proxy_telemetry_query_old is failed
+              - "'Incorrect arguments for Zabbix version < 8.0.0: timeout_telemetry_query' in zabbix_proxy_telemetry_query_old.msg"
 
 - name: Clean environment
   zabbix.zabbix.zabbix_proxy:

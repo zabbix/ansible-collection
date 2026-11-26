@@ -25,7 +25,7 @@ options:
         required: false
         choices: [ message ]
     ids:
-        description: List of host groups to create/remove.
+        description: List of event IDs to update.
         type: list
         elements: str
         required: true
@@ -37,7 +37,7 @@ options:
 '''
 
 EXAMPLES = r'''
-# To create host groups, you can use:
+# To update events, you can use:
 - name: Update event with message
   zabbix.zabbix.zabbix_event:
     action: message

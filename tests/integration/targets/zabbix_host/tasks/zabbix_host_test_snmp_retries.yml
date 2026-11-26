@@ -1,0 +1,172 @@
+---
+- name: SNMP retries (Zabbix 8.0+)
+  when: zabbix_api_version is version('8.0', '>=')
+  block:
+    - name: Preparation - Clean all previous settings
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces: []
+
+    - name: Test - Add SNMP interface with retries
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+              bulk: true
+              community: public
+              max_repetitions: 10
+              retries: 3
+      register: zabbix_host_snmp_retries_add
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_add is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_snmp_retries_add.result"
+
+    - name: Test - Add SNMP interface with retries (Check)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+              bulk: true
+              community: public
+              max_repetitions: 10
+              retries: 3
+      register: zabbix_host_snmp_retries_add_again
+
+    - name: Assert that host was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_add_again is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_snmp_retries_add_again.result"
+
+    # retries is optional: the current value is kept if it is not specified
+    - name: Test - Update SNMP interface without retries
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+              bulk: true
+              community: public
+              max_repetitions: 10
+      register: zabbix_host_snmp_retries_omitted
+
+    - name: Assert that host was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_omitted is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_snmp_retries_omitted.result"
+
+    - name: Test - Update SNMP retries
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+              bulk: true
+              community: public
+              max_repetitions: 10
+              retries: 7
+      register: zabbix_host_snmp_retries_update
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_update is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_snmp_retries_update.result"
+
+    # The new value must be kept when retries is not specified
+    - name: Test - Update SNMP interface without retries after update
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 2
+              bulk: true
+              community: public
+              max_repetitions: 10
+      register: zabbix_host_snmp_retries_omitted_again
+
+    - name: Assert that host was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_omitted_again is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_snmp_retries_omitted_again.result"
+
+    - name: Test - SNMPv3 interface with retries
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 3
+              bulk: true
+              max_repetitions: 10
+              contextname: context
+              securityname: security
+              securitylevel: noAuthNoPriv
+              retries: 0
+      register: zabbix_host_snmp_retries_v3
+
+    - name: Assert that host was updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_v3 is changed
+          - "'Successfully updated host: zabbix_test_host' in zabbix_host_snmp_retries_v3.result"
+
+    - name: Test - SNMPv3 interface with retries (Check)
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 3
+              bulk: true
+              max_repetitions: 10
+              contextname: context
+              securityname: security
+              securitylevel: noAuthNoPriv
+              retries: 0
+      register: zabbix_host_snmp_retries_v3_again
+
+    - name: Assert that host was not updated
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_v3_again is not changed
+          - "'No need to update host: zabbix_test_host' in zabbix_host_snmp_retries_v3_again.result"
+
+- name: SNMP retries (Zabbix < 8.0)
+  when: zabbix_api_version is version('8.0', '<')
+  block:
+    - name: Test - Add SNMP interface with retries
+      zabbix.zabbix.zabbix_host:
+        host: zabbix_test_host
+        interfaces:
+          - type: snmp
+            details:
+              version: 1
+              bulk: true
+              community: public
+              retries: 3
+      register: zabbix_host_snmp_retries_old
+      ignore_errors: true
+
+    - name: Assert that task failed
+      ansible.builtin.assert:
+        that:
+          - zabbix_host_snmp_retries_old is failed
+          - "'Incorrect arguments for Zabbix version < 8.0.0: retries' in zabbix_host_snmp_retries_old.msg"
+
+- name: Clean SNMP interfaces after retries tests
+  zabbix.zabbix.zabbix_host:
+    host: zabbix_test_host
+    interfaces: []

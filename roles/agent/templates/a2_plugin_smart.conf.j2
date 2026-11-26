@@ -11,6 +11,20 @@
 Plugins.Smart.Timeout={{ agent_param_plugins_smart_timeout }}
 {% endif %}
 
+### Option: Plugins.Smart.ConnectionTimeout
+#	The maximum time in seconds for waiting before smartctl execution is terminated.
+#	The timeout is for a single smartctl command line execution.
+#	Supported since version 8.0.
+#
+# Mandatory: no
+# Range: 1-30
+# Default: <Global timeout>
+# Plugins.Smart.ConnectionTimeout=
+{% if agent_param_plugins_smart_connectiontimeout is defined and agent_param_plugins_smart_connectiontimeout %}
+
+Plugins.Smart.ConnectionTimeout={{ agent_param_plugins_smart_connectiontimeout }}
+{% endif %}
+
 ### Option: Plugins.Smart.Path
 #	Path to smartctl executable.
 #

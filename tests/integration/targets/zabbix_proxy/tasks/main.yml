@@ -33,13 +33,13 @@
         state: absent
 
     - name: Remove test proxy group
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group
         state: absent
 
     - name: Remove test proxy group 2
-      when: zabbix_version == 7
+      when: zabbix_version | int >= 7
       zabbix.zabbix.zabbix_proxy_group:
         name: My proxy group 2
         state: absent

@@ -167,7 +167,7 @@ options:
                     value:
                         type: str
                         default: ''
-                        description: Tag value for host search in Zabbix.
+                        description: Tag value for host search in Zabbix. Numeric values are converted to strings.
                     operator:
                         type: str
                         description: Mode of searching by tags.
@@ -934,9 +934,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         if self.args['filter'].get('tags') is not None:
             zabbix_filter['tags'] = []
             for tag in self.args['filter']['tags']:
+                # The normalized value is also used by the preload filter
+                if tag.get('value') is None:
+                    tag['value'] = ''
                 zabbix_filter['tags'].append({
                     'tag': tag.get('tag'),
-                    'value': tag.setdefault('value', ''),
+                    # Zabbix 8.0+ accepts only strings as tag values
+                    'value': str(tag['value']),
                     'operator': tags_compare_operators.get(tag.setdefault('operator', 'contains'), '0')
                 })
 

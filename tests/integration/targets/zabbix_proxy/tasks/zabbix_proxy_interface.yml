@@ -1,6 +1,6 @@
 ---
 - name: Interface for Zabbix version >= 7.0
-  when: zabbix_version == 7
+  when: zabbix_version | int >= 7
   block:
 
     - name: Create proxy
@@ -580,7 +580,7 @@
         name: My Zabbix proxy
 
 - name: Interface for Zabbix version <= 7.0
-  when: zabbix_version == 6
+  when: zabbix_version | int == 6
   block:
 
     - name: Useip

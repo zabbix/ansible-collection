@@ -2116,6 +2116,95 @@ class TestInterfaces(TestModules):
                     expected_result['interfaces'][0],
                     result['interfaces'][0])
 
+    def test_snmp_retries_zabbix_80(self):
+        """
+        Testing SNMP retries for Zabbix version 8.0 and above.
+        Test cases:
+        1. Retries is specified for SNMPv1.
+        2. Retries is specified for SNMPv2.
+        3. Retries is not specified: it is not added to details.
+        4. Retries for Zabbix version < 8.0: error.
+
+        Expected result: all test cases ran successfully.
+        """
+        def mock_api_version_80(self):
+            return '8.0.0'
+
+        test_cases = [
+            {
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '',
+                     'port': None, 'details': {
+                         'version': '1', 'bulk': True,
+                         'community': 'public', 'retries': '0'}}],
+                'expected': [
+                    {'type': '2', 'useip': '1', 'ip': '127.0.0.1',
+                     'port': '161', 'dns': '', 'details': {
+                         'version': '1', 'bulk': '1',
+                         'community': 'public', 'retries': '0'}, 'main': '1'}]
+            },
+            {
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '',
+                     'port': None, 'details': {
+                         'version': '2', 'bulk': True, 'community': 'public',
+                         'max_repetitions': '10', 'retries': '7'}}],
+                'expected': [
+                    {'type': '2', 'useip': '1', 'ip': '127.0.0.1',
+                     'port': '161', 'dns': '', 'details': {
+                         'version': '2', 'bulk': '1', 'community': 'public',
+                         'max_repetitions': '10', 'retries': '7'}, 'main': '1'}]
+            },
+            {
+                'input': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '',
+                     'port': None, 'details': {
+                         'version': '2', 'bulk': True, 'community': 'public',
+                         'max_repetitions': '10', 'retries': None}}],
+                'expected': [
+                    {'type': '2', 'useip': '1', 'ip': '127.0.0.1',
+                     'port': '161', 'dns': '', 'details': {
+                         'version': '2', 'bulk': '1', 'community': 'public',
+                         'max_repetitions': '10'}, 'main': '1'}]
+            }]
+
+        exist_host = {'host': 'test_host', 'inventory_mode': '1'}
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_80):
+
+            for case in test_cases:
+                self.mock_module_functions.params = {
+                    'host': 'test_host',
+                    'interfaces': case['input']}
+                host = self.module.Host(self.mock_module_functions)
+                self.maxDiff = None
+
+                result = host.generate_zabbix_host(exist_host)
+
+                self.assertEqual(case['expected'], result['interfaces'])
+
+        with patch.multiple(
+                self.zabbix_api_module_path,
+                api_version=mock_api_version_70):
+
+            self.mock_module_functions.params = {
+                'host': 'test_host',
+                'interfaces': [
+                    {'type': 'snmp', 'useip': True, 'ip': '', 'dns': '',
+                     'port': None, 'details': {
+                         'version': '1', 'bulk': True,
+                         'community': 'public', 'retries': '3'}}]}
+            host = self.module.Host(self.mock_module_functions)
+
+            with self.assertRaises(AnsibleFailJson) as ansible_result:
+                host.generate_zabbix_host(exist_host)
+            self.assertTrue(ansible_result.exception.args[0]['failed'])
+            self.assertEqual(
+                'Incorrect arguments for Zabbix version < 8.0.0: retries',
+                ansible_result.exception.args[0]['msg'])
+
     def test_snmp_v3_zabbix_60(self):
         """
         Testing SNMP version 3 for Zabbix version 6.0.

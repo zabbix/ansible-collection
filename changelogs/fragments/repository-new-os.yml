@@ -1,0 +1,7 @@
+---
+minor_changes:
+  - repository role - added Oracle Linux 10, AlmaLinux 10 and Rocky Linux 10 (Zabbix 6.0, 7.0, 7.4 and 8.0).
+  - repository role - added Zabbix 6.0 for RHEL 10 and CentOS Stream 10.
+  - repository role - added Amazon Linux 2023 (Zabbix 6.0, 6.5, 7.0, 7.2, 7.4 and 8.0).
+  - repository role - added Debian 13 (Zabbix 6.0, 7.0, 7.4 and 8.0).
+  - repository role - added Ubuntu 26.04 (Zabbix 7.0, 7.4 and 8.0) and Raspberry Pi OS 13 (Zabbix 7.0 and 7.4, Zabbix 8.0 on aarch64 only).

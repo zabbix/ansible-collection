@@ -169,6 +169,12 @@ options:
                 description: Spend no more than the time specified (in seconds) on processing browser checks.
                 type: str
                 aliases: [ browser ]
+            timeout_telemetry_query:
+                description:
+                    - Spend no more than the time specified (in seconds) on processing telemetry queries.
+                    - Used only for Zabbix versions 8.0 and above.
+                type: str
+                aliases: [ telemetry_query ]
     description:
         description: Proxy description.
         type: str
@@ -219,6 +225,7 @@ EXAMPLES = r'''
       timeout_telnet_agent: 10s
       timeout_script: 10s
       timeout_browser: 10s
+      timeout_telemetry_query: 10s                # Only for Zabbix 8.0 and above
     description: Description of my proxy
   vars:
     ansible_network_os: zabbix.zabbix.zabbix
@@ -309,7 +316,7 @@ RETURN = r""" # """
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.zabbix.zabbix.plugins.module_utils.zabbix_api import ZabbixApi
 from ansible_collections.zabbix.zabbix.plugins.module_utils.helper import (
-    Zabbix_version, default_values, tls_type, proxy_timeouts)
+    Zabbix_version, default_values, tls_type, proxy_timeouts, proxy_timeouts_min_version)
 
 
 class Proxy(object):
@@ -710,6 +717,11 @@ class Proxy(object):
                 use_global_timeout = True
                 for timeout in proxy_timeouts:
                     if self.module.params['custom_timeouts'].get(timeout) is not None:
+                        min_version = proxy_timeouts_min_version.get(timeout)
+                        if (min_version is not None and
+                                Zabbix_version(self.zbx_api_version) < Zabbix_version(min_version)):
+                            self.module.fail_json(
+                                msg="Incorrect arguments for Zabbix version < {0}: {1}.".format(min_version, timeout))
                         use_global_timeout = False
                         proxy_params[timeout] = self.module.params['custom_timeouts'][timeout]
 
@@ -758,7 +770,7 @@ class Proxy(object):
                       'custom_timeouts', 'timeout_zabbix_agent', 'timeout_simple_check',
                       'timeout_snmp_agent', 'timeout_external_check', 'timeout_db_monitor',
                       'timeout_http_agent', 'timeout_ssh_agent', 'timeout_telnet_agent',
-                      'timeout_script', 'timeout_browser', 'status', 'operating_mode',
+                      'timeout_script', 'timeout_browser', 'timeout_telemetry_query', 'status', 'operating_mode',
                       'proxy_groupid', 'local_address', 'local_port', 'address', 'port',
                       'allowed_addresses', 'proxy_address', 'description']
         for each in wo_process:
@@ -830,7 +842,8 @@ def main():
                 'timeout_ssh_agent': {'type': 'str', 'aliases': ['ssh_agent']},
                 'timeout_telnet_agent': {'type': 'str', 'aliases': ['telnet_agent']},
                 'timeout_script': {'type': 'str', 'aliases': ['script']},
-                'timeout_browser': {'type': 'str', 'aliases': ['browser']}}},
+                'timeout_browser': {'type': 'str', 'aliases': ['browser']},
+                'timeout_telemetry_query': {'type': 'str', 'aliases': ['telemetry_query']}}},
         'description': {'type': 'str'}}
 
     module = AnsibleModule(

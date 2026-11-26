@@ -1,0 +1,6 @@
+---
+trivial:
+  - integration tests - the ``zabbix_host``, ``zabbix_proxy`` and ``zabbix_proxy_group`` targets check ``zabbix_version | int >= 7``
+    instead of ``zabbix_version == 7``, so tests for Zabbix 7.0 features also run on Zabbix 8.0.
+  - integration tests - the ``zabbix_proxy`` and ``zabbix_proxy_group`` targets check ``zabbix_version | int == 6``
+    instead of ``zabbix_version == 6``, the same way as the other version conditions.
